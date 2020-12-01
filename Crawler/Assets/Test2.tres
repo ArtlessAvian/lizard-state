@@ -2,9 +2,6 @@
 
 [ext_resource path="res://Crawler/Assets/Test2.png" type="Texture" id=1]
 
-
-
-
 [resource]
 0/name = "Test2.png 0"
 0/texture = ExtResource( 1 )

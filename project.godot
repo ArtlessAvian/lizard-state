@@ -16,7 +16,12 @@ _global_script_class_icons={
 [application]
 
 config/name="Lizard State"
+run/main_scene="res://Crawler/Crawler.tscn"
 config/icon="res://icon.png"
+
+[debug]
+
+settings/fps/force_fps=60
 
 [rendering]
 
