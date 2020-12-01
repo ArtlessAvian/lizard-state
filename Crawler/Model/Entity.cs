@@ -7,9 +7,9 @@ public class Entity
     public int health = 10;
     public Species species;
 
-    public Entity()
+    public Entity(Species species, (int x, int y) position)
     {
-        position.x = (int)(GD.Randi() % 3);
-        position.y = (int)(GD.Randi() % 3);
+        this.species = species;
+        this.position = position;        
     }
 }

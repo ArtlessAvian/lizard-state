@@ -16,10 +16,12 @@ public class Model
 
     public Model(List<ModelEvent> eventQueue)
     {
+        Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
+
         entities = new List<Entity>();
-        AddEntity(eventQueue, new Entity());
-        AddEntity(eventQueue, new Entity());
-        AddEntity(eventQueue, new Entity());
+        AddEntity(eventQueue, new Entity(playerTegu, (0, 0)));
+        AddEntity(eventQueue, new Entity(playerTegu, (0, 1)));
+        AddEntity(eventQueue, new Entity(playerTegu, (0, 2)));
     }
 
     public void AddEntity(List<ModelEvent> eventQueue, Entity e)
@@ -42,6 +44,12 @@ public class Model
             ev.subject = e;
             ev.action = "Damaged";
             ev.args = "";
+            eventQueue.Add(ev);
+
+            e.position.x = (int)(GD.Randi() % 7) - 3;
+            e.position.y = (int)(GD.Randi() % 7) - 3;
+            ev.action = "Moved";
+            ev.args = $"{e.position.x},{e.position.y}";
             eventQueue.Add(ev);
         }
     }

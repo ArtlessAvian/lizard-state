@@ -30,7 +30,7 @@ public class Crawler : Node2D
 
     public override void _Process(float delta)
     {
-        if (Input.IsKeyPressed((int)KeyList.Space))
+        if (Input.IsActionJustPressed("ui_accept"))
         {
             model.Tick(eventQueue);
         }
@@ -42,7 +42,7 @@ public class Crawler : Node2D
 
             if (ev.action == "Created")
             {
-                Actor puppet = GD.Load<PackedScene>("res://Crawler/Actors/PlayerTegu.tscn").Instance() as Actor;
+                Actor puppet = GD.Load<PackedScene>($"res://Crawler/Actors/{ev.subject.species.ResourceName}.tscn").Instance() as Actor;
                 roles.Add(ev.subject, puppet);
                 puppet.SyncWithEntity(ev.subject);
                 GetNode("Actors").AddChild(puppet);
