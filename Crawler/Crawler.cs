@@ -12,6 +12,7 @@ public class Crawler : Node2D
 
     // saved, of course.
     Model model;
+    bool notPlayerTurn = false;
 
     Crawler()
     {
@@ -19,20 +20,24 @@ public class Crawler : Node2D
         roles = new Dictionary<Entity, Actor>();
 
         model = new Model(eventQueue);
-
-        model.Tick(eventQueue);
     }
-
-    // void Thing()
-    // {
-        // model.Tick(eventQueue);
-    // }
 
     public override void _Process(float delta)
     {
         if (Input.IsActionJustPressed("ui_accept"))
         {
-            model.Tick(eventQueue);
+            model.DoPlayerAction(eventQueue);
+            notPlayerTurn = true;
+        }
+
+        while (notPlayerTurn) // and not timed out
+        {
+            if (!model.DoEntityAction(eventQueue))
+            {
+                // let the player move again.
+                notPlayerTurn = false;
+                break;
+            }
         }
 
         while (eventQueue.Count > 0)

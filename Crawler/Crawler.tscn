@@ -3,7 +3,7 @@
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Assets/Test2.tres" type="TileSet" id=2]
 [ext_resource path="res://Crawler/Assets/oc_donut_steel/tegu.png" type="Texture" id=3]
-[ext_resource path="res://Crawler/Actors/PlayerTegu.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Crawler/Controller.cs" type="Script" id=4]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
@@ -27,16 +27,17 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Puppet" parent="Actors" instance=ExtResource( 4 )]
-visible = false
-
 [node name="Puppets2" type="YSort" parent="."]
 visible = false
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="tegu" parent="Puppets2" instance=ExtResource( 4 )]
+[node name="tegu" type="Sprite" parent="Puppets2"]
+texture = ExtResource( 3 )
+offset = Vector2( 0, -10 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 40, 40 )
 
 [node name="tegu2" type="Sprite" parent="Puppets2"]
 position = Vector2( 32, 0 )
@@ -58,3 +59,6 @@ texture = ExtResource( 3 )
 offset = Vector2( 0, -10 )
 region_enabled = true
 region_rect = Rect2( 80, 0, 40, 40 )
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource( 4 )

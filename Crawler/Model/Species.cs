@@ -8,4 +8,7 @@ public class Species : Resource
 
     [Export]
     public string displayName;
+
+    [Export]
+    public bool isPlayer = false;
 }

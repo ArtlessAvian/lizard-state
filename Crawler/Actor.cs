@@ -15,16 +15,16 @@ public partial class Actor : Node2D
         );
     }
 
-    public void Perform(string action, string args)
+    public void Perform(string action, object args)
     {
-        EmitSignal("Action", action);
-        EmitSignal(action, args);
+        // EmitSignal("Action", action);
+        // EmitSignal(action, args);
 
         if (action == "Moved")
         {
-            string[] tokenized = args.Split(",");
-            targetPosition.x = int.Parse(tokenized[0]);
-            targetPosition.y = int.Parse(tokenized[1]);
+            (int x, int y) cast = ((int x, int y))args;
+            targetPosition.x = cast.x;
+            targetPosition.y = cast.y;
         }
     }
 
