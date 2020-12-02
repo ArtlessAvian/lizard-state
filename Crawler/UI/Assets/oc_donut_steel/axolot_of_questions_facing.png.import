@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Numbers.png-7a16a2dd5bcf886c664bbc8b4c5b5004.stex"
+path="res://.import/axolot_of_questions_facing.png-b742a05668b6695e5e4e3f8f6199ea5f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Crawler/Assets/Numbers.png"
-dest_files=[ "res://.import/Numbers.png-7a16a2dd5bcf886c664bbc8b4c5b5004.stex" ]
+source_file="res://Crawler/UI/Assets/oc_donut_steel/axolot_of_questions_facing.png"
+dest_files=[ "res://.import/axolot_of_questions_facing.png-b742a05668b6695e5e4e3f8f6199ea5f.stex" ]
 
 [params]
 
@@ -30,5 +30,5 @@ process/HDR_as_SRGB=false
 process/invert_color=false
 stream=false
 size_limit=0
-detect_3d=true
+detect_3d=false
 svg/scale=1.0

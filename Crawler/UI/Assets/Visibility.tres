@@ -1,6 +1,7 @@
 [gd_resource type="TileSet" load_steps=2 format=2]
 
-[ext_resource path="res://Crawler/Assets/Visibility.png" type="Texture" id=1]
+[ext_resource path="res://Crawler/UI/Assets/Visibility.png" type="Texture" id=1]
+
 
 
 
