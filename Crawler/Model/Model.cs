@@ -37,14 +37,14 @@ public class Model
         eventQueue.Add(ev);        
     }
 
-    public void DoPlayerAction(List<ModelEvent> eventQueue) // Action action
+    public void DoPlayerAction(List<ModelEvent> eventQueue, Action action)
     {
         Entity e = NextEntity();
         PassTime(e.nextMove);
 
         if (!e.species.isPlayer) { return; }
 
-        DebugAction(eventQueue, e);
+        action.Do(eventQueue, e);
     }
 
     // returns false if its the player turn.
@@ -70,8 +70,8 @@ public class Model
         ev.args = null;
         eventQueue.Add(ev);
 
-        e.position.x = (int)(GD.Randi() % 7) - 3;
-        e.position.y = (int)(GD.Randi() % 7) - 3;
+        e.position.x += (int)(GD.Randi() % 3) - 1;
+        e.position.y += (int)(GD.Randi() % 3) - 1;
         e.nextMove += 1;
         
         ev.action = "Moved";

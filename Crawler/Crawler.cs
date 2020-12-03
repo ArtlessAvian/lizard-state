@@ -24,9 +24,25 @@ public class Crawler : Node2D
 
     public override void _Process(float delta)
     {
-        if (Input.IsActionJustPressed("ui_accept"))
+        // MOVE ME
+        if (Input.IsActionJustPressed("move_up"))
         {
-            model.DoPlayerAction(eventQueue);
+            model.DoPlayerAction(eventQueue, new MoveAction((0, -1)));
+            notPlayerTurn = true;
+        }
+        if (Input.IsActionJustPressed("move_down"))
+        {
+            model.DoPlayerAction(eventQueue, new MoveAction((0, 1)));
+            notPlayerTurn = true;
+        }
+        if (Input.IsActionJustPressed("move_left"))
+        {
+            model.DoPlayerAction(eventQueue, new MoveAction((-1, 0)));
+            notPlayerTurn = true;
+        }
+        if (Input.IsActionJustPressed("move_right"))
+        {
+            model.DoPlayerAction(eventQueue, new MoveAction((1, 0)));
             notPlayerTurn = true;
         }
 
