@@ -12,18 +12,15 @@ public struct ModelEvent
 
 public class Model
 {
+    public TileMap map; // conveniently, also a Godot Tilemap.
+    
     List<Entity> entities;
     int time = 0;
 
     public Model(List<ModelEvent> eventQueue)
     {
-        Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
-        Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
-
+        map = new TileMap();
         entities = new List<Entity>();
-        AddEntity(eventQueue, new Entity(playerTegu, (0, 0)));
-        AddEntity(eventQueue, new Entity(partnerAxolotl, (0, 1)));
-        AddEntity(eventQueue, new Entity(partnerAxolotl, (0, 2)));
     }
 
     public void AddEntity(List<ModelEvent> eventQueue, Entity e)
@@ -34,7 +31,7 @@ public class Model
         ev.subject = e;
         ev.action = "Created";
         ev.args = "";
-        eventQueue.Add(ev);        
+        eventQueue.Add(ev);
     }
 
     public void DoPlayerAction(List<ModelEvent> eventQueue, Action action)
@@ -45,6 +42,8 @@ public class Model
         if (!e.species.isPlayer) { return; }
 
         action.Do(eventQueue, e);
+
+        GD.Print(map.GetCell(e.position.x, e.position.y));
     }
 
     // returns false if its the player turn.

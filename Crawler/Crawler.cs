@@ -2,16 +2,16 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Crawler : Node2D
+public partial class Crawler : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);
 
     // not saved
-    List<ModelEvent> eventQueue;
+    public List<ModelEvent> eventQueue;
     Dictionary<Entity, Actor> roles;
 
     // saved, of course.
-    Model model;
+    public Model model;
     bool notPlayerTurn = false;
 
     Crawler()
@@ -24,26 +24,9 @@ public class Crawler : Node2D
 
     public override void _Process(float delta)
     {
-        // MOVE ME
-        if (Input.IsActionJustPressed("move_up"))
+        if (Input.IsActionJustPressed("ui_cancel"))
         {
-            model.DoPlayerAction(eventQueue, new MoveAction((0, -1)));
-            notPlayerTurn = true;
-        }
-        if (Input.IsActionJustPressed("move_down"))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((0, 1)));
-            notPlayerTurn = true;
-        }
-        if (Input.IsActionJustPressed("move_left"))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((-1, 0)));
-            notPlayerTurn = true;
-        }
-        if (Input.IsActionJustPressed("move_right"))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((1, 0)));
-            notPlayerTurn = true;
+            GetNode("Map").Set("tile_data", model.map.Get("tile_data"));
         }
 
         while (notPlayerTurn) // and not timed out
@@ -69,7 +52,7 @@ public class Crawler : Node2D
                 GetNode("Actors").AddChild(puppet);
             }
 
-            GD.PrintS(ev.subject, ev.action, ev.args);
+            // GD.PrintS(ev.subject, ev.action, ev.args);
 
             roles[ev.subject].Perform(ev.action, ev.args);
         }
