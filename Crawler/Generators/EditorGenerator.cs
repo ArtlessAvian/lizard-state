@@ -1,40 +1,29 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
-// Super privlidged node, sets the model up from editor info.
-public class EditorGenerator : Node
+public class EditorGenerator
 {
-    public override void _Ready()
+    public static void GenerateMap(Model model, List<ModelEvent> eventQueue, string argument)
     {
-        GenerateMap();
-        GenerateEntities();
-        QueueFree();
-    }
+        PackedScene scene = GD.Load<PackedScene>(argument);
+        TileMap map = (TileMap)scene.Instance();
 
-    void GenerateMap()
-    {
-        Crawler crawler = GetParent<Crawler>();
-
-        crawler.model.map.Set("format", 1);
-        crawler.model.map.Set(
+        model.map.Set("format", 1);
+        model.map.Set(
             "tile_data",
-            crawler.GetNode<TileMap>("Map").Get("tile_data")
+            map.Get("tile_data")
         );
     }
 
-    void GenerateEntities()
+    public static void GenerateEntities(Model model, List<ModelEvent> eventQueue, string argument)
     {
-        Crawler crawler = GetParent<Crawler>();
-        List<ModelEvent> eventQueue = crawler.eventQueue;
-
         Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
 
-        crawler.model.AddEntity(eventQueue, new Entity(playerTegu, (0, 0)));
+        model.AddEntity(eventQueue, new Entity(playerTegu, (0, 0)));
         for (int i = 0; i < 5; i++)
         {
-            crawler.model.AddEntity(eventQueue, new Entity(partnerAxolotl, (i, i-4)));
+            model.AddEntity(eventQueue, new Entity(partnerAxolotl, (i, i-4)));
         }
     }
 }

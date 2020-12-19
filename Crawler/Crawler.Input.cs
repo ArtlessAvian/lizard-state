@@ -1,10 +1,27 @@
 using Godot;
+using Godot.Collections;
 using System;
 
 public partial class Crawler : Node2D
 {
+    Dictionary temp;
+
     public override void _Input(InputEvent ev)
     {
+        if (ev.IsActionPressed("quicksave", false))
+        {
+            temp = model.SaveToDictionary();
+        }
+        if (ev.IsActionPressed("quickload", false))
+        {
+            PackedScene crawlerScene = GD.Load<PackedScene>("res://Crawler/Crawler.tscn");
+            Crawler crawler = (Crawler)crawlerScene.Instance();
+            crawler.model = new Model(crawler.eventQueue, temp);
+            GetTree().Root.AddChild(crawler);
+            GetTree().CurrentScene = crawler;
+            GetTree().Root.RemoveChild(this);
+        }
+
         if (ev.IsActionPressed("move_up", true))
         {
             model.DoPlayerAction(eventQueue, new MoveAction((0, -1)));

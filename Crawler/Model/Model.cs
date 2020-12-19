@@ -11,11 +11,12 @@ public struct ModelEvent
 }
 
 public partial class Model
-{
-    public TileMap map; // conveniently, also a Godot Tilemap.
-    
+{    
+    // Saved
     List<Entity> entities;
     int time = 0;
+
+    public TileMap map; // conveniently, also a Godot Tilemap.
 
     public Model(List<ModelEvent> eventQueue)
     {
@@ -97,15 +98,5 @@ public partial class Model
             }
         }
         return result;
-    }
-
-    void SaveToDictionary()
-    {
-
-    }
-
-    void LoadFromDictionary()
-    {
-        
     }
 }

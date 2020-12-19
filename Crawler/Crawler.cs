@@ -18,8 +18,11 @@ public partial class Crawler : Node2D
     {
         eventQueue = new List<ModelEvent>();
         roles = new Dictionary<Entity, Actor>();
+    }
 
-        model = new Model(eventQueue);
+    public override void _Ready()
+    {
+        model = model ?? new Model(eventQueue);
     }
 
     public override void _Process(float delta)
