@@ -10,7 +10,7 @@ public struct ModelEvent
     public object args; // arg type can be inferred from action.
 }
 
-public class Model
+public partial class Model
 {
     public TileMap map; // conveniently, also a Godot Tilemap.
     
@@ -41,9 +41,11 @@ public class Model
 
         if (!e.species.isPlayer) { return; }
 
-        action.Do(eventQueue, e);
-
-        GD.Print(map.GetCell(e.position.x, e.position.y));
+        bool success = action.Do(this, eventQueue, e);
+        if (!success)
+        {
+            GD.Print("Womp womp.");
+        }
     }
 
     // returns false if its the player turn.
@@ -97,7 +99,7 @@ public class Model
         return result;
     }
 
-    void SaveFromDictionary()
+    void SaveToDictionary()
     {
 
     }
