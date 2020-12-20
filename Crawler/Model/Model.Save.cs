@@ -9,6 +9,7 @@ public partial class Model
         Dictionary dict = new Dictionary();
         dict["time"] = time;
         dict["Entities"] = SaveEntities();
+        dict["Generator"] = generator.SaveToDict();
         GD.Print(dict);
         return dict;
     }
@@ -31,5 +32,7 @@ public partial class Model
         {
             this.AddEntity(eventQueue, new Entity(entityDict));
         }
+        this.generator = new LoadedGenerator((Dictionary)dict["Generator"]);
+        this.generator.GenerateMap(this, eventQueue);
     }
 }

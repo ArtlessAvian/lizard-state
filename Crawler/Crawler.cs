@@ -22,7 +22,9 @@ public partial class Crawler : Node2D
 
     public override void _Ready()
     {
-        model = model ?? new Model(eventQueue);
+        model = model ?? new Model(eventQueue, new EditorGenerator("res://Crawler/Generators/Maps/Debuggy.tscn"));
+
+        GetNode("Map").Set("tile_data", model.map.Get("tile_data"));
     }
 
     public override void _Process(float delta)

@@ -16,12 +16,22 @@ public partial class Model
     List<Entity> entities;
     int time = 0;
 
+    // Generated
+    private LevelGenerator generator;
     public TileMap map; // conveniently, also a Godot Tilemap.
 
-    public Model(List<ModelEvent> eventQueue)
+    private Model(List<ModelEvent> eventQueue)
     {
         map = new TileMap();
         entities = new List<Entity>();
+    }
+
+    // Generate from scratch!
+    public Model(List<ModelEvent> eventQueue, LevelGenerator generator) : this(eventQueue)
+    {
+        this.generator = generator;
+        generator.GenerateMap(this, eventQueue);
+        generator.GenerateEntities(this, eventQueue);
     }
 
     public void AddEntity(List<ModelEvent> eventQueue, Entity e)
