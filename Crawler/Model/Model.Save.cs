@@ -9,7 +9,7 @@ public partial class Model
         Dictionary dict = new Dictionary();
         dict["time"] = time;
         dict["Entities"] = SaveEntities();
-        dict["Generator"] = generator.SaveToDict();
+        dict["generatorData"] = generatorData;
         GD.Print(dict);
         return dict;
     }
@@ -22,17 +22,5 @@ public partial class Model
             dict.Add(e.SaveToDictionary());
         }
         return dict;
-    }
-
-    // void LoadFromDictionary(Dictionary dict)
-    public Model(List<ModelEvent> eventQueue, Dictionary dict) : this(eventQueue)
-    {
-        this.time = (int)dict["time"];
-        foreach (Dictionary entityDict in (Array)dict["Entities"])
-        {
-            this.AddEntity(eventQueue, new Entity(entityDict));
-        }
-        this.generator = new LoadedGenerator((Dictionary)dict["Generator"]);
-        this.generator.GenerateMap(this, eventQueue);
     }
 }

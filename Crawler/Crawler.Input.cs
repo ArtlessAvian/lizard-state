@@ -15,8 +15,14 @@ public partial class Crawler : Node2D
         if (ev.IsActionPressed("quickload", false))
         {
             PackedScene crawlerScene = GD.Load<PackedScene>("res://Crawler/Crawler.tscn");
+
             Crawler crawler = (Crawler)crawlerScene.Instance();
-            crawler.model = new Model(crawler.eventQueue, temp);
+        
+            LoadedGenerator gen = new LoadedGenerator(temp);
+            crawler.model = gen.Generate(crawler.eventQueue);
+
+            crawler.temp = temp; // temppppp
+
             GetTree().Root.AddChild(crawler);
             GetTree().CurrentScene = crawler;
             GetTree().Root.RemoveChild(this);

@@ -4,27 +4,40 @@ using System.Collections.Generic;
 
 public class LoadedGenerator : LevelGenerator
 {
+    Dictionary dict;
     LevelGenerator generator;
 
     public LoadedGenerator(Dictionary dict)
     {
-        string type = (string)dict["Type"];
-        switch (type)
+        this.dict = dict;
+
+        Dictionary data = (Dictionary)dict["generatorData"];
+        switch ((string)data["Type"])
         {
             case "Editor":
-                generator = new EditorGenerator((string)dict["ScenePath"]);
+                this.generator = new EditorGenerator((string)data["ScenePath"]);
                 break;
         }
     }
 
-    public void GenerateMap(Model model, List<ModelEvent> eventQueue)
+    public Model Generate(List<ModelEvent> eventQueue)
     {
-        generator.GenerateMap(model, eventQueue);
+        Model model = new Model(eventQueue, this.SaveToDict());
+        
+        GenerateMap(model, eventQueue);
+
+        model.time = (int)dict["time"];
+        foreach (Dictionary entityDict in (Array)dict["Entities"])
+        {
+            model.AddEntity(eventQueue, new Entity(entityDict));
+        }
+
+        return model;
     }
 
-    public void GenerateEntities(Model model, List<ModelEvent> eventQueue)
+    public void GenerateMap(Model model, List<ModelEvent> eventQueue)
     {
-        generator.GenerateEntities(model, eventQueue);
+        this.generator.GenerateMap(model, eventQueue);
     }
 
     public Dictionary SaveToDict()

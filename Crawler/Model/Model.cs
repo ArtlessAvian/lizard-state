@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -14,24 +15,17 @@ public partial class Model
 {    
     // Saved
     List<Entity> entities;
-    int time = 0;
+    public int time = 0;
 
     // Generated
-    private LevelGenerator generator;
+    Dictionary generatorData;
     public TileMap map; // conveniently, also a Godot Tilemap.
 
-    private Model(List<ModelEvent> eventQueue)
+    public Model(List<ModelEvent> eventQueue, Dictionary generatorData)
     {
         map = new TileMap();
         entities = new List<Entity>();
-    }
-
-    // Generate from scratch!
-    public Model(List<ModelEvent> eventQueue, LevelGenerator generator) : this(eventQueue)
-    {
-        this.generator = generator;
-        generator.GenerateMap(this, eventQueue);
-        generator.GenerateEntities(this, eventQueue);
+        this.generatorData = generatorData;
     }
 
     public void AddEntity(List<ModelEvent> eventQueue, Entity e)

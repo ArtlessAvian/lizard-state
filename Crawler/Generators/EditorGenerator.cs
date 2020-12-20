@@ -11,6 +11,14 @@ public class EditorGenerator : LevelGenerator
         scene = GD.Load<PackedScene>(scenePath);
     }
 
+    public Model Generate(List<ModelEvent> eventQueue)
+    {
+        Model model = new Model(eventQueue, this.SaveToDict());
+        GenerateMap(model, eventQueue);
+        GenerateEntities(model, eventQueue);
+        return model;
+    }
+
     public void GenerateMap(Model model, List<ModelEvent> eventQueue)
     {
         TileMap map = (TileMap)scene.Instance();
