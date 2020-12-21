@@ -50,6 +50,7 @@ public partial class Model
         if (!success)
         {
             GD.Print("Womp womp.");
+            e.nextMove++;
         }
     }
 
@@ -61,7 +62,12 @@ public partial class Model
 
         if (e.species.isPlayer) { return false; }
 
-        DebugAction(eventQueue, e);
+        bool success = e.ai.GetMove().Do(this, eventQueue, e);
+        if (!success)
+        {
+            GD.Print("Womp womp.");
+            e.nextMove++;
+        }
 
         return true;
     }

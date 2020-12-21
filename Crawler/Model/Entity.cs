@@ -8,13 +8,15 @@ public class Entity
     public int nextMove = 0;
 
     public Species species;
+    public CrawlerAI ai;
 
     public int health = 10;
 
     public Entity(Species species, (int x, int y) position)
     {
         this.species = species;
-        this.position = position;        
+        this.position = position;
+        this.ai = new AI(species.aiType);
     }
 
     public Dictionary SaveToDictionary()

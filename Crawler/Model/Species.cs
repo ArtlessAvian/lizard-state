@@ -11,4 +11,7 @@ public class Species : Resource
 
     [Export]
     public bool isPlayer = false;
+
+    [Export]
+    public string aiType;
 }

@@ -11,6 +11,9 @@ public class EditorGenerator : LevelGenerator
         scene = GD.Load<PackedScene>(scenePath);
     }
 
+    public EditorGenerator(Dictionary dict) : this((string)dict["ScenePath"])
+    {}
+
     public Model Generate(List<ModelEvent> eventQueue)
     {
         Model model = new Model(eventQueue, this.SaveToDict());
@@ -36,10 +39,7 @@ public class EditorGenerator : LevelGenerator
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
 
         model.AddEntity(eventQueue, new Entity(playerTegu, (0, 0)));
-        for (int i = 0; i < 5; i++)
-        {
-            model.AddEntity(eventQueue, new Entity(partnerAxolotl, (i, i-4)));
-        }
+        model.AddEntity(eventQueue, new Entity(partnerAxolotl, (2, 2)));
     }
 
     public Dictionary SaveToDict()

@@ -10,12 +10,11 @@ public class LoadedGenerator : LevelGenerator
     public LoadedGenerator(Dictionary dict)
     {
         this.dict = dict;
-
         Dictionary data = (Dictionary)dict["generatorData"];
         switch ((string)data["Type"])
         {
             case "Editor":
-                this.generator = new EditorGenerator((string)data["ScenePath"]);
+                this.generator = new EditorGenerator(data);
                 break;
         }
     }
