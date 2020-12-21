@@ -8,3 +8,4 @@ script = ExtResource( 1 )
 maxHealth = 10
 displayName = null
 isPlayer = true
+aiType = null
