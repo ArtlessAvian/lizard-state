@@ -6,5 +6,6 @@
 resource_name = "PartnerAxolotl"
 script = ExtResource( 1 )
 maxHealth = 10
-displayName = null
+displayName = "Nano"
 isPlayer = false
+aiType = null

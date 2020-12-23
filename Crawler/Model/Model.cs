@@ -7,12 +7,19 @@ using System.Collections.Generic;
 public struct ModelEvent
 {
     public Entity subject;
-    public String action; // Like an enum, but worse.
+    public string action; // Like an enum, but worse.
     public object args; // arg type can be inferred from action.
+
+    public ModelEvent(Entity subject, string action, object args = null)
+    {
+        this.subject = subject;
+        this.action = action;
+        this.args = args;
+    }
 }
 
 public partial class Model
-{    
+{
     // Saved
     List<Entity> entities;
     public int time = 0;
@@ -31,12 +38,7 @@ public partial class Model
     public void AddEntity(List<ModelEvent> eventQueue, Entity e)
     {
         entities.Add(e);
-
-        ModelEvent ev;
-        ev.subject = e;
-        ev.action = "Created";
-        ev.args = "";
-        eventQueue.Add(ev);
+        eventQueue.Add(new ModelEvent(e, "Created"));
     }
 
     // returns true if successful
@@ -72,25 +74,6 @@ public partial class Model
         }
 
         return true;
-    }
-
-    public void DebugAction(List<ModelEvent> eventQueue, Entity e)
-    {
-        ModelEvent ev;
-        ev.subject = e;
-
-        e.health -= 3;
-        ev.action = "Damaged";
-        ev.args = null;
-        eventQueue.Add(ev);
-
-        e.position.x += (int)(GD.Randi() % 3) - 1;
-        e.position.y += (int)(GD.Randi() % 3) - 1;
-        e.nextMove += 1;
-        
-        ev.action = "Moved";
-        ev.args = (e.position.x, e.position.y);
-        eventQueue.Add(ev);
     }
 
     public void PassTime(int finalTime)

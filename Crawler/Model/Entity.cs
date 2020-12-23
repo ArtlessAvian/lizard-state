@@ -12,10 +12,14 @@ public class Entity
 
     public int health = 10;
 
-    public Entity(Species species, (int x, int y) position)
+    public int team;
+
+    public Entity(Species species, (int x, int y) position, int team)
     {
         this.species = species;
         this.position = position;
+        this.team = team;
+
         this.ai = new AI(species.aiType);
     }
 
@@ -27,6 +31,7 @@ public class Entity
         dict["y"] = position.y;
         dict["nextMove"] = nextMove;
         dict["health"] = health;
+        dict["team"] = team;
         return dict;
     }
 
@@ -37,7 +42,6 @@ public class Entity
         this.position.y = (int)dict["y"];
         this.nextMove = (int)dict["nextMove"];
         this.health = (int)dict["health"];
-
-        GD.Print(this.position.x);
+        this.team = (int)dict["team"];
     }
 }
