@@ -39,19 +39,21 @@ public partial class Model
         eventQueue.Add(ev);
     }
 
-    public void DoPlayerAction(List<ModelEvent> eventQueue, Action action)
+    // returns true if successful
+    public bool DoPlayerAction(List<ModelEvent> eventQueue, Action action)
     {
         Entity e = NextEntity();
         PassTime(e.nextMove);
 
-        if (!e.species.isPlayer) { return; }
+        if (!e.species.isPlayer) { return false; }
 
         bool success = action.Do(this, eventQueue, e);
         if (!success)
         {
-            GD.Print("Womp womp.");
-            e.nextMove++;
+            GD.Print("Can't do that!");
+            return false;
         }
+        return true;
     }
 
     // returns false if its the player turn.
@@ -65,7 +67,7 @@ public partial class Model
         bool success = e.ai.GetMove(this, e).Do(this, eventQueue, e);
         if (!success)
         {
-            GD.Print("Womp womp.");
+            GD.Print($"{e.species.displayName} made bad move. Skipping!");
             e.nextMove++;
         }
 

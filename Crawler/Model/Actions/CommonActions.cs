@@ -36,3 +36,27 @@ public class MoveAction : Action
         return true;
     }
 }
+
+public class AttackAction : Action
+{
+    (int x, int y) direction;
+
+    public AttackAction(object args) 
+    {
+        direction = ((int, int))args;
+    }
+
+    public bool Do(ModelAPI api, List<ModelEvent> eventQueue, Entity e)
+    {
+        Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
+        if ((target is null) || target == e)
+        {
+            return false;
+        }
+
+        target.health -= 1;
+        api.DisplayMessage($"{e.species.displayName} hits {target.species.displayName}!");
+
+        return true;
+    }
+}

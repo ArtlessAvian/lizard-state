@@ -1,10 +1,22 @@
 using Godot;
 using Godot.Collections;
-using System;
+using System.Collections.Generic;
 
 public partial class Crawler : Node2D
 {
     Dictionary temp;
+
+    private (string, (int, int))[] directions = {
+        ("move_up", (0, -1)),
+        ("move_down", (0, 1)),
+        ("move_left", (-1, 0)),
+        ("move_right", (1, 0)),
+        ("move_upleft", (-1, -1)),
+        ("move_upright", (1, -1)),
+        ("move_downleft", (-1, 1)),
+        ("move_downright", (1, 1)),
+        ("move_wait", (0, 0))
+    };
 
     public override void _Input(InputEvent ev)
     {
@@ -28,50 +40,25 @@ public partial class Crawler : Node2D
             GetTree().Root.RemoveChild(this);
         }
 
-        if (ev.IsActionPressed("move_up", true))
+        foreach ((string name, (int, int) dir) tuple in directions)
         {
-            model.DoPlayerAction(eventQueue, new MoveAction((0, -1)));
-            notPlayerTurn = true;
+            if (ev.IsActionPressed(tuple.name, true))
+            {
+                bool success = MoveOrAttack(tuple.dir);
+                // model.DoPlayerAction(eventQueue, new MoveAction(tuple.dir));
+                notPlayerTurn = true;
+            }
         }
-        if (ev.IsActionPressed("move_down", true))
+    }
+
+    private bool MoveOrAttack((int x, int y) direction)
+    {
+        Entity player = model.GetPlayer();
+        Entity entityAt = model.GetEntityAt(player.position.x + direction.x, player.position.y + direction.y);
+        if (entityAt != null)
         {
-            model.DoPlayerAction(eventQueue, new MoveAction((0, 1)));
-            notPlayerTurn = true;
+            return model.DoPlayerAction(eventQueue, new AttackAction(direction));
         }
-        if (ev.IsActionPressed("move_left", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((-1, 0)));
-            notPlayerTurn = true;
-        }
-        if (ev.IsActionPressed("move_right", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((1, 0)));
-            notPlayerTurn = true;
-        }
-        if (ev.IsActionPressed("move_upleft", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((-1, -1)));
-            notPlayerTurn = true;
-        }
-        if (ev.IsActionPressed("move_upright", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((1, -1)));
-            notPlayerTurn = true;
-        }
-        if (ev.IsActionPressed("move_downleft", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((-1, 1)));
-            notPlayerTurn = true;
-        }
-        if (ev.IsActionPressed("move_downright", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((1, 1)));
-            notPlayerTurn = true;
-        }
-        if (ev.IsActionPressed("move_wait", true))
-        {
-            model.DoPlayerAction(eventQueue, new MoveAction((0, 0)));
-            notPlayerTurn = true;
-        }
+        return model.DoPlayerAction(eventQueue, new MoveAction(direction));
     }
 }
