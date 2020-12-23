@@ -68,5 +68,10 @@ public partial class Crawler : Node2D
             model.DoPlayerAction(eventQueue, new MoveAction((1, 1)));
             notPlayerTurn = true;
         }
+        if (ev.IsActionPressed("move_wait", true))
+        {
+            model.DoPlayerAction(eventQueue, new MoveAction((0, 0)));
+            notPlayerTurn = true;
+        }
     }
 }

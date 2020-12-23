@@ -4,7 +4,7 @@ using System;
 
 public interface CrawlerAI
 {
-    Action GetMove();
+    Action GetMove(ModelAPI api, Entity e);
     Dictionary SaveToDict();
 }
 
@@ -22,9 +22,9 @@ public class AI : CrawlerAI
         ai = new PartnerAI(dict);
     }
 
-    public Action GetMove()
+    public Action GetMove(ModelAPI api, Entity e)
     {
-        return ai.GetMove();
+        return ai.GetMove(api, e);
     }
 
     public Dictionary SaveToDict()
@@ -45,9 +45,21 @@ public class PartnerAI : CrawlerAI
 
     }
 
-    public Action GetMove()
+    public Action GetMove(ModelAPI api, Entity e)
     {
-        return new MoveAction((0, 0));
+        Entity player = api.GetPlayer();
+        int dx = player.position.x - e.position.x;
+        int dy = player.position.y - e.position.y;
+
+        if (Math.Abs(dx) <= 2 && Math.Abs(dy) <= 2)
+        {
+            return new MoveAction((0, 0));
+        }
+
+        dx = Math.Sign(dx);
+        dy = Math.Sign(dy);
+
+        return new MoveAction((dx, dy));
     }
 
     public Dictionary SaveToDict()

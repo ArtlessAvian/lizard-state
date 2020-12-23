@@ -17,6 +17,11 @@ public class MoveAction : Action
         {
             return false;
         }
+        Entity entityAt = api.GetEntityAt(e.position.x + displacement.x, e.position.y + displacement.y);
+        if (!(entityAt is null) && entityAt != e)
+        {
+            return false;
+        }
 
         e.position.x += displacement.x;
         e.position.y += displacement.y;

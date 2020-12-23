@@ -24,20 +24,18 @@ public partial class Crawler : Node2D
     {
         if (model is null)
         {
-            EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/Debuggy.tscn");
+            EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
             model = gen.Generate(eventQueue);
         }
+        this.ClearQueue();
+        
+        GetNode<CrawlerCamera>("Camera2D").focus = roles[model.GetPlayer()];
 
         GetNode("Map").Set("tile_data", model.map.Get("tile_data"));
     }
 
     public override void _Process(float delta)
     {
-        if (Input.IsActionJustPressed("ui_cancel"))
-        {
-            GetNode("Map").Set("tile_data", model.map.Get("tile_data"));
-        }
-
         while (notPlayerTurn) // and not timed out
         {
             if (!model.DoEntityAction(eventQueue))
@@ -47,7 +45,11 @@ public partial class Crawler : Node2D
                 break;
             }
         }
+        this.ClearQueue();
+    }
 
+    private void ClearQueue()
+    {
         while (eventQueue.Count > 0)
         {
             ModelEvent ev = eventQueue[0];

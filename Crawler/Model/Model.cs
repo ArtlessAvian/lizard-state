@@ -62,7 +62,7 @@ public partial class Model
 
         if (e.species.isPlayer) { return false; }
 
-        bool success = e.ai.GetMove().Do(this, eventQueue, e);
+        bool success = e.ai.GetMove(this, e).Do(this, eventQueue, e);
         if (!success)
         {
             GD.Print("Womp womp.");
