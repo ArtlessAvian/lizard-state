@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Actor : Node2D
+public partial class Actor : Sprite
 {
     [Signal]
     public delegate void Action(String action);

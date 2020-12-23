@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 // Like a ViewModel. Also, a pile of callbacks for the View.
-public partial class Actor : Node2D
+public partial class Actor : Sprite
 {
     (int x, int y) targetPosition;
 
@@ -23,8 +23,41 @@ public partial class Actor : Node2D
         if (action == "Moved")
         {
             (int x, int y) cast = ((int x, int y))args;
+
+            int dx = cast.x - targetPosition.x;
+            int dy = cast.y - targetPosition.y;
+
             targetPosition.x = cast.x;
             targetPosition.y = cast.y;
+    
+            this.FaceDirection(dx, dy);        
+        }
+    }
+
+    private void FaceDirection(int dx, int dy)
+    {
+        Rect2 rect = this.RegionRect;
+        if (dx != 0)
+        {
+            if (dx > 0)
+            {
+                this.RegionRect = new Rect2(rect.Size.x * 1, 0, rect.Size);
+            }
+            else
+            {
+                this.RegionRect = new Rect2(rect.Size.x * 3, 0, rect.Size);
+            }
+        }
+        else
+        {
+            if (dy >= 0)
+            {
+                this.RegionRect = new Rect2(rect.Size.x * 0, 0, rect.Size);
+            }
+            else
+            {
+                this.RegionRect = new Rect2(rect.Size.x * 2, 0, rect.Size);
+            }
         }
     }
 
