@@ -50,7 +50,7 @@ public class MoveAction : Action
         // else
         e.position.x += displacement.x;
         e.position.y += displacement.y;
-        e.nextMove += 1;
+        e.nextMove += 10;
 
         eventQueue.Add(new ModelEvent(e, "Move", e.position));
         eventQueue.Add(new ModelEvent(e, "Face", displacement));
@@ -77,12 +77,22 @@ public class AttackAction : Action
         {
             return false;
         }
+
+        bool crit = GD.Randf() < 0.1;
+        e.nextMove += 10;
         target.health -= 1;
-        e.nextMove += 1;
+        if (crit)
+        {
+            target.nextMove += 10;
+        }
 
         eventQueue.Add(new ModelEvent(null, "Wait"));
         eventQueue.Add(new ModelEvent(target, "Face", (-direction.x, -direction.y)));
         eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
+
+        if (crit)
+            eventQueue.Add(new ModelEvent(null, "Print", $"Critical!!"));
+
         eventQueue.Add(new ModelEvent(e, "Animate", "Attack"));
         // eventQueue.Add(new ModelEvent(null, "Wait"));
         eventQueue.Add(new ModelEvent(target, "Animate", "Hurt"));
