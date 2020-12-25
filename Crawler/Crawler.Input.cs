@@ -20,6 +20,9 @@ public partial class Crawler : Node2D
 
     public override void _Input(InputEvent ev)
     {
+        if (notPlayerTurn) { return; }
+        if (eventQueue.Count > 0) { return; }
+
         if (ev.IsActionPressed("quicksave", false))
         {
             temp = model.SaveToDictionary();

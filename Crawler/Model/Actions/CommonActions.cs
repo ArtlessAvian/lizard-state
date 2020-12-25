@@ -20,21 +20,29 @@ public class MoveAction : Action
         Entity entityAt = api.GetEntityAt(e.position.x + displacement.x, e.position.y + displacement.y);
         if (!(entityAt is null) && entityAt != e)
         {
-            if (e.team == entityAt.team)
-            {
-                entityAt.position.x = e.position.x;
-                entityAt.position.y = e.position.y;
-
-                eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
-                eventQueue.Add(new ModelEvent(entityAt, "Moved", entityAt.position));
-            }
-            else
+            if (e.team != entityAt.team)
             {
                 GD.Print($"{e.species.displayName} bumps into the {entityAt.species.displayName}");
                 return false;
             }
-        }
+            else
+            {
+                entityAt.position.x = e.position.x;
+                entityAt.position.y = e.position.y;
 
+                e.position.x += displacement.x;
+                e.position.y += displacement.y;
+                e.nextMove += 1;
+
+                eventQueue.Add(new ModelEvent(null, "Wait"));
+                eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
+                eventQueue.Add(new ModelEvent(entityAt, "Moved", entityAt.position));
+                eventQueue.Add(new ModelEvent(e, "Moved", e.position));
+                eventQueue.Add(new ModelEvent(null, "Wait"));
+                return true;
+            }
+        }
+        // else
         e.position.x += displacement.x;
         e.position.y += displacement.y;
         e.nextMove += 1;

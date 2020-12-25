@@ -32,6 +32,7 @@ public class Entity
         dict["nextMove"] = nextMove;
         dict["health"] = health;
         dict["team"] = team;
+        dict["AI"] = ai.SaveToDict();
         return dict;
     }
 
@@ -43,5 +44,7 @@ public class Entity
         this.nextMove = (int)dict["nextMove"];
         this.health = (int)dict["health"];
         this.team = (int)dict["team"];
+
+        this.ai = new AI((Dictionary)dict["AI"]);
     }
 }

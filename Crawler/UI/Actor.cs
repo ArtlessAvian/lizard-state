@@ -63,8 +63,8 @@ public partial class Actor : Sprite
 
     public bool IsAnimating()
     {
-        if (Math.Abs(targetPosition.x - Position.x / Crawler.TILESIZE.x) > 0.2) { return true; }
-        if (Math.Abs(targetPosition.y - Position.y / Crawler.TILESIZE.y) > 0.2) { return true; }
+        if (Math.Abs(targetPosition.x - Position.x / Crawler.TILESIZE.x) > 0.1) { return true; }
+        if (Math.Abs(targetPosition.y - Position.y / Crawler.TILESIZE.y) > 0.1) { return true; }
         return false;
     }
 

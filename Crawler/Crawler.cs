@@ -53,7 +53,10 @@ public partial class Crawler : Node2D
         while (eventQueue.Count > 0)
         {
             ModelEvent ev = eventQueue[0];
-            eventQueue.RemoveAt(0);
+            if (ev.action == "Wait")
+            {
+                if (AnyActorAnimating()) { break; }
+            }
 
             if (ev.subject == null)
             {
@@ -77,6 +80,20 @@ public partial class Crawler : Node2D
 
                 roles[ev.subject].Perform(ev.action, ev.args);
             }
+
+            eventQueue.RemoveAt(0);
         }
+    }
+
+    private bool AnyActorAnimating()
+    {
+        foreach (Actor a in roles.Values)
+        {
+            if (a.IsAnimating())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
