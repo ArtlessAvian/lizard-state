@@ -29,6 +29,7 @@ window/size/width=960
 window/size/height=540
 window/size/test_width=1280
 window/size/test_height=720
+window/stretch/shrink=2.0
 
 [gui]
 
@@ -108,4 +109,5 @@ move_wait={
 
 [rendering]
 
+quality/2d/use_pixel_snap=true
 environment/default_environment="res://default_env.tres"

@@ -52,7 +52,7 @@ public partial class Model
         bool success = action.Do(this, eventQueue, e);
         if (!success)
         {
-            GD.Print("Can't do that!");
+            eventQueue.Add(new ModelEvent(null, "Print", "Can't do that!"));
             return false;
         }
         return true;

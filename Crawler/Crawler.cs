@@ -55,17 +55,28 @@ public partial class Crawler : Node2D
             ModelEvent ev = eventQueue[0];
             eventQueue.RemoveAt(0);
 
-            if (ev.action == "Created")
+            if (ev.subject == null)
             {
-                Actor puppet = GD.Load<PackedScene>($"res://Crawler/UI/Actors/{ev.subject.species.ResourceName}.tscn").Instance() as Actor;
-                roles.Add(ev.subject, puppet);
-                puppet.SyncWithEntity(ev.subject);
-                GetNode("Actors").AddChild(puppet);
+                if (ev.action == "Print")
+                {
+                    string message = (string)ev.args;
+                    GD.Print(message);
+                    GetNode<RichTextLabel>("UILayer/Margins/MessageLog").AppendBbcode("\n * " + message);
+                }
             }
+            else
+            {
+                if (ev.action == "Created")
+                {
+                    Actor puppet = GD.Load<PackedScene>($"res://Crawler/UI/Actors/{ev.subject.species.ResourceName}.tscn").Instance() as Actor;
+                    roles.Add(ev.subject, puppet);
+                    puppet.SyncWithEntity(ev.subject);
+                    GetNode("Actors").AddChild(puppet);
+                }
+                // GD.PrintS(ev.subject, ev.action, ev.args);
 
-            // GD.PrintS(ev.subject, ev.action, ev.args);
-
-            roles[ev.subject].Perform(ev.action, ev.args);
+                roles[ev.subject].Perform(ev.action, ev.args);
+            }
         }
     }
 }

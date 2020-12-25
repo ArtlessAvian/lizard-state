@@ -10,8 +10,6 @@ public interface ModelAPI
     List<Entity> GetEntities(int x, int y, int radius);
 
     bool CanWalkFromTo(int x, int y, int x2, int y2);
-
-    void DisplayMessage(string message); // This isn't the way to do it.
 }
 
 public partial class Model : ModelAPI
@@ -54,10 +52,5 @@ public partial class Model : ModelAPI
     public bool CanWalkFromTo(int x, int y, int x2, int y2)
     {
         return map.GetCell(x2, y2) != -1;
-    }
-
-    public void DisplayMessage(string message)
-    {
-        GD.Print(message);
     }
 }

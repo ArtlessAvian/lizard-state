@@ -25,6 +25,7 @@ public class MoveAction : Action
                 entityAt.position.x = e.position.x;
                 entityAt.position.y = e.position.y;
 
+                eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
                 eventQueue.Add(new ModelEvent(entityAt, "Moved", entityAt.position));
             }
             else
@@ -62,7 +63,7 @@ public class AttackAction : Action
         }
 
         target.health -= 1;
-        api.DisplayMessage($"{e.species.displayName} hits {target.species.displayName}!");
+        eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
 
         e.nextMove += 1;
 
