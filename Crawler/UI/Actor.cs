@@ -20,17 +20,22 @@ public partial class Actor : Sprite
         // EmitSignal("Action", action);
         // EmitSignal(action, args);
 
-        if (action == "Moved")
+        if (action == "Move")
         {
             (int x, int y) cast = ((int x, int y))args;
-
-            int dx = cast.x - targetPosition.x;
-            int dy = cast.y - targetPosition.y;
-
-            targetPosition.x = cast.x;
-            targetPosition.y = cast.y;
+            targetPosition = cast;
     
-            this.FaceDirection(dx, dy);        
+        }
+        else if (action == "Face")
+        {
+            (int x, int y) cast = ((int x, int y))args;
+            this.FaceDirection(cast.x, cast.y);
+        }
+        else if (action == "Animate")
+        {
+            string cast = (string)args;
+            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
+            animation.Play(cast);
         }
     }
 
@@ -63,8 +68,9 @@ public partial class Actor : Sprite
 
     public bool IsAnimating()
     {
-        if (Math.Abs(targetPosition.x - Position.x / Crawler.TILESIZE.x) > 0.1) { return true; }
-        if (Math.Abs(targetPosition.y - Position.y / Crawler.TILESIZE.y) > 0.1) { return true; }
+        if (Math.Abs(targetPosition.x - Position.x / Crawler.TILESIZE.x) > 0.01) { return true; }
+        if (Math.Abs(targetPosition.y - Position.y / Crawler.TILESIZE.y) > 0.01) { return true; }
+        if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
         return false;
     }
 
