@@ -64,6 +64,8 @@ public class AttackAction : Action
         target.health -= 1;
         api.DisplayMessage($"{e.species.displayName} hits {target.species.displayName}!");
 
+        e.nextMove += 1;
+
         return true;
     }
 }
