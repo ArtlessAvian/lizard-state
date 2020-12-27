@@ -32,17 +32,10 @@ public class MoveAction : Action
 
                 e.position.x += displacement.x;
                 e.position.y += displacement.y;
-                e.nextMove += 1;
+                e.nextMove += 10;
 
                 eventQueue.Add(new ModelEvent(null, "Wait"));
-                eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
-
-                eventQueue.Add(new ModelEvent(entityAt, "Move", entityAt.position));
-                eventQueue.Add(new ModelEvent(entityAt, "Face", (-displacement.x, -displacement.y)));
-
-                eventQueue.Add(new ModelEvent(e, "Move", e.position));
-                eventQueue.Add(new ModelEvent(e, "Face", displacement));
-
+                eventQueue.Add(new ModelEvent(e, "Swap", entityAt.position, entityAt));
                 eventQueue.Add(new ModelEvent(null, "Wait"));
                 return true;
             }
@@ -53,8 +46,6 @@ public class MoveAction : Action
         e.nextMove += 10;
 
         eventQueue.Add(new ModelEvent(e, "Move", e.position));
-        eventQueue.Add(new ModelEvent(e, "Face", displacement));
-
         return true;
     }
 }
@@ -78,24 +69,24 @@ public class AttackAction : Action
             return false;
         }
 
+        // All logic here
         bool crit = GD.Randf() < 0.1;
+        int damage = crit ? 3 : 1;
+
         e.nextMove += 10;
-        target.health -= 1;
+        target.health -= damage;
         if (crit)
         {
             target.nextMove += 10;
         }
 
         eventQueue.Add(new ModelEvent(null, "Wait"));
-        eventQueue.Add(new ModelEvent(target, "Face", (-direction.x, -direction.y)));
         eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
-
         if (crit)
-            eventQueue.Add(new ModelEvent(null, "Print", $"Critical!!"));
+            eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} is stunned!!"));
 
-        eventQueue.Add(new ModelEvent(e, "Animate", "Attack"));
-        // eventQueue.Add(new ModelEvent(null, "Wait"));
-        eventQueue.Add(new ModelEvent(target, "Animate", "Hurt"));
+        eventQueue.Add(new ModelEvent(e, "Attack", damage, target));
+        
         eventQueue.Add(new ModelEvent(null, "Wait"));
 
         return true;

@@ -7,14 +7,18 @@ using System.Collections.Generic;
 public struct ModelEvent
 {
     public Entity subject;
-    public string action; // Like an enum, but worse.
-    public object args; // arg type can be inferred from action.
+    public string action;
+    // arg type can be inferred from action.
+    // use like an adverb or adverb phrase!
+    public object args;
+    public Entity obj;
 
-    public ModelEvent(Entity subject, string action, object args = null)
+    public ModelEvent(Entity subject, string action, object args = null, Entity @object = null)
     {
         this.subject = subject;
         this.action = action;
         this.args = args;
+        this.obj = @object;
     }
 }
 

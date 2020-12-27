@@ -1,10 +1,12 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 // Like a ViewModel. Also, a pile of callbacks for the View.
 public partial class Actor : Sprite
 {
     (int x, int y) targetPosition;
+    string roleName;
 
     public void SyncWithEntity(Entity subject)
     {
@@ -13,29 +15,53 @@ public partial class Actor : Sprite
             targetPosition.x * Crawler.TILESIZE.x,
             targetPosition.y * Crawler.TILESIZE.y
         );
+
+        roleName = subject.species.displayName;
     }
 
-    public void Perform(string action, object args)
+    public void PerformAsSubject(ModelEvent ev, Dictionary<Entity, Actor> roles)
     {
         // EmitSignal("Action", action);
         // EmitSignal(action, args);
 
-        if (action == "Move")
+        if (ev.action == "Move")
         {
-            (int x, int y) cast = ((int x, int y))args;
+            (int x, int y) cast = ((int x, int y))ev.args;
+            FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
             targetPosition = cast;
-    
         }
-        else if (action == "Face")
+        if (ev.action == "Swap")
         {
-            (int x, int y) cast = ((int x, int y))args;
-            this.FaceDirection(cast.x, cast.y);
+            (int x, int y) otherPosition = roles[ev.obj].targetPosition;
+            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
+            targetPosition = otherPosition;
         }
-        else if (action == "Animate")
+        
+        else if (ev.action == "Attack")
         {
-            string cast = (string)args;
+            (int x, int y) otherPosition = roles[ev.obj].targetPosition;
+            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Play(cast);
+            animation.Play("Attack");
+        }
+    }
+
+    public void PerformAsObject(ModelEvent ev, Dictionary<Entity, Actor> roles)
+    {
+        if (ev.action == "Swap")
+        {
+            (int x, int y) cast = ((int x, int y))ev.args;
+            FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
+            targetPosition = cast;
+        }
+        if (ev.action == "Attack")
+        {
+            (int x, int y) otherPosition = roles[ev.subject].targetPosition;
+            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
+            Label popup = GetNode<Label>("DamagePopup");
+            popup.Text = $"-{ev.args}";
+            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
+            animation.Play("Hurt");
         }
     }
 
@@ -55,14 +81,15 @@ public partial class Actor : Sprite
         }
         else
         {
-            if (dy >= 0)
+            if (dy > 0)
             {
                 this.RegionRect = new Rect2(rect.Size.x * 0, 0, rect.Size);
             }
-            else
+            else if (dy < 0)
             {
                 this.RegionRect = new Rect2(rect.Size.x * 2, 0, rect.Size);
             }
+            // Fall through if 0, 0
         }
     }
 

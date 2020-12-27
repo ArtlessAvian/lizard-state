@@ -53,13 +53,12 @@ public partial class Crawler : Node2D
         while (eventQueue.Count > 0)
         {
             ModelEvent ev = eventQueue[0];
-            if (ev.action == "Wait")
+            if (ev.subject is null)
             {
-                if (AnyActorAnimating()) { break; }
-            }
-
-            if (ev.subject == null)
-            {
+                if (ev.action == "Wait")
+                {
+                    if (AnyActorAnimating()) { break; }
+                }
                 if (ev.action == "Print")
                 {
                     string message = (string)ev.args;
@@ -76,9 +75,15 @@ public partial class Crawler : Node2D
                     puppet.SyncWithEntity(ev.subject);
                     GetNode("Actors").AddChild(puppet);
                 }
-                // GD.PrintS(ev.subject, ev.action, ev.args);
-
-                roles[ev.subject].Perform(ev.action, ev.args);
+                else
+                {
+                    // Delegate command to Actor
+                    roles[ev.subject].PerformAsSubject(ev, roles);
+                    if (ev.obj is Entity obj)
+                    {
+                        roles[obj].PerformAsObject(ev, roles);
+                    }
+                }
             }
 
             eventQueue.RemoveAt(0);
