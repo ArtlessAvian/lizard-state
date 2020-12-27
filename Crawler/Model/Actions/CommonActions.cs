@@ -35,6 +35,7 @@ public class MoveAction : Action
                 e.nextMove += 10;
 
                 eventQueue.Add(new ModelEvent(null, "Wait"));
+                eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
                 eventQueue.Add(new ModelEvent(e, "Swap", entityAt.position, entityAt));
                 eventQueue.Add(new ModelEvent(null, "Wait"));
                 return true;
@@ -77,13 +78,20 @@ public class AttackAction : Action
         target.health -= damage;
         if (crit)
         {
-            target.nextMove += 10;
+            target.nextMove = e.nextMove;
+        }
+        if (target.health <= 0)
+        {
+            target.downed = true;
+            target.nextMove = -1;
         }
 
         eventQueue.Add(new ModelEvent(null, "Wait"));
         eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
         if (crit)
-            eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} is stunned!!"));
+            eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} stumbles!!"));
+        if (target.downed)
+            eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} is downed!!"));
 
         eventQueue.Add(new ModelEvent(e, "Attack", damage, target));
         

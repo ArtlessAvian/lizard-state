@@ -91,6 +91,7 @@ public partial class Model
         Entity result = entities[0];
         foreach (Entity e in entities)
         {
+            if (e.nextMove == -1) { continue; }
             if (e.nextMove < result.nextMove)
             {
                 result = e;

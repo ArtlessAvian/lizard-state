@@ -51,7 +51,7 @@ public class PartnerAI : CrawlerAI
         List<Entity> entities = api.GetEntities(e.position.x, e.position.y, 1);
         foreach (Entity other in entities)
         {
-            if (other.team != e.team)
+            if (other.team != e.team && !other.downed)
             {
                 int dx = other.position.x - e.position.x;
                 int dy = other.position.y - e.position.y;
@@ -64,7 +64,7 @@ public class PartnerAI : CrawlerAI
 
         foreach (Entity other in entities)
         {
-            if (other.team != e.team)
+            if (other.team != e.team && !other.downed)
             {
                 int dx = other.position.x - e.position.x;
                 int dy = other.position.y - e.position.y;

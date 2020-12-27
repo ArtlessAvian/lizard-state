@@ -11,6 +11,7 @@ public class Entity
     public CrawlerAI ai;
 
     public int health = 10;
+    public bool downed = false;
 
     public int team;
 
@@ -31,6 +32,7 @@ public class Entity
         dict["y"] = position.y;
         dict["nextMove"] = nextMove;
         dict["health"] = health;
+        dict["downed"] = downed;
         dict["team"] = team;
         dict["AI"] = ai.SaveToDict();
         return dict;
@@ -43,6 +45,7 @@ public class Entity
         this.position.y = (int)dict["y"];
         this.nextMove = (int)dict["nextMove"];
         this.health = (int)dict["health"];
+        this.downed = (bool)dict["downed"];
         this.team = (int)dict["team"];
 
         this.ai = new AI((Dictionary)dict["AI"]);

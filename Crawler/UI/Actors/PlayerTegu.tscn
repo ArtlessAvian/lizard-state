@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Crawler/UI/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/UI/Assets/oc_donut_steel/tegu.png" type="Texture" id=2]
 [ext_resource path="res://Crawler/UI/Actors/SpriteAnimation.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Crawler/UI/Assets/Visibility.png" type="Texture" id=4]
 
 [node name="PlayerTegu" type="Sprite"]
 texture = ExtResource( 2 )
@@ -22,6 +23,20 @@ margin_bottom = 5.0
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "-10"
 align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthBar" type="TextureProgress" parent="."]
+margin_left = -15.0
+margin_top = 5.0
+margin_right = 15.0
+margin_bottom = 7.0
+max_value = 10.0
+value = 10.0
+texture_progress = ExtResource( 4 )
+tint_progress = Color( 0, 1, 0, 1 )
+nine_patch_stretch = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
