@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/axolot_of_questions.png-31821b039ccfe176c5a5bccedf5bf79e.stex"
+path="res://.import/axolot_of_questions.png-de1da414609427db5d0cabe3061a1514.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Crawler/UI/Assets/oc_donut_steel/axolot_of_questions.png"
-dest_files=[ "res://.import/axolot_of_questions.png-31821b039ccfe176c5a5bccedf5bf79e.stex" ]
+source_file="res://Crawler/View/Assets/oc_donut_steel/axolot_of_questions.png"
+dest_files=[ "res://.import/axolot_of_questions.png-de1da414609427db5d0cabe3061a1514.stex" ]
 
 [params]
 

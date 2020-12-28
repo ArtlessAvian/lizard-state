@@ -70,7 +70,7 @@ public partial class Crawler : Node2D
             {
                 if (ev.action == "Created")
                 {
-                    Actor puppet = GD.Load<PackedScene>($"res://Crawler/UI/Actors/{ev.subject.species.ResourceName}.tscn").Instance() as Actor;
+                    Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{ev.subject.species.ResourceName}.tscn").Instance() as Actor;
                     roles.Add(ev.subject, puppet);
                     puppet.SyncWithEntity(ev.subject);
                     GetNode("Actors").AddChild(puppet);
