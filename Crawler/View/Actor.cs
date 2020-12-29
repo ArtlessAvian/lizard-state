@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 // Like a ViewModel. Also, a pile of callbacks for the View.
-public partial class Actor : Sprite
+public partial class Actor : Node2D
 {
     (int x, int y) targetPosition;
     string roleName;
@@ -75,29 +75,17 @@ public partial class Actor : Sprite
 
     private void FaceDirection(int dx, int dy)
     {
-        Rect2 rect = this.RegionRect;
+        if (dy == 0 && dx == 0) { return; }
+
+        AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
         if (dx != 0)
         {
-            if (dx > 0)
-            {
-                this.RegionRect = new Rect2(rect.Size.x * 1, 0, rect.Size);
-            }
-            else
-            {
-                this.RegionRect = new Rect2(rect.Size.x * 3, 0, rect.Size);
-            }
+            sprite.Animation = "East";
+            sprite.FlipH = dx < 0;
         }
         else
         {
-            if (dy > 0)
-            {
-                this.RegionRect = new Rect2(rect.Size.x * 0, 0, rect.Size);
-            }
-            else if (dy < 0)
-            {
-                this.RegionRect = new Rect2(rect.Size.x * 2, 0, rect.Size);
-            }
-            // Fall through if 0, 0
+            sprite.Animation = dy > 0 ? "South" : "North";
         }
     }
 
