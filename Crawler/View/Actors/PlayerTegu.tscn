@@ -1,10 +1,9 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
-[ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu.png" type="Texture" id=2]
+[ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu/idle.png" type="Texture" id=2]
 [ext_resource path="res://Crawler/View/Actors/SpriteAnimation.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Crawler/View/Assets/Visibility.png" type="Texture" id=4]
-
 
 [node name="PlayerTegu" type="Sprite"]
 texture = ExtResource( 2 )

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tegu.png-9556be7126f3a4f46e883dba79010b4f.stex"
+path="res://.import/idle.png-45032bba4c5d1edca6583b9a1bec69ec.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Crawler/View/Assets/oc_donut_steel/tegu.png"
-dest_files=[ "res://.import/tegu.png-9556be7126f3a4f46e883dba79010b4f.stex" ]
+source_file="res://Crawler/View/Assets/oc_donut_steel/tegu/idle.png"
+dest_files=[ "res://.import/idle.png-45032bba4c5d1edca6583b9a1bec69ec.stex" ]
 
 [params]
 
