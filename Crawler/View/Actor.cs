@@ -69,7 +69,7 @@ public partial class Actor : Node2D
             healthbar.Value = health;
 
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Play("Hurt");
+            animation.Play(health > 0 ? "Hurt" : "Downed");
         }
     }
 

@@ -28,7 +28,7 @@ public partial class Model : ModelAPI
     {
         foreach (Entity e in entities)
         {
-            if (e.position.x == x && e.position.y == y)
+            if (e.position.x == x && e.position.y == y && !e.downed)
             {
                 return e;
             }
