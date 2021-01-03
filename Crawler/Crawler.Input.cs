@@ -18,14 +18,20 @@ public partial class Crawler : Node2D
         ("move_wait", (0, 0))
     };
 
-    public override void _Input(InputEvent ev)
+    public override void _UnhandledInput(InputEvent ev)
     {
         if (notPlayerTurn) { return; }
         if (eventQueue.Count > 0) { return; }
+        foreach (Popup p in GetNode("UILayer/Modals").GetChildren())
+        {
+            if (p.Visible) { return; }
+        }
 
         if (ev.IsActionPressed("quicksave", false))
         {
             temp = model.SaveToDictionary();
+            GetTree().SetInputAsHandled();
+            return;
         }
         if (ev.IsActionPressed("quickload", false))
         {
@@ -41,6 +47,14 @@ public partial class Crawler : Node2D
             GetTree().Root.AddChild(crawler);
             GetTree().CurrentScene = crawler;
             GetTree().Root.RemoveChild(this);
+            GetTree().SetInputAsHandled();
+            return;
+        }
+
+        if (ev.IsActionPressed("menu", false))
+        {
+            GetNode<Popup>("UILayer/Modals/MainMenu").Popup_();
+            return;
         }
 
         foreach ((string name, (int, int) dir) tuple in directions)

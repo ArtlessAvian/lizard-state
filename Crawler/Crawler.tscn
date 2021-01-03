@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Maps/Debuggy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Crawler/CrawlerCamera.cs" type="Script" id=3]
+[ext_resource path="res://Crawler/Modals/MainMenu.cs" type="Script" id=4]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
@@ -21,29 +22,60 @@ __meta__ = {
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
-[node name="Margins" type="Control" parent="UILayer"]
+[node name="MessageLog" type="RichTextLabel" parent="UILayer"]
+anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 10.0
-margin_top = 10.0
+margin_left = -210.0
+margin_top = -70.0
 margin_right = -10.0
 margin_bottom = -10.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+text = "
 
-[node name="MessageLog" type="RichTextLabel" parent="UILayer/Margins"]
-anchor_top = 0.7
-anchor_bottom = 1.0
-margin_right = 200.0
+
+"
 scroll_active = false
 scroll_following = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="ColorRect" parent="UILayer/Margins/MessageLog"]
+[node name="Background" type="ColorRect" parent="UILayer/MessageLog"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.145098 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Modals" type="Control" parent="UILayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -3.34839
+margin_top = 18.0091
+margin_right = -23.3484
+margin_bottom = -1.99091
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainMenu" type="PopupMenu" parent="UILayer/Modals"]
+margin_right = 58.0
+margin_bottom = 61.0
+items = [ "Main Menu", null, 0, false, false, -1, 0, null, "", true, "Item 1", null, 0, false, false, 0, 0, null, "", false, "Item 2", null, 0, false, false, 1, 0, null, "", false ]
+hide_on_item_selection = false
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AbilitiesMenu" type="PopupMenu" parent="UILayer/Modals"]
+margin_right = 80.0
+margin_bottom = 61.0
+items = [ "Abilities", null, 0, false, false, -1, 0, null, "", true, "Item 1", null, 0, false, false, 0, 0, null, "", false, "Item 2", null, 0, false, false, 1, 0, null, "", false ]
+hide_on_item_selection = false
+__meta__ = {
+"_edit_use_anchors_": false
+}

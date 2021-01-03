@@ -10,7 +10,7 @@ public class Entity
     public Species species;
     public CrawlerAI ai;
 
-    public int health = 10;
+    public int health;
     public bool downed = false;
 
     public int team;
@@ -21,6 +21,7 @@ public class Entity
         this.position = position;
         this.team = team;
 
+        this.health = species.maxHealth;
         this.ai = new AI(species.aiType);
     }
 

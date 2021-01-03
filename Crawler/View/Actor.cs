@@ -18,6 +18,10 @@ public partial class Actor : Node2D
         );
 
         health = subject.health;
+
+        TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+        healthbar.MaxValue = subject.species.maxHealth;
+        healthbar.Value = subject.health;
     }
 
     public void PerformAsSubject(ModelEvent ev, Dictionary<Entity, Actor> roles)
@@ -65,7 +69,6 @@ public partial class Actor : Node2D
             
             health -= (int)ev.args;
             TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            healthbar.MaxValue = 10;
             healthbar.Value = health;
 
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");

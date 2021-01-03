@@ -4,7 +4,7 @@ using System;
 public class Species : Resource
 {
     [Export]
-    public int maxHealth = 10;
+    public int maxHealth = 30;
 
     [Export]
     public string displayName;

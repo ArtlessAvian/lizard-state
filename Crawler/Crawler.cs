@@ -63,7 +63,7 @@ public partial class Crawler : Node2D
                 {
                     string message = (string)ev.args;
                     GD.Print(message);
-                    GetNode<RichTextLabel>("UILayer/Margins/MessageLog").AppendBbcode("\n * " + message);
+                    GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode("\n * " + message);
                 }
             }
             else
