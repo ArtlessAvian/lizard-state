@@ -51,9 +51,9 @@ public partial class Crawler : Node2D
             return;
         }
 
-        if (ev.IsActionPressed("menu", false))
+        if (ev.IsActionPressed("menu_abilities", false))
         {
-            GetNode<Popup>("UILayer/Modals/MainMenu").Popup_();
+            GetNode<Popup>("UILayer/Modals/AbilitiesMenu").Popup_();
             return;
         }
 

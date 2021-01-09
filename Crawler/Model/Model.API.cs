@@ -7,7 +7,7 @@ public interface ModelAPI
     Entity GetEntity(int id);
     Entity GetPlayer();
     Entity GetEntityAt(int x, int y);
-    List<Entity> GetEntities(int x, int y, int radius);
+    List<Entity> GetEntitiesInRadius(int x, int y, int radius);
 
     bool CanWalkFromTo(int x, int y, int x2, int y2);
 }
@@ -36,12 +36,12 @@ public partial class Model : ModelAPI
         return null;
     }
 
-    public List<Entity> GetEntities(int x, int y, int radius)
+    public List<Entity> GetEntitiesInRadius(int x, int y, int radius)
     {
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in entities)
         {
-            if (Math.Abs(e.position.x - x) <= radius && Math.Abs(e.position.y - y) <= radius)
+            if (Math.Abs(e.position.x - x) <= radius && Math.Abs(e.position.y - y) <= radius && !e.downed)
             {
                 inRadius.Add(e);
             }

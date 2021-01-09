@@ -48,7 +48,7 @@ public class PartnerAI : CrawlerAI
 
     public Action GetMove(ModelAPI api, Entity e)
     {
-        List<Entity> entities = api.GetEntities(e.position.x, e.position.y, 1);
+        List<Entity> entities = api.GetEntitiesInRadius(e.position.x, e.position.y, 1);
         foreach (Entity other in entities)
         {
             if (other.team != e.team && !other.downed)
@@ -60,7 +60,7 @@ public class PartnerAI : CrawlerAI
             }
         }
 
-        entities = api.GetEntities(e.position.x, e.position.y, 5);
+        entities = api.GetEntitiesInRadius(e.position.x, e.position.y, 5);
 
         foreach (Entity other in entities)
         {

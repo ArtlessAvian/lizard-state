@@ -3,7 +3,7 @@
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Maps/Debuggy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Crawler/CrawlerCamera.cs" type="Script" id=3]
-[ext_resource path="res://Crawler/Modals/MainMenu.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/Modals/AbilitiesMenu.cs" type="Script" id=4]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
@@ -66,7 +66,6 @@ margin_right = 58.0
 margin_bottom = 61.0
 items = [ "Main Menu", null, 0, false, false, -1, 0, null, "", true, "Item 1", null, 0, false, false, 0, 0, null, "", false, "Item 2", null, 0, false, false, 1, 0, null, "", false ]
 hide_on_item_selection = false
-script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -74,8 +73,10 @@ __meta__ = {
 [node name="AbilitiesMenu" type="PopupMenu" parent="UILayer/Modals"]
 margin_right = 80.0
 margin_bottom = 61.0
-items = [ "Abilities", null, 0, false, false, -1, 0, null, "", true, "Item 1", null, 0, false, false, 0, 0, null, "", false, "Item 2", null, 0, false, false, 1, 0, null, "", false ]
+items = [ "Abilities", null, 0, false, false, -1, 0, null, "", true, "Spin Move!", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", false ]
 hide_on_item_selection = false
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="id_pressed" from="UILayer/Modals/AbilitiesMenu" to="UILayer/Modals/AbilitiesMenu" method="_on_id_pressed"]

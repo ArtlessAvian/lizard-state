@@ -12,7 +12,7 @@ public partial class Crawler : Node2D
 
     // saved, of course.
     public Model model;
-    bool notPlayerTurn = false;
+    public bool notPlayerTurn = false;
 
     Crawler()
     {

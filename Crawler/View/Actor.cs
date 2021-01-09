@@ -64,15 +64,24 @@ public partial class Actor : Node2D
             (int x, int y) otherPosition = roles[ev.subject].targetPosition;
             FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             
-            Label popup = GetNode<Label>("DamagePopup");
-            popup.Text = $"-{ev.args}";
+            AttackAction.AttackResult roll = (AttackAction.AttackResult)ev.args;
+            health -= roll.damage;
             
-            health -= (int)ev.args;
+            Label popup = GetNode<Label>("DamagePopup");
+            popup.Text = $"-{roll.damage}";
+
             TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
             healthbar.Value = health;
 
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Play(health > 0 ? "Hurt" : "Downed");
+            if (health <= 0)
+            {
+                animation.Play("Downed");
+            }
+            else
+            {
+                animation.Play(roll.crit ? "Stunned" : "Hurt");
+            }
         }
     }
 
