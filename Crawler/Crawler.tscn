@@ -38,6 +38,8 @@ text = "
 scroll_active = false
 scroll_following = true
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -61,6 +63,8 @@ text = "Time:"
 scroll_active = false
 scroll_following = true
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -76,11 +80,13 @@ __meta__ = {
 [node name="Modals" type="Control" parent="UILayer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -3.34839
-margin_top = 18.0091
-margin_right = -23.3484
-margin_bottom = -1.99091
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 

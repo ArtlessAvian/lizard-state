@@ -14,5 +14,7 @@ public class AbilitiesMenu : PopupMenu
         Crawler crawler = GetNode<Crawler>("../../..");
         crawler.model.DoPlayerAction(crawler.eventQueue, new SpinAbility());
         crawler.notPlayerTurn = true;
+        
+        this.Hide();
     }
 }

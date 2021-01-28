@@ -42,6 +42,10 @@ public partial class Crawler : Node2D
     {
         while (notPlayerTurn) // and not timed out
         {
+            // if (eventQueue.Count > 0 && eventQueue[eventQueue.Count - 1].action == "Wait")
+            // {
+            //     break;
+            // }
             if (!model.DoEntityAction(eventQueue))
             {
                 // let the player move again.
@@ -98,6 +102,10 @@ public partial class Crawler : Node2D
             if (eventQueue.Count == 0)
             {
                 GetNode<RichTextLabel>("UILayer/Time").Text = $"Time: {model.time}";
+                // foreach (Entity e in model.entities)
+                // {
+                //     roles[e].SyncWithEntity(e);
+                // }
             }
         }
     }

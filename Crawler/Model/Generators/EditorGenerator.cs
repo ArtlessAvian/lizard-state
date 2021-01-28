@@ -41,7 +41,10 @@ public class EditorGenerator : LevelGenerator
 
         model.AddEntity(eventQueue, new Entity(playerTegu, (0, 0), 0));
         model.AddEntity(eventQueue, new Entity(partnerAxolotl, (2, 2), 0));
+
         model.AddEntity(eventQueue, new Entity(enemy, (0, 10), 1));
+        model.AddEntity(eventQueue, new Entity(enemy, (1, 20), 1));
+        model.AddEntity(eventQueue, new Entity(enemy, (2, 20), 1));
     }
 
     public Dictionary SaveToDict()

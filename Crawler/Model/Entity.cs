@@ -12,7 +12,6 @@ public class Entity
 
     public int health;
     public bool stunned;
-    public int undizzy; // Probably redundant with stunned.
     public bool downed = false;
 
     public int team;
@@ -29,19 +28,21 @@ public class Entity
 
     public void ResetCombo()
     {
-        this.undizzy = 0;
+        this.stunned = false;
     }
 
-    public void TakeDamage(int damage, int hitstunUntil = 0)
+    public void TakeDamage(AttackResult roll)
     {
-        this.health -= damage;
-        this.nextMove = Math.Max(hitstunUntil - this.undizzy, this.nextMove);
-        this.undizzy++;
-
+        this.health -= roll.damage;
         if (this.health <= 0)
         {
             this.downed = true;
             this.nextMove = -1;
+        }
+        else if (roll.hit)
+        {
+            this.nextMove = Math.Max(roll.stunUntil, this.nextMove);
+            this.stunned = true;
         }
     }
 

@@ -8,6 +8,7 @@ public partial class Actor : Node2D
     (int x, int y) targetPosition;
     string roleName;
     int health = 0;
+    bool stunned = false;
 
     public void SyncWithEntity(Entity subject)
     {
@@ -18,14 +19,20 @@ public partial class Actor : Node2D
         );
 
         health = subject.health;
-
         TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
         healthbar.MaxValue = subject.species.maxHealth;
         healthbar.Value = subject.health;
+
+        stunned = subject.stunned;
+        AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        aniSprite.Frame = subject.stunned ? 1 : 0;
     }
 
     public void PerformAsSubject(ModelEvent ev, Dictionary<Entity, Actor> roles)
     {
+        stunned = false;
+        AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        aniSprite.Frame = 0;
         // EmitSignal("Action", action);
         // EmitSignal(action, args);
 
@@ -64,7 +71,7 @@ public partial class Actor : Node2D
             (int x, int y) otherPosition = roles[ev.subject].targetPosition;
             FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             
-            AttackAction.AttackResult roll = (AttackAction.AttackResult)ev.args;
+            AttackResult roll = (AttackResult)ev.args;
             health -= roll.damage;
             
             Label popup = GetNode<Label>("DamagePopup");
@@ -80,7 +87,12 @@ public partial class Actor : Node2D
             }
             else
             {
-                animation.Play(roll.crit ? "Stunned" : "Hurt");
+                // Bug: should stay stunned, but can't tell state!
+                if (roll.damage > 0)
+                {
+                    stunned |= roll.hit;
+                    animation.Play(stunned ? "Stunned" : "Hurt");
+                }
             }
         }
     }
