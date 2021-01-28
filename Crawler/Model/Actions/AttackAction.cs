@@ -24,8 +24,8 @@ public class AttackAction : Action
 
     public bool Do(ModelAPI api, List<ModelEvent> eventQueue, Entity e)
     {
-        Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
         eventQueue.Add(new ModelEvent(e, "Face", direction));
+        Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
 
         if ((target is null) || target == e)
         {
@@ -36,16 +36,7 @@ public class AttackAction : Action
         AttackResult roll = new AttackResult(3);
 
         e.nextMove += 10;
-        target.health -= roll.damage;
-        if (roll.crit)
-        {
-            target.nextMove = e.nextMove;
-        }
-        if (target.health <= 0)
-        {
-            target.downed = true;
-            target.nextMove = -1;
-        }
+        target.TakeDamage(roll.damage, roll.crit ? e.nextMove + 5 : 0);
 
         eventQueue.Add(new ModelEvent(null, "Wait"));
         

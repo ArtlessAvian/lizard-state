@@ -14,6 +14,9 @@ public partial class Crawler : Node2D
     public Model model;
     public bool notPlayerTurn = false;
 
+    // convenience
+    public Actor playerActor;
+
     Crawler()
     {
         eventQueue = new List<ModelEvent>();
@@ -29,7 +32,8 @@ public partial class Crawler : Node2D
         }
         this.ClearQueue();
         
-        GetNode<CrawlerCamera>("Camera2D").focus = roles[model.GetPlayer()];
+        playerActor = roles[model.GetPlayer()];
+        GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
 
         GetNode("Map").Set("tile_data", model.map.Get("tile_data"));
     }
@@ -42,6 +46,9 @@ public partial class Crawler : Node2D
             {
                 // let the player move again.
                 notPlayerTurn = false;
+                // reset player actor
+                // TODO: This doesn't work lmao, gotta queue it
+                // playerActor.GetNode<AnimatedSprite>("AnimatedSprite").Frame = 0;
                 break;
             }
         }
@@ -87,6 +94,11 @@ public partial class Crawler : Node2D
             }
 
             eventQueue.RemoveAt(0);
+
+            if (eventQueue.Count == 0)
+            {
+                GetNode<RichTextLabel>("UILayer/Time").Text = $"Time: {model.time}";
+            }
         }
     }
 

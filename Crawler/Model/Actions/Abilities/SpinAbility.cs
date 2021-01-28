@@ -20,16 +20,11 @@ public class SpinAbility : Action
         {
             if (target.team == e.team) {continue;}
 
-            AttackAction.AttackResult roll = new AttackAction.AttackResult(1);
+            AttackAction.AttackResult roll = new AttackAction.AttackResult();
             roll.crit = false;
-            roll.damage = 10;
+            roll.damage = 5;
         
-            target.health -= roll.damage;
-            if (target.health <= 0)
-            {
-                target.downed = true;
-                target.nextMove = -1;
-            }
+            target.TakeDamage(5, e.nextMove);
 
             eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
             eventQueue.Add(new ModelEvent(e, "Attack", roll, target));

@@ -53,6 +53,7 @@ public partial class Model
 
         if (!e.species.isPlayer) { return false; }
 
+        e.ResetCombo();
         bool success = action.Do(this, eventQueue, e);
         if (!success)
         {
@@ -70,6 +71,7 @@ public partial class Model
 
         if (e.species.isPlayer) { return false; }
 
+        e.ResetCombo();
         bool success = e.ai.GetMove(this, e).Do(this, eventQueue, e);
         if (!success)
         {

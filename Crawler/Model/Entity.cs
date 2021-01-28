@@ -11,6 +11,8 @@ public class Entity
     public CrawlerAI ai;
 
     public int health;
+    public bool stunned;
+    public int undizzy; // Probably redundant with stunned.
     public bool downed = false;
 
     public int team;
@@ -23,6 +25,24 @@ public class Entity
 
         this.health = species.maxHealth;
         this.ai = new AI(species.aiType);
+    }
+
+    public void ResetCombo()
+    {
+        this.undizzy = 0;
+    }
+
+    public void TakeDamage(int damage, int hitstunUntil = 0)
+    {
+        this.health -= damage;
+        this.nextMove = Math.Max(hitstunUntil - this.undizzy, this.nextMove);
+        this.undizzy++;
+
+        if (this.health <= 0)
+        {
+            this.downed = true;
+            this.nextMove = -1;
+        }
     }
 
     public Dictionary SaveToDictionary()
