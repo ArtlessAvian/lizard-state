@@ -6,14 +6,14 @@ using System.Collections.Generic;
 // not saved
 public struct ModelEvent
 {
-    public Entity subject;
+    public int subject;
     public string action;
     // arg type can be inferred from action.
     // use like an adverb or adverb phrase!
     public object args;
-    public Entity obj;
+    public int obj;
 
-    public ModelEvent(Entity subject, string action, object args = null, Entity @object = null)
+    public ModelEvent(int subject, string action, object args = null, int @object = -1)
     {
         this.subject = subject;
         this.action = action;
@@ -41,8 +41,9 @@ public partial class Model
 
     public void AddEntity(List<ModelEvent> eventQueue, Entity e)
     {
+        e.id = entities.Count;
         entities.Add(e);
-        eventQueue.Add(new ModelEvent(e, "Created"));
+        eventQueue.Add(new ModelEvent(e.id, "Created", e));
     }
 
     // returns true if successful
@@ -57,7 +58,7 @@ public partial class Model
         bool success = action.Do(this, eventQueue, e);
         if (!success)
         {
-            eventQueue.Add(new ModelEvent(null, "Print", "Can't do that!"));
+            eventQueue.Add(new ModelEvent(-1, "Print", "Can't do that!"));
             return false;
         }
         return true;

@@ -16,8 +16,8 @@ public class SpinAbility : Action
 
         List<Entity> targets = api.GetEntitiesInRadius(e.position.x, e.position.y, 1);
         
-        eventQueue.Add(new ModelEvent(null, "Wait"));
-        eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} spins!"));
+        eventQueue.Add(new ModelEvent(-1, "Wait"));
+        eventQueue.Add(new ModelEvent(-1, "Print", $"{e.species.displayName} spins!"));
 
         foreach (Entity target in targets)
         {
@@ -26,18 +26,18 @@ public class SpinAbility : Action
             AttackResult roll = new AttackResult(target, attack, e);
             target.TakeDamage(roll);
 
-            eventQueue.Add(new ModelEvent(e, "Attack", roll, target));
+            eventQueue.Add(new ModelEvent(e.id, "Attack", roll, target.id));
 
             if (roll.hit)
-                eventQueue.Add(new ModelEvent(null, "Print", $"Hit the {target.species.displayName}!"));
+                eventQueue.Add(new ModelEvent(-1, "Print", $"Hit the {target.species.displayName}!"));
             else
-                eventQueue.Add(new ModelEvent(null, "Print", $"Missed the {target.species.displayName}."));
+                eventQueue.Add(new ModelEvent(-1, "Print", $"Missed the {target.species.displayName}."));
 
             if (target.downed)
-                eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} is downed!!"));
+                eventQueue.Add(new ModelEvent(-1, "Print", $"{target.species.displayName} is downed!!"));
         }
 
-        eventQueue.Add(new ModelEvent(null, "Wait"));
+        eventQueue.Add(new ModelEvent(-1, "Wait"));
 
         return true;
     }

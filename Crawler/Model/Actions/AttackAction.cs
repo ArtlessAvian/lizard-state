@@ -59,17 +59,17 @@ public class AttackAction : Action
         target.TakeDamage(roll);
 
         // Consider moving to actors?
-        eventQueue.Add(new ModelEvent(null, "Wait"));
+        eventQueue.Add(new ModelEvent(-1, "Wait"));
 
-        eventQueue.Add(new ModelEvent(e, "Attack", roll, target));
+        eventQueue.Add(new ModelEvent(e.id, "Attack", roll, target.id));
 
-        eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
+        eventQueue.Add(new ModelEvent(-1, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
         if (target.downed)
-            eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} is downed!!"));
+            eventQueue.Add(new ModelEvent(-1, "Print", $"{target.species.displayName} is downed!!"));
         else if (roll.hit)
-            eventQueue.Add(new ModelEvent(null, "Print", $"{target.species.displayName} stumbles!!"));
+            eventQueue.Add(new ModelEvent(-1, "Print", $"{target.species.displayName} stumbles!!"));
                 
-        eventQueue.Add(new ModelEvent(null, "Wait"));
+        eventQueue.Add(new ModelEvent(-1, "Wait"));
 
         return true;
     }

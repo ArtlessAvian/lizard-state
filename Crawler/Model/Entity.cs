@@ -4,6 +4,8 @@ using System;
 
 public class Entity
 {
+    public int id;
+
     public (int x, int y) position;
     public int nextMove = 0;
 

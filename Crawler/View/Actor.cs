@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public partial class Actor : Node2D
 {
     (int x, int y) targetPosition;
-    string roleName;
     int health = 0;
     bool stunned = false;
 
@@ -28,7 +27,7 @@ public partial class Actor : Node2D
         aniSprite.Frame = subject.stunned ? 1 : 0;
     }
 
-    public void PerformAsSubject(ModelEvent ev, Dictionary<Entity, Actor> roles)
+    public void PerformAsSubject(ModelEvent ev, List<Actor> roles)
     {
         stunned = false;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
@@ -58,7 +57,7 @@ public partial class Actor : Node2D
         }
     }
 
-    public void PerformAsObject(ModelEvent ev, Dictionary<Entity, Actor> roles)
+    public void PerformAsObject(ModelEvent ev, List<Actor> roles)
     {
         if (ev.action == "Swap")
         {

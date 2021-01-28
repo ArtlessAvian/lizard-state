@@ -34,10 +34,10 @@ public class MoveAction : Action
                 e.position.y += displacement.y;
                 e.nextMove += 10;
 
-                eventQueue.Add(new ModelEvent(null, "Wait"));
-                eventQueue.Add(new ModelEvent(null, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
-                eventQueue.Add(new ModelEvent(e, "Swap", entityAt.position, entityAt));
-                eventQueue.Add(new ModelEvent(null, "Wait"));
+                eventQueue.Add(new ModelEvent(-1, "Wait"));
+                eventQueue.Add(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
+                eventQueue.Add(new ModelEvent(e.id, "Swap", entityAt.position, entityAt.id));
+                eventQueue.Add(new ModelEvent(-1, "Wait"));
                 return true;
             }
         }
@@ -46,7 +46,7 @@ public class MoveAction : Action
         e.position.y += displacement.y;
         e.nextMove += 10;
 
-        eventQueue.Add(new ModelEvent(e, "Move", e.position));
+        eventQueue.Add(new ModelEvent(e.id, "Move", e.position));
         return true;
     }
 }

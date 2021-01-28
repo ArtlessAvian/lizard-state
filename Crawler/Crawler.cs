@@ -8,7 +8,7 @@ public partial class Crawler : Node2D
 
     // not saved
     public List<ModelEvent> eventQueue;
-    Dictionary<Entity, Actor> roles;
+    List<Actor> roles;
 
     // saved, of course.
     public Model model;
@@ -20,7 +20,7 @@ public partial class Crawler : Node2D
     Crawler()
     {
         eventQueue = new List<ModelEvent>();
-        roles = new Dictionary<Entity, Actor>();
+        roles = new List<Actor>();
     }
 
     public override void _Ready()
@@ -32,7 +32,7 @@ public partial class Crawler : Node2D
         }
         this.ClearQueue();
         
-        playerActor = roles[model.GetPlayer()];
+        playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
 
         GetNode("Map").Set("tile_data", model.map.Get("tile_data"));
@@ -64,7 +64,7 @@ public partial class Crawler : Node2D
         while (eventQueue.Count > 0)
         {
             ModelEvent ev = eventQueue[0];
-            if (ev.subject is null)
+            if (ev.subject == -1)
             {
                 if (ev.action == "Wait")
                 {
@@ -81,18 +81,20 @@ public partial class Crawler : Node2D
             {
                 if (ev.action == "Created")
                 {
-                    Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{ev.subject.species.ResourceName}.tscn").Instance() as Actor;
-                    roles.Add(ev.subject, puppet);
-                    puppet.SyncWithEntity(ev.subject);
+                    // This entity info should never be abused outside this section!!
+                    Entity entity = ev.args as Entity;
+                    Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
+                    roles.Add(puppet);
+                    puppet.SyncWithEntity(entity);
                     GetNode("Actors").AddChild(puppet);
                 }
                 else
                 {
                     // Delegate command to Actor
                     roles[ev.subject].PerformAsSubject(ev, roles);
-                    if (ev.obj is Entity obj)
+                    if (ev.obj != -1)
                     {
-                        roles[obj].PerformAsObject(ev, roles);
+                        roles[ev.obj].PerformAsObject(ev, roles);
                     }
                 }
             }
@@ -112,7 +114,7 @@ public partial class Crawler : Node2D
 
     private bool AnyActorAnimating()
     {
-        foreach (Actor a in roles.Values)
+        foreach (Actor a in roles)
         {
             if (a.IsAnimating())
             {
