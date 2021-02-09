@@ -43,7 +43,7 @@ public class AttackAction : Action
         direction = ((int, int))args;
     }
 
-    public bool Do(ModelAPI api, List<ModelEvent> eventQueue, Entity e)
+    public bool Do(ModelAPI api, Entity e)
     {
         Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
 
@@ -59,17 +59,17 @@ public class AttackAction : Action
         target.TakeDamage(roll);
 
         // Consider moving to actors?
-        eventQueue.Add(new ModelEvent(-1, "Wait"));
+        api.NewEvent(new ModelEvent(-1, "Wait"));
 
-        eventQueue.Add(new ModelEvent(e.id, "Attack", roll, target.id));
+        api.NewEvent(new ModelEvent(e.id, "Attack", roll, target.id));
 
-        eventQueue.Add(new ModelEvent(-1, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
+        api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
         if (target.downed)
-            eventQueue.Add(new ModelEvent(-1, "Print", $"{target.species.displayName} is downed!!"));
+            api.NewEvent(new ModelEvent(-1, "Print", $"{target.species.displayName} is downed!!"));
         else if (roll.hit)
-            eventQueue.Add(new ModelEvent(-1, "Print", $"{target.species.displayName} stumbles!!"));
+            api.NewEvent(new ModelEvent(-1, "Print", $"{target.species.displayName} stumbles!!"));
                 
-        eventQueue.Add(new ModelEvent(-1, "Wait"));
+        api.NewEvent(new ModelEvent(-1, "Wait"));
 
         return true;
     }

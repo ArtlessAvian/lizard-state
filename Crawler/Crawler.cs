@@ -46,7 +46,7 @@ public partial class Crawler : Node2D
             // {
             //     break;
             // }
-            if (!model.DoEntityAction(eventQueue))
+            if (!model.DoEntityAction())
             {
                 // let the player move again.
                 notPlayerTurn = false;

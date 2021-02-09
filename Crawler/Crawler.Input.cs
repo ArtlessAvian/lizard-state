@@ -75,8 +75,8 @@ public partial class Crawler : Node2D
         Entity entityAt = model.GetEntityAt(player.position.x + direction.x, player.position.y + direction.y);
         if (entityAt != null && entityAt.team != player.team)
         {
-            return model.DoPlayerAction(eventQueue, new AttackAction(direction));
+            return model.DoPlayerAction(new AttackAction(direction));
         }
-        return model.DoPlayerAction(eventQueue, new MoveAction(direction));
+        return model.DoPlayerAction(new MoveAction(direction));
     }
 }

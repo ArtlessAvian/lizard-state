@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public interface ModelAPI
 {
+    void NewEvent(ModelEvent ev);
+
     Entity GetEntity(int id);
     Entity GetPlayer();
     Entity GetEntityAt(int x, int y);
@@ -14,6 +16,11 @@ public interface ModelAPI
 
 public partial class Model : ModelAPI
 {
+    public void NewEvent(ModelEvent ev)
+    {
+        eventQueue.Add(ev);
+    }
+
     public Entity GetEntity(int id)
     {
         return entities[id];

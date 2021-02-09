@@ -11,7 +11,7 @@ public class MoveAction : Action
         displacement = ((int, int))args;
     }
 
-    public bool Do(ModelAPI api, List<ModelEvent> eventQueue, Entity e)
+    public bool Do(ModelAPI api, Entity e)
     {
         if (!api.CanWalkFromTo(0, 0, e.position.x + displacement.x, e.position.y + displacement.y))
         {
@@ -34,10 +34,10 @@ public class MoveAction : Action
                 e.position.y += displacement.y;
                 e.nextMove += 10;
 
-                eventQueue.Add(new ModelEvent(-1, "Wait"));
-                eventQueue.Add(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
-                eventQueue.Add(new ModelEvent(e.id, "Swap", entityAt.position, entityAt.id));
-                eventQueue.Add(new ModelEvent(-1, "Wait"));
+                api.NewEvent(new ModelEvent(-1, "Wait"));
+                api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
+                api.NewEvent(new ModelEvent(e.id, "Swap", entityAt.position, entityAt.id));
+                api.NewEvent(new ModelEvent(-1, "Wait"));
                 return true;
             }
         }
@@ -46,7 +46,7 @@ public class MoveAction : Action
         e.position.y += displacement.y;
         e.nextMove += 10;
 
-        eventQueue.Add(new ModelEvent(e.id, "Move", e.position));
+        api.NewEvent(new ModelEvent(e.id, "Move", e.position));
         return true;
     }
 }

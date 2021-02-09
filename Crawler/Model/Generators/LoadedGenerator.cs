@@ -28,7 +28,7 @@ public class LoadedGenerator : LevelGenerator
         model.time = (int)dict["time"];
         foreach (Dictionary entityDict in (Array)dict["Entities"])
         {
-            model.AddEntity(eventQueue, new Entity(entityDict));
+            model.AddEntity(new Entity(entityDict));
         }
 
         return model;

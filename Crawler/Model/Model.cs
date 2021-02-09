@@ -32,14 +32,17 @@ public partial class Model
     Dictionary generatorData;
     public TileMap map; // conveniently, also a Godot Tilemap.
 
+    private List<ModelEvent> eventQueue;
+
     public Model(List<ModelEvent> eventQueue, Dictionary generatorData)
     {
         map = new TileMap();
         entities = new List<Entity>();
         this.generatorData = generatorData;
+        this.eventQueue = eventQueue;
     }
 
-    public void AddEntity(List<ModelEvent> eventQueue, Entity e)
+    public void AddEntity(Entity e)
     {
         e.id = entities.Count;
         entities.Add(e);
@@ -47,7 +50,7 @@ public partial class Model
     }
 
     // returns true if successful
-    public bool DoPlayerAction(List<ModelEvent> eventQueue, Action action)
+    public bool DoPlayerAction(Action action)
     {
         Entity e = NextEntity();
         PassTime(e.nextMove);
@@ -55,7 +58,7 @@ public partial class Model
         if (!e.species.isPlayer) { return false; }
 
         e.ResetCombo();
-        bool success = action.Do(this, eventQueue, e);
+        bool success = action.Do(this, e);
         if (!success)
         {
             eventQueue.Add(new ModelEvent(-1, "Print", "Can't do that!"));
@@ -65,7 +68,7 @@ public partial class Model
     }
 
     // returns false if its the player turn.
-    public bool DoEntityAction(List<ModelEvent> eventQueue)
+    public bool DoEntityAction()
     {
         Entity e = NextEntity();
         PassTime(e.nextMove);
@@ -73,7 +76,7 @@ public partial class Model
         if (e.species.isPlayer) { return false; }
 
         e.ResetCombo();
-        bool success = e.ai.GetMove(this, e).Do(this, eventQueue, e);
+        bool success = e.ai.GetMove(this, e).Do(this, e);
         if (!success)
         {
             GD.Print($"{e.species.displayName} made bad move. Skipping!");
