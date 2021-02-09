@@ -46,7 +46,8 @@ public partial class Crawler : Node2D
 
             GetTree().Root.AddChild(crawler);
             GetTree().CurrentScene = crawler;
-            GetTree().Root.RemoveChild(this);
+            this.QueueFree();
+            // GetTree().Root.RemoveChild(this);
             GetTree().SetInputAsHandled();
             return;
         }

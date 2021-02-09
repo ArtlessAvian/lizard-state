@@ -56,6 +56,7 @@ public class Entity
         dict["y"] = position.y;
         dict["nextMove"] = nextMove;
         dict["health"] = health;
+        dict["stunned"] = stunned;
         dict["downed"] = downed;
         dict["team"] = team;
         dict["AI"] = ai.SaveToDict();
@@ -69,6 +70,7 @@ public class Entity
         this.position.y = (int)dict["y"];
         this.nextMove = (int)dict["nextMove"];
         this.health = (int)dict["health"];
+        this.stunned = (bool)dict["stunned"];
         this.downed = (bool)dict["downed"];
         this.team = (int)dict["team"];
 
