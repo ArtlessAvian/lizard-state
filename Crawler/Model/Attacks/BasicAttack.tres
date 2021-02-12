@@ -10,4 +10,4 @@ comboStartChance = 0.3
 comboLinkChance = 0.2
 hitDamage = 3
 missDamage = 1
-stun = 5
+stun = 15

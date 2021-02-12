@@ -24,15 +24,11 @@ public class AttackAction : Action
         api.NewEvent(new ModelEvent(-1, "Wait"));
 
         int timeNow = e.nextMove;
+        
         e.nextMove += 10;
         AttackResult result = data.TryAttack(target, timeNow);
 
         api.NewEvent(new ModelEvent(e.id, "Attack", null, target.id));
-        if (result.damage > 0)
-        {
-            api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
-        }
-
         target.GetAttacked(api, result);
 
         api.NewEvent(new ModelEvent(-1, "Wait"));

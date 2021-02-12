@@ -14,10 +14,17 @@ public class MoveAction : Action
 
     public bool Do(ModelAPI api, Entity e)
     {
+        if (displacement.x == 0 && displacement.y == 0)
+        {
+            e.nextMove += 10;
+            return true;
+        }
+        
         if (!api.CanWalkFromTo(0, 0, e.position.x + displacement.x, e.position.y + displacement.y))
         {
             return false;
         }
+
         Entity entityAt = api.GetEntityAt(e.position.x + displacement.x, e.position.y + displacement.y);
         if (!(entityAt is null) && entityAt != e)
         {

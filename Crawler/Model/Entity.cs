@@ -48,7 +48,7 @@ public class Entity
         {
             this.nextMove = Math.Max(result.stunUntil, this.nextMove);
             this.stunned = true;
-            api.NewEvent(new ModelEvent(id, "Stun"));
+            api.NewEvent(new ModelEvent(id, "Stunned"));
         }
     }
 

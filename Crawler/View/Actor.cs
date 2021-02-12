@@ -27,75 +27,6 @@ public partial class Actor : Node2D
         aniSprite.Frame = subject.stunned ? 1 : 0;
     }
 
-    public void PerformAsSubject(ModelEvent ev, List<Actor> roles)
-    {
-        stunned = false;
-        AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
-        aniSprite.Frame = 0;
-        // EmitSignal("Action", action);
-        // EmitSignal(action, args);
-
-        if (ev.action == "Move")
-        {
-            (int x, int y) cast = ((int x, int y))ev.args;
-            FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
-            targetPosition = cast;
-        }
-        if (ev.action == "Swap")
-        {
-            (int x, int y) otherPosition = roles[ev.obj].targetPosition;
-            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
-            targetPosition = otherPosition;
-        }
-        
-        else if (ev.action == "Attack")
-        {
-            (int x, int y) otherPosition = roles[ev.obj].targetPosition;
-            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
-            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Play("Attack");
-        }
-    }
-
-    public void PerformAsObject(ModelEvent ev, List<Actor> roles)
-    {
-        if (ev.action == "Swap")
-        {
-            (int x, int y) cast = ((int x, int y))ev.args;
-            FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
-            targetPosition = cast;
-        }
-        if (ev.action == "Attack")
-        {
-            (int x, int y) otherPosition = roles[ev.subject].targetPosition;
-            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
-            
-            // AttackResult roll = (AttackResult)ev.args;
-            // health -= roll.damage;
-            
-            // Label popup = GetNode<Label>("DamagePopup");
-            // popup.Text = $"-{roll.damage}";
-
-            // TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            // healthbar.Value = health;
-
-            // AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            // if (health <= 0)
-            // {
-            //     animation.Play("Downed");
-            // }
-            // else
-            // {
-            //     // Bug: should stay stunned, but can't tell state!
-            //     if (roll.damage > 0)
-            //     {
-            //         stunned |= roll.hit;
-            //         animation.Play(stunned ? "Stunned" : "Hurt");
-            //     }
-            // }
-        }
-    }
-
     private void FaceDirection(int dx, int dy)
     {
         if (dy == 0 && dx == 0) { return; }
@@ -117,6 +48,7 @@ public partial class Actor : Node2D
         if (Math.Abs(targetPosition.x - Position.x / Crawler.TILESIZE.x) > 0.01) { return true; }
         if (Math.Abs(targetPosition.y - Position.y / Crawler.TILESIZE.y) > 0.01) { return true; }
         if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
+        // if (GetNode<AnimationPlayer>("AnimationPlayer").) { return true; }
         return false;
     }
 
