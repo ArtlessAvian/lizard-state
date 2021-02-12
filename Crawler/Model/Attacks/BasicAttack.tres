@@ -5,8 +5,9 @@
 [resource]
 resource_name = "BasicAttack"
 script = ExtResource( 1 )
-comboStartChance = 0.0
-comboLinkChance = 0.0
-hitDamage = 0
-missDamage = 0
-stun = 0
+range = 1
+comboStartChance = 0.3
+comboLinkChance = 0.2
+hitDamage = 3
+missDamage = 1
+stun = 5

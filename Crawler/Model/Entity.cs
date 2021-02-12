@@ -33,6 +33,25 @@ public class Entity
         this.stunned = false;
     }
 
+    public void GetAttacked(ModelAPI api, AttackResult result)
+    {
+        this.health -= result.damage;
+        api.NewEvent(new ModelEvent(id, "Damaged", result));
+
+        if (this.health <= 0)
+        {
+            this.downed = true;
+            this.nextMove = -1;
+            api.NewEvent(new ModelEvent(id, "Downed"));
+        }
+        else if (result.hit)
+        {
+            this.nextMove = Math.Max(result.stunUntil, this.nextMove);
+            this.stunned = true;
+            api.NewEvent(new ModelEvent(id, "Stun"));
+        }
+    }
+
     // public void TakeDamage(AttackResult roll)
     // {
     //     this.health -= roll.damage;

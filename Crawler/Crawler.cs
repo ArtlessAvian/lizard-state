@@ -99,6 +99,7 @@ public partial class Crawler : Node2D
                 }
             }
 
+            GD.PrintS(ev.subject, ev.action, ev.args, ev.obj);
             eventQueue.RemoveAt(0);
 
             if (eventQueue.Count == 0)

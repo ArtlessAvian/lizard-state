@@ -4,16 +4,18 @@ using System.Collections.Generic;
 public class AttackAction : Action
 {
     (int x, int y) direction;
+    AttackData data;
 
-    public AttackAction(object args) 
+    public AttackAction((int x, int y) direction, AttackData data = null)
     {
-        direction = ((int, int))args;
+        this.direction = direction;
+        this.data = data ?? GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
     }
 
     public bool Do(ModelAPI api, Entity e)
     {
+        // TODO: Replace with raycast.
         Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
-
         if ((target is null) || target == e)
         {
             return false;
@@ -21,7 +23,17 @@ public class AttackAction : Action
 
         api.NewEvent(new ModelEvent(-1, "Wait"));
 
+        int timeNow = e.nextMove;
         e.nextMove += 10;
+        AttackResult result = data.TryAttack(target, timeNow);
+
+        api.NewEvent(new ModelEvent(e.id, "Attack", null, target.id));
+        if (result.damage > 0)
+        {
+            api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} hits {target.species.displayName}!"));
+        }
+
+        target.GetAttacked(api, result);
 
         api.NewEvent(new ModelEvent(-1, "Wait"));
         return true;
