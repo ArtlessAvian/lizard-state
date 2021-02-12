@@ -3,15 +3,11 @@ using System;
 
 public class Species : Resource
 {
-    [Export]
-    public int maxHealth = 30;
+    [Export] public int maxHealth = 30;
 
-    [Export]
-    public string displayName;
+    [Export] public string displayName;
 
-    [Export]
-    public bool isPlayer = false;
+    [Export] public bool isPlayer = false;
 
-    [Export]
-    public string aiType;
+    [Export] public string aiType;
 }

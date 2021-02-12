@@ -70,29 +70,29 @@ public partial class Actor : Node2D
             (int x, int y) otherPosition = roles[ev.subject].targetPosition;
             FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             
-            AttackResult roll = (AttackResult)ev.args;
-            health -= roll.damage;
+            // AttackResult roll = (AttackResult)ev.args;
+            // health -= roll.damage;
             
-            Label popup = GetNode<Label>("DamagePopup");
-            popup.Text = $"-{roll.damage}";
+            // Label popup = GetNode<Label>("DamagePopup");
+            // popup.Text = $"-{roll.damage}";
 
-            TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            healthbar.Value = health;
+            // TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+            // healthbar.Value = health;
 
-            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            if (health <= 0)
-            {
-                animation.Play("Downed");
-            }
-            else
-            {
-                // Bug: should stay stunned, but can't tell state!
-                if (roll.damage > 0)
-                {
-                    stunned |= roll.hit;
-                    animation.Play(stunned ? "Stunned" : "Hurt");
-                }
-            }
+            // AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
+            // if (health <= 0)
+            // {
+            //     animation.Play("Downed");
+            // }
+            // else
+            // {
+            //     // Bug: should stay stunned, but can't tell state!
+            //     if (roll.damage > 0)
+            //     {
+            //         stunned |= roll.hit;
+            //         animation.Play(stunned ? "Stunned" : "Hurt");
+            //     }
+            // }
         }
     }
 

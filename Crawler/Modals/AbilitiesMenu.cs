@@ -12,7 +12,7 @@ public class AbilitiesMenu : PopupMenu
     {
         GD.Print(id);
         Crawler crawler = GetNode<Crawler>("../../..");
-        crawler.model.DoPlayerAction(new SpinAbility());
+        // crawler.model.DoPlayerAction(new SpinAbility());
         crawler.notPlayerTurn = true;
         
         this.Hide();

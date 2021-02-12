@@ -33,20 +33,20 @@ public class Entity
         this.stunned = false;
     }
 
-    public void TakeDamage(AttackResult roll)
-    {
-        this.health -= roll.damage;
-        if (this.health <= 0)
-        {
-            this.downed = true;
-            this.nextMove = -1;
-        }
-        else if (roll.hit)
-        {
-            this.nextMove = Math.Max(roll.stunUntil, this.nextMove);
-            this.stunned = true;
-        }
-    }
+    // public void TakeDamage(AttackResult roll)
+    // {
+    //     this.health -= roll.damage;
+    //     if (this.health <= 0)
+    //     {
+    //         this.downed = true;
+    //         this.nextMove = -1;
+    //     }
+    //     else if (roll.hit)
+    //     {
+    //         this.nextMove = Math.Max(roll.stunUntil, this.nextMove);
+    //         this.stunned = true;
+    //     }
+    // }
 
     public Dictionary SaveToDictionary()
     {

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Crawler/Model/AttackData.cs" type="Script" id=1]
+
+[resource]
+resource_name = "BasicAttack"
+script = ExtResource( 1 )
+comboStartChance = 0.0
+comboLinkChance = 0.0
+hitDamage = 0
+missDamage = 0
+stun = 0
