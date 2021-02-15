@@ -4,48 +4,61 @@ using System.Collections.Generic;
 
 public class Map
 {
+    private int visionRadius;
+
     // hehe parasitic inheritance.
     public TileMap map;
     public TileMap visibility;
 
     private const int VISIBLE = 1;
-    private const int REVEALED = 2;
+    private const int REVEALED = 0;
 
-    public Map()
+    public Map(int visionRadius = 6)
     {
+        this.visionRadius = visionRadius;
+
         map = new TileMap();
         visibility = new TileMap();
     }
 
-    public Array GetVisibility()
+    // Sent to ViewModel.
+    public int[,] GetVisibleTiles((int x, int y) pos)
     {
-        return visibility.GetUsedCellsById(VISIBLE);
+        int[,] tiles = new int[visionRadius * 2 + 1, visionRadius * 2 + 1];
+        for (int dy = -visionRadius; dy <= visionRadius; dy++)
+        {
+            for (int dx = -visionRadius; dx <= visionRadius; dx++)
+            {
+                tiles[dx + visionRadius, dy + visionRadius] = 
+                    visibility.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
+                    map.GetCell(pos.x + dx, pos.y + dy) : -1;
+            }
+        }
+        return tiles;
     }
 
-    // public void UpdateVisibility((int x, int y)[] visionFrom)
-    public void UpdateVisibility((int x, int y) pos)
+    public void ClearVisibility()
     {
-        // Every visible tile is now at least revealed.
         foreach (Vector2 vec in visibility.GetUsedCellsById(VISIBLE))
         {
             visibility.SetCellv(vec, REVEALED);
         }
-    
-        // foreach ((int x, int y) pos in visionFrom)
+    }
+
+    public void UpdateVisibility((int x, int y) pos)
+    {
+        // For each unique slope passing through a cell,
+        foreach ((int x, int y) in ListRationals(visionRadius))
         {
-            // For each unique slope passing through a cell,
-            foreach ((int x, int y) in ListRationals(6))
-            {
-                // Mark every cell on that slope, for each of the 8 octants.
-                MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y + y));
-                MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y + y));
-                MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y - y));
-                MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y - y));
-                MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y + x));
-                MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y + x));
-                MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y - x));
-                MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y - x));
-            }
+            // Mark every cell on that slope, for each of the 8 octants.
+            MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y + y));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y + y));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y - y));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y - y));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y + x));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y + x));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y - x));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y - x));
         }
     }
 

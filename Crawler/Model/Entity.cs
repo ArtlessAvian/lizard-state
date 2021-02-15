@@ -17,12 +17,17 @@ public class Entity
     public bool downed = false;
 
     public int team;
+    public bool providesVision;
+    public bool dirtyVision; // hehe
 
     public Entity(Species species, (int x, int y) position, int team)
     {
         this.species = species;
         this.position = position;
         this.team = team;
+
+        // HACK.
+        providesVision = team == 0;
 
         this.health = species.maxHealth;
         this.ai = new AI(species.aiType);

@@ -42,6 +42,9 @@ public class MoveAction : Action
                 e.position.y += displacement.y;
                 e.nextMove += 10;
 
+                // TODO: Maybe put elsewhere.
+                e.dirtyVision |= e.providesVision;
+
                 api.NewEvent(new ModelEvent(-1, "Wait"));
                 api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));
                 api.NewEvent(new ModelEvent(e.id, "Swap", entityAt.position, entityAt.id));
@@ -53,6 +56,9 @@ public class MoveAction : Action
         e.position.x += displacement.x;
         e.position.y += displacement.y;
         e.nextMove += 10;
+
+        // TODO: Maybe put elsewhere.
+        e.dirtyVision |= e.providesVision;
 
         api.NewEvent(new ModelEvent(e.id, "Move", e.position));
         return true;

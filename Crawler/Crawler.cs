@@ -6,11 +6,10 @@ public partial class Crawler : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);
 
-    // not saved
     public List<ModelEvent> eventQueue;
     List<Actor> roles;
+    Dictionary<int, ((int, int), int[,])> vision;
 
-    // saved, of course.
     public Model model;
     public bool notPlayerTurn = false;
 
@@ -35,13 +34,15 @@ public partial class Crawler : Node2D
         playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
 
+        GetNode<TileMap>("Map").Clear();
+
         // Temporary hacks!!
-        GetNode("Map").Set("tile_data", model.map.map.Get("tile_data"));
-        model.map.visibility.CellSize = new Vector2(40, 40); 
-        model.map.visibility.Scale = new Vector2(0.8f, 0.6f);
-        model.map.visibility.Position = new Vector2(-16, -12);
-        model.map.visibility.TileSet = GD.Load<TileSet>("res://Crawler/View/Assets/Visibility.tres");
-        AddChild(model.map.visibility);
+        // GetNode("Map").Set("tile_data", model.map.map.Get("tile_data"));
+        // model.map.visibility.CellSize = new Vector2(40, 40); 
+        // model.map.visibility.Scale = new Vector2(0.8f, 0.6f);
+        // model.map.visibility.Position = new Vector2(-16, -12);
+        // model.map.visibility.TileSet = GD.Load<TileSet>("res://Crawler/View/Assets/Visibility.tres");
+        // AddChild(model.map.visibility);
     }
 
     public override void _Process(float delta)
@@ -73,32 +74,18 @@ public partial class Crawler : Node2D
                 {
                     if (AnyActorAnimating()) { break; }
                 }
-                if (ev.action == "Print")
+                else
                 {
-                    string message = (string)ev.args;
-                    GD.Print(message);
-                    GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode("\n * " + message);
+                    HandleSpecialModelEvent(ev);
                 }
             }
             else
             {
-                if (ev.action == "Created")
+                // Delegate command to Actor
+                roles[ev.subject].PerformAsSubject(ev, roles);
+                if (ev.obj != -1)
                 {
-                    // This entity info should never be abused outside this section!!
-                    Entity entity = ev.args as Entity;
-                    Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
-                    roles.Add(puppet);
-                    puppet.SyncWithEntity(entity);
-                    GetNode("Actors").AddChild(puppet);
-                }
-                else
-                {
-                    // Delegate command to Actor
-                    roles[ev.subject].PerformAsSubject(ev, roles);
-                    if (ev.obj != -1)
-                    {
-                        roles[ev.obj].PerformAsObject(ev, roles);
-                    }
+                    roles[ev.obj].PerformAsObject(ev, roles);
                 }
             }
 
@@ -113,6 +100,48 @@ public partial class Crawler : Node2D
                 //     roles[e].SyncWithEntity(e);
                 // }
             }
+        }
+    }
+
+    private void HandleSpecialModelEvent(ModelEvent ev)
+    {
+        if (ev.action == "Create")
+        {
+            // This entity info should never be abused outside this section!!
+            Entity entity = ev.args as Entity;
+            Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
+            roles.Add(puppet);
+            puppet.SyncWithEntity(entity);
+            GetNode("Actors").AddChild(puppet);
+        }
+
+        else if (ev.action == "UpdateVision")
+        {
+
+            ((int x, int y) center, int[,] tiles) = (((int, int), int[,]))ev.args;
+            int r = tiles.GetLength(0) / 2; // floored
+            TileMap map = GetNode<TileMap>("Map");
+            TileMap visibility = GetNode<TileMap>("Visibility");
+
+            for (int dy = -r; dy <= r; dy++)
+            {
+                for (int dx = -r; dx <= r; dx++)
+                {
+                    int tile = tiles[dx + r, dy + r];
+                    if (tile != -1) {
+                        map.SetCell(center.x + dx, center.y + dy, tile);
+                        visibility.SetCell(center.x + dx, center.y + dy, 2);
+                    }
+                }
+            }
+            
+        }
+
+        else if (ev.action == "Print")
+        {
+            string message = (string)ev.args;
+            GD.Print(message);
+            GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode("\n * " + message);
         }
     }
 

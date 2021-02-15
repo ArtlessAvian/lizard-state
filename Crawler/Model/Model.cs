@@ -44,7 +44,7 @@ public partial class Model
     {
         e.id = entities.Count;
         entities.Add(e);
-        eventQueue.Add(new ModelEvent(e.id, "Created", e));
+        eventQueue.Add(new ModelEvent(-1, "Create", e, e.id));
     }
 
     // returns true if successful
@@ -62,8 +62,35 @@ public partial class Model
             eventQueue.Add(new ModelEvent(-1, "Print", "Can't do that!"));
             return false;
         }
-        map.UpdateVisibility(e.position);
+        
+        CheckVisionUpdate();
+
         return true;
+    }
+
+    public void CheckVisionUpdate()
+    {
+        bool dirty = false;
+        foreach (Entity e in entities)
+        {
+            if (e.dirtyVision)
+            {
+                dirty = true;
+                break;
+            }
+        }
+
+        if (dirty)
+        {
+            foreach (Entity e in entities)
+            {
+                if (e.providesVision)
+                {
+                    map.UpdateVisibility(e.position);
+                    NewEvent(new ModelEvent(-1, "UpdateVision", (e.position, map.GetVisibleTiles(e.position)), e.id));
+                }
+            }
+        }
     }
 
     // returns false if its the player turn.
