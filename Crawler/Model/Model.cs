@@ -24,19 +24,17 @@ public struct ModelEvent
 
 public partial class Model
 {
-    // Saved
+    // Everything is saved!!
     List<Entity> entities;
     public int time = 0;
-
-    // Generated
     Dictionary generatorData;
-    public TileMap map; // conveniently, also a Godot Tilemap.
+    public Map map;
 
     private List<ModelEvent> eventQueue;
 
     public Model(List<ModelEvent> eventQueue, Dictionary generatorData)
     {
-        map = new TileMap();
+        map = new Map();
         entities = new List<Entity>();
         this.generatorData = generatorData;
         this.eventQueue = eventQueue;
@@ -64,6 +62,7 @@ public partial class Model
             eventQueue.Add(new ModelEvent(-1, "Print", "Can't do that!"));
             return false;
         }
+        map.UpdateVisibility(e.position);
         return true;
     }
 

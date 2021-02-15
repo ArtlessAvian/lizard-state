@@ -25,6 +25,7 @@ public class AttackAction : Action
 
         int timeNow = e.nextMove;
         
+        // TODO: Figure out NPE. e was null!
         e.nextMove += 10;
         AttackResult result = data.TryAttack(target, timeNow);
 

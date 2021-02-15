@@ -4,62 +4,65 @@ using System.Collections.Generic;
 
 public class Map
 {
-    // Generated
-    Dictionary generatorData;
-    public TileMap map; // hehe parasitic inheritance.
+    // hehe parasitic inheritance.
+    public TileMap map;
+    public TileMap visibility;
+
+    private const int VISIBLE = 1;
+    private const int REVEALED = 2;
 
     public Map()
     {
         map = new TileMap();
+        visibility = new TileMap();
     }
 
-    // Copy Pasted from Previous Iteration of Project
-    // public void UpdateVisibility()
-    // {
-    //     // Every visible tile is now at least revealed.
-    //     foreach (Vector2 vec in GetUsedCellsById(VISIBLE))
-    //     {
-    //         SetCellv(vec, REVEALED);
-    //     }
-    //     Crawler crawler = GetParent().GetParent<Crawler>();
-    //     Entity entity = crawler.GetPlayer();
-    //     // For every unique slope passing through a cell,
-    //     foreach ((int x, int y) in ListRationals(6))
-    //     {
-    //         // Mark every cell on that slope, for each of the 8 octants.
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x + x, entity.y + y));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x - x, entity.y + y));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x + x, entity.y - y));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x - x, entity.y - y));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x + y, entity.y + x));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x - y, entity.y + x));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x + y, entity.y - x));
-    //         MarkLineOfSight((entity.x, entity.y), (entity.x - y, entity.y - x));
-    //     }
-    // }
+    public Array GetVisibility()
+    {
+        return visibility.GetUsedCellsById(VISIBLE);
+    }
 
-    // private bool MarkLineOfSight((int x, int y) from, (int x, int y) to)
-    // {
-    //     TileMap tileMap = GetParent<TileMap>();
+    // public void UpdateVisibility((int x, int y)[] visionFrom)
+    public void UpdateVisibility((int x, int y) pos)
+    {
+        // Every visible tile is now at least revealed.
+        foreach (Vector2 vec in visibility.GetUsedCellsById(VISIBLE))
+        {
+            visibility.SetCellv(vec, REVEALED);
+        }
+    
+        // foreach ((int x, int y) pos in visionFrom)
+        {
+            // For each unique slope passing through a cell,
+            foreach ((int x, int y) in ListRationals(6))
+            {
+                // Mark every cell on that slope, for each of the 8 octants.
+                MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y + y));
+                MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y + y));
+                MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y - y));
+                MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y - y));
+                MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y + x));
+                MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y + x));
+                MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y - x));
+                MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y - x));
+            }
+        }
+    }
 
-    //     bool returnFalseNext = false;
-    //     foreach ((int x, int y) in LineBetween(from, to))
-    //     {
-    //         if (returnFalseNext)
-    //         {
-    //             return false;
-    //         }
-    //         if (tileMap.GetCell(x, y) == -1)
-    //         {
-    //             returnFalseNext = true;
-    //         }
-    //         SetCell(x, y, VISIBLE);
-    //     }
-    //     return true;
-    // }
+    private void MarkLineOfSight((int x, int y) from, (int x, int y) to)
+    {
+        foreach ((int x, int y) in LineBetween(from, to))
+        {
+            visibility.SetCell(x, y, VISIBLE);
+            if (map.GetCell(x, y) == -1)
+            {
+                return;
+            }
+        }
+        return;
+    }
 
     // Math Part
-
     public static IEnumerable<(int x, int y)> LineBetween((int x, int y) from, (int x, int y) to)
     {
         if (to.x == from.x && to.y == from.y)

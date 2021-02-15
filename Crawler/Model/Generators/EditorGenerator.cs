@@ -26,8 +26,8 @@ public class EditorGenerator : LevelGenerator
     {
         TileMap map = (TileMap)scene.Instance();
 
-        model.map.Set("format", 1);
-        model.map.Set(
+        model.map.map.Set("format", 1);
+        model.map.map.Set(
             "tile_data",
             map.Get("tile_data")
         );
