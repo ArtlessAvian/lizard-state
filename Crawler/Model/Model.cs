@@ -45,6 +45,11 @@ public partial class Model
         e.id = entities.Count;
         entities.Add(e);
         eventQueue.Add(new ModelEvent(-1, "Create", e, e.id));
+
+        if (e.providesVision)
+        {
+            NewEvent(new ModelEvent(-1, "UpdateVision", (e.position, map.GetVisibleTiles(e.position, 3)), e.id));
+        }
     }
 
     // returns true if successful
@@ -63,32 +68,18 @@ public partial class Model
             return false;
         }
         
-        CheckVisionUpdate();
-
+        VisionEvent();
         return true;
     }
 
-    public void CheckVisionUpdate()
+    public void VisionEvent()
     {
-        bool dirty = false;
         foreach (Entity e in entities)
         {
             if (e.dirtyVision)
             {
-                dirty = true;
-                break;
-            }
-        }
-
-        if (dirty)
-        {
-            foreach (Entity e in entities)
-            {
-                if (e.providesVision)
-                {
-                    map.UpdateVisibility(e.position);
-                    NewEvent(new ModelEvent(-1, "UpdateVision", (e.position, map.GetVisibleTiles(e.position)), e.id));
-                }
+                NewEvent(new ModelEvent(-1, "UpdateVision", (e.position, map.GetVisibleTiles(e.position, 3)), e.id));
+                e.dirtyVision = false;
             }
         }
     }
@@ -108,7 +99,8 @@ public partial class Model
             GD.Print($"{e.species.displayName} made bad move. Skipping!");
             e.nextMove++;
         }
-
+        
+        VisionEvent();
         return true;
     }
 

@@ -83,6 +83,7 @@ public class Entity
         dict["stunned"] = stunned;
         dict["downed"] = downed;
         dict["team"] = team;
+        dict["providesVision"] = providesVision;
         dict["AI"] = ai.SaveToDict();
         return dict;
     }
@@ -97,6 +98,7 @@ public class Entity
         this.stunned = (bool)dict["stunned"];
         this.downed = (bool)dict["downed"];
         this.team = (int)dict["team"];
+        this.providesVision = (bool)dict["providesVision"];
 
         this.ai = new AI((Dictionary)dict["AI"]);
     }
