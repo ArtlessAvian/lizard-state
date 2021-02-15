@@ -16,6 +16,8 @@ public partial class Crawler : Node2D
     // convenience
     public Actor playerActor;
 
+    public bool impatientMode = true;
+
     Crawler()
     {
         eventQueue = new List<ModelEvent>();
@@ -76,7 +78,7 @@ public partial class Crawler : Node2D
             {
                 if (ev.action == "Wait")
                 {
-                    if (AnyActorAnimating()) { break; }
+                    if (!impatientMode && AnyActorAnimating()) { break; }
                 }
                 else
                 {
@@ -94,11 +96,13 @@ public partial class Crawler : Node2D
             }
 
             GD.PrintS(ev.subject, ev.action, ev.args, ev.obj);
+            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.args + " " + ev.obj);
+
             eventQueue.RemoveAt(0);
 
             if (eventQueue.Count == 0)
             {
-                GetNode<RichTextLabel>("UILayer/Time").Text = $"Time: {model.time}";
+                GetNode<RichTextLabel>("UILayer/Time").Text = $"(Debug) Time: {model.time}";
                 // foreach (Entity e in model.entities)
                 // {
                 //     roles[e].SyncWithEntity(e);
@@ -133,7 +137,7 @@ public partial class Crawler : Node2D
                     for (int dx = -r; dx <= r; dx++)
                     {
                         int tile = tiles[dx + r, dy + r];
-                        if (tile != -1) {
+                        if (tile != -2) {
                             map.SetCell(center.x + dx, center.y + dy, tile);
                         }
                     }
@@ -157,7 +161,7 @@ public partial class Crawler : Node2D
                         for (int dx = -r; dx <= r; dx++)
                         {
                             int tile = tiles[dx + r, dy + r];
-                            if (tile != -1) {
+                            if (tile != -2) {
                                 visibility.SetCell(center.x + dx, center.y + dy, 2);
                             }
                         }

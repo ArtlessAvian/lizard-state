@@ -17,7 +17,7 @@ script = ExtResource( 3 )
 [node name="Map" parent="." instance=ExtResource( 2 )]
 
 [node name="Visibility" type="TileMap" parent="."]
-modulate = Color( 0.25098, 0.25098, 0.25098, 1 )
+modulate = Color( 0.129412, 0.129412, 0.129412, 1 )
 position = Vector2( -16, -12 )
 scale = Vector2( 0.8, 0.6 )
 tile_set = ExtResource( 5 )
@@ -79,6 +79,30 @@ __meta__ = {
 }
 
 [node name="Background" type="ColorRect" parent="UILayer/Time"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.145098 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DebugLog" type="RichTextLabel" parent="UILayer"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = -190.0
+margin_right = 210.0
+margin_bottom = -10.0
+scroll_active = false
+scroll_following = true
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="ColorRect" parent="UILayer/DebugLog"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0

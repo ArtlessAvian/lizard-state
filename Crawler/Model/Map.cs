@@ -17,6 +17,11 @@ public class Map
         fog = new TileMap(); // unrevealed tiles are -1 by default.
     }
 
+    public bool TileIsWall(int id)
+    {
+        return id == -1 || id == 6;
+    }
+
     // Return value to be sent to ViewModel.
     // Radius should be a small reasonable number, like 6.
     public int[,] GetVisibleTiles((int x, int y) pos, int radius = 6)
@@ -31,7 +36,8 @@ public class Map
             {
                 tiles[dx + radius, dy + radius] = 
                     fog.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
-                    map.GetCell(pos.x + dx, pos.y + dy) : -1;
+                    map.GetCell(pos.x + dx, pos.y + dy) : -2;
+                    // -2 and not -1, in case theres a hole in the ground or something
             }
         }
         return tiles;
@@ -68,7 +74,7 @@ public class Map
         foreach ((int x, int y) in LineBetween(from, to))
         {
             fog.SetCell(x, y, VISIBLE);
-            if (map.GetCell(x, y) == -1)
+            if (TileIsWall(map.GetCell(x, y)))
             {
                 return;
             }
