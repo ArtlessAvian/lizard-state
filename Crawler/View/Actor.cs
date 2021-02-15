@@ -32,6 +32,7 @@ public partial class Actor : Node2D
         if (dy == 0 && dx == 0) { return; }
 
         AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        int frame = sprite.Frame;
         if (dx != 0)
         {
             sprite.Animation = "East";
@@ -41,6 +42,7 @@ public partial class Actor : Node2D
         {
             sprite.Animation = dy > 0 ? "South" : "North";
         }
+        sprite.Frame = frame;
     }
 
     public bool IsAnimating()

@@ -50,9 +50,6 @@ public partial class Crawler : Node2D
             {
                 // let the player move again.
                 notPlayerTurn = false;
-                // reset player actor
-                // TODO: This doesn't work lmao, gotta queue it
-                // playerActor.GetNode<AnimatedSprite>("AnimatedSprite").Frame = 0;
                 break;
             }
         }
