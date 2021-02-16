@@ -16,7 +16,7 @@ public partial class Crawler : Node2D
     // convenience
     public Actor playerActor;
 
-    public bool impatientMode = true;
+    public bool impatientMode = false; // super buggy but convenient
 
     Crawler()
     {

@@ -2,17 +2,13 @@
 
 [ext_resource path="res://Crawler/View/Assets/Visibility.png" type="Texture" id=1]
 
-
-
-
-
 [resource]
 resource_name = "Visibility"
 0/name = "Unrevealed"
 0/texture = ExtResource( 1 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( 0, 0, 40, 40 )
+0/region = Rect2( 0, 0, 32, 24 )
 0/tile_mode = 0
 0/occluder_offset = Vector2( 0, 0 )
 0/navigation_offset = Vector2( 0, 0 )
@@ -26,7 +22,7 @@ resource_name = "Visibility"
 1/texture = ExtResource( 1 )
 1/tex_offset = Vector2( 0, 0 )
 1/modulate = Color( 1, 1, 1, 1 )
-1/region = Rect2( 0, 40, 40, 40 )
+1/region = Rect2( 0, 40, 32, 24 )
 1/tile_mode = 0
 1/occluder_offset = Vector2( 0, 0 )
 1/navigation_offset = Vector2( 0, 0 )
@@ -40,7 +36,7 @@ resource_name = "Visibility"
 2/texture = ExtResource( 1 )
 2/tex_offset = Vector2( 0, 0 )
 2/modulate = Color( 1, 1, 1, 1 )
-2/region = Rect2( 4, 89, 24, 12 )
+2/region = Rect2( 16, 96, 8, 8 )
 2/tile_mode = 0
 2/occluder_offset = Vector2( 0, 0 )
 2/navigation_offset = Vector2( 0, 0 )

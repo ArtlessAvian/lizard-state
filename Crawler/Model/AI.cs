@@ -60,7 +60,7 @@ public class PartnerAI : CrawlerAI
             }
         }
 
-        entities = api.GetEntitiesInRadius(e.position.x, e.position.y, 5);
+        entities = api.GetEntitiesInRadius(e.position.x, e.position.y, 3);
 
         foreach (Entity other in entities)
         {
