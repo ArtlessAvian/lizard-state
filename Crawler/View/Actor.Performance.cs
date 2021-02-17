@@ -10,12 +10,6 @@ public partial class Actor : Node2D
     // Oof.
     public void PerformAsSubject(ModelEvent ev, List<Actor> roles)
     {
-        stunned = false;
-        AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
-        aniSprite.Frame = 0;
-        // EmitSignal("Action", action);
-        // EmitSignal(action, args);
-
         if (ev.action == "Move")
         {
             (int x, int y) cast = ((int x, int y))ev.args;
@@ -28,41 +22,23 @@ public partial class Actor : Node2D
             FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             targetPosition = otherPosition;
         }
-        else if (ev.action == "Attack")
+        else if (ev.action == "StartAttack")
         {
-            (int x, int y) otherPosition = roles[ev.obj].targetPosition;
-            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
+            (int x, int y) direction = ((int x, int y))ev.args;
+            FaceDirection(direction.x, direction.y);
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
             animation.Play("Attack");
         }
-        else if (ev.action == "Damaged")
+        else if (ev.action == "Unstun")
         {
-            AttackResult result = (AttackResult)ev.args;
-            health -= result.damage;
-
-            TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            healthbar.Value = health;
-
-            Label popup = (Label)damagePopupScene.Instance();
-            popup.Text = $"-{result.damage}";
-            this.GetNode("DamagePopups").AddChild(popup);
-
-            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Play("Hurt");
-        }
-        else if (ev.action == "Stunned")
-        {
-            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Queue("Stunned");            
+            stunned = false;
+            AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+            aniSprite.Frame = 0;
         }
         else if (ev.action == "Downed")
         {
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
             animation.Queue("Downed");
-        }
-        else
-        {
-            GD.PrintErr("Unhandled subject command! ", ev.action);
         }
     }
 
@@ -74,38 +50,31 @@ public partial class Actor : Node2D
             FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
             targetPosition = cast;
         }
-        else if (ev.action == "Attack")
+        else if (ev.action == "Hit")
         {
-            // (int x, int y) otherPosition = roles[ev.subject].targetPosition;
-            // FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
-            
-            // AttackResult roll = (AttackResult)ev.args;
-            // health -= roll.damage;
-            
-            // Label popup = GetNode<Label>("DamagePopup");
-            // popup.Text = $"-{roll.damage}";
+            AttackResult result = (AttackResult)ev.args;
+            health -= result.damage;
+            stunned |= result.stuns;
 
-            // TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            // healthbar.Value = health;
+            TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+            healthbar.Value = health;
 
-            // AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            // if (health <= 0)
-            // {
-            //     animation.Play("Downed");
-            // }
-            // else
-            // {
-            //     // Bug: should stay stunned, but can't tell state!
-            //     if (roll.damage > 0)
-            //     {
-            //         stunned |= roll.hit;
-            //         animation.Play(stunned ? "Stunned" : "Hurt");
-            //     }
-            // }
+            Label popup = (Label)damagePopupScene.Instance();
+            popup.Text = $"-{result.damage}";
+            this.GetNode("DamagePopups").AddChild(popup);
+
+            AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
+            animation.Play(result.stuns ? "Stunned" : "Hurt");
         }
-        else
+        else if (ev.action == "Miss")
         {
-            GD.PrintErr("Unhandled object command! ", ev.action);
+            Label popup = (Label)damagePopupScene.Instance();
+            popup.Text = $"Miss";
+            this.GetNode("DamagePopups").AddChild(popup);
         }
+        // else
+        // {
+        //     GD.PrintErr("Unhandled object command! ", ev.action);
+        // }
     }
 }

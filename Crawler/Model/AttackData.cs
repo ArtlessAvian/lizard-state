@@ -3,7 +3,7 @@ using System;
 
 public struct AttackResult
 {
-    public bool hit;
+    public bool stuns;
     public int damage;
     public int stunUntil;
 }
@@ -21,9 +21,9 @@ public class AttackData : Resource
     public AttackResult TryAttack(Entity target, int timeNow)
     {
         AttackResult result;
-        result.hit = GD.Randf() < (target.stunned ? comboLinkChance : comboStartChance);
-        result.damage = result.hit ? hitDamage : missDamage;
-        result.stunUntil = result.hit ? timeNow + stun : 0;
+        result.stuns = GD.Randf() < (target.stunned ? comboLinkChance : comboStartChance);
+        result.damage = result.stuns ? hitDamage : missDamage;
+        result.stunUntil = result.stuns ? timeNow + stun : 0;
         return result;
     }
 }

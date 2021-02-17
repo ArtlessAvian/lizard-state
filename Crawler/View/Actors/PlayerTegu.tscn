@@ -5,7 +5,7 @@
 [ext_resource path="res://Crawler/View/Assets/Visibility.png" type="Texture" id=4]
 [ext_resource path="res://Crawler/View/DamagePopup.tscn" type="PackedScene" id=5]
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=1]
 resource_name = "Attack"
 length = 0.4
 step = 0.0166667
@@ -22,7 +22,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 0 ), Vector2( 0, -10 ), Vector2( 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=2]
 resource_name = "Downed"
 length = 0.4
 step = 0.0333333
@@ -63,10 +63,10 @@ tracks/2/keys = {
 "values": [ 1 ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=3]
 resource_name = "Pasted Animation"
-length = 0.266667
-step = 0.0166667
+length = 0.267
+step = 0.267
 tracks/0/type = "value"
 tracks/0/path = NodePath("AnimatedSprite:self_modulate")
 tracks/0/interp = 1
@@ -74,7 +74,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.266667 ),
+"times": PoolRealArray( 0, 0.267 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
@@ -86,7 +86,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.266667 ),
+"times": PoolRealArray( 0, 0.267 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 1, 0 ]
@@ -104,8 +104,7 @@ tracks/2/keys = {
 "values": [  ]
 }
 
-[sub_resource type="Animation" id=1]
-resource_name = "Reset"
+[sub_resource type="Animation" id=4]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/path = NodePath("AnimatedSprite:self_modulate")
@@ -168,7 +167,7 @@ tracks/4/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=5]
 resource_name = "Stunned"
 length = 0.0166667
 step = 0.0166667
@@ -185,46 +184,46 @@ tracks/0/keys = {
 "values": [ 1 ]
 }
 
-[sub_resource type="AtlasTexture" id=2]
+[sub_resource type="AtlasTexture" id=6]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 40, 40, 40 )
 
-[sub_resource type="AtlasTexture" id=3]
+[sub_resource type="AtlasTexture" id=7]
 atlas = ExtResource( 2 )
 region = Rect2( 40, 40, 40, 40 )
 
-[sub_resource type="AtlasTexture" id=4]
+[sub_resource type="AtlasTexture" id=8]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 80, 40, 40 )
 
-[sub_resource type="AtlasTexture" id=5]
+[sub_resource type="AtlasTexture" id=9]
 atlas = ExtResource( 2 )
 region = Rect2( 40, 80, 40, 40 )
 
-[sub_resource type="AtlasTexture" id=6]
+[sub_resource type="AtlasTexture" id=10]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 0, 40, 40 )
 
-[sub_resource type="AtlasTexture" id=7]
+[sub_resource type="AtlasTexture" id=11]
 atlas = ExtResource( 2 )
 region = Rect2( 40, 0, 40, 40 )
 
-[sub_resource type="SpriteFrames" id=8]
+[sub_resource type="SpriteFrames" id=12]
 animations = [ {
-"frames": [ SubResource( 2 ), SubResource( 3 ) ],
-"loop": true,
-"name": "East",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 4 ), SubResource( 5 ) ],
-"loop": true,
-"name": "North",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 6 ), SubResource( 7 ) ],
 "loop": true,
+"name": "East",
+"speed": 0.0
+}, {
+"frames": [ SubResource( 8 ), SubResource( 9 ) ],
+"loop": true,
+"name": "North",
+"speed": 0.0
+}, {
+"frames": [ SubResource( 10 ), SubResource( 11 ) ],
+"loop": true,
 "name": "South",
-"speed": 5.0
+"speed": 0.0
 } ]
 
 [node name="PlayerTegu" type="Node2D"]
@@ -232,15 +231,18 @@ script = ExtResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Reset"
-anims/Attack = SubResource( 9 )
-anims/Downed = SubResource( 10 )
-anims/Hurt = SubResource( 11 )
-anims/Reset = SubResource( 1 )
-anims/Stunned = SubResource( 12 )
+anims/Attack = SubResource( 1 )
+anims/Downed = SubResource( 2 )
+anims/Hurt = SubResource( 3 )
+anims/Reset = SubResource( 4 )
+anims/Stunned = SubResource( 5 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-frames = SubResource( 8 )
+self_modulate = Color( 1, 0, 0, 1 )
+frames = SubResource( 12 )
 animation = "South"
+frame = 1
+speed_scale = 0.0
 offset = Vector2( 0, -10 )
 
 [node name="HealthBar" type="TextureProgress" parent="."]

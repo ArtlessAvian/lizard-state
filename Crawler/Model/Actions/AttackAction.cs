@@ -22,15 +22,14 @@ public class AttackAction : Action
         }
 
         api.NewEvent(new ModelEvent(-1, "Wait"));
-
-        int timeNow = e.nextMove;
         
-        // TODO: Figure out NPE. e was null!
-        e.nextMove += 10;
-        AttackResult result = data.TryAttack(target, timeNow);
+        api.NewEvent(new ModelEvent(e.id, "StartAttack", direction));
+        
+        AttackResult result = data.TryAttack(target, e.nextMove); // e.nextMove is now!
+        target.GetAttacked(api, result, e.id);
 
-        api.NewEvent(new ModelEvent(e.id, "Attack", null, target.id));
-        target.GetAttacked(api, result);
+        // TODO: e is possibly null. Investigate?
+        e.nextMove += 10;
 
         api.NewEvent(new ModelEvent(-1, "Wait"));
         return true;

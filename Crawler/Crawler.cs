@@ -78,8 +78,9 @@ public partial class Crawler : Node2D
             }
             eventQueue.RemoveAt(0);
 
-            if (ev.subject == -1) { HandleSpecialModelEvent(ev); }    
-            else if (ev.subject >= 0)
+            HandleNonActorEvent(ev);
+
+            if (ev.subject >= 0)
             {
                 roles[ev.subject].PerformAsSubject(ev, roles);
                 if (ev.obj >= 0) { roles[ev.obj].PerformAsObject(ev, roles); }
@@ -97,7 +98,7 @@ public partial class Crawler : Node2D
         // }
     }
 
-    private void HandleSpecialModelEvent(ModelEvent ev)
+    private void HandleNonActorEvent(ModelEvent ev)
     {
         if (ev.action == "Create")
         {
@@ -109,10 +110,10 @@ public partial class Crawler : Node2D
             GetNode("Actors").AddChild(puppet);
         }
 
-        else if (ev.action == "UpdateVision")
+        else if (ev.action == "SeeMap")
         {
             ((int x, int y) center, int[,] tiles) = (((int, int), int[,]))ev.args;
-            GetNode<MapView>("Map").AddVision(ev.obj, center, tiles);
+            GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
         }
 
         else if (ev.action == "Print")

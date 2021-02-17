@@ -38,22 +38,30 @@ public class Entity
         this.stunned = false;
     }
 
-    public void GetAttacked(ModelAPI api, AttackResult result)
+    public void GetAttacked(ModelAPI api, AttackResult result, int attackerID)
     {
-        this.health -= result.damage;
-        api.NewEvent(new ModelEvent(id, "Damaged", result));
-
-        if (this.health <= 0)
+        if (result.damage == 0)
         {
-            this.downed = true;
-            this.nextMove = -1;
-            api.NewEvent(new ModelEvent(id, "Downed"));
+            api.NewEvent(new ModelEvent(attackerID, "Miss", result, this.id));
         }
-        else if (result.hit)
+        else
         {
-            this.nextMove = Math.Max(result.stunUntil, this.nextMove);
-            this.stunned = true;
-            api.NewEvent(new ModelEvent(id, "Stunned"));
+            api.NewEvent(new ModelEvent(attackerID, "Hit", result, this.id));
+
+            this.health -= result.damage;
+
+            if (this.health <= 0)
+            {
+                api.NewEvent(new ModelEvent(id, "Downed"));
+                this.downed = true;
+                this.nextMove = -1;
+            }
+            else if (result.stuns)
+            {
+                this.nextMove = Math.Max(result.stunUntil, this.nextMove);
+                this.stunned = true;
+            }
+
         }
     }
 

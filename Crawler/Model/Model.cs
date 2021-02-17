@@ -48,7 +48,7 @@ public partial class Model
 
         if (e.providesVision)
         {
-            NewEvent(new ModelEvent(-1, "UpdateVision", (e.position, map.GetVisibleTiles(e.position, 3)), e.id));
+            NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 3))));
         }
     }
 
@@ -60,7 +60,9 @@ public partial class Model
 
         if (!e.species.isPlayer) { return false; }
 
+        if (e.stunned) { NewEvent(new ModelEvent(e.id, "Unstun")); }
         e.ResetCombo();
+        
         bool success = action.Do(this, e);
         if (!success)
         {
@@ -78,7 +80,7 @@ public partial class Model
         {
             if (e.dirtyVision)
             {
-                NewEvent(new ModelEvent(-1, "UpdateVision", (e.position, map.GetVisibleTiles(e.position, 3)), e.id));
+                NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 3))));
                 e.dirtyVision = false;
             }
         }
@@ -92,7 +94,9 @@ public partial class Model
 
         if (e.species.isPlayer) { return false; }
 
+        if (e.stunned) { NewEvent(new ModelEvent(e.id, "Unstun")); }
         e.ResetCombo();
+
         bool success = e.ai.GetMove(this, e).Do(this, e);
         if (!success)
         {
