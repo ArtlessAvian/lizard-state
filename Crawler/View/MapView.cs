@@ -33,8 +33,10 @@ public class MapView : TileMap
     public void RefreshVision()
     {
         TileMap visible = GetNode<TileMap>("Visible");
+        TileMap walls = GetNode<TileMap>("VisibleWalls");
         
         visible.Clear();
+        walls.Clear();
         // Refresh from dictionary.
         foreach (((int x, int y) center, int[,] tiles) in entityVisions.Values)
         {
@@ -45,7 +47,14 @@ public class MapView : TileMap
                 {
                     int tile = tiles[dx + r, dy + r];
                     if (tile != -2) {
-                        visible.SetCell(center.x + dx, center.y + dy, tile);
+                        if (Map.TileIsWall(tile))
+                        {
+                            walls.SetCell(center.x + dx, center.y + dy, tile);
+                        }
+                        else
+                        {
+                            visible.SetCell(center.x + dx, center.y + dy, tile);
+                        }
                     }
                 }
             }

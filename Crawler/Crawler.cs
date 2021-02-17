@@ -112,7 +112,7 @@ public partial class Crawler : Node2D
             Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
             roles.Add(puppet);
             puppet.SyncWithEntity(entity);
-            GetNode("Actors").AddChild(puppet);
+            GetNode("Map/VisibleWalls/Actors").AddChild(puppet);
         }
 
         else if (ev.action == "SeeMap")
