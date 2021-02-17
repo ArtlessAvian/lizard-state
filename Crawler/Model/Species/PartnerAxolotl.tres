@@ -5,7 +5,7 @@
 [resource]
 resource_name = "PlayerTegu"
 script = ExtResource( 1 )
-maxHealth = 30
-displayName = "Nano"
 isPlayer = false
 aiType = "PartnerAI"
+maxHealth = 30
+displayName = "Partner"

@@ -36,6 +36,7 @@ __meta__ = {
 }
 
 [node name="Visibility" type="TileMap" parent="."]
+visible = false
 modulate = Color( 0.129412, 0.129412, 0.129412, 1 )
 position = Vector2( -16, -12 )
 tile_set = ExtResource( 5 )
@@ -109,6 +110,7 @@ __meta__ = {
 }
 
 [node name="DebugLog" type="RichTextLabel" parent="UILayer"]
+visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 10.0

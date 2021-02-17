@@ -40,7 +40,7 @@ public partial class Crawler : Node2D
         playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
 
-        // GetNode<TileMap>("Visibility").;
+        GetNode<TileMap>("Visibility").Visible = true;
 
         // Temporary hacks!!
         // GetNode("Map").Set("tile_data", model.map.map.Get("tile_data"));
