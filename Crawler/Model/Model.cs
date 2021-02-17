@@ -97,7 +97,7 @@ public partial class Model
         if (!success)
         {
             GD.Print($"{e.species.displayName} made bad move. Skipping!");
-            e.nextMove++;
+            e.nextMove += 10;
         }
         
         VisionEvent();

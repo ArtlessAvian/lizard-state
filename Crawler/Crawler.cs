@@ -8,7 +8,6 @@ public partial class Crawler : Node2D
 
     public List<ModelEvent> eventQueue;
     List<Actor> roles;
-    Dictionary<int, ((int, int), int[,])> entityVisions;
 
     public Model model;
     public bool notPlayerTurn = false;
@@ -22,7 +21,6 @@ public partial class Crawler : Node2D
     {
         eventQueue = new List<ModelEvent>();
         roles = new List<Actor>();
-        entityVisions = new Dictionary<int, ((int, int), int[,])>();
     }
 
     public override void _Ready()
@@ -39,8 +37,6 @@ public partial class Crawler : Node2D
         
         playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
-
-        GetNode<TileMap>("Visibility").Visible = true;
 
         // Temporary hacks!!
         // GetNode("Map").Set("tile_data", model.map.map.Get("tile_data"));
@@ -71,44 +67,34 @@ public partial class Crawler : Node2D
 
     private void ClearQueue()
     {
+        if (eventQueue.Count == 0) {return;}
+
         while (eventQueue.Count > 0)
         {
             ModelEvent ev = eventQueue[0];
-            if (ev.subject == -1)
+            if (ev.subject == -1 && ev.action == "Wait")
             {
-                if (ev.action == "Wait")
-                {
-                    if (!impatientMode && AnyActorAnimating()) { break; }
-                }
-                else
-                {
-                    HandleSpecialModelEvent(ev);
-                }
+                if (!impatientMode && AnyActorAnimating()) { break; }
             }
-            else
+            eventQueue.RemoveAt(0);
+
+            if (ev.subject == -1) { HandleSpecialModelEvent(ev); }    
+            else if (ev.subject >= 0)
             {
-                // Delegate command to Actor
                 roles[ev.subject].PerformAsSubject(ev, roles);
-                if (ev.obj != -1)
-                {
-                    roles[ev.obj].PerformAsObject(ev, roles);
-                }
+                if (ev.obj >= 0) { roles[ev.obj].PerformAsObject(ev, roles); }
             }
 
             GD.PrintS(ev.subject, ev.action, ev.args, ev.obj);
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.args + " " + ev.obj);
-
-            eventQueue.RemoveAt(0);
-
-            if (eventQueue.Count == 0)
-            {
-                GetNode<RichTextLabel>("UILayer/Time").Text = $"(Debug) Time: {model.time}";
-                // foreach (Entity e in model.entities)
-                // {
-                //     roles[e].SyncWithEntity(e);
-                // }
-            }
         }
+
+        // Runs after loop, if the queue wasn't already empty!
+        GetNode<RichTextLabel>("UILayer/Time").Text = $"(Debug) Time: {model.time}";
+        // foreach (Entity e in model.entities)
+        // {
+        //     roles[e].SyncWithEntity(e);
+        // }
     }
 
     private void HandleSpecialModelEvent(ModelEvent ev)
@@ -123,51 +109,10 @@ public partial class Crawler : Node2D
             GetNode("Actors").AddChild(puppet);
         }
 
-        // TODO: Split up function, its kind of a big chungus.
         else if (ev.action == "UpdateVision")
         {
-            {
-                ((int x, int y) center, int[,] tiles) = (((int, int), int[,]))ev.args;
-                int r = tiles.GetLength(0) / 2; // floored
-
-                // Update the map from new info.
-                TileMap map = GetNode<TileMap>("Map");
-                for (int dy = -r; dy <= r; dy++)
-                {
-                    for (int dx = -r; dx <= r; dx++)
-                    {
-                        int tile = tiles[dx + r, dy + r];
-                        if (tile != -2) {
-                            map.SetCell(center.x + dx, center.y + dy, tile);
-                        }
-                    }
-                }
-
-                // store the new range into a dictionary.
-                entityVisions[ev.obj] = (center, tiles);
-            }
-            {
-                // Clear and restore vision from dictionary.
-                TileMap visibility = GetNode<TileMap>("Visibility");
-                foreach (Vector2 cell in visibility.GetUsedCellsById(2))
-                {
-                    visibility.SetCellv(cell, 1);
-                }
-                foreach (((int x, int y) center, int[,] tiles) in entityVisions.Values)
-                {
-                    int r = tiles.GetLength(0) / 2; // floored
-                    for (int dy = -r; dy <= r; dy++)
-                    {
-                        for (int dx = -r; dx <= r; dx++)
-                        {
-                            int tile = tiles[dx + r, dy + r];
-                            if (tile != -2) {
-                                visibility.SetCell(center.x + dx, center.y + dy, 2);
-                            }
-                        }
-                    }
-                }
-            }
+            ((int x, int y) center, int[,] tiles) = (((int, int), int[,]))ev.args;
+            GetNode<MapView>("Map").AddVision(ev.obj, center, tiles);
         }
 
         else if (ev.action == "Print")
