@@ -59,6 +59,6 @@ public partial class Model : ModelAPI
     public bool CanWalkFromTo(int x, int y, int x2, int y2)
     {
         // HACK: huuugeee.
-        return !map.TileIsWall(map.map.GetCell(x2, y2));
+        return !Map.TileIsWall(map.map.GetCell(x2, y2));
     }
 }

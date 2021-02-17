@@ -6,12 +6,15 @@ public class MapView : TileMap
 {
     Dictionary<int, ((int, int), int[,])> entityVisions = new Dictionary<int, ((int, int), int[,])>();
 
-    public override void _Ready()
+    public void AddVision(int seeer, (int x, int y) center, int[,] tiles)
     {
-        GetNode<TileMap>("Visibility").Visible = true;
+        AddHistory(center, tiles);
+        // store the new vision into a dictionary.
+        entityVisions[seeer] = (center, tiles);
+        RefreshVision();
     }
 
-    public void AddVision(int seeer, (int x, int y) center, int[,] tiles)
+    public void AddHistory((int x, int y) center, int[,] tiles)
     {
         int r = tiles.GetLength(0) / 2; // floored
 
@@ -25,23 +28,14 @@ public class MapView : TileMap
                 }
             }
         }
-
-        // store the new vision into a dictionary.
-        entityVisions[seeer] = (center, tiles);
-        RefreshVision();
     }
 
     public void RefreshVision()
     {
-        TileMap visibility = GetNode<TileMap>("Visibility");
+        TileMap visible = GetNode<TileMap>("Visible");
         
-        // Clear,
-        foreach (Vector2 cell in visibility.GetUsedCellsById(2))
-        {
-            visibility.SetCellv(cell, 1);
-        }
-
-        // and refresh from dictionary.
+        visible.Clear();
+        // Refresh from dictionary.
         foreach (((int x, int y) center, int[,] tiles) in entityVisions.Values)
         {
             int r = tiles.GetLength(0) / 2; // floored
@@ -51,7 +45,7 @@ public class MapView : TileMap
                 {
                     int tile = tiles[dx + r, dy + r];
                     if (tile != -2) {
-                        visibility.SetCell(center.x + dx, center.y + dy, 2);
+                        visible.SetCell(center.x + dx, center.y + dy, tile);
                     }
                 }
             }

@@ -138,4 +138,5 @@ menu_abilities={
 [rendering]
 
 quality/2d/use_pixel_snap=true
+environment/default_clear_color=Color( 0.117647, 0.117647, 0.117647, 1 )
 environment/default_environment="res://default_env.tres"

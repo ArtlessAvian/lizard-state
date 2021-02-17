@@ -17,7 +17,9 @@ public class Map
         fog = new TileMap(); // unrevealed tiles are -1 by default.
     }
 
-    public bool TileIsWall(int id)
+    // Assume this is always true.
+    // Hopefully ez fix if its an issue.
+    public static bool TileIsWall(int id)
     {
         return id == -1 || id == 6;
     }

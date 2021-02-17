@@ -25,8 +25,6 @@ public partial class Crawler : Node2D
 
     public override void _Ready()
     {
-        GetNode<TileMap>("Map").Clear();
-
         // Failsafe.
         if (model is null)
         {
@@ -49,20 +47,27 @@ public partial class Crawler : Node2D
 
     public override void _Process(float delta)
     {
+        uint start = OS.GetTicksMsec();
+        this.FillQueue(start);
+        this.ClearQueue();
+    }
+
+    private void FillQueue(uint start)
+    {
         while (notPlayerTurn) // and not timed out
         {
-            // if (eventQueue.Count > 0 && eventQueue[eventQueue.Count - 1].action == "Wait")
-            // {
-            //     break;
-            // }
             if (!model.DoEntityAction())
             {
                 // let the player move again.
                 notPlayerTurn = false;
                 break;
             }
+
+            if (OS.GetTicksMsec() - start > 1000/240f)
+            {
+                GD.PrintErr("Timed out!");
+            }
         }
-        this.ClearQueue();
     }
 
     private void ClearQueue()

@@ -64,7 +64,7 @@ public partial class Actor : Node2D
             this.GetNode("DamagePopups").AddChild(popup);
 
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
-            animation.Play(result.stuns ? "Stunned" : "Hurt");
+            animation.Play(stunned ? "Stunned" : "Hurt");
         }
         else if (ev.action == "Miss")
         {
