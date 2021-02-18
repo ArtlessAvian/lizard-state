@@ -10,7 +10,7 @@ public class Entity
     public int nextMove = 0;
 
     public Species species;
-    public CrawlerAI ai;
+    public AI ai;
 
     public int health;
     public bool stunned;
@@ -30,7 +30,7 @@ public class Entity
         providesVision = team == 0;
 
         this.health = species.maxHealth;
-        this.ai = new AI(species.aiType);
+        this.ai = new AI();
     }
 
     public void ResetCombo()
@@ -92,7 +92,7 @@ public class Entity
         dict["downed"] = downed;
         dict["team"] = team;
         dict["providesVision"] = providesVision;
-        dict["AI"] = ai.SaveToDict();
+        // dict["AI"] = ai.SaveToDict();
         return dict;
     }
 
@@ -108,6 +108,6 @@ public class Entity
         this.team = (int)dict["team"];
         this.providesVision = (bool)dict["providesVision"];
 
-        this.ai = new AI((Dictionary)dict["AI"]);
+        // this.ai = new AI((Dictionary)dict["AI"]);
     }
 }

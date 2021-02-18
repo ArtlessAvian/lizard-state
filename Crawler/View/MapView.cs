@@ -46,15 +46,15 @@ public class MapView : TileMap
                 for (int dx = -r; dx <= r; dx++)
                 {
                     int tile = tiles[dx + r, dy + r];
-                    if (tile != -2) {
-                        if (Map.TileIsWall(tile))
-                        {
-                            walls.SetCell(center.x + dx, center.y + dy, tile);
-                        }
-                        else
-                        {
-                            visible.SetCell(center.x + dx, center.y + dy, tile);
-                        }
+                    if (tile >= 0) {
+                        // if (Map.TileIsWall(tile))
+                        // {
+                            // walls.SetCell(center.x + dx, center.y + dy, tile);
+                        // }
+                        // else
+                        // {
+                        visible.SetCell(center.x + dx, center.y + dy, tile);
+                        // }
                     }
                 }
             }

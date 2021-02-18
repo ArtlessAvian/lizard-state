@@ -44,6 +44,7 @@ public class MoveAction : Action
 
                 // TODO: Maybe put elsewhere.
                 e.dirtyVision |= e.providesVision;
+                entityAt.dirtyVision |= entityAt.providesVision;
 
                 api.NewEvent(new ModelEvent(-1, "Wait"));
                 api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {entityAt.species.displayName}."));

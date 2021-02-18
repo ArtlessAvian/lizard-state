@@ -3,4 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>LizardState</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OptimizedPriorityQueue" Version="5.0.0" />
+  </ItemGroup>
 </Project>

@@ -31,8 +31,9 @@ public partial class Crawler : Node2D
             EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
             model = gen.Generate(eventQueue);
         }
-        this.ClearQueue();
         
+        this.ClearQueue();
+
         playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
 
@@ -63,17 +64,16 @@ public partial class Crawler : Node2D
                 break;
             }
 
-            if (OS.GetTicksMsec() - start > 1000/240f)
+            if (OS.GetTicksMsec() - start > 1000/120f)
             {
                 GD.PrintErr("Timed out!");
+                break;
             }
         }
     }
 
     private void ClearQueue()
     {
-        if (eventQueue.Count == 0) {return;}
-
         while (eventQueue.Count > 0)
         {
             ModelEvent ev = eventQueue[0];
@@ -91,16 +91,9 @@ public partial class Crawler : Node2D
                 if (ev.obj >= 0) { roles[ev.obj].PerformAsObject(ev, roles); }
             }
 
-            GD.PrintS(ev.subject, ev.action, ev.args, ev.obj);
+            // GD.PrintS(ev.subject, ev.action, ev.args, ev.obj);
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.args + " " + ev.obj);
         }
-
-        // Runs after loop, if the queue wasn't already empty!
-        GetNode<RichTextLabel>("UILayer/Time").Text = $"(Debug) Time: {model.time}";
-        // foreach (Entity e in model.entities)
-        // {
-        //     roles[e].SyncWithEntity(e);
-        // }
     }
 
     private void HandleNonActorEvent(ModelEvent ev)
@@ -112,7 +105,7 @@ public partial class Crawler : Node2D
             Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
             roles.Add(puppet);
             puppet.SyncWithEntity(entity);
-            GetNode("Map/VisibleWalls/Actors").AddChild(puppet);
+            GetNode("Actors").AddChild(puppet);
         }
 
         else if (ev.action == "SeeMap")
