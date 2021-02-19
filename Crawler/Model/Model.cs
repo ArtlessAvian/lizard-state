@@ -48,7 +48,7 @@ public partial class Model
 
         if (e.providesVision)
         {
-            NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 3))));
+            NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 5))));
         }
     }
 
@@ -80,7 +80,7 @@ public partial class Model
         {
             if (e.dirtyVision)
             {
-                NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 3))));
+                NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 5))));
                 e.dirtyVision = false;
             }
         }
