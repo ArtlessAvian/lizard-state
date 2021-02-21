@@ -9,7 +9,8 @@ public class MapView : TileMap
     public void AddVision(int seeer, (int x, int y) center, int[,] tiles)
     {
         AddHistory(center, tiles);
-        // store the new vision into a dictionary.
+        // store the new vision, and then refresh from all visions.
+        // TODO: replace this by only clearing the old vision, then refreshing any overlap with other visions.
         entityVisions[seeer] = (center, tiles);
         RefreshVision();
     }

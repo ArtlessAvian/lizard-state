@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/MapView.cs" type="Script" id=2]
 [ext_resource path="res://Crawler/CrawlerCamera.cs" type="Script" id=3]
 [ext_resource path="res://Crawler/Modals/AbilitiesMenu.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/View/MessageLog.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/View/Assets/Test2.tres" type="TileSet" id=6]
 
 [node name="Crawler" type="Node2D"]
@@ -56,13 +57,13 @@ __meta__ = {
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="MessageLog" type="RichTextLabel" parent="UILayer"]
-anchor_left = 1.0
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -210.0
+margin_left = -200.0
 margin_top = -70.0
-margin_right = -10.0
+margin_right = 200.0
 margin_bottom = -10.0
 text = "
 
@@ -70,6 +71,7 @@ text = "
 "
 scroll_active = false
 scroll_following = true
+script = ExtResource( 5 )
 __meta__ = {
 "_edit_group_": true,
 "_edit_lock_": true,
@@ -80,7 +82,7 @@ __meta__ = {
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0, 0, 0, 0.145098 )
+color = Color( 0, 0, 0, 0.25098 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -105,7 +107,7 @@ __meta__ = {
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0, 0, 0, 0.145098 )
+color = Color( 0, 0, 0, 0.25098 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -130,7 +132,7 @@ __meta__ = {
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0, 0, 0, 0.145098 )
+color = Color( 0, 0, 0, 0.25098 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

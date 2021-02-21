@@ -92,8 +92,9 @@ public partial class Crawler : Node2D
                 if (ev.obj >= 0) { roles[ev.obj].PerformAsObject(ev, roles); }
             }
 
-            // GD.PrintS(ev.subject, ev.action, ev.args, ev.obj);
+            // Everything gets sent to the logs.
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.args + " " + ev.obj);
+            GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
         }
     }
 
@@ -115,12 +116,12 @@ public partial class Crawler : Node2D
             GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
         }
 
-        else if (ev.action == "Print")
-        {
-            string message = (string)ev.args;
-            GD.Print(message);
-            GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode("\n * " + message);
-        }
+        // else if (ev.action == "Print")
+        // {
+        //     string message = (string)ev.args;
+        //     GD.Print(message);
+        //     GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode("\n * " + message);
+        // }
     }
 
     private bool AnyActorAnimating()

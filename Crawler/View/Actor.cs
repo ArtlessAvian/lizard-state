@@ -9,6 +9,9 @@ public partial class Actor : Node2D
     int health = 0;
     bool stunned = false;
 
+    // TODO: Temporary
+    public string displayName;
+
     public void SyncWithEntity(Entity subject)
     {
         targetPosition = subject.position;
@@ -25,6 +28,9 @@ public partial class Actor : Node2D
         stunned = subject.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         aniSprite.Frame = subject.stunned ? 1 : 0;
+
+        // TODO: Temporary
+        displayName = subject.species.displayName;
     }
 
     private void FaceDirection(int dx, int dy)
