@@ -16,8 +16,8 @@ public partial class Actor : Node2D
     {
         targetPosition = subject.position;
         Position = new Vector2(
-            targetPosition.x * Crawler.TILESIZE.x,
-            targetPosition.y * Crawler.TILESIZE.y
+            targetPosition.x * View.TILESIZE.x,
+            targetPosition.y * View.TILESIZE.y
         );
 
         health = subject.health;
@@ -53,8 +53,8 @@ public partial class Actor : Node2D
 
     public bool IsAnimating()
     {
-        if (Math.Abs(targetPosition.x - Position.x / Crawler.TILESIZE.x) > 0.01) { return true; }
-        if (Math.Abs(targetPosition.y - Position.y / Crawler.TILESIZE.y) > 0.01) { return true; }
+        if (Math.Abs(targetPosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
+        if (Math.Abs(targetPosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
         if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
         // if (GetNode<AnimationPlayer>("AnimationPlayer").) { return true; }
         return false;
@@ -64,8 +64,8 @@ public partial class Actor : Node2D
     {
         Position = Position.LinearInterpolate(
             new Vector2(
-                targetPosition.x * Crawler.TILESIZE.x,
-                targetPosition.y * Crawler.TILESIZE.y
+                targetPosition.x * View.TILESIZE.x,
+                targetPosition.y * View.TILESIZE.y
             ),
             1 - Mathf.Pow(1-0.3f, delta * 60f)
         );

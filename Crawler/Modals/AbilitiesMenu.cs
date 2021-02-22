@@ -14,9 +14,9 @@ public class AbilitiesMenu : PopupMenu
     public void _on_id_pressed(int id)
     {
         GD.Print(id);
-        Crawler crawler = GetNode<Crawler>("../../..");
-        crawler.model.DoPlayerAction(new AttackAction((0, 1), throww));
-        crawler.notPlayerTurn = true;
+        View view = GetNode<View>("../../..");
+        view.model.DoPlayerAction(new AttackAction((0, 1), throww));
+        view.notPlayerTurn = true;
         
         this.Hide();
     }

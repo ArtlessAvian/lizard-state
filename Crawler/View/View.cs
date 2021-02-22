@@ -37,20 +37,12 @@ public partial class View : Node2D
 
         playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
-
-        // Temporary hacks!!
-        // GetNode("Map").Set("tile_data", model.map.map.Get("tile_data"));
-        // model.map.visibility.CellSize = new Vector2(40, 40); 
-        // model.map.visibility.Scale = new Vector2(0.8f, 0.6f);
-        // model.map.visibility.Position = new Vector2(-16, -12);
-        // model.map.visibility.TileSet = GD.Load<TileSet>("res://Crawler/View/Assets/Visibility.tres");
-        // AddChild(model.map.visibility);
     }
 
     public override void _Process(float delta)
     {
-        uint start = OS.GetTicksMsec();
-        this.FillQueue(start);
+        // uint start = OS.GetTicksMsec();
+        // this.FillQueue(start);
         this.ClearQueue();
     }
 
