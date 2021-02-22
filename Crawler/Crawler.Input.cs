@@ -11,6 +11,9 @@ public partial class Crawler : Node2D
         ("move_down", (0, 1)),
         ("move_left", (-1, 0)),
         ("move_right", (1, 0)),
+    };
+
+    private (string, (int, int))[] diagonalDirections = {
         ("move_upleft", (-1, -1)),
         ("move_upright", (1, -1)),
         ("move_downleft", (-1, 1)),
@@ -60,13 +63,31 @@ public partial class Crawler : Node2D
 
         foreach ((string name, (int, int) dir) tuple in directions)
         {
-            if (ev.IsActionPressed(tuple.name, true))
+            if (ev.IsActionPressed(tuple.name, false))
             {
                 bool success = MoveOrAttack(tuple.dir);
-                // model.DoPlayerAction(eventQueue, new MoveAction(tuple.dir));
                 notPlayerTurn = true;
             }
         }
+    }
+
+    private void PollInput()
+    {
+        // if (!Input.IsActionPressed("modifier_diagonal"))
+        // {
+        //     foreach ((string name, (int, int) dir) tuple in directions)
+        //     {
+        //         if (Input.IsActionPressed(tuple.name))
+        //         {
+        //             bool success = MoveOrAttack(tuple.dir);
+        //             notPlayerTurn = true;
+        //         }
+        //     }
+        // }
+        // else
+        // {
+
+        // }
     }
 
     private bool MoveOrAttack((int x, int y) direction)

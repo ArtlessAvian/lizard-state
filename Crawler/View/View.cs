@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Crawler : Node2D
+public partial class View : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);
 
@@ -17,7 +17,7 @@ public partial class Crawler : Node2D
 
     public bool impatientMode = false; // super buggy but convenient
 
-    Crawler()
+    View()
     {
         eventQueue = new List<ModelEvent>();
         roles = new List<Actor>();
