@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Lizard State"
-run/main_scene="res://Crawler/View/View.tscn"
+run/main_scene="res://Crawler/Crawler.tscn"
 config/icon="res://icon.png"
 
 [debug]
@@ -137,6 +137,11 @@ menu_abilities={
 modifier_diagonal={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777237,"unicode":0,"echo":false,"script":null)
+ ]
+}
+modifier_skip={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777238,"unicode":0,"echo":false,"script":null)
  ]
 }
 

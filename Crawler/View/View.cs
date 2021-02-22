@@ -9,13 +9,10 @@ public partial class View : Node2D
     public List<ModelEvent> eventQueue;
     List<Actor> roles;
 
-    public Model model;
-    public bool notPlayerTurn = false;
-
     // convenience
     public Actor playerActor;
-
-    public bool impatientMode = false; // super buggy but convenient
+    // super buggy but convenient
+    public bool impatientMode = false;
 
     View()
     {
@@ -25,44 +22,14 @@ public partial class View : Node2D
 
     public override void _Ready()
     {
-        // Failsafe.
-        if (model is null)
-        {
-            EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
-            // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
-            model = gen.Generate(eventQueue);
-        }
-        
         this.ClearQueue();
-
         playerActor = roles[0];
         GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
     }
 
     public override void _Process(float delta)
     {
-        // uint start = OS.GetTicksMsec();
-        // this.FillQueue(start);
         this.ClearQueue();
-    }
-
-    private void FillQueue(uint start)
-    {
-        while (notPlayerTurn) // and not timed out
-        {
-            if (!model.DoEntityAction())
-            {
-                // let the player move again.
-                notPlayerTurn = false;
-                break;
-            }
-
-            if (OS.GetTicksMsec() - start > 1000/120f)
-            {
-                GD.PrintErr("Timed out!");
-                break;
-            }
-        }
     }
 
     private void ClearQueue()
