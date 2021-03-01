@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Crawler/Modals/AbilitiesMenu.cs" type="Script" id=4]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
@@ -23,7 +22,6 @@ margin_right = 82.0
 margin_bottom = 76.0
 items = [ "Abilities", null, 0, false, false, -1, 0, null, "", true, "Spin Move!", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", false ]
 hide_on_item_selection = false
-script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

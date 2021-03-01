@@ -109,5 +109,6 @@ public class Entity
         this.providesVision = (bool)dict["providesVision"];
 
         // this.ai = new AI((Dictionary)dict["AI"]);
+        this.ai = new AI();
     }
 }

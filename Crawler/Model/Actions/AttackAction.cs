@@ -9,11 +9,13 @@ public class AttackAction : Action
     public AttackAction((int x, int y) direction, AttackData data = null)
     {
         this.direction = direction;
-        this.data = data ?? GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
+        this.data = data;
     }
 
     public bool Do(ModelAPI api, Entity e)
     {
+        this.data = data ?? GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
+
         // TODO: Replace with raycast.
         Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
         if ((target is null) || target == e)

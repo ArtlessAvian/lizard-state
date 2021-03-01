@@ -17,8 +17,8 @@ public partial class Crawler : Node2D
         // Failsafe.
         if (model is null)
         {
-            EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
-            // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
+            // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
+            EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
             model = gen.Generate(View.eventQueue);
         }
     }
