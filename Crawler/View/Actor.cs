@@ -12,7 +12,7 @@ public partial class Actor : Node2D
     // TODO: Temporary
     public string displayName;
 
-    public void SyncWithEntity(Entity subject)
+    public void InitializeWithEntity(Entity subject)
     {
         targetPosition = subject.position;
         Position = new Vector2(
@@ -27,6 +27,7 @@ public partial class Actor : Node2D
 
         stunned = subject.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{subject.species.ResourceName}.tres");
         aniSprite.Frame = subject.stunned ? 1 : 0;
 
         // TODO: Temporary

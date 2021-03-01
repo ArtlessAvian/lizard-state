@@ -63,10 +63,10 @@ public partial class View : Node2D
         {
             // This entity info should never be abused outside this section!!
             Entity entity = ev.args as Entity;
-            Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
+            Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
             roles.Add(puppet);
-            puppet.SyncWithEntity(entity);
-            GetNode("Actors").AddChild(puppet);
+            puppet.InitializeWithEntity(entity);
+            FindNode("Actors").AddChild(puppet);
         }
 
         else if (ev.action == "SeeMap")
