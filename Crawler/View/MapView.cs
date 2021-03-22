@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MapView : TileMap
+public class MapView : Node2D
 {
     Dictionary<int, ((int, int), int[,])> entityVisions = new Dictionary<int, ((int, int), int[,])>();
 
@@ -17,6 +17,9 @@ public class MapView : TileMap
 
     public void AddHistory((int x, int y) center, int[,] tiles)
     {
+        TileMap floors = GetNode<TileMap>("Floors");
+        TileMap walls = GetNode<TileMap>("Walls");
+
         int r = tiles.GetLength(0) / 2; // floored
 
         for (int dy = -r; dy <= r; dy++)
@@ -24,8 +27,16 @@ public class MapView : TileMap
             for (int dx = -r; dx <= r; dx++)
             {
                 int tile = tiles[dx + r, dy + r];
-                if (tile != -2) {
-                    this.SetCell(center.x + dx, center.y + dy, tile >= 0 ? tile : 6);
+                if (tile != -2)
+                {
+                    if (Map.TileIsWall(tile))
+                    {
+                        walls.SetCell(center.x + dx, center.y + dy, tile != -1 ? tile : 6);
+                    }
+                    else
+                    {
+                        floors.SetCell(center.x + dx, center.y + dy, tile);
+                    }
                 }
             }
         }
@@ -33,11 +44,11 @@ public class MapView : TileMap
 
     public void RefreshVision()
     {
-        TileMap visible = GetNode<TileMap>("Visible");
-        TileMap walls = GetNode<TileMap>("VisibleWalls");
+        TileMap floorsVisible = GetNode<TileMap>("Floors/Visible");
+        TileMap wallsVisible = GetNode<TileMap>("Walls/Visible");
         
-        visible.Clear();
-        walls.Clear();
+        floorsVisible.Clear();
+        wallsVisible.Clear();
         // Refresh from dictionary.
         foreach (((int x, int y) center, int[,] tiles) in entityVisions.Values)
         {
@@ -47,15 +58,16 @@ public class MapView : TileMap
                 for (int dx = -r; dx <= r; dx++)
                 {
                     int tile = tiles[dx + r, dy + r];
-                    if (tile != -2) {
-                        // if (Map.TileIsWall(tile))
-                        // {
-                            // walls.SetCell(center.x + dx, center.y + dy, tile);
-                        // }
-                        // else
-                        // {
-                        visible.SetCell(center.x + dx, center.y + dy, tile >= 0 ? tile : 6);
-                        // }
+                    if (tile != -2)
+                    {
+                        if (Map.TileIsWall(tile))
+                        {
+                            wallsVisible.SetCell(center.x + dx, center.y + dy, tile != -1 ? tile : 6);
+                        }
+                        else
+                        {
+                            floorsVisible.SetCell(center.x + dx, center.y + dy, tile);
+                        }
                     }
                 }
             }

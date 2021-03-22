@@ -7,5 +7,5 @@ resource_name = "Enemy"
 script = ExtResource( 1 )
 isPlayer = false
 aiType = "PartnerAI"
-maxHealth = 30
+maxHealth = 10
 displayName = "Enemy"

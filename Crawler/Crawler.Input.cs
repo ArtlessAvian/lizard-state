@@ -22,7 +22,7 @@ public partial class Crawler : Node2D
     {
         if (notPlayerTurn) { return; }
         if (View.eventQueue.Count > 0) { return; }
-        foreach (Popup p in FindNode("Modals").GetChildren())
+        foreach (Control p in FindNode("Modals").GetChildren())
         {
             if (p.Visible) { return; }
         }

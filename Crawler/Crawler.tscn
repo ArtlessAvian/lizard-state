@@ -25,6 +25,29 @@ hide_on_item_selection = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CursorMode" type="Popup" parent="View/UILayer/Modals" index="2"]
+visible = true
+margin_right = 40.0
+margin_bottom = 40.0
+popup_exclusive = true
+
+[node name="Textbox" type="Panel" parent="View/UILayer/Modals/CursorMode"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = 459.0
+margin_right = 57.0
+margin_bottom = 480.0
+
+[node name="AtWho" type="Label" parent="View/UILayer/Modals/CursorMode/Textbox"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "At Who?"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="id_pressed" from="View/UILayer/Modals/AbilitiesMenu" to="." method="_on_AbilitiesMenu_id_pressed"]
 
 [editable path="View"]
