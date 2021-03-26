@@ -11,6 +11,11 @@ public class MoveAction : Action
         this.displacement = displacement;
     }
 
+    public bool IsAimed()
+    {
+        return true;
+    }
+
     public bool Do(ModelAPI api, Entity e)
     {
         if (displacement.x == 0 && displacement.y == 0)

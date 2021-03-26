@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Crawler/Modals/CursorMode.cs" type="Script" id=1]
+
+[node name="CursorMode" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+cursorSprite = NodePath("../../../Map/Cursor")
+
+[node name="Textbox" type="Panel" parent="."]
+margin_right = 57.0
+margin_bottom = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AtWhomstdve" type="Label" parent="Textbox"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "At Whom?"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

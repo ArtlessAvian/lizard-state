@@ -54,7 +54,7 @@ public partial class Crawler : Node2D
 
         if (ev.IsActionPressed("menu_abilities", false))
         {
-            FindNode("Modals").GetNode<Popup>("AbilitiesMenu").Popup_();
+            this.OpenAbilities();
             return;
         }
 

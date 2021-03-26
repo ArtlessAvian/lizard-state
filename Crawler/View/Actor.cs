@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // Like a ViewModel. Also, a pile of callbacks for the View.
 public partial class Actor : Node2D
 {
-    (int x, int y) targetPosition;
+    public (int x, int y) targetPosition;
     int health = 0;
     bool stunned = false;
 

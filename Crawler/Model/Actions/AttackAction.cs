@@ -12,6 +12,11 @@ public class AttackAction : Action
         this.data = data;
     }
 
+    public bool IsAimed()
+    {
+        return true;
+    }
+
     public bool Do(ModelAPI api, Entity e)
     {
         this.data = data ?? GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
