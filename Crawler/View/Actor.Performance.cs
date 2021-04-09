@@ -13,19 +13,21 @@ public partial class Actor : Node2D
         if (ev.action == "Move")
         {
             (int x, int y) cast = ((int x, int y))ev.args;
-            FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
+            FacePosition(cast);
+            // FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
             targetPosition = cast;
         }
         else if (ev.action == "Swap")
         {
             (int x, int y) otherPosition = roles[ev.obj].targetPosition;
-            FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
+            FacePosition(otherPosition);
+            // FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             targetPosition = otherPosition;
         }
         else if (ev.action == "StartAttack")
         {
-            (int x, int y) direction = ((int x, int y))ev.args;
-            FaceDirection(direction.x, direction.y);
+            (int x, int y) target = ((int x, int y))ev.args;
+            FacePosition(target);
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
             animation.Play("Attack");
         }
@@ -47,7 +49,7 @@ public partial class Actor : Node2D
         if (ev.action == "Swap")
         {
             (int x, int y) cast = ((int x, int y))ev.args;
-            FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
+            FacePosition(cast);
             targetPosition = cast;
         }
         else if (ev.action == "Hit")
