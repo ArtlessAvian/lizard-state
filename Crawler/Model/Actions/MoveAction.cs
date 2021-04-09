@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MoveAction : Action
+public class MoveAction : ActionTargeted
 {
     (int x, int y) displacement;
 
@@ -11,12 +11,14 @@ public class MoveAction : Action
         this.displacement = displacement;
     }
 
-    public bool IsAimed()
+    public override void Target(int x, int y)
     {
-        return true;
+        // TEMPORARY
+        displacement.x = x;
+        displacement.y = y;
     }
 
-    public bool Do(ModelAPI api, Entity e)
+    public override bool Do(ModelAPI api, Entity e)
     {
         if (displacement.x == 0 && displacement.y == 0)
         {

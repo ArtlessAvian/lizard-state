@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class Crawler : Node2D
 {
-    Action action;
+    ActionTargeted actionTargeting;
 
     public void OpenAbilities()
     {
@@ -12,6 +12,7 @@ public partial class Crawler : Node2D
         // Setup the menu
         // Open the menu
         menu.Popup_();
+        // wait for ability selected
     }
 
     public void AbilitySelected(int id)
@@ -19,20 +20,23 @@ public partial class Crawler : Node2D
         (FindNode("AbilitiesMenu") as Popup).Hide();
 
         // Get player action
-        action = new MoveAction((0, 3));
-        // if not aimed, run
-        if (!action.IsAimed())
+        Action action = new MoveAction((0, 0));
+        // if aimed, shenanigans
+        if (action is ActionTargeted temp)
+        {
+            // save for later! abuse of scope
+            actionTargeting = temp;
+
+            // activate and initialize cursor
+            CursorMode cursorMode = FindNode("Modals").GetNode<CursorMode>("CursorMode");
+            cursorMode.Enter(View.playerActor.targetPosition); // TODO: Decide getting position from model or viewmodel.
+            cursorMode.Connect("Select", this, "AbilityTargeted");
+            return; // wait for ability targeted
+        }
+        else // just run it directly
         {
             model.DoPlayerAction(action);
             notPlayerTurn = true;
-        }
-        else
-        {
-            CursorMode cursorMode = FindNode("Modals").GetNode<CursorMode>("CursorMode");
-            
-            // TODO: Decide if i want to get information from model or viewmodel.
-            cursorMode.Enter(View.playerActor.targetPosition);
-            cursorMode.Connect("Select", this, "AbilityTargeted");
         }
     }
 
@@ -45,7 +49,8 @@ public partial class Crawler : Node2D
         cursorMode.Exit();
 
         // Do the move
-        model.DoPlayerAction(action);
+        actionTargeting.Target(x, y);
+        model.DoPlayerAction(actionTargeting);
         notPlayerTurn = true;
     }
 }
