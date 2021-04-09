@@ -9,7 +9,7 @@ public class AI
 
     public Action GetMove(ModelAPI api, Entity e)
     {
-        List<Entity> entities = api.GetEntitiesInRadius(e.position.x, e.position.y, 3);
+        List<Entity> entities = api.GetEntitiesInRadius(e.position, 3);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
@@ -28,24 +28,24 @@ public class AI
         }
 
         // Attack enemies, or move towards them
-        (int steps, int dx, int dy) = ShortestPathTo(api, enemyPositions, e.position);
+        (int steps, (int, int) nextStep) = ShortestPathTo(api, enemyPositions, e.position);
         if (steps != Int32.MaxValue)
         {
-            if (steps == 1) { return new AttackAction((dx, dy)); }
-            return new MoveAction((dx, dy));
+            if (steps == 1) { return new AttackAction().Target(nextStep); }
+            return new MoveAction().Target(nextStep);
         }
 
         // Move towards allies        
-        (steps, dx, dy) = ShortestPathTo(api, allyPositions, e.position);
+        (steps, nextStep) = ShortestPathTo(api, allyPositions, e.position);
         if (steps != Int32.MaxValue)
         {
-            if (steps > 2) { return new MoveAction((dx, dy)); }
+            if (steps > 2) { return new MoveAction().Target(nextStep); }
         }
 
-        return new MoveAction((0, 0));
+        return new MoveAction().Target(e.position);
     }
 
-    public (int steps, int dx, int dy) ShortestPathTo(ModelAPI api, IEnumerable<(int x, int y)> sources, (int x, int y) goal)
+    public (int steps, (int x, int y) nextStep) ShortestPathTo(ModelAPI api, IEnumerable<(int x, int y)> sources, (int x, int y) goal)
     {
         Dictionary<(int, int), int> cost = new Dictionary<(int, int), int>();
         SimplePriorityQueue<(int, int)> frontier = new SimplePriorityQueue<(int, int)>();
@@ -68,7 +68,7 @@ public class AI
                 // early exit
                 if (neighbor.x == goal.x && neighbor.y == goal.y)
                 {
-                    return (cost[current] + 1, current.x - goal.x, current.y - goal.y);
+                    return (cost[current] + 1, current);
                 }
 
                 if (cost[current] > 10) { continue; }
@@ -82,7 +82,7 @@ public class AI
         }
 
         // Fail!        
-        return (Int32.MaxValue, 0, 0);
+        return (Int32.MaxValue, goal);
     }
 
     public IEnumerable<(int, int)> FilterTraversable(ModelAPI api, IEnumerable<(int, int)> stuff)
@@ -90,7 +90,7 @@ public class AI
         // Entity e = GetParent<Entity>();
         foreach ((int x, int y) thing in stuff)
         {
-            if (!api.CanWalkFromTo(0, 0, thing.x, thing.y)) { continue; }
+            if (!api.CanWalkFromTo((0, 0), thing)) { continue; }
             // Entity entityAt = api.GetEntityAt(thing.x, thing.y);
             // if (entityAt != null) { continue; }
             yield return thing;

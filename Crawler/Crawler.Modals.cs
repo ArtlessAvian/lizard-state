@@ -20,7 +20,7 @@ public partial class Crawler : Node2D
         (FindNode("AbilitiesMenu") as Popup).Hide();
 
         // Get player action
-        Action action = new MoveAction((0, 0));
+        Action action = new MoveAction();
         // if aimed, shenanigans
         if (action is ActionTargeted temp)
         {
@@ -49,7 +49,7 @@ public partial class Crawler : Node2D
         cursorMode.Exit();
 
         // Do the move
-        actionTargeting.Target(x, y);
+        actionTargeting.Target((x, y));
         model.DoPlayerAction(actionTargeting);
         notPlayerTurn = true;
     }

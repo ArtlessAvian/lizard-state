@@ -8,10 +8,13 @@ public interface ModelAPI
 
     Entity GetEntity(int id);
     Entity GetPlayer();
-    Entity GetEntityAt(int x, int y);
-    List<Entity> GetEntitiesInRadius(int x, int y, int radius);
+    Entity GetEntityAt((int x, int y) position);
+    List<Entity> GetEntitiesInRadius((int x, int y) position, int radius);
 
-    bool CanWalkFromTo(int x, int y, int x2, int y2);
+    bool CanWalkFromTo((int x, int y) position, (int x, int y) position2);
+
+    // maybe this belongs in some math helper thing or something
+    int Distance((int x, int y) position, (int x, int y) position2);
 }
 
 public partial class Model : ModelAPI
@@ -31,11 +34,12 @@ public partial class Model : ModelAPI
         return GetEntity(0);
     }
 
-    public Entity GetEntityAt(int x, int y)
+    public Entity GetEntityAt((int x, int y) position)
     {
         foreach (Entity e in entities)
         {
-            if (e.position.x == x && e.position.y == y && !e.downed)
+            // rip no tuple equality
+            if (e.position.x == position.x && e.position.y == position.y && !e.downed)
             {
                 return e;
             }
@@ -43,12 +47,12 @@ public partial class Model : ModelAPI
         return null;
     }
 
-    public List<Entity> GetEntitiesInRadius(int x, int y, int radius)
+    public List<Entity> GetEntitiesInRadius((int x, int y) position, int radius)
     {
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in entities)
         {
-            if (Math.Abs(e.position.x - x) <= radius && Math.Abs(e.position.y - y) <= radius && !e.downed)
+            if (Distance(position, e.position) <= radius)
             {
                 inRadius.Add(e);
             }
@@ -56,9 +60,14 @@ public partial class Model : ModelAPI
         return inRadius;
     }
 
-    public bool CanWalkFromTo(int x, int y, int x2, int y2)
+    // TODO: Disallow corner cutting?
+    public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
     {
-        // HACK: huuugeee.
-        return !Map.TileIsWall(map.map.GetCell(x2, y2));
+        return !Map.TileIsWall(map.map.GetCell(position2.x, position2.y));
+    }
+
+    public int Distance((int x, int y) pos, (int x, int y) pos2)
+    {
+        return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y));
     }
 }

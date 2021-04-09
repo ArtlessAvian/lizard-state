@@ -1,34 +1,32 @@
 using Godot;
 using System.Collections.Generic;
 
-public class AttackAction : Action
+public class AttackAction : ActionTargeted
 {
-    (int x, int y) direction;
     AttackData data;
 
-    public AttackAction((int x, int y) direction, AttackData data = null)
+    public AttackAction(AttackData data = null)
     {
-        this.direction = direction;
         this.data = data;
     }
 
-    public bool Do(ModelAPI api, Entity e)
+    public override bool Do(ModelAPI api, Entity e)
     {
         this.data = data ?? GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
 
         // TODO: Replace with raycast.
-        Entity target = api.GetEntityAt(e.position.x + direction.x, e.position.y + direction.y);
-        if ((target is null) || target == e)
+        Entity targeted = api.GetEntityAt(target);
+        if ((targeted is null) || targeted == e)
         {
             return false;
         }
 
         api.NewEvent(new ModelEvent(-1, "Wait"));
         
-        api.NewEvent(new ModelEvent(e.id, "StartAttack", direction));
+        api.NewEvent(new ModelEvent(e.id, "StartAttack", target));
         
-        AttackResult result = data.TryAttack(target, e.nextMove); // e.nextMove is now!
-        target.GetAttacked(api, result, e.id);
+        AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
+        targeted.GetAttacked(api, result, e.id);
 
         // TODO: e is possibly null. Investigate?
         e.nextMove += 10;

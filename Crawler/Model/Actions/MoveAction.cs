@@ -4,34 +4,20 @@ using System.Collections.Generic;
 
 public class MoveAction : ActionTargeted
 {
-    (int x, int y) displacement;
-
-    public MoveAction((int x, int y) displacement)
-    {
-        this.displacement = displacement;
-    }
-
-    public override void Target(int x, int y)
-    {
-        // TEMPORARY
-        displacement.x = x;
-        displacement.y = y;
-    }
-
     public override bool Do(ModelAPI api, Entity e)
     {
-        if (displacement.x == 0 && displacement.y == 0)
+        if (target.x == e.position.x && target.y == e.position.y)
         {
             DoNothing(api, e);
             return true;
         }
         
-        if (!api.CanWalkFromTo(0, 0, e.position.x + displacement.x, e.position.y + displacement.y))
+        if (!api.CanWalkFromTo(e.position, target))
         {
             return false;
         }
 
-        Entity entityAt = api.GetEntityAt(e.position.x + displacement.x, e.position.y + displacement.y);
+        Entity entityAt = api.GetEntityAt(target);
         if (!(entityAt is null))
         {
             if (entityAt.team != e.team)
@@ -57,8 +43,7 @@ public class MoveAction : ActionTargeted
 
     private void DoMove(ModelAPI api, Entity e)
     {
-        e.position.x += displacement.x;
-        e.position.y += displacement.y;
+        e.position = target;
         e.nextMove += 10;
 
         // TODO: Maybe put elsewhere.
@@ -69,11 +54,8 @@ public class MoveAction : ActionTargeted
 
     private void DoSwap(ModelAPI api, Entity e, Entity teammate)
     {
-        teammate.position.x = e.position.x;
-        teammate.position.y = e.position.y;
-
-        e.position.x += displacement.x;
-        e.position.y += displacement.y;
+        teammate.position = e.position;
+        e.position = target;
         e.nextMove += 10;
 
         // TODO: Maybe put elsewhere.

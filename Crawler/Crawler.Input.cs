@@ -90,11 +90,13 @@ public partial class Crawler : Node2D
     private bool MoveOrAttack((int x, int y) direction)
     {
         Entity player = model.GetPlayer();
-        Entity entityAt = model.GetEntityAt(player.position.x + direction.x, player.position.y + direction.y);
+        (int x, int y) offset = (player.position.x + direction.x, player.position.y + direction.y);
+        Entity entityAt = model.GetEntityAt(offset);
+
         if (entityAt != null && entityAt.team != player.team)
         {
-            return model.DoPlayerAction(new AttackAction(direction));
+            return model.DoPlayerAction(new AttackAction().Target(offset));
         }
-        return model.DoPlayerAction(new MoveAction(direction));
+        return model.DoPlayerAction(new MoveAction().Target(offset));
     }
 }
