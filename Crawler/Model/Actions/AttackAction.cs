@@ -12,7 +12,11 @@ public class AttackAction : ActionTargeted
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        this.data = data ?? GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
+        if (this.data is null)
+        {
+            this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
+            GD.PrintErr($"{e.species.ResourcePath} missing attacks?");
+        }
 
         // TODO: Replace with raycast.
         Entity targeted = api.GetEntityAt(target);

@@ -9,5 +9,6 @@ script = ExtResource( 1 )
 isPlayer = false
 aiType = "PartnerAI"
 bumpAttack = ExtResource( 2 )
+attacks = null
 maxHealth = 30
 displayName = "Partner"

@@ -31,7 +31,7 @@ public class AI
         (int steps, (int, int) nextStep) = ShortestPathTo(api, enemyPositions, e.position);
         if (steps != Int32.MaxValue)
         {
-            if (steps == 1) { return new AttackAction().Target(nextStep); }
+            if (steps == 1) { return new AttackAction(e.species.bumpAttack).Target(nextStep); }
             return new MoveAction().Target(nextStep);
         }
 

@@ -95,7 +95,7 @@ public partial class Crawler : Node2D
 
         if (entityAt != null && entityAt.team != player.team)
         {
-            return model.DoPlayerAction(new AttackAction().Target(offset));
+            return model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
         }
         return model.DoPlayerAction(new MoveAction().Target(offset));
     }

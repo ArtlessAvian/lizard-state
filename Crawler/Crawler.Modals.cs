@@ -8,8 +8,10 @@ public partial class Crawler : Node2D
 
     public void OpenAbilities()
     {
-        Popup menu = FindNode("Modals").GetNode<Popup>("AbilitiesMenu");
+        PopupMenu menu = FindNode("Modals").GetNode<PopupMenu>("AbilitiesMenu");
         // Setup the menu
+        // menu.Clear();
+        // model.GetPlayer().abilities;
         // Open the menu
         menu.Popup_();
         // wait for ability selected
@@ -36,7 +38,7 @@ public partial class Crawler : Node2D
 
             // activate and initialize cursor
             CursorMode cursorMode = FindNode("Modals").GetNode<CursorMode>("CursorMode");
-            cursorMode.Enter(View.playerActor.targetPosition); // TODO: Decide getting position from model or viewmodel.
+            cursorMode.Enter(model.GetPlayer().position);
             cursorMode.Connect("Select", this, "AbilityTargeted");
             return; // wait for ability targeted
         }

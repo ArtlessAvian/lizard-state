@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System;
+using System.Collections.Generic;
 
 public class Entity
 {
@@ -11,6 +12,8 @@ public class Entity
 
     public Species species;
     public AI ai;
+
+    public List<Action> abilities;
 
     public int health;
     public bool stunned;
@@ -33,6 +36,12 @@ public class Entity
 
         this.health = species.maxHealth;
         this.ai = new AI();
+
+        abilities = new List<Action>();
+        foreach (AttackData data in this.species.attacks)
+        {
+            abilities.Add(new AttackAction(data));
+        }
     }
 
     public void ResetCombo()
@@ -114,5 +123,11 @@ public class Entity
 
         // this.ai = new AI((Dictionary)dict["AI"]);
         this.ai = new AI();
+
+        abilities = new List<Action>();
+        foreach (AttackData data in this.species.attacks)
+        {
+            abilities.Add(new AttackAction(data));
+        }
     }
 }
