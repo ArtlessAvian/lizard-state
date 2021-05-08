@@ -21,6 +21,11 @@ public class AttackAction : ActionTargeted
             return false;
         }
 
+        if (api.Distance(e.position, targeted.position) > data.range)
+        {
+            return false;
+        }
+
         api.NewEvent(new ModelEvent(-1, "Wait"));
         
         api.NewEvent(new ModelEvent(e.id, "StartAttack", target));

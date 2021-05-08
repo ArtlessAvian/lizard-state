@@ -20,7 +20,14 @@ public partial class Crawler : Node2D
         (FindNode("AbilitiesMenu") as Popup).Hide();
 
         // Get player action
-        Action action = new MoveAction();
+        Action action;
+        switch (id)
+        {
+            case 0 : action = new MoveAction(); break;
+            case 1 : action = new AttackAction(); break;
+            default : return;
+        }
+
         // if aimed, shenanigans
         if (action is ActionTargeted temp)
         {

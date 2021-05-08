@@ -37,7 +37,6 @@ public partial class Actor : Node2D
     private void FaceDirection(int dx, int dy)
     {
         if (dy == 0 && dx == 0) { return; }
-        GD.PrintT(dx, dy);
 
         AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
         int frame = sprite.Frame;

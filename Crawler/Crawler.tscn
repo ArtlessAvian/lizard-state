@@ -26,7 +26,7 @@ __meta__ = {
 [node name="AbilitiesMenu" type="PopupMenu" parent="View/UILayer/Modals" index="1"]
 margin_right = 82.0
 margin_bottom = 76.0
-items = [ "Abilities", null, 0, false, false, -1, 0, null, "", true, "Spin Move!", null, 0, false, false, 0, 0, null, "", false, "", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", false ]
+items = [ "Abilities", null, 0, false, false, -1, 0, null, "", true, "Debug Teleport", null, 0, false, false, 0, 0, null, "", false, "Debug Attack", null, 0, false, false, 1, 0, null, "", false, "", null, 0, false, false, 2, 0, null, "", false ]
 hide_on_item_selection = false
 __meta__ = {
 "_edit_use_anchors_": false
