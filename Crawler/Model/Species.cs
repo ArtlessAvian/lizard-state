@@ -7,6 +7,8 @@ public class Species : Resource
     [Export] public bool isPlayer = false;
     [Export] public string aiType;
 
+    [Export] public AttackData bumpAttack;
+
     // Stat Block
     [Export] public int maxHealth = 30;
     

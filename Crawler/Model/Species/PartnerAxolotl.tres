@@ -1,11 +1,13 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" load_steps=3 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Attacks/BasicAttack.tres" type="Resource" id=2]
 
 [resource]
 resource_name = "PartnerAxolotl"
 script = ExtResource( 1 )
 isPlayer = false
 aiType = "PartnerAI"
+bumpAttack = ExtResource( 2 )
 maxHealth = 30
 displayName = "Partner"

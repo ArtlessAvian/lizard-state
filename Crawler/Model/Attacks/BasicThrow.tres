@@ -3,9 +3,10 @@
 [ext_resource path="res://Crawler/Model/AttackData.cs" type="Script" id=1]
 
 [resource]
-resource_name = "BasicAttack"
+resource_name = "BasicThrow"
 script = ExtResource( 1 )
 range = 1
+energy = 1
 comboStartChance = 0.9
 comboLinkChance = 0
 hitDamage = 3

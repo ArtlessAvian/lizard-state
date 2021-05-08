@@ -34,6 +34,7 @@ __meta__ = {
 
 [node name="CursorMode" parent="View/UILayer/Modals" index="2" instance=ExtResource( 4 )]
 visible = false
+
 [connection signal="id_pressed" from="View/UILayer/Modals/AbilitiesMenu" to="." method="AbilitySelected"]
 
 [editable path="View"]

@@ -222,6 +222,7 @@ anims/Stunned = SubResource( 5 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = ExtResource( 2 )
 animation = "South"
+frame = 1
 speed_scale = 0.0
 offset = Vector2( 0, -10 )
 

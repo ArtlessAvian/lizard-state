@@ -16,6 +16,8 @@ public class Entity
     public bool stunned;
     public bool downed = false;
 
+    public int energy = 10;
+
     public int team;
     public bool providesVision;
     public bool dirtyVision; // hehe
@@ -90,6 +92,7 @@ public class Entity
         dict["health"] = health;
         dict["stunned"] = stunned;
         dict["downed"] = downed;
+        dict["energy"] = energy;
         dict["team"] = team;
         dict["providesVision"] = providesVision;
         // dict["AI"] = ai.SaveToDict();
@@ -105,6 +108,7 @@ public class Entity
         this.health = (int)dict["health"];
         this.stunned = (bool)dict["stunned"];
         this.downed = (bool)dict["downed"];
+        this.energy = (int)dict["energy"];
         this.team = (int)dict["team"];
         this.providesVision = (bool)dict["providesVision"];
 
