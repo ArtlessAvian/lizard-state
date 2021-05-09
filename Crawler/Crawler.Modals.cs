@@ -10,8 +10,18 @@ public partial class Crawler : Node2D
     {
         PopupMenu menu = FindNode("Modals").GetNode<PopupMenu>("AbilitiesMenu");
         // Setup the menu
-        // menu.Clear();
-        // model.GetPlayer().abilities;
+        {
+            menu.Clear();
+            menu.AddSeparator("Abilities");
+            
+            int id = 0;
+            foreach (Action a in model.GetPlayer().abilities)
+            {
+                menu.AddItem(a.GetType().Name, id);
+                id++;
+            }
+        }
+
         // Open the menu
         menu.Popup_();
         // wait for ability selected
@@ -22,13 +32,7 @@ public partial class Crawler : Node2D
         (FindNode("AbilitiesMenu") as Popup).Hide();
 
         // Get player action
-        Action action;
-        switch (id)
-        {
-            case 0 : action = new MoveAction(); break;
-            case 1 : action = new AttackAction(); break;
-            default : return;
-        }
+        Action action = model.GetPlayer().abilities[id];
 
         // if aimed, shenanigans
         if (action is ActionTargeted temp)

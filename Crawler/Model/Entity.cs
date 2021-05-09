@@ -42,6 +42,10 @@ public class Entity
         {
             abilities.Add(new AttackAction(data));
         }
+        foreach (string ability in this.species.abilities)
+        {
+            abilities.Add((Action)Activator.CreateInstance(Type.GetType(ability)));
+        }
     }
 
     public void ResetCombo()
@@ -128,6 +132,10 @@ public class Entity
         foreach (AttackData data in this.species.attacks)
         {
             abilities.Add(new AttackAction(data));
+        }
+        foreach (string ability in this.species.abilities)
+        {
+            abilities.Add((Action)Activator.CreateInstance(Type.GetType(ability)));
         }
     }
 }

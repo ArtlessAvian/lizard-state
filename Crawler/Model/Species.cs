@@ -10,6 +10,7 @@ public class Species : Resource
 
     [Export] public AttackData bumpAttack;
     [Export] public List<AttackData> attacks;
+    [Export] public List<string> abilities;
 
     // Stat Block
     [Export] public int maxHealth = 30;

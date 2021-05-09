@@ -10,5 +10,6 @@ isPlayer = false
 aiType = "PartnerAI"
 bumpAttack = ExtResource( 2 )
 attacks = null
+abilities = null
 maxHealth = 10
 displayName = "Enemy"
