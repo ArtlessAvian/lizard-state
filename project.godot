@@ -10,7 +10,6 @@ config_version=4
 
 _global_script_classes=[  ]
 _global_script_class_icons={
-
 }
 
 [application]
@@ -21,7 +20,7 @@ config/icon="res://icon.png"
 
 [debug]
 
-settings/fps/force_fps=120
+settings/fps/force_fps=60
 
 [display]
 
@@ -175,6 +174,7 @@ modifier_skip={
 
 [rendering]
 
-quality/2d/use_pixel_snap=true
+2d/snapping/use_gpu_pixel_snap=true
 environment/default_clear_color=Color( 0.117647, 0.117647, 0.117647, 1 )
 environment/default_environment="res://default_env.tres"
+quality/2d/use_pixel_snap=true

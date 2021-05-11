@@ -28,12 +28,12 @@ public class MessageLog : RichTextLabel
         {
             Actor subject = roles[ev.subject];
             Actor obj = roles[ev.obj];
-            this.AppendBbcode($"\n * {subject.Name} misses the {obj.Name}.");
+            this.AppendBbcode($"\n * {subject.displayName} misses the {obj.displayName}.");
         }
         else if (ev.action == "Downed")
         {
             Actor subject = roles[ev.subject];
-            this.AppendBbcode($"\n * {subject.Name} is downed!");
+            this.AppendBbcode($"\n * {subject.displayName} is downed!");
         }
         else if (ev.action == "Print")
         {

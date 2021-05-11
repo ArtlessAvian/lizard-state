@@ -75,5 +75,16 @@ public partial class Actor : Node2D
             ),
             1 - Mathf.Pow(1-0.3f, delta * 60f)
         );
+
+        // TODO: Temporary hiding of entities. Should be model's responsibility to hide
+        if (GetNode<TileMap>("../../../Floors/Visible").GetCell(targetPosition.x, targetPosition.y) != -1)
+        {
+            this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1-0.1f, delta * 60f));
+        }
+        else
+        {
+            this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1-0.1f, delta * 60f));
+        }
+        // End TODO
     }
 }

@@ -18,6 +18,11 @@ public class AttackAction : ActionTargeted
             GD.PrintErr($"{e.species.ResourcePath} missing attacks?");
         }
 
+        if (e.energy < this.data.energy)
+        {
+            return false;
+        }
+
         // TODO: Replace with raycast.
         Entity targeted = api.GetEntityAt(target);
         if ((targeted is null) || targeted == e)
@@ -29,6 +34,8 @@ public class AttackAction : ActionTargeted
         {
             return false;
         }
+
+        e.energy -= this.data.energy;
 
         api.NewEvent(new ModelEvent(-1, "Wait"));
         
