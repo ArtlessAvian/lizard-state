@@ -19,6 +19,7 @@ public partial class Crawler : Node2D
         {
             // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
             EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
+            // RandomGenerator gen = new RandomGenerator();
             model = gen.Generate(View.eventQueue);
         }
     }
@@ -27,6 +28,11 @@ public partial class Crawler : Node2D
     {
         uint start = OS.GetTicksMsec();
         this.RunModel(start);
+
+        if (Input.IsKeyPressed((int)KeyList.F1))
+        {
+            View.GetNode("Map/Floors").Set("tile_data", model.map.map.Get("tile_data"));
+        }
     }
 
     private void RunModel(uint start)

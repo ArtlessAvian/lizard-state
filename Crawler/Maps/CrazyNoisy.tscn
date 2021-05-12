@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Crawler/View/Assets/Test2.tres" type="TileSet" id=1]
 
@@ -11,6 +11,15 @@ width = 800
 height = 800
 noise = SubResource( 1 )
 
+[sub_resource type="OpenSimplexNoise" id=3]
+octaves = 1
+period = 7.5
+
+[sub_resource type="NoiseTexture" id=4]
+width = 70
+height = 70
+noise = SubResource( 3 )
+
 [node name="Map" type="TileMap"]
 position = Vector2( -16, -12 )
 tile_set = ExtResource( 1 )
@@ -22,7 +31,14 @@ __meta__ = {
 }
 
 [node name="Sprite" type="Sprite" parent="."]
+visible = false
+position = Vector2( 16, 12 )
+scale = Vector2( 4, 3 )
+texture = SubResource( 2 )
+
+[node name="Sprite2" type="Sprite" parent="."]
+visible = false
 show_behind_parent = true
 position = Vector2( 16, 12 )
-scale = Vector2( 3, 2 )
-texture = SubResource( 2 )
+scale = Vector2( 32, 24 )
+texture = SubResource( 4 )
