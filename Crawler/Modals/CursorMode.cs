@@ -64,7 +64,8 @@ public class CursorMode : Control
         Node2D cursor = this.GetNodeOrNull<Node2D>(cursorSprite);
         if (cursor != null)
         {
-            cursor.Position = new Vector2((position.x + 0.5f) * View.TILESIZE.x, (position.y + 0.5f) * View.TILESIZE.y);
+            // cursor.Position = new Vector2((position.x + 0.5f) * View.TILESIZE.x, (position.y + 0.5f) * View.TILESIZE.y);
+            cursor.Position = new Vector2((position.x) * View.TILESIZE.x, (position.y) * View.TILESIZE.y);
         }
         
         this.EmitSignal("Moved", position.x, position.y);

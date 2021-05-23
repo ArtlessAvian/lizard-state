@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Map
 {
     // hehe parasitic inheritance.
-    public TileMap map;
+    public TileMap map; // creates orphan nodes >:/
     public TileMap fog;
 
     private const int REVEALED = 0;

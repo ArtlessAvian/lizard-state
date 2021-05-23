@@ -31,6 +31,8 @@ public class EditorGenerator : LevelGenerator
             "tile_data",
             map.Get("tile_data")
         );
+
+        map.QueueFree();
     }
 
     public void GenerateEntities(Model model, List<ModelEvent> eventQueue)
