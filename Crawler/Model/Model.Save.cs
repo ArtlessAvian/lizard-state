@@ -23,4 +23,6 @@ public partial class Model
         }
         return dict;
     }
+
+    // To load, use the LoadedGenerator.
 }

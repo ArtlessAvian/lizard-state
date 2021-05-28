@@ -35,6 +35,7 @@ public partial class Crawler : Node2D
         }
         if (ev.IsActionPressed("quickload", false))
         {
+            // TODO: Replace with model swap, view refresh.
             PackedScene crawlerScene = GD.Load<PackedScene>("res://Crawler/Crawler.tscn");
 
             Crawler crawler = (Crawler)crawlerScene.Instance();

@@ -2,6 +2,10 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Stores map and vision information.
+/// Maybe ask the 
+/// </summary>
 public class Map
 {
     // hehe parasitic inheritance.

@@ -2,6 +2,12 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// How actions get information from the model.
+/// </summary>
+// Honestly could be kind of pointless. Maybe just give actions full information about the model?
+// I'm not doing any unit testing shenanigans, so Model is the only implementation.
+// TODO: Rename ModelQueries? I dunno.
 public interface ModelAPI
 {
     void NewEvent(ModelEvent ev);

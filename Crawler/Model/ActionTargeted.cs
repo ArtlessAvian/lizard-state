@@ -1,3 +1,7 @@
+
+/// <summary>
+/// Action, with stuff for convenience.
+/// </summary>
 public abstract class ActionTargeted : Action
 {
     protected (int x, int y) target = (0, 0);

@@ -3,23 +3,24 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Plain(ish?) object. Should contains little logic.
+/// </summary>
 public class Entity
 {
     public int id;
-
-    public (int x, int y) position;
-    public int nextMove = 0;
-
     public Species species;
     public AI ai;
 
-    public List<Action> abilities;
+    public (int x, int y) position;
+    public int nextMove = 0;
 
     public int health;
     public bool stunned;
     public bool downed = false;
 
     public int energy = 10;
+    public List<Action> abilities;
 
     public int team;
     public bool providesVision;
