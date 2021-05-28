@@ -52,7 +52,7 @@ public partial class View : Node2D
             }
 
             // Everything gets sent to the logs.
-            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.args + " " + ev.obj);
+            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.obj + " " + ev.args);
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
         }
     }
@@ -65,6 +65,7 @@ public partial class View : Node2D
             Entity entity = ev.args as Entity;
             Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
             roles.Add(puppet);
+            puppet.Name = entity.id.ToString();
             puppet.InitializeWithEntity(entity);
             FindNode("Actors").AddChild(puppet);
         }

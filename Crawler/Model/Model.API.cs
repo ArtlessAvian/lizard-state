@@ -6,6 +6,9 @@ public interface ModelAPI
 {
     void NewEvent(ModelEvent ev);
 
+    // Maybe make MapAPI. (MapQueries?)
+    Map GetMap();
+
     Entity GetEntity(int id);
     Entity GetPlayer();
     Entity GetEntityAt((int x, int y) position);
@@ -22,6 +25,11 @@ public partial class Model : ModelAPI
     public void NewEvent(ModelEvent ev)
     {
         eventQueue.Add(ev);
+    }
+
+    public Map GetMap()
+    {
+        return this.map;
     }
 
     public Entity GetEntity(int id)

@@ -46,5 +46,3 @@ margin_bottom = 10.0
 cursorSprite = NodePath("../../Cursor")
 
 [connection signal="id_pressed" from="Modals/AbilitiesMenu" to="." method="AbilitySelected"]
-
-[editable path="View"]

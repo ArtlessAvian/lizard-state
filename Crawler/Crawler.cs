@@ -51,6 +51,11 @@ public partial class Crawler : Node2D
                 GD.PrintErr("Timed out!");
                 break;
             }
+
+            // if model.done
+            // generate new model
+            // replace model
+            // clear view
         }
     }
 }
