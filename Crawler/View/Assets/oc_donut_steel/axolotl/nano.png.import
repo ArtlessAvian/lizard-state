@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/idle.png-44fb6ef86d1211b5668adf08a7d4e708.stex"
+path="res://.import/nano.png-3c10161c6eef001eb6c88f54cd811dd4.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Crawler/View/Assets/oc_donut_steel/axolotl/idle.png"
-dest_files=[ "res://.import/idle.png-44fb6ef86d1211b5668adf08a7d4e708.stex" ]
+source_file="res://Crawler/View/Assets/oc_donut_steel/axolotl/nano.png"
+dest_files=[ "res://.import/nano.png-3c10161c6eef001eb6c88f54cd811dd4.stex" ]
 
 [params]
 
