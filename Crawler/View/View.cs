@@ -82,8 +82,22 @@ public partial class View : Node2D
         if (ev.action == "Create")
         {
             Entity entity = ev.args as Entity;
-            Actor actor = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
 
+            // Find the actor, else, get a generic actor and try to recolor it i guess
+            // TODO: don't make a new directory every time.
+            Actor actor;
+            if (new Godot.Directory().FileExists($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn"))
+            {
+                actor = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
+            }
+            else
+            {
+                actor = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
+                actor.GetNode<AnimatedSprite>("AnimatedSprite").Frames =
+                        GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{entity.species.ResourceName}.tres");
+                        // TODO: Put ActorData in Assets or something.
+            }
+            
             roles.Add(actor);
             actor.Name = entity.id.ToString();
             actor.ActAs(entity);
