@@ -60,7 +60,6 @@ position = Vector2( 16, 12 )
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="MessageLog" type="RichTextLabel" parent="UILayer"]
-visible = false
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -92,7 +91,6 @@ __meta__ = {
 }
 
 [node name="Time" type="RichTextLabel" parent="UILayer"]
-visible = false
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -210.0
@@ -118,6 +116,7 @@ __meta__ = {
 }
 
 [node name="DebugLog" type="RichTextLabel" parent="UILayer"]
+visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 10.0

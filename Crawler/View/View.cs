@@ -6,33 +6,42 @@ public partial class View : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);
 
+    public Model model = new Model();
+
     public List<ModelEvent> eventQueue;
-    List<Actor> roles;
+    public List<Actor> roles = new List<Actor>();
 
     // convenience
     public Actor playerActor;
     // super buggy but convenient
-    public bool impatientMode = false;
+    public bool impatientMode = true;
 
-    View()
-    {
-        eventQueue = new List<ModelEvent>();
-        roles = new List<Actor>();
-    }
+    bool queueSync = false;
 
     public override void _Ready()
     {
-        this.ClearQueue();
-        playerActor = roles[0];
-        GetNode<CrawlerCamera>("Camera2D").focus = playerActor;
+        this.eventQueue = model.eventQueue;
     }
 
     public override void _Process(float delta)
     {
-        this.ClearQueue();
+        if (eventQueue.Count > 0)
+        {
+            this.ClearQueue();
+            if (eventQueue.Count == 0)
+            {
+                queueSync = true;
+            }
+        }
+
+        if (queueSync && !this.AnyActorAnimating())
+        {
+            queueSync = false;
+            this.ModelSync();
+        }
     }
 
-    private void ClearQueue()
+    public void ClearQueue()
     {
         while (eventQueue.Count > 0)
         {
@@ -57,17 +66,36 @@ public partial class View : Node2D
         }
     }
 
+    private void ModelSync()
+    {
+        // Sync things with model.
+        GD.Print("Sync!", model.time);
+
+        foreach (Actor a in roles)
+        {
+            a.ModelSync();
+        }
+    }
+
     private void HandleNonActorEvent(ModelEvent ev)
     {
         if (ev.action == "Create")
         {
-            // This entity info should never be abused outside this section!!
             Entity entity = ev.args as Entity;
-            Actor puppet = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
-            roles.Add(puppet);
-            puppet.Name = entity.id.ToString();
-            puppet.InitializeWithEntity(entity);
-            FindNode("Actors").AddChild(puppet);
+            Actor actor = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
+
+            roles.Add(actor);
+            actor.Name = entity.id.ToString();
+            actor.ActAs(entity);
+
+            FindNode("Actors").AddChild(actor);
+
+            // HACK: lmao
+            if (entity.id == 0)
+            {
+                playerActor = actor;
+                GetNode<CrawlerCamera>("Camera2D").focus = actor;
+            }
         }
 
         else if (ev.action == "SeeMap")

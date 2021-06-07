@@ -40,7 +40,7 @@ public partial class Crawler : Node2D
             View view = (View)viewScene.Instance();
 
             LoadedGenerator gen = new LoadedGenerator(temp);
-            this.model = gen.Generate(view.eventQueue);
+            gen.Generate(view.model);
 
             View old = this.GetNode<View>("View");
             this.RemoveChild(old);
@@ -59,7 +59,7 @@ public partial class Crawler : Node2D
 
         foreach ((string name, (int, int) dir) tuple in directions)
         {
-            if (ev.IsActionPressed(tuple.name, false))
+            if (ev.IsActionPressed(tuple.name, true))
             {
                 bool success = MoveOrAttack(tuple.dir);
                 notPlayerTurn = true;

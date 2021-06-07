@@ -11,15 +11,15 @@ public class NoiseGenerator : LevelGenerator
     {
     }
 
-    public Model Generate(List<ModelEvent> eventQueue)
+    public Model Generate(Model model)
     {
-        Model model = new Model(eventQueue, this.SaveToDict());
-        GenerateMap(model, eventQueue);
-        GenerateEntities(model, eventQueue);
+        model.generatorData = this.SaveToDict();
+        GenerateMap(model);
+        GenerateEntities(model);
         return model;
     }
 
-    public void GenerateMap(Model model, List<ModelEvent> eventQueue)
+    public void GenerateMap(Model model)
     {
         OpenSimplexNoise noise = new OpenSimplexNoise();
         noise.Period = 5;
@@ -50,7 +50,7 @@ public class NoiseGenerator : LevelGenerator
         }
     }
 
-    public void GenerateEntities(Model model, List<ModelEvent> eventQueue)
+    public void GenerateEntities(Model model)
     {
         Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;

@@ -34,19 +34,20 @@ public struct ModelEvent
 public partial class Model
 {
     // Everything is saved!!
-    List<Entity> entities;
     public int time = 0;
-    Dictionary generatorData; // TODO: Remove generator shenanigans.
+
+    List<Entity> entities;
     public Map map;
 
-    private List<ModelEvent> eventQueue;
+    // given to model by generator
+    public Dictionary generatorData;
+    public List<ModelEvent> eventQueue;
 
-    public Model(List<ModelEvent> eventQueue, Dictionary generatorData)
+    public Model()
     {
         map = new Map();
         entities = new List<Entity>();
-        this.generatorData = generatorData;
-        this.eventQueue = eventQueue;
+        eventQueue = new List<ModelEvent>();
     }
 
     public void AddEntity(Entity e)

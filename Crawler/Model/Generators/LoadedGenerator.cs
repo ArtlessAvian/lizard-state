@@ -22,11 +22,12 @@ public class LoadedGenerator : LevelGenerator
         }
     }
 
-    public Model Generate(List<ModelEvent> eventQueue)
+    public Model Generate(Model model)
     {
-        Model model = new Model(eventQueue, this.SaveToDict());
+        model.generatorData = this.SaveToDict();        
         
-        GenerateMap(model, eventQueue);
+        // Assumes the map stays constant.
+        GenerateMap(model);
 
         model.time = (int)dict["time"];
         foreach (Dictionary entityDict in (Array)dict["Entities"])
@@ -37,9 +38,9 @@ public class LoadedGenerator : LevelGenerator
         return model;
     }
 
-    public void GenerateMap(Model model, List<ModelEvent> eventQueue)
+    public void GenerateMap(Model model)
     {
-        this.generator.GenerateMap(model, eventQueue);
+        this.generator.GenerateMap(model);
     }
 
     public Dictionary SaveToDict()

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// </summary>
 public interface LevelGenerator
 {
-    Model Generate(List<ModelEvent> eventQueue);
-    void GenerateMap(Model model, List<ModelEvent> eventQueue);
+    Model Generate(Model model);
+    void GenerateMap(Model model);
     Dictionary SaveToDict();
 }

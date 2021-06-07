@@ -5,6 +5,8 @@ using System.Collections.Generic;
 // Like a ViewModel. Also, a pile of callbacks for the View.
 public partial class Actor : Node2D
 {
+    public Entity role;
+
     public (int x, int y) targetPosition;
     int health = 0;
     bool stunned = false;
@@ -12,26 +14,32 @@ public partial class Actor : Node2D
     // TODO: Temporary
     public string displayName;
 
-    public void InitializeWithEntity(Entity subject)
+    public void ActAs(Entity role)
     {
-        targetPosition = subject.position;
+        this.role = role;
+        ModelSync();
+    }
+
+    public void ModelSync()
+    {
+        targetPosition = role.position;
         Position = new Vector2(
             targetPosition.x * View.TILESIZE.x,
             targetPosition.y * View.TILESIZE.y
         );
 
-        health = subject.health;
+        health = role.health;
         TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-        healthbar.MaxValue = subject.species.maxHealth;
-        healthbar.Value = subject.health;
+        healthbar.MaxValue = role.species.maxHealth;
+        healthbar.Value = role.health;
 
-        stunned = subject.stunned;
+        stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
-        aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{subject.species.ResourceName}.tres");
-        aniSprite.Frame = subject.stunned ? 1 : 0;
+        // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");
+        aniSprite.Frame = role.stunned ? 1 : 0;
 
         // TODO: Temporary
-        displayName = subject.species.displayName;
+        displayName = role.species.displayName;
     }
 
     private void FaceDirection(int dx, int dy)

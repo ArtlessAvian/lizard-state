@@ -4,24 +4,26 @@ using System.Collections.Generic;
 
 public partial class Crawler : Node2D
 {
-    public Model model;
     public View View
     {
         get { return GetNode<View>("View"); }
     }
 
+    public Model model
+    {
+        get { return View.model;}
+    } // TODO: just use View.model everywhere.
+
     private bool notPlayerTurn = true;
 
-    public override void _EnterTree()
+    public override void _Ready()
     {
-        // Failsafe.
-        if (model is null)
-        {
-            // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
-            // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
-            NoiseGenerator gen = new NoiseGenerator();
-            model = gen.Generate(View.eventQueue);
-        }
+        NoiseGenerator gen = new NoiseGenerator();
+        gen.Generate(View.model);
+
+        // View.ClearQueue();
+        // View.playerActor = View.roles[0];
+        // View.GetNode<CrawlerCamera>("Camera2D").focus = View.playerActor ?? (Node2D)View;
     }
 
     public override void _Process(float delta)
