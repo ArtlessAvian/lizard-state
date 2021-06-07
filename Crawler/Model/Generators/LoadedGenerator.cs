@@ -16,6 +16,9 @@ public class LoadedGenerator : LevelGenerator
             case "Editor":
                 this.generator = new EditorGenerator(data);
                 break;
+            case "Noise":
+                this.generator = new NoiseGenerator();
+                break;
         }
     }
 

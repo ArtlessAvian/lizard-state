@@ -34,21 +34,19 @@ public partial class Crawler : Node2D
             return;
         }
         if (ev.IsActionPressed("quickload", false))
-        {
+        {        
             // TODO: Replace with model swap, view refresh.
-            PackedScene crawlerScene = GD.Load<PackedScene>("res://Crawler/Crawler.tscn");
+            PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
+            View view = (View)viewScene.Instance();
 
-            Crawler crawler = (Crawler)crawlerScene.Instance();
-        
             LoadedGenerator gen = new LoadedGenerator(temp);
-            crawler.model = gen.Generate(crawler.View.eventQueue);
+            this.model = gen.Generate(view.eventQueue);
 
-            crawler.temp = temp; // temppppp
+            View old = this.GetNode<View>("View");
+            this.RemoveChild(old);
+            old.QueueFree();
+            this.AddChild(view);
 
-            GetTree().Root.AddChild(crawler);
-            GetTree().CurrentScene = crawler;
-            this.QueueFree();
-            // GetTree().Root.RemoveChild(this);
             GetTree().SetInputAsHandled();
             return;
         }
@@ -61,16 +59,23 @@ public partial class Crawler : Node2D
 
         foreach ((string name, (int, int) dir) tuple in directions)
         {
-            if (ev.IsActionPressed(tuple.name, true))
+            if (ev.IsActionPressed(tuple.name, false))
             {
                 bool success = MoveOrAttack(tuple.dir);
                 notPlayerTurn = true;
             }
         }
+
+        if (ev.IsActionPressed("exit_action"))
+        {
+            GD.Print("befafa");
+            model.DoPlayerAction(new ExitAction());
+            notPlayerTurn = true;
+        }
     }
 
-    private void PollInput()
-    {
+    // private void PollInput()
+    // {
         // if (!Input.IsActionPressed("modifier_diagonal"))
         // {
         //     foreach ((string name, (int, int) dir) tuple in directions)
@@ -86,7 +91,7 @@ public partial class Crawler : Node2D
         // {
 
         // }
-    }
+    // }
 
     private bool MoveOrAttack((int x, int y) direction)
     {

@@ -18,8 +18,8 @@ public partial class Crawler : Node2D
         if (model is null)
         {
             // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/BigTest.tscn");
-            EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
-            // RandomGenerator gen = new RandomGenerator();
+            // EditorGenerator gen = new EditorGenerator("res://Crawler/Maps/CrazyNoisy.tscn");
+            NoiseGenerator gen = new NoiseGenerator();
             model = gen.Generate(View.eventQueue);
         }
     }

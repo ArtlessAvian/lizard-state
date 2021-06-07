@@ -10,7 +10,7 @@ public partial class Model
         dict["time"] = time;
         dict["Entities"] = SaveEntities();
         dict["generatorData"] = generatorData;
-        GD.Print(dict);
+        // GD.Print(dict);
         return dict;
     }
 

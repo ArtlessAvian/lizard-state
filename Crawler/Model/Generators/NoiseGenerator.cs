@@ -75,7 +75,7 @@ public class NoiseGenerator : LevelGenerator
     public Dictionary SaveToDict()
     {
         Dictionary dict = new Dictionary();
-        // dict["Type"] = "Editor";
+        dict["Type"] = "Noise";
         return dict;
     }
 }

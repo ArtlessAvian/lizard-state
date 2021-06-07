@@ -6,7 +6,11 @@ public class ExitAction : Action
 {
     public bool Do(ModelAPI api, Entity e)
     {
-        // GD.Print(api.GetMap().map.GetCell(e.position.x, e.position.y));
+        if (api.GetMap().map.GetCell(e.position.x, e.position.y) != 4)
+        {
+            return false;
+        }
+
         e.nextMove += 10;
         return true;
     }
