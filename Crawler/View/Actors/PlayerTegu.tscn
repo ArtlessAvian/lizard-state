@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu/tegu.png" type="Texture" id=2]
-[ext_resource path="res://Crawler/View/Assets/Visibility.png" type="Texture" id=4]
+[ext_resource path="res://Crawler/View/Assets/Tiles/Visibility.png" type="Texture" id=4]
 [ext_resource path="res://Crawler/View/DamagePopup.tscn" type="PackedScene" id=5]
 
 [sub_resource type="Animation" id=1]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Crawler/View/Assets/Test2.tres" type="TileSet" id=1]
+[ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=1]
 
 [sub_resource type="OpenSimplexNoise" id=1]
 octaves = 1

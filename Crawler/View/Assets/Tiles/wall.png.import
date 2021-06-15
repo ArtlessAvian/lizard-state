@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Visibility.png-c65f39801fec038adc2bdc15bcaebbca.stex"
+path="res://.import/wall.png-d43edf47ea5fa0967034be072f7adce5.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Crawler/View/Assets/Visibility.png"
-dest_files=[ "res://.import/Visibility.png-c65f39801fec038adc2bdc15bcaebbca.stex" ]
+source_file="res://Crawler/View/Assets/Tiles/wall.png"
+dest_files=[ "res://.import/wall.png-d43edf47ea5fa0967034be072f7adce5.stex" ]
 
 [params]
 
