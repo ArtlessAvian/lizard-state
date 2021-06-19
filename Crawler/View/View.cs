@@ -14,7 +14,7 @@ public partial class View : Node2D
     // convenience
     public Actor playerActor;
     // super buggy but convenient
-    public bool impatientMode = true;
+    public bool impatientMode = false;
 
     bool queueSync = false;
 
@@ -94,7 +94,7 @@ public partial class View : Node2D
             {
                 actor = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
                 actor.GetNode<AnimatedSprite>("AnimatedSprite").Frames =
-                        GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{entity.species.ResourceName}.tres");
+                        GD.Load<SpriteFrames>($"res://Crawler/View/Assets/ActorAtlas/{entity.species.ResourceName}.tres");
                         // TODO: Put ActorData in Assets or something.
             }
             

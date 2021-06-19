@@ -6,6 +6,8 @@ using System.Collections.Generic;
 /// <summary>
 /// Plain(ish?) object. Should contains little logic.
 /// </summary>
+// TODO: Rework Entities to have logic and to use callbacks.
+// TODO: Make Entity a class of structs?
 public class Entity
 {
     public int id;

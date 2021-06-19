@@ -28,6 +28,7 @@ public struct ModelEvent
 }
 
 /// <summary>
+/// Represents a trip somewhere and back, or a "run."
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>

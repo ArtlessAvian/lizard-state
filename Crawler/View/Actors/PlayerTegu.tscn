@@ -286,11 +286,3 @@ position = Vector2( 0, -30 )
 
 [node name="DamagePopup" parent="DamagePopups" instance=ExtResource( 5 )]
 visible = false
-
-[node name="Label" type="Label" parent="."]
-margin_right = 40.0
-margin_bottom = 11.0
-text = "Hello!"
-__meta__ = {
-"_edit_use_anchors_": false
-}
