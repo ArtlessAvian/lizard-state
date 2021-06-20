@@ -32,10 +32,10 @@ public struct ModelEvent
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>
-public partial class Model
+public partial class Model : Node
 {
     // Everything is saved!!
-    public int time = 0;
+    [Export] public int time = 0;
 
     List<Entity> entities;
     public Map map;
@@ -55,6 +55,7 @@ public partial class Model
     {
         e.id = entities.Count;
         entities.Add(e);
+        this.GetNode("Entities").AddChild(e);
         eventQueue.Add(new ModelEvent(-1, "Create", e, e.id));
 
         if (e.providesVision)

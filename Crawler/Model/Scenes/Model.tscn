@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Crawler/Model/Entity.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Model.cs" type="Script" id=2]
+
+[node name="Model" type="Node"]
+script = ExtResource( 2 )
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Node" type="Node" parent="Entities"]
+script = ExtResource( 1 )

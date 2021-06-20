@@ -6,21 +6,25 @@ public partial class View : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);
 
-    public Model model = new Model();
+    public Model model
+    {
+        get { return GetNode<Model>("Model"); }
+    }
 
     public List<ModelEvent> eventQueue;
     public List<Actor> roles = new List<Actor>();
 
     // convenience
-    public Actor playerActor;
+    [Export] public Actor playerActor;
     // super buggy but convenient
-    public bool impatientMode = false;
+    [Export] public bool impatientMode = false;
 
-    bool queueSync = false;
+    private bool queueSync = false;
 
     public override void _Ready()
     {
         this.eventQueue = model.eventQueue;
+        // AddChild(model);
     }
 
     public override void _Process(float delta)

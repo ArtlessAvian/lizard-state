@@ -8,10 +8,10 @@ using System.Collections.Generic;
 /// </summary>
 // TODO: Rework Entities to have logic and to use callbacks.
 // TODO: Make Entity a class of structs?
-public class Entity
+public class Entity : Node
 {
-    public int id;
-    public Species species;
+    [Export] public int id;
+    [Export] public Species species;
     public AI ai;
 
     public (int x, int y) position;
@@ -28,8 +28,18 @@ public class Entity
     public bool providesVision;
     public bool dirtyVision; // hehe
 
+    public Entity() {}
+
     public Entity(Species species, (int x, int y) position, int team)
     {
+        this.Construct(species, position, team);
+    }
+
+    // TODO: unhack
+    public void Construct(Species species, (int x, int y) position, int team)
+    {
+        GD.Print(position, team);
+
         this.species = species;
         this.position = position;
         this.team = team;

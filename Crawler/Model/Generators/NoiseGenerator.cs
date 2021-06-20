@@ -56,8 +56,11 @@ public class NoiseGenerator : LevelGenerator
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
-        model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
-        model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
+        model.AddEntity(playerTegu.CreateEntity((spawnX, spawnY), 0));
+        model.AddEntity(partnerAxolotl.CreateEntity((spawnX, spawnY+1), 0));
+        
+        // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
+        // model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
 
         // // model.AddEntity(new Entity(enemy, (0, 10), 1));
         // model.AddEntity(new Entity(enemy, (1, 20), 1));
@@ -68,7 +71,7 @@ public class NoiseGenerator : LevelGenerator
         for (int i = 0; i < 10; i++)
         {
             Vector2 vec = (Vector2)tiles[i+5];
-            model.AddEntity(new Entity(enemy, ((int)vec.x, (int)vec.y), 1));
+            model.AddEntity(enemy.CreateEntity(((int)vec.x, (int)vec.y), 1));
         }
     }
 
