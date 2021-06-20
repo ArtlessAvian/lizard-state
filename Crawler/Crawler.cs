@@ -2,7 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-public partial class Crawler : Node2D
+public class Crawler : Node2D, InputStateMachine
 {
     public View View
     {
@@ -12,20 +12,18 @@ public partial class Crawler : Node2D
     public Model Model
     {
         get { return GetNode<Model>("Model");}
-    } // TODO: just use View.model everywhere.
+    }
 
-    private bool notPlayerTurn = true;
+    public InputState activeInputState;
+    public bool notPlayerTurn = true;
 
     public override void _Ready()
     {
         Model.NewEvent += View.eventQueue.Add; // So clean!!
+        activeInputState = GetNode<InputState>("InputStates/Main");
 
         NoiseGenerator gen = new NoiseGenerator();
         gen.Generate(Model);
-
-        // View.ClearQueue();
-        // View.playerActor = View.roles[0];
-        // View.GetNode<CrawlerCamera>("Camera2D").focus = View.playerActor ?? (Node2D)View;
     }
 
     public override void _Process(float delta)
@@ -61,5 +59,34 @@ public partial class Crawler : Node2D
             // replace model
             // clear view
         }
+    }
+
+    public override void _UnhandledInput(InputEvent ev)
+    {
+        if (notPlayerTurn) { return; }
+        if (View.eventQueue.Count > 0) { return; }
+        foreach (Control p in FindNode("Modals").GetChildren())
+        {
+            if (p.Visible) { return; }
+        }
+
+        activeInputState.Input(this, ev);
+    }
+
+    public void ChangeState(InputState to)
+    {
+        activeInputState.Exit(this);
+        activeInputState = to;
+        activeInputState.Enter(this);
+    }
+
+    // public void ChangeState(string to)
+    // {
+    //     this.ChangeState((InputState)GetNode<InputState>("InputStates").FindNode(to));
+    // }
+
+    public void ResetState()
+    {
+        this.ChangeState(GetNode<InputState>("InputStates/Main"));
     }
 }
