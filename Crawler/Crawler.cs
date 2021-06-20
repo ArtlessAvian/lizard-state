@@ -30,11 +30,6 @@ public class Crawler : Node2D, InputStateMachine
     {
         uint start = OS.GetTicksMsec();
         this.RunModel(start);
-
-        if (Input.IsKeyPressed((int)KeyList.F1))
-        {
-            View.GetNode("Map/Floors").Set("tile_data", Model.Map.Get("tile_data"));
-        }
     }
 
     private void RunModel(uint start)
@@ -70,7 +65,7 @@ public class Crawler : Node2D, InputStateMachine
             if (p.Visible) { return; }
         }
 
-        activeInputState.Input(this, ev);
+        activeInputState.HandleInput(this, ev);
     }
 
     public void ChangeState(InputState to)

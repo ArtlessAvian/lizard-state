@@ -24,7 +24,7 @@ public class AbilityInputState : InputState
         menu.Popup_();
     }
 
-    public override void Input(Crawler crawler, InputEvent ev)
+    public override void HandleInput(Crawler crawler, InputEvent ev)
     {
         throw new NotImplementedException();
     }

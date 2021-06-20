@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Crawler/Controller/AbilityInputState.cs" type="Script" id=7]
 [ext_resource path="res://Crawler/Controller/AbilityTargetInputState.cs" type="Script" id=8]
 [ext_resource path="res://Crawler/Cursor.cs" type="Script" id=9]
+[ext_resource path="res://Crawler/Controller/LookInputState.cs" type="Script" id=10]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
@@ -63,6 +64,8 @@ script = ExtResource( 7 )
 
 [node name="Targeting" type="Node" parent="InputStates/Main/Ability"]
 script = ExtResource( 8 )
-cursorPath = NodePath("../../../../Cursor")
+
+[node name="Look" type="Node" parent="InputStates/Main"]
+script = ExtResource( 10 )
 
 [connection signal="id_pressed" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_id_pressed"]

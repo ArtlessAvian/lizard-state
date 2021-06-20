@@ -25,6 +25,8 @@ public class NoiseGenerator : LevelGenerator
         noise.Period = 5;
         noise.Octaves = 1;
 
+        // noise.Seed = 1;
+
         for (int x = -50; x < 50; x++)
         {
             for (int y = -50; y < 50; y++)

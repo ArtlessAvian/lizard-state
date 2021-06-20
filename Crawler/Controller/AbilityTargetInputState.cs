@@ -2,21 +2,19 @@ using Godot;
 
 public class AbilityTargetInputState : InputState
 {
-    [Export]
-    NodePath cursorPath;
     Cursor cursor;
     internal ActionTargeted action;
 
     public override void Enter(Crawler crawler)
     {
-        cursor = this.GetNode<Cursor>(cursorPath);
+        cursor = crawler.GetNode<Cursor>("Cursor");
         
         cursor.targetPosition = crawler.Model.GetPlayer().position;
         cursor.SnapToTarget();
         cursor.Show();
     }
 
-    public override void Input(Crawler crawler, InputEvent ev)
+    public override void HandleInput(Crawler crawler, InputEvent ev)
     {
         foreach ((string name, (int x, int y) dir) tuple in DIRECTIONS)
         {
@@ -31,8 +29,9 @@ public class AbilityTargetInputState : InputState
         {
             action.Target(cursor.targetPosition);
             bool success = crawler.Model.DoPlayerAction(action);
+            crawler.notPlayerTurn = true;
             if (success)
-            {            
+            {
                 crawler.ResetState();
             }
             return;
@@ -46,7 +45,7 @@ public class AbilityTargetInputState : InputState
 
     public override void Exit(Crawler crawler)
     {
-        this.GetNode<Node2D>(cursorPath)?.Hide();
+        cursor.Hide();
     }
 
     public void aefajefk()

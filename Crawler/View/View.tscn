@@ -12,6 +12,7 @@ script = ExtResource( 5 )
 [node name="Camera2D" type="Camera2D" parent="."]
 process_priority = 1
 current = true
+zoom = Vector2( 0.5, 0.5 )
 script = ExtResource( 2 )
 
 [node name="Map" type="Node2D" parent="."]
@@ -62,10 +63,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -200.0
-margin_top = -70.0
-margin_right = 200.0
-margin_bottom = -10.0
+margin_left = -400.0
+margin_top = -140.0
+margin_right = 400.0
+margin_bottom = -20.0
 text = "
 
 
@@ -118,10 +119,10 @@ __meta__ = {
 visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 10.0
-margin_top = -190.0
-margin_right = 310.0
-margin_bottom = -10.0
+margin_left = 20.0
+margin_top = -380.0
+margin_right = 620.0
+margin_bottom = -20.0
 scroll_active = false
 scroll_following = true
 __meta__ = {
