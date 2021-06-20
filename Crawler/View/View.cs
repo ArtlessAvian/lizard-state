@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+// Holds a model and shows what's happening.
 public partial class View : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);

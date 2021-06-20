@@ -1,12 +1,19 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Crawler/Model/Entity.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/CrawlerMap.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Model.cs" type="Script" id=2]
+[ext_resource path="res://Crawler/View/Assets/Tiles/Numbers.tres" type="TileSet" id=3]
 
-[node name="Model" type="Node"]
+[node name="Model" type="Node2D"]
 script = ExtResource( 2 )
 
-[node name="Entities" type="Node" parent="."]
+[node name="Entities" type="Node2D" parent="."]
 
-[node name="Node" type="Node" parent="Entities"]
+[node name="Map" type="TileMap" parent="."]
+visible = false
+position = Vector2( -16, -12 )
+scale = Vector2( 0.8, 0.6 )
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 40, 40 )
+format = 1
 script = ExtResource( 1 )

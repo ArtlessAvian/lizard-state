@@ -6,18 +6,17 @@ using System.Collections.Generic;
 /// Stores map and vision information.
 /// Maybe ask the 
 /// </summary>
-public class Map
+public class CrawlerMap : TileMap
 {
     // hehe parasitic inheritance.
-    public TileMap map; // creates orphan nodes >:/
+    // creates orphan nodes >:/
     public TileMap fog;
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
 
-    public Map()
+    public CrawlerMap()
     {
-        map = new TileMap();
         fog = new TileMap(); // unrevealed tiles are -1 by default.
     }
 
@@ -42,7 +41,7 @@ public class Map
             {
                 tiles[dx + radius, dy + radius] = 
                     fog.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
-                    map.GetCell(pos.x + dx, pos.y + dy) : -2;
+                    this.GetCell(pos.x + dx, pos.y + dy) : -2;
                     // -2 and not -1, in case theres a hole in the ground or something
             }
         }
@@ -80,7 +79,7 @@ public class Map
         foreach ((int x, int y) in LineBetween(from, to))
         {
             fog.SetCell(x, y, VISIBLE);
-            if (TileIsWall(map.GetCell(x, y)))
+            if (TileIsWall(this.GetCell(x, y)))
             {
                 return;
             }

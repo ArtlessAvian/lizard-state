@@ -13,7 +13,7 @@ public interface ModelAPI
     void NewEvent(ModelEvent ev);
 
     // Maybe make MapAPI. (MapQueries?)
-    Map GetMap();
+    CrawlerMap GetMap();
 
     Entity GetEntity(int id);
     Entity GetPlayer();
@@ -33,14 +33,14 @@ public partial class Model : ModelAPI
         eventQueue.Add(ev);
     }
 
-    public Map GetMap()
+    public CrawlerMap GetMap()
     {
-        return this.map;
+        return this.Map;
     }
 
     public Entity GetEntity(int id)
     {
-        return entities[id];
+        return (Entity)Entities.GetChild(id);
     }
 
     public Entity GetPlayer()
@@ -50,7 +50,7 @@ public partial class Model : ModelAPI
 
     public Entity GetEntityAt((int x, int y) position)
     {
-        foreach (Entity e in entities)
+        foreach (Entity e in Entities.GetChildren())
         {
             // rip no tuple equality
             if (e.position.x == position.x && e.position.y == position.y && !e.downed)
@@ -64,7 +64,7 @@ public partial class Model : ModelAPI
     public List<Entity> GetEntitiesInRadius((int x, int y) position, int radius)
     {
         List<Entity> inRadius = new List<Entity>();
-        foreach (Entity e in entities)
+        foreach (Entity e in Entities.GetChildren())
         {
             if (Distance(position, e.position) <= radius)
             {
@@ -77,7 +77,7 @@ public partial class Model : ModelAPI
     // TODO: Disallow corner cutting?
     public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
     {
-        return !Map.TileIsWall(map.map.GetCell(position2.x, position2.y));
+        return !CrawlerMap.TileIsWall(Map.GetCell(position2.x, position2.y));
     }
 
     public int Distance((int x, int y) pos, (int x, int y) pos2)

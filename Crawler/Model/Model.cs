@@ -37,8 +37,15 @@ public partial class Model : Node
     // Everything is saved!!
     [Export] public int time = 0;
 
-    List<Entity> entities;
-    public Map map;
+    public CrawlerMap Map
+    {
+        get { return GetNode<CrawlerMap>("Map"); }
+    }
+
+    public Node Entities
+    {
+        get { return GetNode("Entities"); } 
+    }
 
     // given to model by generator
     public Dictionary generatorData;
@@ -46,21 +53,19 @@ public partial class Model : Node
 
     public Model()
     {
-        map = new Map();
-        entities = new List<Entity>();
         eventQueue = new List<ModelEvent>();
     }
 
     public void AddEntity(Entity e)
     {
-        e.id = entities.Count;
-        entities.Add(e);
-        this.GetNode("Entities").AddChild(e);
+        e.id = Entities.GetChildCount();
+        Entities.AddChild(e);
+
         eventQueue.Add(new ModelEvent(-1, "Create", e, e.id));
 
         if (e.providesVision)
         {
-            NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 5))));
+            NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
         }
     }
 
@@ -118,11 +123,11 @@ public partial class Model : Node
     /// </summary>
     private void VisionEvent()
     {
-        foreach (Entity e in entities)
+        foreach (Entity e in Entities.GetChildren())
         {
             if (e.dirtyVision)
             {
-                NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, map.GetVisibleTiles(e.position, 5))));
+                NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
                 e.dirtyVision = false;
             }
         }
@@ -130,8 +135,8 @@ public partial class Model : Node
 
     private Entity NextEntity()
     {
-        Entity result = entities[0];
-        foreach (Entity e in entities)
+        Entity result = GetEntity(0);
+        foreach (Entity e in Entities.GetChildren())
         {
             if (e.nextMove == -1) { continue; }
             if (e.nextMove < result.nextMove)

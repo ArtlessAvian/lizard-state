@@ -33,7 +33,7 @@ public partial class Crawler : Node2D
 
         if (Input.IsKeyPressed((int)KeyList.F1))
         {
-            View.GetNode("Map/Floors").Set("tile_data", model.map.map.Get("tile_data"));
+            View.GetNode("Map/Floors").Set("tile_data", model.Map.Get("tile_data"));
         }
     }
 

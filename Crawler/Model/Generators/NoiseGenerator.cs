@@ -34,7 +34,7 @@ public class NoiseGenerator : LevelGenerator
                 {
                     if (sample > 0.5)
                     {
-                        model.map.map.SetCell(x, y, (int)(3));
+                        model.Map.SetCell(x, y, (int)(3));
                         if (spawnX == 0 && spawnY == 0)
                         {
                             spawnX = x;
@@ -43,7 +43,7 @@ public class NoiseGenerator : LevelGenerator
                     }
                     else
                     {
-                        model.map.map.SetCell(x, y, (int)(sample * 1));
+                        model.Map.SetCell(x, y, (int)(sample * 1));
                     }
                 }
             }
@@ -66,7 +66,7 @@ public class NoiseGenerator : LevelGenerator
         // model.AddEntity(new Entity(enemy, (1, 20), 1));
         // model.AddEntity(new Entity(enemy, (2, 20), 1));
 
-        Array tiles = model.map.map.GetUsedCellsById(3);
+        Array tiles = model.Map.GetUsedCellsById(3);
         tiles.Shuffle();
         for (int i = 0; i < 10; i++)
         {

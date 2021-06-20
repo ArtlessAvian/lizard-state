@@ -29,7 +29,7 @@ public class MapView : Node2D
                 int tile = tiles[dx + r, dy + r];
                 if (tile != -2)
                 {
-                    if (Map.TileIsWall(tile))
+                    if (CrawlerMap.TileIsWall(tile))
                     {
                         walls.SetCell(center.x + dx, center.y + dy, tile != -1 ? tile : 6);
                     }
@@ -60,7 +60,7 @@ public class MapView : Node2D
                     int tile = tiles[dx + r, dy + r];
                     if (tile != -2)
                     {
-                        if (Map.TileIsWall(tile))
+                        if (CrawlerMap.TileIsWall(tile))
                         {
                             wallsVisible.SetCell(center.x + dx, center.y + dy, tile != -1 ? tile : 6);
                         }
