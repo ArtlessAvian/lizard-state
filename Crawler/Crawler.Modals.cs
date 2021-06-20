@@ -15,7 +15,7 @@ public partial class Crawler : Node2D
             menu.AddSeparator("Abilities");
             
             int id = 0;
-            foreach (Action a in model.GetPlayer().abilities)
+            foreach (Action a in Model.GetPlayer().abilities)
             {
                 menu.AddItem(a.GetType().Name, id);
                 id++;
@@ -32,7 +32,7 @@ public partial class Crawler : Node2D
         (FindNode("AbilitiesMenu") as Popup).Hide();
 
         // Get player action
-        Action action = model.GetPlayer().abilities[id];
+        Action action = Model.GetPlayer().abilities[id];
 
         // if aimed, shenanigans
         if (action is ActionTargeted temp)
@@ -42,13 +42,13 @@ public partial class Crawler : Node2D
 
             // activate and initialize cursor
             CursorMode cursorMode = FindNode("Modals").GetNode<CursorMode>("CursorMode");
-            cursorMode.Enter(model.GetPlayer().position);
+            cursorMode.Enter(Model.GetPlayer().position);
             cursorMode.Connect("Select", this, "AbilityTargeted");
             return; // wait for ability targeted
         }
         else // just run it directly
         {
-            model.DoPlayerAction(action);
+            Model.DoPlayerAction(action);
             notPlayerTurn = true;
         }
     }
@@ -63,7 +63,7 @@ public partial class Crawler : Node2D
 
         // Do the move
         actionTargeting.Target((x, y));
-        model.DoPlayerAction(actionTargeting);
+        Model.DoPlayerAction(actionTargeting);
         notPlayerTurn = true;
     }
 }

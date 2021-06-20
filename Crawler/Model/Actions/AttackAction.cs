@@ -37,9 +37,9 @@ public class AttackAction : ActionTargeted
 
         e.energy -= this.data.energy;
 
-        api.NewEvent(new ModelEvent(-1, "Wait"));
+        api.ApiEvent(new ModelEvent(-1, "Wait"));
         
-        api.NewEvent(new ModelEvent(e.id, "StartAttack", target));
+        api.ApiEvent(new ModelEvent(e.id, "StartAttack", target));
         
         AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
         targeted.GetAttacked(api, result, e.id);
@@ -47,7 +47,7 @@ public class AttackAction : ActionTargeted
         // TODO: e is possibly null. Investigate?
         e.nextMove += 10;
 
-        api.NewEvent(new ModelEvent(-1, "Wait"));
+        api.ApiEvent(new ModelEvent(-1, "Wait"));
         return true;
     }
 }

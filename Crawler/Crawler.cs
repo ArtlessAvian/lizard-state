@@ -9,17 +9,19 @@ public partial class Crawler : Node2D
         get { return GetNode<View>("View"); }
     }
 
-    public Model model
+    public Model Model
     {
-        get { return View.model;}
+        get { return GetNode<Model>("Model");}
     } // TODO: just use View.model everywhere.
 
     private bool notPlayerTurn = true;
 
     public override void _Ready()
     {
+        Model.NewEvent += View.eventQueue.Add; // So clean!!
+
         NoiseGenerator gen = new NoiseGenerator();
-        gen.Generate(View.model);
+        gen.Generate(Model);
 
         // View.ClearQueue();
         // View.playerActor = View.roles[0];
@@ -33,7 +35,7 @@ public partial class Crawler : Node2D
 
         if (Input.IsKeyPressed((int)KeyList.F1))
         {
-            View.GetNode("Map/Floors").Set("tile_data", model.Map.Get("tile_data"));
+            View.GetNode("Map/Floors").Set("tile_data", Model.Map.Get("tile_data"));
         }
     }
 
@@ -41,7 +43,7 @@ public partial class Crawler : Node2D
     {
         while (notPlayerTurn) // and not timed out
         {
-            if (!model.DoEntityAction())
+            if (!Model.DoEntityAction())
             {
                 // let the player move again.
                 notPlayerTurn = false;

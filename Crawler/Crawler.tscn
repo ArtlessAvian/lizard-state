@@ -1,12 +1,16 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Crawler/View/Assets/cursor.png" type="Texture" id=3]
 [ext_resource path="res://Crawler/Modals/CursorMode.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Crawler/Controller/MainInputState.cs" type="Script" id=5]
+[ext_resource path="res://Crawler/Model/Scenes/Model.tscn" type="PackedScene" id=6]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
+
+[node name="Model" parent="." instance=ExtResource( 6 )]
 
 [node name="View" parent="." instance=ExtResource( 2 )]
 
@@ -44,5 +48,10 @@ margin_top = 10.0
 margin_right = 10.0
 margin_bottom = 10.0
 cursorSprite = NodePath("../../Cursor")
+
+[node name="InputStates" type="Node" parent="."]
+
+[node name="Main" type="Node" parent="InputStates"]
+script = ExtResource( 5 )
 
 [connection signal="id_pressed" from="Modals/AbilitiesMenu" to="." method="AbilitySelected"]

@@ -29,23 +29,23 @@ public partial class Crawler : Node2D
 
         if (ev.IsActionPressed("quicksave", false))
         {
-            temp = model.SaveToDictionary();
+            temp = Model.SaveToDictionary();
             GetTree().SetInputAsHandled();
             return;
         }
         if (ev.IsActionPressed("quickload", false))
         {        
-            // TODO: Replace with model swap, view refresh.
+            // TODO: Fix.
             PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
             View view = (View)viewScene.Instance();
-
-            LoadedGenerator gen = new LoadedGenerator(temp);
-            gen.Generate(view.model);
 
             View old = this.GetNode<View>("View");
             this.RemoveChild(old);
             old.QueueFree();
             this.AddChild(view);
+
+            LoadedGenerator gen = new LoadedGenerator(temp);
+            gen.Generate(Model);
 
             GetTree().SetInputAsHandled();
             return;
@@ -69,7 +69,7 @@ public partial class Crawler : Node2D
         if (ev.IsActionPressed("exit_action"))
         {
             GD.Print("befafa");
-            model.DoPlayerAction(new ExitAction());
+            Model.DoPlayerAction(new ExitAction());
             notPlayerTurn = true;
         }
     }
@@ -95,14 +95,14 @@ public partial class Crawler : Node2D
 
     private bool MoveOrAttack((int x, int y) direction)
     {
-        Entity player = model.GetPlayer();
+        Entity player = Model.GetPlayer();
         (int x, int y) offset = (player.position.x + direction.x, player.position.y + direction.y);
-        Entity entityAt = model.GetEntityAt(offset);
+        Entity entityAt = Model.GetEntityAt(offset);
 
         if (entityAt != null && entityAt.team != player.team)
         {
-            return model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
+            return Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
         }
-        return model.DoPlayerAction(new MoveAction().Target(offset));
+        return Model.DoPlayerAction(new MoveAction().Target(offset));
     }
 }

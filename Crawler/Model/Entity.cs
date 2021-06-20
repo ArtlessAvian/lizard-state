@@ -70,17 +70,17 @@ public class Entity : Node
     {
         if (result.damage == 0)
         {
-            api.NewEvent(new ModelEvent(attackerID, "Miss", result, this.id));
+            api.ApiEvent(new ModelEvent(attackerID, "Miss", result, this.id));
         }
         else
         {
-            api.NewEvent(new ModelEvent(attackerID, "Hit", result, this.id));
+            api.ApiEvent(new ModelEvent(attackerID, "Hit", result, this.id));
 
             this.health -= result.damage;
 
             if (this.health <= 0)
             {
-                api.NewEvent(new ModelEvent(id, "Downed"));
+                api.ApiEvent(new ModelEvent(id, "Downed"));
                 this.downed = true;
                 this.nextMove = -1;
             }

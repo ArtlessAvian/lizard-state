@@ -49,7 +49,7 @@ public class MoveAction : ActionTargeted
         // TODO: Maybe put elsewhere.
         e.dirtyVision |= e.providesVision;
 
-        api.NewEvent(new ModelEvent(e.id, "Move", e.position));
+        api.ApiEvent(new ModelEvent(e.id, "Move", e.position));
     }
 
     private void DoSwap(ModelAPI api, Entity e, Entity teammate)
@@ -62,9 +62,9 @@ public class MoveAction : ActionTargeted
         e.dirtyVision |= e.providesVision;
         teammate.dirtyVision |= teammate.providesVision;
 
-        api.NewEvent(new ModelEvent(-1, "Wait"));
+        api.ApiEvent(new ModelEvent(-1, "Wait"));
         // api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {teammate.species.displayName}."));
-        api.NewEvent(new ModelEvent(e.id, "Swap", teammate.position, teammate.id));
-        api.NewEvent(new ModelEvent(-1, "Wait"));
+        api.ApiEvent(new ModelEvent(e.id, "Swap", teammate.position, teammate.id));
+        api.ApiEvent(new ModelEvent(-1, "Wait"));
     }
 }

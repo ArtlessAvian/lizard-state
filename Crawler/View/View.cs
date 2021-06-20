@@ -7,12 +7,7 @@ public partial class View : Node2D
 {
     public static (int x, int y) TILESIZE = (32, 24);
 
-    public Model model
-    {
-        get { return GetNode<Model>("Model"); }
-    }
-
-    public List<ModelEvent> eventQueue;
+    public List<ModelEvent> eventQueue = new List<ModelEvent>();
     public List<Actor> roles = new List<Actor>();
 
     // convenience
@@ -24,8 +19,6 @@ public partial class View : Node2D
 
     public override void _Ready()
     {
-        this.eventQueue = model.eventQueue;
-        // AddChild(model);
     }
 
     public override void _Process(float delta)
@@ -74,7 +67,7 @@ public partial class View : Node2D
     private void ModelSync()
     {
         // Sync things with model.
-        GD.Print("Sync!", model.time);
+        // GD.Print("Sync!");
 
         foreach (Actor a in roles)
         {

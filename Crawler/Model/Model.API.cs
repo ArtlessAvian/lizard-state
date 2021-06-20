@@ -10,7 +10,7 @@ using System.Collections.Generic;
 // TODO: Rename ModelQueries? I dunno.
 public interface ModelAPI
 {
-    void NewEvent(ModelEvent ev);
+    void ApiEvent(ModelEvent ev);
 
     // Maybe make MapAPI. (MapQueries?)
     CrawlerMap GetMap();
@@ -28,9 +28,9 @@ public interface ModelAPI
 
 public partial class Model : ModelAPI
 {
-    public void NewEvent(ModelEvent ev)
+    public void ApiEvent(ModelEvent ev)
     {
-        eventQueue.Add(ev);
+        this.NewEvent(ev);
     }
 
     public CrawlerMap GetMap()

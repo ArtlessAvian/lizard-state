@@ -49,23 +49,22 @@ public partial class Model : Node
 
     // given to model by generator
     public Dictionary generatorData;
-    public List<ModelEvent> eventQueue;
 
-    public Model()
-    {
-        eventQueue = new List<ModelEvent>();
-    }
+    public delegate void EventHandler(ModelEvent ev);
+    public EventHandler NewEvent;
+
+    // public Model() {}
 
     public void AddEntity(Entity e)
     {
         e.id = Entities.GetChildCount();
         Entities.AddChild(e);
 
-        eventQueue.Add(new ModelEvent(-1, "Create", e, e.id));
+        this.NewEvent(new ModelEvent(-1, "Create", e, e.id));
 
         if (e.providesVision)
         {
-            NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
+            this.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
         }
     }
 
@@ -85,7 +84,7 @@ public partial class Model : Node
         bool success = action.Do(this, e);
         if (!success)
         {
-            eventQueue.Add(new ModelEvent(-1, "Print", "Can't do that!"));
+            this.NewEvent(new ModelEvent(-1, "Print", "Can't do that!"));
             return false;
         }
         
