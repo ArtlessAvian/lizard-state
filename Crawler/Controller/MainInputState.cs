@@ -5,6 +5,15 @@ public class MainInputState : InputState
 {
     Dictionary temp;
 
+    Cursor cursor;
+    Camera2D camera;
+
+    public override void Enter(Crawler crawler)
+    {
+        cursor = crawler.GetNode<Cursor>("Cursor");
+        camera = crawler.View.GetNode<Camera2D>("Camera2D");
+    }
+
     public override void HandleInput(Crawler crawler, InputEvent ev)
     {
         if (this.DebugInput(crawler, ev))
@@ -87,6 +96,35 @@ public class MainInputState : InputState
             crawler.notPlayerTurn = true;
             return true;
         }
+
+        if (ev is InputEventMouse evMouse)
+        {
+            // is it possible to get it from the thing instead?
+            Vector2 mousePos = crawler.GetGlobalMousePosition();
+            // Temporary.
+            cursor.targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
+            cursor.targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
+            cursor.Show();
+
+            // Draw a path between the player and the target.
+        }
+
+        if (ev is InputEventMouseButton evMouseButton)
+        {
+            if (evMouseButton.ButtonIndex == (int)ButtonList.Left && evMouseButton.IsPressed())
+            {
+                Vector2 mousePos = crawler.GetGlobalMousePosition();
+                (int x, int y) targetPosition;
+                targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
+                targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
+                
+                GD.Print(targetPosition);
+                // If the target is one tile away,
+                    // Try Attacking
+                    // Try Moving
+                // Path to the target.
+            } 
+        }
         
         return false;
     }
@@ -102,11 +140,6 @@ public class MainInputState : InputState
             return crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
         }
         return crawler.Model.DoPlayerAction(new MoveAction().Target(offset));
-    }
-
-    public override void Enter(Crawler crawler)
-    {
-
     }
 
     public override void Exit(Crawler crawler)

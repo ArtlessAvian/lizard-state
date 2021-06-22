@@ -25,7 +25,7 @@ public class NoiseGenerator : LevelGenerator
         noise.Period = 5;
         noise.Octaves = 1;
 
-        // noise.Seed = 1;
+        noise.Seed = 3;
 
         for (int x = -50; x < 50; x++)
         {
@@ -58,6 +58,8 @@ public class NoiseGenerator : LevelGenerator
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
+        spawnX = 1;
+        spawnY = 0;
         model.AddEntity(playerTegu.CreateEntity((spawnX, spawnY), 0));
         model.AddEntity(partnerAxolotl.CreateEntity((spawnX, spawnY+1), 0));
         

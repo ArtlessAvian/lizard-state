@@ -9,13 +9,14 @@ public class Cursor : Sprite
     {
         if (!Visible) {return;}
 
-        Position = Position.LinearInterpolate(
-            new Vector2(
-                targetPosition.x * View.TILESIZE.x,
-                targetPosition.y * View.TILESIZE.y
-            ),
-            1 - Mathf.Pow(1-0.3f, delta * 60f)
-        );
+        SnapToTarget();
+        // Position = Position.LinearInterpolate(
+        //     new Vector2(
+        //         targetPosition.x * View.TILESIZE.x,
+        //         targetPosition.y * View.TILESIZE.y
+        //     ),
+        //     1 - Mathf.Pow(1-0.3f, delta * 60f)
+        // );
     }
 
     public void SnapToTarget()
