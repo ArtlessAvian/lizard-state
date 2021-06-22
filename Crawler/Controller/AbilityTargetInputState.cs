@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public class AbilityTargetInputState : InputState
@@ -25,19 +26,40 @@ public class AbilityTargetInputState : InputState
             }
         }
 
+        if (ev is InputEventMouse evMouse)
+        {
+            // is it possible to get it from the thing instead?
+            Vector2 mousePos = crawler.GetGlobalMousePosition();
+            // Temporary.
+            cursor.targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
+            cursor.targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
+        }
+
         if (ev.IsActionPressed("ui_accept"))
         {
-            action.Target(cursor.targetPosition);
-            bool success = crawler.Model.DoPlayerAction(action);
-            crawler.notPlayerTurn = true;
-            if (success)
+            Select(crawler);
+        }
+
+        if (ev is InputEventMouseButton evMouseButton)
+        {
+            if (evMouseButton.ButtonIndex == (int)ButtonList.Left && evMouseButton.IsPressed())
             {
-                crawler.ResetState();
+                Select(crawler);
             }
-            return;
         }
 
         if (ev.IsActionPressed("ui_cancel"))
+        {
+            crawler.ResetState();
+        }
+    }
+
+    private void Select(Crawler crawler)
+    {
+        action.Target(cursor.targetPosition);
+        bool success = crawler.Model.DoPlayerAction(action);
+        crawler.notPlayerTurn = true;
+        if (success)
         {
             crawler.ResetState();
         }

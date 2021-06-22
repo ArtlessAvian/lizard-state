@@ -58,8 +58,8 @@ public class NoiseGenerator : LevelGenerator
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
-        spawnX = 1;
-        spawnY = 0;
+        spawnX = 0;
+        spawnY = -2;
         model.AddEntity(playerTegu.CreateEntity((spawnX, spawnY), 0));
         model.AddEntity(partnerAxolotl.CreateEntity((spawnX, spawnY+1), 0));
         

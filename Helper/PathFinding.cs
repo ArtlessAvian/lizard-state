@@ -4,7 +4,7 @@ using Priority_Queue;
 
 static class PathFinding
 {
-    public static (int steps, (int x, int y) nextStep) ShortestPathTo(IEnumerable<(int x, int y)> sources, (int x, int y) goal, Predicate<((int x, int y) from, (int x, int y) to)> walkable)
+    public static (int steps, (int x, int y) nextStep) ShortestPathTo(IEnumerable<(int x, int y)> sources, (int x, int y) goal, Predicate<((int x, int y) from, (int x, int y) to)> Walkable)
     {
         Dictionary<(int, int), int> cost = new Dictionary<(int, int), int>();
         SimplePriorityQueue<(int, int)> frontier = new SimplePriorityQueue<(int, int)>();
@@ -24,9 +24,9 @@ static class PathFinding
 
             foreach ((int x, int y) neighbor in GridHelper.GetNeighbors(current))
             {
-                // Filter neighbors.
+                // Filter neighbors. This search goes backwards, remember.
                 // TODO: replace the thing with the thing
-                if (!walkable(((-1, -1), neighbor))) { continue; }
+                if (!Walkable(((-1, -1), neighbor))) { continue; }
 
                 // early exit
                 if (neighbor.x == goal.x && neighbor.y == goal.y)

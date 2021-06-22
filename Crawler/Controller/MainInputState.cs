@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
 
@@ -117,16 +119,49 @@ public class MainInputState : InputState
                 (int x, int y) targetPosition;
                 targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
                 targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
-                
-                GD.Print(targetPosition);
-                // If the target is one tile away,
-                    // Try Attacking
-                    // Try Moving
-                // Path to the target.
+
+                // Poor code reuse.
+                Entity player = crawler.Model.GetPlayer();
+                if (GridHelper.Distance(player.position, targetPosition) <= 1)
+                {
+                    Entity target = crawler.Model.GetEntityAt(targetPosition);
+                    if (!(target is null) && target != player)
+                    {
+                        crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(targetPosition));
+                        crawler.notPlayerTurn = true;
+                        return true;
+                    }
+                    crawler.Model.DoPlayerAction(new MoveAction().Target(targetPosition));
+                    crawler.notPlayerTurn = true;
+                    return true;
+                }
+                else
+                {
+                    (int distance, (int, int) nextTile) = PathFinding.ShortestPathTo(
+                            new List<(int, int)>{targetPosition},
+                            player.position,
+                            Walkable(crawler.Model)
+                        );
+                    GD.Print("shieet", nextTile);
+                    if (distance != Int32.MaxValue)
+                    {
+                        crawler.Model.DoPlayerAction(new MoveAction().Target(nextTile));
+                        crawler.notPlayerTurn = true;
+                        return true;
+                    }
+                }
             } 
         }
         
         return false;
+    }
+
+    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api)
+    {
+        return (((int x, int y) from, (int x, int y) to) tuple) =>
+                api.CanWalkFromTo(tuple.from, tuple.to) &&
+                api.GetMap().fog.GetCell(tuple.from.x, tuple.from.y) != -1 && // hack. the search goes backwards.
+                api.GetMap().fog.GetCell(tuple.to.x, tuple.to.y) != -1;
     }
 
     private bool MoveOrAttack(Crawler crawler, (int x, int y) direction)
