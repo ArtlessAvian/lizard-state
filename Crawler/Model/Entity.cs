@@ -117,6 +117,17 @@ public class Entity : Node
         dict["x"] = position.x;
         dict["y"] = position.y;
         dict["nextMove"] = nextMove;
+
+        // TODO: Figure out later
+        // if (!(queuedAction is null))
+        // {
+        //     dict["queuedAction"] = queuedAction?.GetType().ToString();
+        //     if (queuedAction is ActionTargeted queuedActionT)
+        //     {
+        //         dict["queuedActionTarget"] = queuedActionT.target;
+        //     }
+        // }
+
         dict["health"] = health;
         dict["stunned"] = stunned;
         dict["downed"] = downed;
@@ -133,6 +144,17 @@ public class Entity : Node
         this.position.x = (int)dict["x"];
         this.position.y = (int)dict["y"];
         this.nextMove = (int)dict["nextMove"];
+
+        // TODO: Figure out later
+        // if (dict.Contains("queuedAction"))
+        // {
+        //     this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]));
+        //     if (dict.Contains("queuedActionTarget"))
+        //     {
+        //         (this.queuedAction as ActionTargeted).Target(((int x, int y))dict["queuedActionTarget"]);
+        //     }
+        // }
+
         this.health = (int)dict["health"];
         this.stunned = (bool)dict["stunned"];
         this.downed = (bool)dict["downed"];

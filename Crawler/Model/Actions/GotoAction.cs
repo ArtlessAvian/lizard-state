@@ -9,6 +9,7 @@ public class GotoAction : ActionTargeted
         if (api.CanWalkFromTo(e.position, target))
         {
             // pathfind to target
+            // TODO: Save result, recalculate on fail
             (int steps, (int x, int y) nextStep) p =
                     PathFinding.ShortestPathTo(e.position, target, Walkable(api));
             

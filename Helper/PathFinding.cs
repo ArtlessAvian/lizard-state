@@ -47,10 +47,10 @@ static class PathFinding
             foreach ((int x, int y) neighbor in GridHelper.GetNeighbors(current))
             {
                 // Filter neighbors. This search goes backwards, remember.
-                // TODO: replace the thing with the thing
                 if (!Walkable((neighbor, current))) { continue; }
 
-                // early exit
+                // HACK: Assumes the cost of all movements is 1
+                // early exit (since the cost of all movements is 1)
                 if (neighbor.x == source.x && neighbor.y == source.y)
                 {
                     return (cost[current] + 1, current);
