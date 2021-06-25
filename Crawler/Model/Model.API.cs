@@ -77,7 +77,7 @@ public partial class Model : ModelAPI
     // TODO: Disallow corner cutting?
     public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
     {
-        return !CrawlerMap.TileIsWall(Map.GetCell(position2.x, position2.y));
+        return !CrawlerMap.TileIsWall(Map.GetCell(position2.x, position2.y)) && !CrawlerMap.TileIsWall(Map.GetCell(position.x, position.y));
     }
 
     public int Distance((int x, int y) pos, (int x, int y) pos2)

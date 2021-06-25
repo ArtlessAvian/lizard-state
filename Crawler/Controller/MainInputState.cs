@@ -81,13 +81,25 @@ public class MainInputState : InputState
 
     private bool LogicInput(Crawler crawler, InputEvent ev)
     {
-        foreach ((string name, (int, int) dir) tuple in DIRECTIONS)
+        foreach ((string name, (int x, int y) dir) tuple in DIRECTIONS)
         {
             if (ev.IsActionPressed(tuple.name, true))
             {
-                bool success = MoveOrAttack(crawler, tuple.dir);
-                crawler.notPlayerTurn = true;
-                return true;
+                Entity player = crawler.Model.GetPlayer();
+                (int x, int y) offset = (player.position.x + tuple.dir.x, player.position.y + tuple.dir.y);
+
+                if (Input.IsKeyPressed((int)KeyList.Control))
+                {
+                    crawler.Model.DoPlayerAction(new RunAction().Target(offset)); //crawler, tuple.dir);
+                    crawler.notPlayerTurn = true;
+                    return true;                    
+                }
+                else
+                {
+                    crawler.Model.DoPlayerAction(new MoveOrAttackAction().Target(offset)); //crawler, tuple.dir);
+                    crawler.notPlayerTurn = true;
+                    return true;
+                }
             }
         }
 
@@ -120,7 +132,6 @@ public class MainInputState : InputState
                 targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
                 targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
 
-                // Poor code reuse.
                 Entity player = crawler.Model.GetPlayer();
                 if (GridHelper.Distance(player.position, targetPosition) <= 1)
                 {
@@ -137,18 +148,8 @@ public class MainInputState : InputState
                 }
                 else
                 {
-                    (int distance, (int, int) nextTile) = PathFinding.ShortestPathTo(
-                            new List<(int, int)>{targetPosition},
-                            player.position,
-                            Walkable(crawler.Model)
-                        );
-                    GD.Print("shieet", nextTile);
-                    if (distance != Int32.MaxValue)
-                    {
-                        crawler.Model.DoPlayerAction(new MoveAction().Target(nextTile));
-                        crawler.notPlayerTurn = true;
-                        return true;
-                    }
+                    crawler.Model.DoPlayerAction(new GotoAction().Target(targetPosition));
+                    crawler.notPlayerTurn = true;
                 }
             } 
         }
@@ -156,26 +157,16 @@ public class MainInputState : InputState
         return false;
     }
 
-    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api)
-    {
-        return (((int x, int y) from, (int x, int y) to) tuple) =>
-                api.CanWalkFromTo(tuple.from, tuple.to) &&
-                api.GetMap().fog.GetCell(tuple.from.x, tuple.from.y) != -1 && // hack. the search goes backwards.
-                api.GetMap().fog.GetCell(tuple.to.x, tuple.to.y) != -1;
-    }
+    // private bool MoveOrAttack(Crawler crawler, (int x, int y) direction)
+    // {
+    //     // Entity entityAt = crawler.Model.GetEntityAt(offset);
 
-    private bool MoveOrAttack(Crawler crawler, (int x, int y) direction)
-    {
-        Entity player = crawler.Model.GetPlayer();
-        (int x, int y) offset = (player.position.x + direction.x, player.position.y + direction.y);
-        Entity entityAt = crawler.Model.GetEntityAt(offset);
-
-        if (entityAt != null && entityAt.team != player.team)
-        {
-            return crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
-        }
-        return crawler.Model.DoPlayerAction(new MoveAction().Target(offset));
-    }
+    //     // if (entityAt != null && entityAt.team != player.team)
+    //     // {
+    //     //     return crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
+    //     // }
+    //     // return crawler.Model.DoPlayerAction(new MoveAction().Target(offset));
+    // }
 
     public override void Exit(Crawler crawler)
     {

@@ -17,6 +17,8 @@ public class Entity : Node
     public (int x, int y) position;
     public int nextMove = 0;
 
+    public Action queuedAction;
+
     public int health;
     public bool stunned;
     public bool downed = false;
@@ -38,7 +40,7 @@ public class Entity : Node
     // TODO: unhack
     public void Construct(Species species, (int x, int y) position, int team)
     {
-        GD.Print(position, team);
+        // GD.Print(position, team);
 
         this.species = species;
         this.position = position;

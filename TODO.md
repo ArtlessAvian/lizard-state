@@ -1,7 +1,7 @@
 # TODO
-what i was last working on
+New to streaming, tips and help appreciated!
 
-* make input stateful
+* Rework Pathfinding Stuff
 
 
 # Notes to self.

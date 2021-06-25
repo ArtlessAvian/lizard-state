@@ -100,20 +100,41 @@ public partial class Model : Node
     public bool DoEntityAction()
     {
         Entity e = NextEntity();
-        if (e.species.isPlayer) { return false; }
 
         if (e.stunned) { NewEvent(new ModelEvent(e.id, "Unstun")); }
         e.ResetCombo();
 
-        bool success = e.ai.GetMove(this, e).Do(this, e);
-        if (!success)
+        if (e.species.isPlayer)
         {
-            GD.Print($"{e.species.displayName} made bad move. Skipping!");
-            e.nextMove += 10;
+            if (e.queuedAction == null)
+            {
+                return false;
+            }
+            Action queued = e.queuedAction;
+            e.queuedAction = null;
+            // queued.Do(this, e);
+            bool success = queued.Do(this, e);
+            if (!success)
+            {
+                this.NewEvent(new ModelEvent(-1, "Print", "Can't do that!"));
+                return false;
+            }
+            
+            VisionEvent();
+            return true;
         }
-        
-        VisionEvent();
-        return true;
+        else
+        {
+            bool success = e.ai.GetMove(this, e).Do(this, e);
+            if (!success)
+            {
+                GD.Print($"{e.species.displayName} made bad move. Skipping!");
+                e.nextMove += 10;
+            }
+            
+            VisionEvent();
+            return true;
+        }
     }
 
     /// <summary>

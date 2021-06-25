@@ -29,7 +29,7 @@ public class AI
         }
 
         // Attack enemies, or move towards them
-        (int steps, (int, int) nextStep) = PathFinding.ShortestPathTo(enemyPositions, e.position, Walkable(api));
+        (int steps, (int, int) nextStep) = PathFinding.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
         {
             if (steps == 1) { return new AttackAction(e.species.bumpAttack).Target(nextStep); }
@@ -37,7 +37,7 @@ public class AI
         }
 
         // Move towards allies        
-        (steps, nextStep) = PathFinding.ShortestPathTo(allyPositions, e.position, Walkable(api));
+        (steps, nextStep) = PathFinding.ShortestPathToMany(e.position, allyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
         {
             if (steps > 2) { return new MoveAction().Target(nextStep); }
