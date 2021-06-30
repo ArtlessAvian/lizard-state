@@ -20,7 +20,7 @@ public class Entity : Node
     public Action queuedAction;
 
     public int health;
-    public bool stunned;
+    public bool stunned; // TODO: Rework all this.
     public bool downed = false;
 
     public int energy = 10;
@@ -79,6 +79,7 @@ public class Entity : Node
             api.ApiEvent(new ModelEvent(attackerID, "Hit", result, this.id));
 
             this.health -= result.damage;
+            this.queuedAction = null;
 
             if (this.health <= 0)
             {
@@ -118,15 +119,14 @@ public class Entity : Node
         dict["y"] = position.y;
         dict["nextMove"] = nextMove;
 
-        // TODO: Figure out later
-        // if (!(queuedAction is null))
-        // {
-        //     dict["queuedAction"] = queuedAction?.GetType().ToString();
-        //     if (queuedAction is ActionTargeted queuedActionT)
-        //     {
-        //         dict["queuedActionTarget"] = queuedActionT.target;
-        //     }
-        // }
+        if (queuedAction != null)
+        {
+            dict["queuedAction"] = queuedAction?.GetType().ToString();
+            if (queuedAction is ActionTargeted queuedActionT)
+            {
+                dict["queuedActionTarget"] = queuedActionT.GetTargetPos(position);
+            }
+        }
 
         dict["health"] = health;
         dict["stunned"] = stunned;
@@ -145,15 +145,14 @@ public class Entity : Node
         this.position.y = (int)dict["y"];
         this.nextMove = (int)dict["nextMove"];
 
-        // TODO: Figure out later
-        // if (dict.Contains("queuedAction"))
-        // {
-        //     this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]));
-        //     if (dict.Contains("queuedActionTarget"))
-        //     {
-        //         (this.queuedAction as ActionTargeted).Target(((int x, int y))dict["queuedActionTarget"]);
-        //     }
-        // }
+        if (dict.Contains("queuedAction"))
+        {
+            this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]));
+            if (dict.Contains("queuedActionTarget"))
+            {
+                (this.queuedAction as ActionTargeted).SetTarget(((int x, int y))dict["queuedActionTarget"]);
+            }
+        }
 
         this.health = (int)dict["health"];
         this.stunned = (bool)dict["stunned"];

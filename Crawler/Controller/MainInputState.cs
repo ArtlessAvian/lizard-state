@@ -54,7 +54,7 @@ public class MainInputState : InputState
 
             // Add the new stuff.
             {
-                PackedScene modelScene = GD.Load<PackedScene>("res://Crawler/Model/Scenes/Model.tscn");
+                PackedScene modelScene = GD.Load<PackedScene>((string)temp["Filename"]);
                 Model model = (Model)modelScene.Instance();
                 model.Name = "Model";
                 crawler.AddChild(model);
@@ -154,14 +154,7 @@ public class MainInputState : InputState
                 Entity player = crawler.Model.GetPlayer();
                 if (GridHelper.Distance(player.position, targetPosition) <= 1)
                 {
-                    Entity target = crawler.Model.GetEntityAt(targetPosition);
-                    if (!(target is null) && target != player)
-                    {
-                        crawler.Model.SetPlayerAction(new AttackAction(player.species.bumpAttack).SetTarget(targetPosition));
-                        crawler.notPlayerTurn = true;
-                        return true;
-                    }
-                    crawler.Model.SetPlayerAction(new MoveAction().SetTarget(targetPosition));
+                    crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
                 }

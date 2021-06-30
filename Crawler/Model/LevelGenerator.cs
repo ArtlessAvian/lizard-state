@@ -3,7 +3,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Builds a model from scratch. A model factory?
+/// Helps fill out an empty model.
 /// </summary>
 public interface LevelGenerator
 {

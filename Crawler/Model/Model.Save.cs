@@ -7,6 +7,7 @@ public partial class Model
     public Dictionary SaveToDictionary()
     {
         Dictionary dict = new Dictionary();
+        dict["Filename"] = this.Filename;
         dict["time"] = time;
         dict["Entities"] = SaveEntities();
         dict["generatorData"] = generatorData;

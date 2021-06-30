@@ -2,6 +2,8 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
+// Workaround for not knowing reflection well.
+// Will replace with reflection or something smarter.
 public class LoadedGenerator : LevelGenerator
 {
     Dictionary dict;

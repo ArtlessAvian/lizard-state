@@ -7,7 +7,7 @@ public abstract class ActionTargeted : Action
     private (int x, int y) targetInternal = (0, 0);
     private bool isRelative = true;
 
-    protected (int x, int y) GetTargetPos((int x, int y) origin)
+    public (int x, int y) GetTargetPos((int x, int y) origin)
     {
         if (isRelative)
         {
