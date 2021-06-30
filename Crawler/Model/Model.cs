@@ -64,7 +64,8 @@ public partial class Model : Node
 
         if (e.providesVision)
         {
-            this.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
+            GetNode<VisionSystem>("Systems/Vision").UpdateVision(this, e);
+            // this.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
         }
     }
 
@@ -121,24 +122,17 @@ public partial class Model : Node
 
         action.Do(this, e);
 
-        VisionEvent();
+        RunSystems();
         return true;
     }
 
     /// <summary>
-    /// Runs whenever something providing vision could have moved.
-    /// (For now, that's every time after anyone moves.)
+    /// Runs all the systems, (usually after every move).
+    /// This could be more efficient but whatever.
     /// </summary>
-    private void VisionEvent()
+    private void RunSystems()
     {
-        foreach (Entity e in Entities.GetChildren())
-        {
-            if (e.dirtyVision)
-            {
-                NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
-                e.dirtyVision = false;
-            }
-        }
+        GetNode<VisionSystem>("Systems/Vision").Run(this);
     }
 
     private Entity NextEntity()

@@ -52,11 +52,13 @@ public class Entity : Node
         this.health = species.maxHealth;
         this.ai = this.species.isPlayer ? null : new AI();
 
+        // TODO: Rework this stuff.
         abilities = new List<Action>();
         foreach (AttackData data in this.species.attacks)
         {
             abilities.Add(new AttackAction(data));
         }
+        abilities.Add(new ChargeAttackAction(this.species.bumpAttack)); // debuggy;
         foreach (string ability in this.species.abilities)
         {
             abilities.Add((Action)Activator.CreateInstance(Type.GetType(ability)));
@@ -79,8 +81,7 @@ public class Entity : Node
             api.ApiEvent(new ModelEvent(attackerID, "Hit", result, this.id));
 
             this.health -= result.damage;
-            this.queuedAction = null;
-
+            
             if (this.health <= 0)
             {
                 api.ApiEvent(new ModelEvent(id, "Downed"));
@@ -91,6 +92,7 @@ public class Entity : Node
             {
                 this.nextMove = Math.Max(result.stunUntil, this.nextMove);
                 this.stunned = true;
+                this.queuedAction = null;
             }
 
         }

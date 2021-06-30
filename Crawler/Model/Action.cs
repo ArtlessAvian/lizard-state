@@ -8,10 +8,10 @@ using System.Collections.Generic;
 /// </summary>
 public interface Action
 {
-    // Do fails if IsValid is false. This will waste a turn and might print a funny message.
+    // Do fails if IsValid is false. This /will/ waste a turn and might print a funny message.
     bool Do(ModelAPI api, Entity e);
 
-    // Checks if the action is reasonable.
+    // Checks if the action is valid. This is mostly so the AI doesn't make an invalid move.
     // bool IsValid(ModelAPI api, Entity e);
 
     // Gives a list of reasons this may be a bad move.

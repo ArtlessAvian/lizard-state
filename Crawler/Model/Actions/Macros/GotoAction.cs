@@ -34,9 +34,12 @@ public class GotoAction : ActionTargeted
 
     private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api)
     {
+        Model model = (Model)api; // whatever.
+        VisionSystem fog = model.GetNode<VisionSystem>("Systems/Vision");
+
         return (((int x, int y) from, (int x, int y) to) tuple) =>
                 api.CanWalkFromTo(tuple.from, tuple.to) &&
-                api.GetMap().fog.GetCell(tuple.from.x, tuple.from.y) != -1 &&
-                api.GetMap().fog.GetCell(tuple.to.x, tuple.to.y) != -1;
+                fog.GetCell(tuple.from.x, tuple.from.y) != -1 &&
+                fog.GetCell(tuple.to.x, tuple.to.y) != -1;
     }
 }
