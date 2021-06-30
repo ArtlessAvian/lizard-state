@@ -8,7 +8,7 @@ using System.Collections.Generic;
 /// </summary>
 public interface Action
 {
-    // Do will ALWAYS run, no matter what.
+    // Do fails if IsValid is false. This will waste a turn and might print a funny message.
     bool Do(ModelAPI api, Entity e);
 
     // Checks if the action is reasonable.

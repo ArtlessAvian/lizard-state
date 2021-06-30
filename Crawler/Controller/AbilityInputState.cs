@@ -52,7 +52,7 @@ public class AbilityInputState : InputState
         }
         else // just run it directly
         {
-            crawler.Model.DoPlayerAction(action);
+            crawler.Model.SetPlayerAction(action);
             crawler.notPlayerTurn = true;
             crawler.ResetState();
         }

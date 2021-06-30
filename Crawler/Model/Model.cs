@@ -69,72 +69,60 @@ public partial class Model : Node
     }
 
     /// <summary>
-    /// Attempts to run an action for the player.
-    /// <returns> true if successful, false if not the player's turn or if action fails </returns>
+    /// Sets the next action for the player character.
+    /// <returns> true if its the player turn AND action is valid AND (reasonable OR forced)  </returns>
     /// </summary>
-    // TODO: Rework return type. (false means too many things!)
-    public bool DoPlayerAction(Action action)
+    // 
+    public bool SetPlayerAction(Action action, bool force = false)
     {
         Entity e = NextEntity();
         if (!e.species.isPlayer) { return false; }
 
-        if (e.stunned) { NewEvent(new ModelEvent(e.id, "Unstun")); }
-        e.ResetCombo();
-        
-        bool success = action.Do(this, e);
-        if (!success)
-        {
-            this.NewEvent(new ModelEvent(-1, "Print", "Can't do that!"));
-            return false;
-        }
-        
-        VisionEvent();
+        // if (!action.IsValid()) { return false; }
+        // if (!action.IsReasonable() && !force) { return false; }
+
+        e.queuedAction = action;
         return true;
     }
 
     /// <summary>
-    /// Runs the next entity's move.
-    /// Whoever owns the model should run this in a loop until it returns false.
+    /// Attempts to run the next entity's action.
+    /// <returns> true if entity has action </returns>
     /// </summary>
-    /// <returns> false if its the player's turn. </returns>
-    public bool DoEntityAction()
+    // 
+    public bool DoStep()
     {
         Entity e = NextEntity();
 
         if (e.stunned) { NewEvent(new ModelEvent(e.id, "Unstun")); }
         e.ResetCombo();
 
-        if (e.species.isPlayer)
+        // Get the next action.
+        Action action = null;        
+        // Always get the queued action.
+        if (e.queuedAction != null)
         {
-            if (e.queuedAction == null)
-            {
-                return false;
-            }
-            Action queued = e.queuedAction;
+            action = e.queuedAction;
             e.queuedAction = null;
-            // queued.Do(this, e);
-            bool success = queued.Do(this, e);
-            if (!success)
-            {
-                this.NewEvent(new ModelEvent(-1, "Print", "Can't do that!"));
-                return false;
-            }
-            
-            VisionEvent();
-            return true;
         }
-        else
+        
+        // If no action, get the ai's action.
+        if (action == null)
         {
-            bool success = e.ai.GetMove(this, e).Do(this, e);
-            if (!success)
-            {
-                GD.Print($"{e.species.displayName} made bad move. Skipping!");
-                e.nextMove += 10;
-            }
-            
-            VisionEvent();
-            return true;
+            action = e.ai?.GetMove(this, e);
         }
+
+        // If no action, return
+        if (action == null)
+        {
+            if (!e.species.isPlayer) { GD.Print("no move!"); }
+            return false;
+        }
+
+        action.Do(this, e);
+
+        VisionEvent();
+        return true;
     }
 
     /// <summary>

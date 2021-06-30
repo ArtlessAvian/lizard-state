@@ -50,7 +50,7 @@ public class Entity : Node
         providesVision = team == 0;
 
         this.health = species.maxHealth;
-        this.ai = new AI();
+        this.ai = this.species.isPlayer ? null : new AI();
 
         abilities = new List<Action>();
         foreach (AttackData data in this.species.attacks)
@@ -163,7 +163,7 @@ public class Entity : Node
         this.providesVision = (bool)dict["providesVision"];
 
         // this.ai = new AI((Dictionary)dict["AI"]);
-        this.ai = new AI();
+        this.ai = this.species.isPlayer ? null : new AI();
 
         abilities = new List<Action>();
         foreach (AttackData data in this.species.attacks)

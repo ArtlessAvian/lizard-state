@@ -90,13 +90,13 @@ public class MainInputState : InputState
 
                 if (Input.IsKeyPressed((int)KeyList.Control))
                 {
-                    crawler.Model.DoPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
+                    crawler.Model.SetPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
                     return true;                    
                 }
                 else
                 {
-                    crawler.Model.DoPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
+                    crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
                     return true;
                 }
@@ -106,7 +106,7 @@ public class MainInputState : InputState
         if (ev.IsActionPressed("exit_action"))
         {
             GD.Print("befafa");
-            crawler.Model.DoPlayerAction(new ExitAction());
+            crawler.Model.SetPlayerAction(new ExitAction());
             crawler.notPlayerTurn = true;
             return true;
         }
@@ -138,17 +138,17 @@ public class MainInputState : InputState
                     Entity target = crawler.Model.GetEntityAt(targetPosition);
                     if (!(target is null) && target != player)
                     {
-                        crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).SetTarget(targetPosition));
+                        crawler.Model.SetPlayerAction(new AttackAction(player.species.bumpAttack).SetTarget(targetPosition));
                         crawler.notPlayerTurn = true;
                         return true;
                     }
-                    crawler.Model.DoPlayerAction(new MoveAction().SetTarget(targetPosition));
+                    crawler.Model.SetPlayerAction(new MoveAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
                 }
                 else
                 {
-                    crawler.Model.DoPlayerAction(new GotoAction().SetTarget(targetPosition));
+                    crawler.Model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                 }
             } 

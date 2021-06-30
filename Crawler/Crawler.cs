@@ -38,7 +38,8 @@ public class Crawler : Node2D, InputStateMachine
     {
         while (notPlayerTurn) // and not timed out
         {
-            if (!Model.DoEntityAction())
+            bool success = Model.DoStep();
+            if (!success)
             {
                 // let the player move again.
                 notPlayerTurn = false;
