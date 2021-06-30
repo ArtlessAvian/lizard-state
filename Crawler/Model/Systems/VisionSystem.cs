@@ -68,15 +68,20 @@ public class VisionSystem : TileMap
         // For each unique slope passing through a cell,
         foreach ((int x, int y) in GridHelper.ListRationals(radius))
         {
+            // Experiment with diagonal stuff. This makes a big octagon.
+            // int scale = (int)(radius / (y + 0.5 * x)); // Compromise
+            // int scale = (int)(radius / (y + x)); // Taxicab 
+            int scale = radius / y; // Chebyshev
+
             // Mark every cell on that slope, for each of the 8 octants.
-            MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y + y));
-            MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y + y));
-            MarkLineOfSight((pos.x, pos.y), (pos.x + x, pos.y - y));
-            MarkLineOfSight((pos.x, pos.y), (pos.x - x, pos.y - y));
-            MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y + x));
-            MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y + x));
-            MarkLineOfSight((pos.x, pos.y), (pos.x + y, pos.y - x));
-            MarkLineOfSight((pos.x, pos.y), (pos.x - y, pos.y - x));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + x * scale, pos.y + y * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - x * scale, pos.y + y * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + x * scale, pos.y - y * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - x * scale, pos.y - y * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + y * scale, pos.y + x * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - y * scale, pos.y + x * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x + y * scale, pos.y - x * scale));
+            MarkLineOfSight((pos.x, pos.y), (pos.x - y * scale, pos.y - x * scale));
         }
     }
 

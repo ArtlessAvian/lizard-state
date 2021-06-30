@@ -4,19 +4,21 @@ public class LookInputState : InputState
 {
     Camera2D camera;
     Cursor cursor;
+    float oldZoom = 2;
 
     public override void Enter(Crawler crawler)
     {
         camera = crawler.View.GetNode<Camera2D>("Camera2D"); 
         cursor = crawler.GetNode<Cursor>("Cursor");
         
+        oldZoom = camera.Zoom.x;
         camera.Zoom = Vector2.One;
         // cursor.Show();
     }
 
     public override void Exit(Crawler crawler)
     {
-        camera.Zoom = Vector2.One / 2;
+        camera.Zoom = Vector2.One * oldZoom;
         camera.Offset = Vector2.Zero;
 
         // cursor.Hide();

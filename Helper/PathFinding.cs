@@ -56,7 +56,7 @@ static class PathFinding
                     return (cost[current] + 1, current);
                 }
 
-                if (cost[current] > 10) { continue; }
+                // if (cost[current] > 10) { continue; }
 
                 if (!cost.ContainsKey(neighbor) || cost[current] + 1 < cost[neighbor])
                 {

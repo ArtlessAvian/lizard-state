@@ -100,6 +100,15 @@ public class MainInputState : InputState
 
     private bool LogicInput(Crawler crawler, InputEvent ev)
     {
+        if (Input.IsKeyPressed((int)KeyList.Minus))
+        {
+            camera.Zoom = Vector2.One;
+        }
+        if (Input.IsKeyPressed((int)KeyList.Equal))
+        {
+            camera.Zoom = Vector2.One / 2;
+        }
+
         foreach ((string name, (int x, int y) dir) tuple in DIRECTIONS)
         {
             if (ev.IsActionPressed(tuple.name, true))

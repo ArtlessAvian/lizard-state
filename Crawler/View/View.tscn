@@ -67,6 +67,7 @@ margin_left = -400.0
 margin_top = -140.0
 margin_right = 400.0
 margin_bottom = -20.0
+mouse_filter = 2
 text = "
 
 
@@ -84,20 +85,20 @@ __meta__ = {
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 color = Color( 0, 0, 0, 0.25098 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Time" type="RichTextLabel" parent="UILayer"]
-visible = false
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -210.0
-margin_top = 10.0
-margin_right = -10.0
-margin_bottom = 22.0
-text = "Time:"
+margin_left = -420.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = 44.0
+text = "Debug Time:"
 scroll_active = false
 scroll_following = true
 __meta__ = {

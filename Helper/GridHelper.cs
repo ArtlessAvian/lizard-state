@@ -17,16 +17,16 @@ static class GridHelper
         yield return (a.x + 1, a.y + 1);
     }
 
-    public static IEnumerable<(int numerator, int denominator)> ListRationals(int radius)
+    public static IEnumerable<(int numerator, int denominator)> ListRationals(int maxDenominator)
     {
-        for (int denom = 1; denom <= radius; denom++)
+        for (int denom = 1; denom <= maxDenominator; denom++)
         {
             for (int numer = 0; numer <= denom; numer++)
             {
                 if (GCD(denom, numer) == 1)
                 {
-                    int scale = (int)((float)radius/denom);
-                    yield return (scale * numer, scale * denom);
+                    // int scale = (int)((float)radius/denom);
+                    yield return (numer, denom);
                 }
             }
         }
@@ -43,8 +43,16 @@ static class GridHelper
         (int octantX, int octantY, int octant) = Octantify(to.x - from.x, to.y - from.y);
 
         float accumulator = 0.5f;
+        // float previousAcc = accumulator;
         for (int i = 0; i <= octantX; i++)
         {
+            // no corner cutting!
+            // if (Math.Floor(accumulator) != Math.Floor(previousAcc))
+            // {
+            //     (int dx2, int dy2) = DeOctantify(i, (int)previousAcc, octant);
+            //     yield return (dx2 + from.x, dy2 + from.y);
+            // }
+
             (int dx, int dy) = DeOctantify(i, (int)accumulator, octant);
             yield return (dx + from.x, dy + from.y);
             accumulator += (float)octantY / octantX;
