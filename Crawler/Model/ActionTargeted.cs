@@ -4,21 +4,33 @@
 /// </summary>
 public abstract class ActionTargeted : Action
 {
-    protected (int x, int y) target = (0, 0);
+    private (int x, int y) targetInternal = (0, 0);
+    private bool isRelative = true;
+
+    protected (int x, int y) GetTargetPos((int x, int y) origin)
+    {
+        if (isRelative)
+        {
+            return (targetInternal.x + origin.x, targetInternal.y + origin.y);
+        }
+        return targetInternal;
+    }
 
     // its absolute
-    public ActionTargeted Target((int x, int y) target)
+    public ActionTargeted SetTarget((int x, int y) target)
     {
-        this.target = target;
+        this.isRelative = false;
+        this.targetInternal = target;
         return this;
     }
 
     // hey its me ur brother
-    // public ActionTargeted TargetRelative((int x, int y) p, (int x, int y) d)
-    // {
-    //     this.target = (p.x + d.x, p.y + d.y);
-    //     return this;
-    // }
+    public ActionTargeted SetTargetRelative((int x, int y) delta)
+    {
+        this.isRelative = true;
+        this.targetInternal = delta;
+        return this;
+    }
 
     public abstract bool Do(ModelAPI api, Entity e);
 }

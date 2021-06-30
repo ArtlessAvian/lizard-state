@@ -13,24 +13,25 @@ public class RunAction : ActionTargeted
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        if (api.CanWalkFromTo(e.position, target))
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        if (api.CanWalkFromTo(e.position, targetPos))
         {
-            (int x, int y) oldTarget = target;
+            (int x, int y) oldTarget = targetPos;
 
             (int x, int y) nextTarget = (
-                    (target.x - e.position.x) + oldTarget.x,
-                    (target.y - e.position.y) + oldTarget.y
+                    (targetPos.x - e.position.x) + oldTarget.x,
+                    (targetPos.y - e.position.y) + oldTarget.y
                 );
             
             if (this.limit >= 0)
             {
                 this.limit--;
-                this.Target(nextTarget);
+                this.SetTarget(nextTarget);
                 e.queuedAction = this; 
             }
 
             // target would be the new one lol
-            return new MoveAction().Target(oldTarget).Do(api, e);
+            return new MoveAction().SetTarget(oldTarget).Do(api, e);
         }
         return false;
     }

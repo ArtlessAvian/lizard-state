@@ -90,13 +90,13 @@ public class MainInputState : InputState
 
                 if (Input.IsKeyPressed((int)KeyList.Control))
                 {
-                    crawler.Model.DoPlayerAction(new RunAction().Target(offset)); //crawler, tuple.dir);
+                    crawler.Model.DoPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
                     return true;                    
                 }
                 else
                 {
-                    crawler.Model.DoPlayerAction(new MoveOrAttackAction().Target(offset)); //crawler, tuple.dir);
+                    crawler.Model.DoPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
                     return true;
                 }
@@ -138,17 +138,17 @@ public class MainInputState : InputState
                     Entity target = crawler.Model.GetEntityAt(targetPosition);
                     if (!(target is null) && target != player)
                     {
-                        crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(targetPosition));
+                        crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).SetTarget(targetPosition));
                         crawler.notPlayerTurn = true;
                         return true;
                     }
-                    crawler.Model.DoPlayerAction(new MoveAction().Target(targetPosition));
+                    crawler.Model.DoPlayerAction(new MoveAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
                 }
                 else
                 {
-                    crawler.Model.DoPlayerAction(new GotoAction().Target(targetPosition));
+                    crawler.Model.DoPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                 }
             } 

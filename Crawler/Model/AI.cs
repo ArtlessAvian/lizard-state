@@ -32,18 +32,18 @@ public class AI
         (int steps, (int, int) nextStep) = PathFinding.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
         {
-            if (steps == 1) { return new AttackAction(e.species.bumpAttack).Target(nextStep); }
-            return new MoveAction().Target(nextStep);
+            if (steps == 1) { return new AttackAction(e.species.bumpAttack).SetTarget(nextStep); }
+            return new MoveAction().SetTarget(nextStep);
         }
 
         // Move towards allies        
         (steps, nextStep) = PathFinding.ShortestPathToMany(e.position, allyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
         {
-            if (steps > 2) { return new MoveAction().Target(nextStep); }
+            if (steps > 2) { return new MoveAction().SetTarget(nextStep); }
         }
 
-        return new MoveAction().Target(e.position);
+        return new MoveAction().SetTarget(e.position);
     }
 
     // kinda ugly but i dont care.

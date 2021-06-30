@@ -56,7 +56,7 @@ public class AbilityTargetInputState : InputState
 
     private void Select(Crawler crawler)
     {
-        action.Target(cursor.targetPosition);
+        action.SetTarget(cursor.targetPosition);
         bool success = crawler.Model.DoPlayerAction(action);
         crawler.notPlayerTurn = true;
         if (success)

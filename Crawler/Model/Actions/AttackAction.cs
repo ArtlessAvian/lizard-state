@@ -24,7 +24,9 @@ public class AttackAction : ActionTargeted
         }
 
         // TODO: Replace with raycast.
-        Entity targeted = api.GetEntityAt(target);
+        (int x, int y) targetPos = GetTargetPos(e.position);
+
+        Entity targeted = api.GetEntityAt(targetPos);
         if ((targeted is null) || targeted == e)
         {
             return false;
@@ -39,7 +41,7 @@ public class AttackAction : ActionTargeted
 
         api.ApiEvent(new ModelEvent(-1, "Wait"));
         
-        api.ApiEvent(new ModelEvent(e.id, "StartAttack", target));
+        api.ApiEvent(new ModelEvent(e.id, "StartAttack", targetPos));
         
         AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
         targeted.GetAttacked(api, result, e.id);

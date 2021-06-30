@@ -6,18 +6,20 @@ public class MoveAction : ActionTargeted
 {
     public override bool Do(ModelAPI api, Entity e)
     {
-        if (target.x == e.position.x && target.y == e.position.y)
+        (int x, int y) targetPos = GetTargetPos(e.position);
+
+        if (targetPos.x == e.position.x && targetPos.y == e.position.y)
         {
             DoNothing(api, e);
             return true;
         }
         
-        if (!api.CanWalkFromTo(e.position, target))
+        if (!api.CanWalkFromTo(e.position, targetPos))
         {
             return false;
         }
 
-        Entity entityAt = api.GetEntityAt(target);
+        Entity entityAt = api.GetEntityAt(targetPos);
         if (!(entityAt is null))
         {
             if (entityAt.team != e.team)
@@ -43,7 +45,9 @@ public class MoveAction : ActionTargeted
 
     private void DoMove(ModelAPI api, Entity e)
     {
-        e.position = target;
+        (int x, int y) targetPos = GetTargetPos(e.position);
+
+        e.position = targetPos;
         e.nextMove += 10;
 
         // TODO: Maybe put elsewhere.
@@ -54,8 +58,10 @@ public class MoveAction : ActionTargeted
 
     private void DoSwap(ModelAPI api, Entity e, Entity teammate)
     {
+        (int x, int y) targetPos = GetTargetPos(e.position);
+
         teammate.position = e.position;
-        e.position = target;
+        e.position = targetPos;
         e.nextMove += 10;
 
         // TODO: Maybe put elsewhere.
