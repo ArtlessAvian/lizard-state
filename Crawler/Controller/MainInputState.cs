@@ -37,18 +37,37 @@ public class MainInputState : InputState
         }
 
         if (ev.IsActionPressed("quickload", false))
-        {        
-            // TODO: Fix.
-            PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
-            View view = (View)viewScene.Instance();
+        {
+            // Delete the old stuff.
+            {
+                View old = crawler.GetNode<View>("View");
+                crawler.RemoveChild(old);
+                old.QueueFree();
+                
+                // dude your going to lose subscriber
+                crawler.Model.NewEvent -= old.eventQueue.Add;
 
-            View old = crawler.GetNode<View>("View");
-            crawler.RemoveChild(old);
-            old.QueueFree();
-            crawler.AddChild(view);
+                Model oldd = crawler.Model;
+                crawler.RemoveChild(oldd);
+                oldd.QueueFree();
+            }
 
-            LoadedGenerator gen = new LoadedGenerator(temp);
-            gen.Generate(crawler.Model);
+            // Add the new stuff.
+            {
+                PackedScene modelScene = GD.Load<PackedScene>("res://Crawler/Model/Scenes/Model.tscn");
+                Model model = (Model)modelScene.Instance();
+                model.Name = "Model";
+                crawler.AddChild(model);
+
+                PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
+                View view = (View)viewScene.Instance();
+                view.Name = "View";
+                crawler.AddChild(view);
+                
+                crawler.Model.NewEvent += view.eventQueue.Add;
+                LoadedGenerator gen = new LoadedGenerator(temp);
+                gen.Generate(crawler.Model);
+            }
 
             return true;
         }

@@ -6,6 +6,8 @@ public class GotoAction : ActionTargeted
 {
     public override bool Do(ModelAPI api, Entity e)
     {
+        // TODO: Do not run macro if dangerous!
+
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         if (api.CanWalkFromTo(e.position, targetPos))

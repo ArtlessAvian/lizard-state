@@ -25,6 +25,7 @@ public class MoveAction : ActionTargeted
             if (entityAt.team != e.team)
             {
                 GD.Print($"{e.species.displayName} bumps into {entityAt.species.displayName}");
+                e.nextMove += 10;
                 return false;
             }
             else
