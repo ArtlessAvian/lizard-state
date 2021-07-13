@@ -69,18 +69,4 @@ public class AbilityTargetInputState : InputState
     {
         cursor.Hide();
     }
-
-    public void aefajefk()
-    {
-        // // Check if valid
-        // // Disconnect
-        // CursorMode cursorMode = FindNode("Modals").GetNode<CursorMode>("CursorMode");
-        // cursorMode.Disconnect("Select", this, "AbilityTargeted");
-        // cursorMode.Exit();
-
-        // // Do the move
-        // actionTargeting.Target((x, y));
-        // Model.DoPlayerAction(actionTargeting);
-        // notPlayerTurn = true;
-    }
 }

@@ -33,7 +33,9 @@ public class RunAction : ActionTargeted
             }
 
             // target would be the new one lol
-            return new MoveAction().SetTarget(oldTarget).Do(api, e);
+            bool success = new MoveAction().SetTarget(oldTarget).Do(api, e);
+            // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. see GotoAction.
+            return success;
         }
         return false;
     }

@@ -95,7 +95,6 @@ public partial class View : Node2D
                 actor = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
                 actor.GetNode<AnimatedSprite>("AnimatedSprite").Frames =
                         GD.Load<SpriteFrames>($"res://Crawler/View/Assets/ActorAtlas/{entity.species.ResourceName}.tres");
-                        // TODO: Put ActorData in Assets or something.
             }
             
             roles.Add(actor);

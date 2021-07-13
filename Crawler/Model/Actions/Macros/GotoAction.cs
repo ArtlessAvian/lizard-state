@@ -27,7 +27,10 @@ public class GotoAction : ActionTargeted
             {
                 e.queuedAction = this;
             }
-            return new MoveAction().SetTarget(p.nextStep).Do(api, e);
+
+            bool success = new MoveAction().SetTarget(p.nextStep).Do(api, e);
+            // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. also, TODO: make systems more like callbacks??
+            return success;
         }
         return false;
     }
