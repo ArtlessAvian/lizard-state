@@ -55,6 +55,7 @@ static class GridHelper
 
             (int dx, int dy) = DeOctantify(i, (int)accumulator, octant);
             yield return (dx + from.x, dy + from.y);
+            // previousAcc = accumulator;
             accumulator += (float)octantY / octantX;
         }        
     }

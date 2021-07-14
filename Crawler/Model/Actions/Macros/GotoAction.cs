@@ -22,13 +22,16 @@ public class GotoAction : ActionTargeted
                 return false;
             }
 
+            bool success = new MoveAction().SetTarget(p.nextStep).Do(api, e);
+
+            if (!success) { return false; }
+            
             // queue same action object
             if (p.nextStep.x != targetPos.x || p.nextStep.y != targetPos.y)
             {
                 e.queuedAction = this;
             }
 
-            bool success = new MoveAction().SetTarget(p.nextStep).Do(api, e);
             // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. also, TODO: make systems more like callbacks??
             return success;
         }

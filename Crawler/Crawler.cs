@@ -24,7 +24,8 @@ public class Crawler : Node2D, InputStateMachine
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
 
-        NoiseGenerator gen = new NoiseGenerator();
+        // NoiseGenerator gen = new NoiseGenerator();
+        EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP.tscn");
         gen.Generate(Model);
     }
 

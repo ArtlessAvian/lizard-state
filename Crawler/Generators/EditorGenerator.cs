@@ -45,8 +45,8 @@ public class EditorGenerator : LevelGenerator
         model.AddEntity(new Entity(partnerAxolotl, (-2, -2), 0));
 
         // model.AddEntity(new Entity(enemy, (0, 10), 1));
-        model.AddEntity(new Entity(enemy, (1, 20), 1));
-        model.AddEntity(new Entity(enemy, (2, 20), 1));
+        // model.AddEntity(new Entity(enemy, (1, 20), 1));
+        // model.AddEntity(new Entity(enemy, (2, 20), 1));
 
         Array tiles = model.Map.GetUsedCells();
         tiles.Shuffle();

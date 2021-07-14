@@ -95,8 +95,11 @@ public partial class Model : Node
     {
         Entity e = NextEntity();
 
-        if (e.stunned) { NewEvent(new ModelEvent(e.id, "Unstun")); }
-        e.ResetCombo();
+        if (e.stunned)
+        {
+            NewEvent(new ModelEvent(e.id, "Unstun"));
+            e.ResetCombo();
+        }
 
         // Get the next action.
         Action action = null;        
@@ -120,7 +123,11 @@ public partial class Model : Node
             return false;
         }
 
-        action.Do(this, e);
+        bool success = action.Do(this, e);
+        if (!success)
+        {
+            GD.Print("move failed!");
+        }
 
         RunSystems();
         return true;
