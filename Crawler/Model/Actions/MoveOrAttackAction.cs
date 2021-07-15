@@ -8,6 +8,11 @@ public class MoveOrAttackAction : ActionTargeted
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
+        if (api.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
+        {
+            return new ExitAction().SetTarget(targetPos).Do(api, e);
+        }
+
         Entity targeted = api.GetEntityAt(targetPos);
         if (!(targeted is null) && targeted.team != e.team)
         {        

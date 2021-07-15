@@ -131,9 +131,15 @@ public class MainInputState : InputState
             }
         }
 
+        if (ev.IsActionPressed("get_action"))
+        {
+            crawler.Model.SetPlayerAction(new GetAction());
+            crawler.notPlayerTurn = true;
+            return true;
+        }
+
         if (ev.IsActionPressed("exit_action"))
         {
-            GD.Print("befafa");
             crawler.Model.SetPlayerAction(new ExitAction());
             crawler.notPlayerTurn = true;
             return true;

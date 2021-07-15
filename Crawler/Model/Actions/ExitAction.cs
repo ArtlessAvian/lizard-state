@@ -2,16 +2,19 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ExitAction : Action
+public class ExitAction : ActionTargeted
 {
-    public bool Do(ModelAPI api, Entity e)
+    public override bool Do(ModelAPI api, Entity e)
     {
-        if (api.GetMap().GetCell(e.position.x, e.position.y) != 4)
+        (int x, int y) = GetTargetPos(e.position);
+
+        if (api.GetMap().GetCell(x, y) == 5)
         {
-            return false;
+            api.ApiEvent(new ModelEvent(-1, "Print", "You leave the cave. (You win!)"));
+            e.nextMove = -1;
+            return true;
         }
 
-        e.nextMove += 10;
-        return true;
+        return false;
     }
 }
