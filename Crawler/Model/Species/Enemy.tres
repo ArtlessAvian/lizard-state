@@ -1,7 +1,8 @@
 [gd_resource type="Resource" load_steps=3 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
-[ext_resource path="res://Crawler/Model/Attacks/BasicAttack.tres" type="Resource" id=2]
+[ext_resource path="res://Crawler/Model/Attacks/Instances/BasicAttack.tres" type="Resource" id=2]
+
 
 [resource]
 resource_name = "Enemy"

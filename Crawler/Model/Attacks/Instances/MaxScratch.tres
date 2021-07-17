@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Crawler/Model/Attacks/AttackData.cs" type="Script" id=1]
+
+[resource]
+resource_name = "MaxScratch"
+script = ExtResource( 1 )
+range = 1
+energy = 0
+recovery = 8
+comboStartChance = 0.3
+comboLinkChance = 0.2
+hitDamage = 3
+missDamage = 1
+stun = 15

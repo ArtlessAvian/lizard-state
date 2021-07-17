@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Crawler/Model/Attacks/ChargeAttackData.cs" type="Script" id=1]
+
+[resource]
+resource_name = "NanoZap"
+script = ExtResource( 1 )
+range = 3
+energy = 1
+recovery = 10
+comboStartChance = 0.9
+comboLinkChance = 0.2
+hitDamage = 3
+missDamage = 0
+stun = 9
+startup = 10

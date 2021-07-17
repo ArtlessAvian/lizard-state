@@ -10,7 +10,7 @@ public class AI
 
     public Action GetMove(ModelAPI api, Entity e)
     {
-        List<Entity> entities = api.GetEntitiesInRadius(e.position, 3);
+        List<Entity> entities = api.GetEntitiesInRadius(e.position, 5);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
@@ -28,6 +28,26 @@ public class AI
             }
         }
 
+        // If ranged attack, attack from range.
+        AttackData best = null;
+        foreach (AttackData data in e.species.attacks)
+        {
+            if (data.range > 1 && data.energy < e.energy)
+            {
+                best = data;
+            }
+        }
+        if (best is object)
+        {
+            foreach ((int, int) pos in enemyPositions)
+            {
+                if (GridHelper.Distance(e.position, pos) <= best.range)
+                {
+                    return new AttackAction(best).SetTarget(pos);
+                }
+            }
+        }
+
         // Attack enemies, or move towards them
         (int steps, (int, int) nextStep) = PathFinding.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
@@ -36,7 +56,7 @@ public class AI
             return new MoveAction().SetTarget(nextStep);
         }
 
-        // Move towards allies        
+        // if no enemies, Move towards allies        
         (steps, nextStep) = PathFinding.ShortestPathToMany(e.position, allyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
         {

@@ -126,7 +126,7 @@ public partial class Model : Node
         bool success = action.Do(this, e);
         if (!success)
         {
-            GD.Print("move failed!");
+            GD.Print($"{action.GetType().ToString()} failed!");
         }
 
         RunSystems();

@@ -47,7 +47,7 @@ public class AttackAction : ActionTargeted
         targeted.GetAttacked(api, result, e.id);
 
         // TODO: e is possibly null. Investigate?
-        e.nextMove += 10;
+        e.nextMove += data.recovery;
 
         api.ApiEvent(new ModelEvent(-1, "Wait"));
         return true;
