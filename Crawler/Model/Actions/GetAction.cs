@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GetAction : Action
 {
-    public bool Do(ModelAPI api, Entity e)
+    public override bool Do(ModelAPI api, Entity e)
     {
         if (api.GetMap().GetCell(e.position.x, e.position.y) == 2)
         {

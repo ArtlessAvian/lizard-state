@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class RunAction : ActionTargeted
+public class RunAction : Action
 {
     int limit;
 

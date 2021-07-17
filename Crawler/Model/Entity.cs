@@ -111,10 +111,7 @@ public class Entity : Node
         if (queuedAction != null)
         {
             dict["queuedAction"] = queuedAction?.GetType().ToString();
-            if (queuedAction is ActionTargeted queuedActionT)
-            {
-                dict["queuedActionTarget"] = queuedActionT.GetTargetPos(position);
-            }
+            dict["queuedActionTarget"] = queuedAction.GetTargetPos(position);
         }
 
         dict["health"] = health;
@@ -137,10 +134,7 @@ public class Entity : Node
         if (dict.Contains("queuedAction"))
         {
             this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]));
-            if (dict.Contains("queuedActionTarget"))
-            {
-                (this.queuedAction as ActionTargeted).SetTarget(((int x, int y))dict["queuedActionTarget"]);
-            }
+            this.queuedAction.SetTarget(((int x, int y))dict["queuedActionTarget"]);
         }
 
         this.health = (int)dict["health"];

@@ -50,27 +50,25 @@ public class AbilityInputState : InputState
         Action action;
         if (id < bigNumber)
         {
-            action = new AttackAction(id);
+            action = new AttackAction(crawler.Model.GetPlayer(), id);
         }
         else
         {
             action = (Action)Activator.CreateInstance(Type.GetType(abilities[id - bigNumber]));
         }
 
-        // if aimed, shenanigans
-        if (action is ActionTargeted temp)
-        {
-            // save for later! abuse of scope
-            AbilityTargetInputState to = this.GetNode<AbilityTargetInputState>("Targeting");
-            to.action = temp;
-            crawler.ChangeState(to);
-            return;
-        }
-        else // just run it directly
+        if (action.Range.max == 0)
         {
             crawler.Model.SetPlayerAction(action);
             crawler.notPlayerTurn = true;
             crawler.ResetState();
+        }
+        else
+        {
+            AbilityTargetInputState to = this.GetNode<AbilityTargetInputState>("Targeting");
+            to.action = action;
+            crawler.ChangeState(to);
+            return;
         }
 
     }

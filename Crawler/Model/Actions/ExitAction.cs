@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ExitAction : ActionTargeted
+public class ExitAction : Action
 {
     public override bool Do(ModelAPI api, Entity e)
     {
@@ -17,4 +17,6 @@ public class ExitAction : ActionTargeted
 
         return false;
     }
+
+    public override (int, int) Range => (1, 1);
 }

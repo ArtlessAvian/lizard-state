@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MoveAction : ActionTargeted
+public class MoveAction : Action
 {
     public override bool Do(ModelAPI api, Entity e)
     {
@@ -74,4 +74,6 @@ public class MoveAction : ActionTargeted
         api.ApiEvent(new ModelEvent(e.id, "Swap", teammate.position, teammate.id));
         api.ApiEvent(new ModelEvent(-1, "Wait"));
     }
+
+    public override (int, int) Range => (1, 1);
 }

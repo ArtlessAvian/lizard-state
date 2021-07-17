@@ -30,22 +30,23 @@ public class AI
 
         // Select a move and try to attack an enemy in range.
         int bestAttack = -1;
-        int bestRange = 1;
+        int bestRangeMax = 1;
         for (int i = 0; i < e.species.attacks.Count; i++)
         {
             AttackData data = e.species.attacks[i];
             if (data.energy < e.energy)
             {
                 bestAttack = i;
-                bestRange = data.range;
+                bestRangeMax = data.range;
                 break;
             }
         }
         foreach ((int, int) pos in enemyPositions)
         {
-            if (GridHelper.Distance(e.position, pos) <= bestRange)
+            int distance = GridHelper.Distance(e.position, pos);
+            if (distance <= bestRangeMax)
             {
-                return new AttackAction(bestAttack).SetTarget(pos);
+                return new AttackAction(e, bestAttack).SetTarget(pos);
             }
         }
 

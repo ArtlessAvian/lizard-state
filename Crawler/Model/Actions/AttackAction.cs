@@ -1,19 +1,29 @@
 using Godot;
 using System.Collections.Generic;
 
-public class AttackAction : ActionTargeted
+public class AttackAction : Action
 {
-    int id;
+    AttackData data;
 
-    public AttackAction(int id = -1)
+    public AttackAction(Entity e, int id = -1)
     {
-        this.id = id;
+        if (id < 0)
+        {
+            this.data = e.species.bumpAttack;
+        }
+        else
+        {
+            this.data = e.species.attacks[id];
+        }
+        // data ??= GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
+        if (data is null)
+        {
+            this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
+        }
     }
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        AttackData data = GetAttackData(e);
-
         if (e.energy < data.energy)
         {
             return false;
@@ -49,17 +59,5 @@ public class AttackAction : ActionTargeted
         return true;
     }
 
-    private AttackData GetAttackData(Entity e)
-    {
-        AttackData data;
-        if (this.id < 0)
-        {
-            data = e.species.bumpAttack;
-        }
-        else
-        {
-            data = e.species.attacks[id];
-        }
-        return data is object ? data : GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
-    }
+    public override (int, int) Range => (1, data.range);
 }

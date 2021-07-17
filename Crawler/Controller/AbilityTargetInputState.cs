@@ -3,14 +3,16 @@ using Godot;
 
 public class AbilityTargetInputState : InputState
 {
+    (int, int) playerPos;
     Cursor cursor;
-    internal ActionTargeted action;
+    internal Action action;
 
     public override void Enter(Crawler crawler)
     {
         cursor = crawler.GetNode<Cursor>("Cursor");
         
-        cursor.targetPosition = crawler.Model.GetPlayer().position;
+        playerPos = crawler.Model.GetPlayer().position;
+        cursor.targetPosition = playerPos;
         cursor.SnapToTarget();
         cursor.Show();
     }
@@ -37,14 +39,24 @@ public class AbilityTargetInputState : InputState
 
         if (ev.IsActionPressed("ui_accept"))
         {
-            Select(crawler);
+            int distance = GridHelper.Distance(playerPos, cursor.targetPosition);
+            GD.Print(distance);
+            if (action.Range.min <= distance && distance <= action.Range.max)
+            {
+                Select(crawler);
+            }
         }
 
         if (ev is InputEventMouseButton evMouseButton)
         {
             if (evMouseButton.ButtonIndex == (int)ButtonList.Left && evMouseButton.IsPressed())
             {
-                Select(crawler);
+                int distance = GridHelper.Distance(playerPos, cursor.targetPosition);
+                GD.Print(distance);
+                if (action.Range.min <= distance && distance <= action.Range.max)
+                {
+                    Select(crawler);
+                }
             }
         }
 

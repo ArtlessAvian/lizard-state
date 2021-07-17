@@ -11,6 +11,6 @@ isPlayer = true
 aiType = null
 bumpAttack = ExtResource( 2 )
 attacks = [ ExtResource( 3 ) ]
-abilities = [ "SpinAbility" ]
+abilities = [ "DashAbility" ]
 maxHealth = 30
 displayName = "You"

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class GotoAction : ActionTargeted
+public class GotoAction : Action
 {
     public override bool Do(ModelAPI api, Entity e)
     {
