@@ -5,9 +5,9 @@ using System.Collections.Generic;
 /// <summary>
 /// How actions get information from the model.
 /// </summary>
-// Honestly could be kind of pointless. Maybe just give actions full information about the model?
-// I'm not doing any unit testing shenanigans, so Model is the only implementation.
-// TODO: Rename ModelQueries? I dunno.
+// TODO: Make "How non-model classes get information from the model."
+// All model-y classes can just be passed the model.
+// Some of these queries are important tho.
 public interface ModelAPI
 {
     void ApiEvent(ModelEvent ev);
@@ -21,9 +21,6 @@ public interface ModelAPI
     List<Entity> GetEntitiesInRadius((int x, int y) position, int radius);
 
     bool CanWalkFromTo((int x, int y) position, (int x, int y) position2);
-
-    // maybe this belongs in some math helper thing or something
-    int Distance((int x, int y) position, (int x, int y) position2);
 }
 
 public partial class Model : ModelAPI

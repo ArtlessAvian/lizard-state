@@ -56,6 +56,9 @@ public partial class View : Node2D
 
             if (ev.subject >= 0)
             {
+                // Comment to go super fast! Completely ignores any ModelEvents in favor of using ModelSync(). Useful for...
+                // TODO: move code out from Actor.Performance.cs to classes mirroring actions.
+
                 roles[ev.subject].PerformAsSubject(ev, roles);
                 if (ev.obj >= 0) { roles[ev.obj].PerformAsObject(ev, roles); }
             }

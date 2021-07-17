@@ -33,6 +33,8 @@ public partial class Actor : Node2D
         healthbar.MaxValue = role.species.maxHealth;
         healthbar.Value = role.health;
 
+        if (health <= 0) { this.Visible = false; }
+
         stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");
