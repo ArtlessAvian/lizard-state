@@ -16,7 +16,7 @@ public class MoveOrAttackAction : ActionTargeted
         Entity targeted = api.GetEntityAt(targetPos);
         if (!(targeted is null) && targeted.team != e.team)
         {        
-            return new AttackAction(e.species.bumpAttack).SetTarget(targetPos).Do(api, e);
+            return new AttackAction().SetTarget(targetPos).Do(api, e);
         }
         return new MoveAction().SetTarget(targetPos).Do(api, e);
     }

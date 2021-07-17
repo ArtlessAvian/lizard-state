@@ -28,31 +28,31 @@ public class AI
             }
         }
 
-        // If ranged attack, attack from range.
-        AttackData best = null;
-        foreach (AttackData data in e.species.attacks)
+        // Select a move and try to attack an enemy in range.
+        int bestAttack = -1;
+        int bestRange = 1;
+        for (int i = 0; i < e.species.attacks.Count; i++)
         {
-            if (data.range > 1 && data.energy < e.energy)
+            AttackData data = e.species.attacks[i];
+            if (data.energy < e.energy)
             {
-                best = data;
+                bestAttack = i;
+                bestRange = data.range;
+                break;
             }
         }
-        if (best is object)
+        foreach ((int, int) pos in enemyPositions)
         {
-            foreach ((int, int) pos in enemyPositions)
+            if (GridHelper.Distance(e.position, pos) <= bestRange)
             {
-                if (GridHelper.Distance(e.position, pos) <= best.range)
-                {
-                    return new AttackAction(best).SetTarget(pos);
-                }
+                return new AttackAction(bestAttack).SetTarget(pos);
             }
         }
 
-        // Attack enemies, or move towards them
+        // Move towards enemies, or bump them.
         (int steps, (int, int) nextStep) = PathFinding.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
         if (steps != Int32.MaxValue)
         {
-            if (steps == 1) { return new AttackAction(e.species.bumpAttack).SetTarget(nextStep); }
             return new MoveAction().SetTarget(nextStep);
         }
 

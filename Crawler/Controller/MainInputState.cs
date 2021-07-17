@@ -74,6 +74,15 @@ public class MainInputState : InputState
 
         if (Input.IsKeyPressed((int)KeyList.F1))
         {
+            crawler.View.impatientMode = !crawler.View.impatientMode;
+            string thing = (crawler.View.impatientMode ? "on" : "off");
+
+            crawler.View.GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode($"\n * Impatient mode {thing}!");
+            return true;
+        }
+
+        if (Input.IsKeyPressed((int)KeyList.F9))
+        {
             crawler.View.GetNode("Map/Floors").Set("tile_data", crawler.Model.Map.Get("tile_data"));
             return true;
         }

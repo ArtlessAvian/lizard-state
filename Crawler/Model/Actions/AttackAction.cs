@@ -3,22 +3,18 @@ using System.Collections.Generic;
 
 public class AttackAction : ActionTargeted
 {
-    AttackData data;
+    int id;
 
-    public AttackAction(AttackData data = null)
+    public AttackAction(int id = -1)
     {
-        this.data = data;
+        this.id = id;
     }
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        if (this.data is null)
-        {
-            this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/BasicAttack.tres");
-            GD.PrintErr($"{e.species.ResourcePath} missing attacks?");
-        }
+        AttackData data = GetAttackData(e);
 
-        if (e.energy < this.data.energy)
+        if (e.energy < data.energy)
         {
             return false;
         }
@@ -37,7 +33,7 @@ public class AttackAction : ActionTargeted
             return false;
         }
 
-        e.energy -= this.data.energy;
+        e.energy -= data.energy;
 
         api.ApiEvent(new ModelEvent(-1, "Wait"));
         
@@ -51,5 +47,19 @@ public class AttackAction : ActionTargeted
 
         api.ApiEvent(new ModelEvent(-1, "Wait"));
         return true;
+    }
+
+    private AttackData GetAttackData(Entity e)
+    {
+        AttackData data;
+        if (this.id < 0)
+        {
+            data = e.species.bumpAttack;
+        }
+        else
+        {
+            data = e.species.attacks[id];
+        }
+        return data is object ? data : GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
     }
 }

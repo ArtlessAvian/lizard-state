@@ -24,7 +24,6 @@ public class Entity : Node
     public bool downed = false;
 
     public int energy = 10;
-    public List<Action> abilities;
 
     public int team;
     public bool providesVision;
@@ -51,18 +50,6 @@ public class Entity : Node
 
         this.health = species.maxHealth;
         this.ai = this.species.isPlayer ? null : new AI();
-
-        // TODO: Rework this stuff.
-        abilities = new List<Action>();
-        foreach (AttackData data in this.species.attacks)
-        {
-            abilities.Add(new AttackAction(data));
-        }
-        abilities.Add(new ChargeAttackAction(this.species.bumpAttack)); // debuggy;
-        foreach (string ability in this.species.abilities)
-        {
-            abilities.Add((Action)Activator.CreateInstance(Type.GetType(ability)));
-        }
     }
 
     public void ResetCombo()
@@ -165,15 +152,5 @@ public class Entity : Node
 
         // this.ai = new AI((Dictionary)dict["AI"]);
         this.ai = this.species.isPlayer ? null : new AI();
-
-        abilities = new List<Action>();
-        foreach (AttackData data in this.species.attacks)
-        {
-            abilities.Add(new AttackAction(data));
-        }
-        foreach (string ability in this.species.abilities)
-        {
-            abilities.Add((Action)Activator.CreateInstance(Type.GetType(ability)));
-        }
     }
 }
