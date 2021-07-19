@@ -23,7 +23,7 @@ public class MoveOrAttackAction : Action
 
     public override bool IsValid(ModelAPI api, Entity e)
     {
-        return true; // TODO: This one is tough. Usually true. (See MoveAction.cs too).
+        return true; // TODO: This one is tough. I could just make every action object and || them. (See MoveAction.cs too).
     }
 
     public override (int, int) Range => (1, 1);

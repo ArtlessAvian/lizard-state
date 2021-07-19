@@ -10,7 +10,7 @@ public class AI
 
     public Action GetMove(ModelAPI api, Entity e)
     {
-        List<Entity> entities = api.GetEntitiesInRadius(e.position, 5);
+        List<Entity> entities = api.GetEntitiesInRadius(e.position, 4);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();

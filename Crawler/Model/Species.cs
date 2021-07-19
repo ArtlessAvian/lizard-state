@@ -17,11 +17,4 @@ public class Species : Resource
     
     // View stuff
     [Export] public string displayName;
-
-    public Entity CreateEntity((int x, int y) position, int team)
-    {
-        Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-        entity.Construct(this, position, team);
-        return entity;
-    }
 }

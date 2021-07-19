@@ -42,6 +42,11 @@ public partial class Actor : Node2D
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
             animation.Queue("Downed");
         }
+        else if (ev.action == "Unsee")
+        {
+            this.seen = false;
+            GD.Print("unsee");
+        }
     }
 
     public void PerformAsObject(ModelEvent ev, List<Actor> roles)
@@ -73,6 +78,11 @@ public partial class Actor : Node2D
             Label popup = (Label)damagePopupScene.Instance();
             popup.Text = $"Miss";
             this.GetNode("DamagePopups").AddChild(popup);
+        }
+        else if (ev.action == "See")
+        {
+            this.seen = true;
+            GD.Print("See!");
         }
         // else
         // {

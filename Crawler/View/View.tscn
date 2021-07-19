@@ -117,7 +117,6 @@ __meta__ = {
 }
 
 [node name="DebugLog" type="RichTextLabel" parent="UILayer"]
-visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0

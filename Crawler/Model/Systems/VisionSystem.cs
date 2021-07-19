@@ -1,6 +1,5 @@
 using Godot;
 using Godot.Collections;
-using System.Collections.Generic;
 
 /// <summary>
 /// Stores map and vision information.
@@ -10,6 +9,8 @@ public class VisionSystem : TileMap
 {
     [Export] NodePath mapPath;
     CrawlerMap map = null;
+
+    public Dictionary<int, int> canSee = new Dictionary<int, int>();
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
@@ -28,6 +29,31 @@ public class VisionSystem : TileMap
     public void UpdateVision(Model model, Entity e)
     {
         model.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, this.GetVisibleTiles(e.position, 5))));
+        foreach (Entity other in model.Entities.GetChildren())
+        {
+            bool seeing = GetCell(other.position.x, other.position.y) == 1;
+            if (seeing)
+            {   
+                if (!canSee.ContainsKey(other.id))
+                {
+                    canSee[other.id] = 0;
+                }
+                if (canSee[other.id] == 0)
+                {
+                    model.NewEvent(new ModelEvent(e.id, "See", null, other.id));
+                }
+                canSee[other.id] |= 1 << e.id;
+            }
+            else if (canSee.ContainsKey(other.id) && canSee[other.id] > 0)
+            {
+                canSee[other.id] &= ~(1 << e.id);
+                GD.Print(canSee[other.id]);
+                if (canSee[other.id] == 0)
+                {
+                    model.NewEvent(new ModelEvent(other.id, "Unsee"));
+                }
+            }
+        }
         e.dirtyVision = false;
     }
 

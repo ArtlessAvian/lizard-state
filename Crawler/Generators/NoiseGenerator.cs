@@ -60,8 +60,8 @@ public class NoiseGenerator : LevelGenerator
 
         spawnX = 0;
         spawnY = -2;
-        model.AddEntity(playerTegu.CreateEntity((spawnX, spawnY), 0));
-        model.AddEntity(partnerAxolotl.CreateEntity((spawnX, spawnY+1), 0));
+        model.AddEntity(CreateEntity(playerTegu, (spawnX, spawnY), 0));
+        model.AddEntity(CreateEntity(partnerAxolotl, (spawnX, spawnY+1), 0));
         
         // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
         // model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
@@ -75,8 +75,19 @@ public class NoiseGenerator : LevelGenerator
         for (int i = 0; i < 10; i++)
         {
             Vector2 vec = (Vector2)tiles[i+5];
-            model.AddEntity(enemy.CreateEntity(((int)vec.x, (int)vec.y), 1));
+            model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
         }
+    }
+
+    public static Entity CreateEntity(Species species, (int x, int y) position, int team)
+    {
+        Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
+        
+        entity.SetSpecies(species);
+        entity.position = position;
+        entity.SetTeam(team);
+
+        return entity;
     }
 
     public Dictionary SaveToDict()

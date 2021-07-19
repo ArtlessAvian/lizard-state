@@ -31,25 +31,26 @@ public class Entity : Node
 
     public Entity() {}
 
-    public Entity(Species species, (int x, int y) position, int team)
+    public override void _EnterTree()
     {
-        this.Construct(species, position, team);
+        if (species == null)
+        {
+            GD.Print($"Entity {id} missing species!");
+            this.SetSpecies(GD.Load<Species>("res://Crawler/Model/Species/Enemy.tres"));
+        }
     }
 
-    // TODO: unhack
-    public void Construct(Species species, (int x, int y) position, int team)
+    public void SetSpecies(Species species)
     {
-        // GD.Print(position, team);
-
         this.species = species;
-        this.position = position;
-        this.team = team;
-
-        // HACK.
-        providesVision = team == 0;
-
+        this.ai = species.isPlayer ? null : new AI();
         this.health = species.maxHealth;
-        this.ai = this.species.isPlayer ? null : new AI();
+    }
+
+    public void SetTeam(int team)
+    {
+        this.team = team;
+        this.providesVision = team == 0;
     }
 
     public void ResetCombo()

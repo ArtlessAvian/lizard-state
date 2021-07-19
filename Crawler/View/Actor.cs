@@ -10,6 +10,7 @@ public partial class Actor : Node2D
     public (int x, int y) targetPosition;
     int health = 0;
     bool stunned = false;
+    bool seen = false;
 
     // TODO: Temporary
     public string displayName;
@@ -87,7 +88,7 @@ public partial class Actor : Node2D
         );
 
         // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
-        if (GetNode<TileMap>("../../../Floors/Visible").GetCell(targetPosition.x, targetPosition.y) != -1)
+        if (seen)
         {
             this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1-0.1f, delta * 60f));
         }

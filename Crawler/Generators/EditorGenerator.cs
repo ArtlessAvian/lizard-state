@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
+
 public class EditorGenerator : LevelGenerator
 {
     PackedScene scene;
@@ -41,8 +42,8 @@ public class EditorGenerator : LevelGenerator
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
-        model.AddEntity(new Entity(playerTegu, (0, 0), 0));
-        model.AddEntity(new Entity(partnerAxolotl, (-2, -2), 0));
+        model.AddEntity(CreateEntity(playerTegu, (0, 0), 0));
+        model.AddEntity(CreateEntity(partnerAxolotl, (-2, -2), 0));
 
         // model.AddEntity(new Entity(enemy, (0, 10), 1));
         // model.AddEntity(new Entity(enemy, (1, 20), 1));
@@ -53,8 +54,21 @@ public class EditorGenerator : LevelGenerator
         for (int i = 0; i < 10; i++)
         {
             Vector2 vec = (Vector2)tiles[i+5];
-            model.AddEntity(new Entity(enemy, ((int)vec.x, (int)vec.y), 1));
+            model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
         }
+    }
+
+    // TODO: duplicated code! from NoiseGenerator.
+    public Entity CreateEntity(Species species, (int x, int y) position, int team)
+    {
+        // I forgot why I'm doing this.
+        Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
+        
+        entity.SetSpecies(species);
+        entity.position = position;
+        entity.SetTeam(team);
+
+        return entity;
     }
 
     public Dictionary SaveToDict()

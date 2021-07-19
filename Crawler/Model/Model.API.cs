@@ -27,7 +27,11 @@ public partial class Model : ModelAPI
 {
     public void ApiEvent(ModelEvent ev)
     {
-        this.NewEvent(ev);
+        // Entity subject = Entities.GetChild<Entity>(ev.subject);
+        // if (GetNode<VisionSystem>("Systems/VisionSystem").GetCell(subject.position.y, subject.position.y) == 1)
+        // {
+            this.NewEvent(ev);
+        // }
     }
 
     public CrawlerMap GetMap()
