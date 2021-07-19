@@ -5,7 +5,7 @@
 [resource]
 resource_name = "BasicAttack"
 script = ExtResource( 1 )
-range = 1
+range = 3
 energy = 0
 recovery = 10
 comboStartChance = 0.3

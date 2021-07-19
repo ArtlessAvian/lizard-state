@@ -10,7 +10,7 @@ public struct AttackResult
 
 public class AttackData : Resource
 {
-    [Export] public int range = 1;
+    [Export] public int range = 3;
     [Export] public int energy = 0;
     [Export] public int recovery = 10;
 

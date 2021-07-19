@@ -80,5 +80,5 @@ public class MoveAction : Action
         return true; // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
     }
 
-    public override (int, int) Range => (1, 1);
+    public override (int, int) Range => (1, 3);
 }

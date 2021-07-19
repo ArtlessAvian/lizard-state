@@ -67,7 +67,7 @@ public partial class Model : ModelAPI
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in Entities.GetChildren())
         {
-            if (Distance(position, e.position) <= radius)
+            if (Distance(position, e.position) <= radius && !e.downed)
             {
                 inRadius.Add(e);
             }

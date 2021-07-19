@@ -26,5 +26,5 @@ public class MoveOrAttackAction : Action
         return true; // TODO: This one is tough. I could just make every action object and || them. (See MoveAction.cs too).
     }
 
-    public override (int, int) Range => (1, 1);
+    public override (int, int) Range => (1, 3);
 }

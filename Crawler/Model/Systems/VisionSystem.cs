@@ -28,8 +28,8 @@ public class VisionSystem : TileMap
 
     public void UpdateVision(Model model, Entity e)
     {
-        model.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, this.GetVisibleTiles(e.position, 5))));
-        foreach (Entity other in model.Entities.GetChildren())
+        model.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, this.GetVisibleTiles(e.position, 10))));
+        foreach (Entity other in model.GetEntitiesInRadius(e.position, 10))
         {
             bool seeing = GetCell(other.position.x, other.position.y) == 1;
             if (seeing)

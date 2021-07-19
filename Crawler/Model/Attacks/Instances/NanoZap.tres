@@ -5,11 +5,11 @@
 [resource]
 resource_name = "NanoZap"
 script = ExtResource( 1 )
-range = 3
+range = 6
 energy = 1
 recovery = 10
-comboStartChance = 0
-comboLinkChance = 0
+comboStartChance = 0.0
+comboLinkChance = 0.0
 hitDamage = 1
 missDamage = 1
 stun = 0

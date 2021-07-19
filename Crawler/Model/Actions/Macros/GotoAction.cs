@@ -17,6 +17,8 @@ public class GotoAction : Action
         {
             if (result == null)
             {
+                PathFinder pather = new PathFinder();
+                pather.maxLength = 100000;
                 result = PathFinder.ShortestPath(e.position, targetPos, Walkable(api));
                 if (result.steps == int.MaxValue)
                 {

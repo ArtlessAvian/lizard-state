@@ -30,7 +30,7 @@ public class AI
 
         // Select a move and try to attack an enemy in range.
         int bestAttack = -1;
-        int bestRangeMax = 1;
+        int bestRangeMax = 3;
         for (int i = 0; i < e.species.attacks.Count; i++)
         {
             AttackData data = e.species.attacks[i];
@@ -59,11 +59,15 @@ public class AI
             return new MoveAction().SetTarget(result.nextStep);
         }
 
-        // if no enemies, Move towards allies        
+        // low priority todo: big clumps of ai. 
         result = PathFinder.ShortestPathToMany(e.position, allyPositions, WalkThroughAllies(api));
-        if (result.steps != Int32.MaxValue)
+        if (result.success)
         {
-            if (result.steps > 2) { return new MoveAction().SetTarget(result.nextStep); }
+            if (result.steps <= 5)
+            {
+                return new MoveAction().SetTarget(e.position);
+            }
+            return new MoveAction().SetTarget(result.nextStep);
         }
 
         return new MoveAction().SetTarget(e.position);

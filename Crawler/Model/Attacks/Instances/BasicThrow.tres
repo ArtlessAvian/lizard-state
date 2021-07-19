@@ -5,7 +5,7 @@
 [resource]
 resource_name = "BasicThrow"
 script = ExtResource( 1 )
-range = 1
+range = 3
 energy = 1
 recovery = 20
 comboStartChance = 0.9
