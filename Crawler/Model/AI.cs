@@ -50,16 +50,17 @@ public class AI
             }
         }
 
-        // Move towards enemies, or bump them.
+        // Move towards enemies.
         // Pathfinding should be cheap since the paths are short and probably straight lines.
-        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
+        // PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
+        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api, e));
         if (result.steps != Int32.MaxValue)
         {
             return new MoveAction().SetTarget(result.nextStep);
         }
 
         // if no enemies, Move towards allies        
-        result = PathFinder.ShortestPathToMany(e.position, allyPositions, Walkable(api));
+        result = PathFinder.ShortestPathToMany(e.position, allyPositions, WalkThroughAllies(api));
         if (result.steps != Int32.MaxValue)
         {
             if (result.steps > 2) { return new MoveAction().SetTarget(result.nextStep); }
@@ -69,9 +70,19 @@ public class AI
     }
 
     // kinda ugly but i dont care.
-    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api)
+    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api, Entity e)
     {
-        return (((int, int) from, (int, int) to) tuple) => api.CanWalkFromTo(tuple.from, tuple.to);
+        return (((int, int) from, (int, int) to) tuple) => (
+            api.CanWalkFromTo(tuple.from, tuple.to) &&
+            (api.GetEntityAt(tuple.to) == null || api.GetEntityAt(tuple.to).team != e.team)
+        );
+    }
+
+    private Predicate<((int x, int y) from, (int x, int y) to)> WalkThroughAllies(ModelAPI api)
+    {
+        return (((int, int) from, (int, int) to) tuple) => (
+            api.CanWalkFromTo(tuple.from, tuple.to)
+        );
     }
 
     // public Dictionary SaveToDict()

@@ -24,8 +24,8 @@ public class Crawler : Node2D, InputStateMachine
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
 
-        NoiseGenerator gen = new NoiseGenerator();
-        // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP.tscn");
+        // NoiseGenerator gen = new NoiseGenerator();
+        EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP.tscn");
         gen.Generate(Model);
 
         Model.ApiEvent(new ModelEvent(-1, "Print", "[G]et the moss, then leave the cave from where you entered."));

@@ -134,12 +134,21 @@ static class GridHelper
         }
     }
 
+    public static int Distance(int dx, int dy)
+    {
+        dx = Math.Abs(dx);
+        dy = Math.Abs(dy);
+
+        // return dx + dy; // Taxicab
+        return Math.Max(dx, dy); // Chebyshev
+        
+        // Approximate Approximate Euclidean
+        // return Math.Max(dx, dy) + Math.Min(dx, dy) / 2;
+        // return 2 * Math.Max(dx, dy) + Math.Min(dx, dy);
+    }
+
     public static int Distance((int x, int y) pos, (int x, int y) pos2)
     {
-        // return Math.Abs(pos.x - pos2.x) + Math.Abs(pos.y - pos2.y); // Taxicab
-        return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y)); // Not Taxicab
-        
-        // Approximate Euclidean
-        // return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y)) + 0.5 * Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y));
+        return Distance(pos.x - pos2.x, pos.y - pos2.y);
     }
 }
