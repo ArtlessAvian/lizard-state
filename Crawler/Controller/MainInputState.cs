@@ -87,6 +87,13 @@ public class MainInputState : InputState
             return true;
         }
 
+        if (Input.IsKeyPressed((int)KeyList.Quoteleft))
+        {
+            Control debugLog = crawler.View.GetNode<Control>("UILayer/DebugLog");
+            debugLog.Visible = !debugLog.Visible;
+            return true;
+        }
+
         return false;
     }
 

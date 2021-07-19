@@ -4,30 +4,32 @@ using System.Collections.Generic;
 
 public class GotoAction : Action
 {
+    PathFinder.PathResult result;
+
     public override bool Do(ModelAPI api, Entity e)
     {
         // TODO: Do not run macro if dangerous!
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
+        // TODO: uhh, what does this condition do?
         if (api.CanWalkFromTo(e.position, targetPos))
         {
-            // pathfind to target
-            // TODO: Save result, recalculate on fail
-            (int steps, (int x, int y) nextStep) p =
-                    PathFinding.ShortestPathTo(e.position, targetPos, Walkable(api));
-            
-            if (p.steps == Int32.MaxValue)
+            if (result == null)
             {
-                return false;
-            }
-
-            bool success = new MoveAction().SetTarget(p.nextStep).Do(api, e);
+                result = PathFinder.ShortestPath(e.position, targetPos, Walkable(api));
+                if (result.steps == int.MaxValue)
+                {
+                    return false;
+                }
+            } 
+            
+            bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(api, e);
 
             if (!success) { return false; }
             
             // queue same action object
-            if (p.nextStep.x != targetPos.x || p.nextStep.y != targetPos.y)
+            if (e.position.x != targetPos.x || e.position.y != targetPos.y)
             {
                 e.queuedAction = this;
             }

@@ -51,17 +51,18 @@ public class AI
         }
 
         // Move towards enemies, or bump them.
-        (int steps, (int, int) nextStep) = PathFinding.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
-        if (steps != Int32.MaxValue)
+        // Pathfinding should be cheap since the paths are short and probably straight lines.
+        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
+        if (result.steps != Int32.MaxValue)
         {
-            return new MoveAction().SetTarget(nextStep);
+            return new MoveAction().SetTarget(result.nextStep);
         }
 
         // if no enemies, Move towards allies        
-        (steps, nextStep) = PathFinding.ShortestPathToMany(e.position, allyPositions, Walkable(api));
-        if (steps != Int32.MaxValue)
+        result = PathFinder.ShortestPathToMany(e.position, allyPositions, Walkable(api));
+        if (result.steps != Int32.MaxValue)
         {
-            if (steps > 2) { return new MoveAction().SetTarget(nextStep); }
+            if (result.steps > 2) { return new MoveAction().SetTarget(result.nextStep); }
         }
 
         return new MoveAction().SetTarget(e.position);
