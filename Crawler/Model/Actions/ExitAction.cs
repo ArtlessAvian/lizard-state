@@ -6,6 +6,11 @@ public class ExitAction : Action
 {
     public override bool Do(ModelAPI api, Entity e)
     {
+        if (!IsValid(api, e))
+        {
+            return false;
+        }
+
         (int x, int y) = GetTargetPos(e.position);
 
         if (api.GetMap().GetCell(x, y) == 5)
@@ -14,7 +19,16 @@ public class ExitAction : Action
             e.nextMove = -1;
             return true;
         }
+        return false;
+    }
 
+    public override bool IsValid(ModelAPI api, Entity e)
+    {
+        (int x, int y) = GetTargetPos(e.position);
+        if (api.GetMap().GetCell(x, y) == 5)
+        {
+            return true;
+        }
         return false;
     }
 

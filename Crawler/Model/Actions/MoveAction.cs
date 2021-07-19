@@ -75,5 +75,10 @@ public class MoveAction : Action
         api.ApiEvent(new ModelEvent(-1, "Wait"));
     }
 
+    public override bool IsValid(ModelAPI api, Entity e)
+    {
+        return true; // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
+    }
+
     public override (int, int) Range => (1, 1);
 }

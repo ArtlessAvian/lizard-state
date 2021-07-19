@@ -10,14 +10,12 @@ public class DashAbility : Action
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
-
-        if (GridHelper.Distance(e.position, targetPos) > 5)
+        if (!IsValid(api, e))
         {
             return false;
         }
 
-        // GridHelper.LineBetween(e.position, targetPos);
+        (int x, int y) targetPos = GetTargetPos(e.position);
 
         e.position = targetPos;
         e.nextMove += 10;
@@ -27,5 +25,17 @@ public class DashAbility : Action
         return true;
     }
 
-    public override (int, int) Range => (1, 5);
+    public override bool IsValid(ModelAPI api, Entity e)
+    {
+        (int x, int y) targetPos = GetTargetPos(e.position);
+
+        if (GridHelper.Distance(e.position, targetPos) > 5)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public override (int min, int max) Range => (1, 5);
 }

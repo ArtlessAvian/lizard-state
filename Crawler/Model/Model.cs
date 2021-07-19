@@ -79,7 +79,7 @@ public partial class Model : Node
         Entity e = NextEntity();
         if (!e.species.isPlayer) { return false; }
 
-        // if (!action.IsValid()) { return false; }
+        if (!action.IsValid(this, e)) { return false; }
         // if (!action.IsReasonable() && !force) { return false; }
 
         e.queuedAction = action;
@@ -126,7 +126,8 @@ public partial class Model : Node
         bool success = action.Do(this, e);
         if (!success)
         {
-            GD.Print($"{action.GetType().ToString()} failed!");
+            GD.Print($"{e.species.displayName} tried {action.GetType().ToString()} and failed!");
+            e.nextMove += 10;
         }
 
         RunSystems();

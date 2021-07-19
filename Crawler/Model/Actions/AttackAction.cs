@@ -24,24 +24,13 @@ public class AttackAction : Action
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        if (e.energy < data.energy)
+        if (!IsValid(api, e))
         {
             return false;
         }
 
-        // TODO: Replace with raycast.
         (int x, int y) targetPos = GetTargetPos(e.position);
-
         Entity targeted = api.GetEntityAt(targetPos);
-        if ((targeted is null) || targeted == e)
-        {
-            return false;
-        }
-
-        if (GridHelper.Distance(e.position, targeted.position) > data.range)
-        {
-            return false;
-        }
 
         e.energy -= data.energy;
 
@@ -56,6 +45,30 @@ public class AttackAction : Action
         e.nextMove += data.recovery;
 
         api.ApiEvent(new ModelEvent(-1, "Wait"));
+        return true;
+    }
+
+    public override bool IsValid(ModelAPI api, Entity e)
+    {
+        if (e.energy < data.energy)
+        {
+            return false;
+        }
+
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        // TODO: Add raycast to target.
+
+        if (GridHelper.Distance(e.position, targetPos) > data.range)
+        {
+            return false;
+        }
+
+        Entity targeted = api.GetEntityAt(targetPos);
+        if ((targeted is null) || targeted == e)
+        {
+            return false;
+        }
+
         return true;
     }
 

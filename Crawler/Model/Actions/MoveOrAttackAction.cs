@@ -21,5 +21,10 @@ public class MoveOrAttackAction : Action
         return new MoveAction().SetTarget(targetPos).Do(api, e);
     }
 
+    public override bool IsValid(ModelAPI api, Entity e)
+    {
+        return true; // TODO: This one is tough. Usually true. (See MoveAction.cs too).
+    }
+
     public override (int, int) Range => (1, 1);
 }

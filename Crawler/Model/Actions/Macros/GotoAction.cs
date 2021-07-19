@@ -38,6 +38,11 @@ public class GotoAction : Action
         return false;
     }
 
+    public override bool IsValid(ModelAPI api, Entity e)
+    {
+        return true;
+    }
+
     private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api)
     {
         Model model = (Model)api; // whatever.

@@ -8,11 +8,11 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Action
 {
-    // Do fails if IsValid is false. This /will/ waste a turn and might print a funny message.
+    // If !IsValid, returns false and no-ops. Otherwise, tries to do the thing, even if dumb. 
     public abstract bool Do(ModelAPI api, Entity e);
 
     // Checks if the action is valid. This is mostly so the AI doesn't make an invalid move.
-    // public abstract bool IsValid(ModelAPI api, Entity e);
+    public abstract bool IsValid(ModelAPI api, Entity e);
 
     // Gives a list of reasons this may be a bad move.
     // public abstract string[] GetWarnings(ModelAPI api, Entity e);
@@ -47,6 +47,6 @@ public abstract class Action
         return this;
     }
 
-    // inclusive range
+    /// For AI and UI use. Range is inclusive.
     public virtual (int min, int max) Range => (0, 0);
 }
