@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 
 public struct AttackResult
@@ -6,6 +7,11 @@ public struct AttackResult
     public bool stuns;
     public int damage;
     public int stunUntil;
+
+    public Dictionary ToDict()
+    {
+        return new Dictionary{{"stuns", stuns}, {"damage", damage}, {"stunUntil", stunUntil}};
+    }
 }
 
 public class AttackData : Resource

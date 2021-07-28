@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -12,21 +13,19 @@ public partial class Actor : Node2D
     {
         if (ev.action == "Move")
         {
-            (int x, int y) cast = ((int x, int y))ev.args;
+            Vector2 cast = (Vector2)ev.args;
             FacePosition(cast);
-            // FaceDirection(cast.x - targetPosition.x, cast.y - targetPosition.y);
             targetPosition = cast;
         }
         else if (ev.action == "Swap")
         {
-            (int x, int y) otherPosition = roles[ev.obj].targetPosition;
+            Vector2 otherPosition = roles[ev.obj].targetPosition;
             FacePosition(otherPosition);
-            // FaceDirection(otherPosition.x - targetPosition.x, otherPosition.y - targetPosition.y);
             targetPosition = otherPosition;
         }
         else if (ev.action == "StartAttack")
         {
-            (int x, int y) target = ((int x, int y))ev.args;
+            Vector2 target = (Vector2)ev.args;
             FacePosition(target);
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");
             animation.Play("Attack");
@@ -53,21 +52,21 @@ public partial class Actor : Node2D
     {
         if (ev.action == "Swap")
         {
-            (int x, int y) cast = ((int x, int y))ev.args;
+            Vector2 cast = (Vector2)ev.args;
             FacePosition(cast);
             targetPosition = cast;
         }
         else if (ev.action == "Hit")
         {
-            AttackResult result = (AttackResult)ev.args;
-            health -= result.damage;
-            stunned |= result.stuns;
+            Dictionary result = (Dictionary)ev.args;
+            health -= (int)result["damage"];
+            stunned |= (bool)result["stuns"];
 
             TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
             healthbar.Value = health;
 
             Label popup = (Label)damagePopupScene.Instance();
-            popup.Text = $"-{result.damage}";
+            popup.Text = $"-{(int)result["damage"]}";
             this.GetNode("DamagePopups").AddChild(popup);
 
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");

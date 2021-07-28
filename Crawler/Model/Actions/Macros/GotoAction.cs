@@ -11,7 +11,7 @@ public class GotoAction : Action
         if (AnyEnemiesInSight(api, e))
         {
             // No op! On view, print stuff.
-            api.ApiEvent(new ModelEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)"));
+            api.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
             return true;
         }
 

@@ -5,7 +5,7 @@ using Godot.Collections;
 /// Stores map and vision information.
 /// Maybe ask the 
 /// </summary>
-public class VisionSystem : TileMap
+public class VisionSystem : TileMap, CrawlerSystem
 {
     [Export] NodePath mapPath;
     CrawlerMap map = null;
@@ -14,6 +14,18 @@ public class VisionSystem : TileMap
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
+
+    public void ProcessEvent(Model model, Dictionary ev)
+    {
+        if ((string)ev["action"] == "Move")
+        {
+            Entity subject = model.GetEntity((int)ev["subject"]);
+            if (subject.team == 0)
+            {
+                UpdateVision(model, subject);
+            }
+        }
+    }
 
     public void Run(Model model) // ModelAPI maybe?
     {
@@ -30,7 +42,17 @@ public class VisionSystem : TileMap
     public void UpdateVision(Model model, Entity e)
     {        
         // See the map
-        model.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, this.GetVisibleTiles(e.position, 10))));
+        int[,] tiles = this.GetVisibleTiles(e.position, 10);
+
+        model.CoolerApiEvent(new Dictionary(){
+            {"subject", e.id},
+            {"action", "SeeMap"},
+            {"args", new Dictionary{
+                {"center", new Vector2(e.position.x, e.position.y)},
+                {"tiles", (tiles)}
+            }},
+            {"object", -1}
+        });
         
         // Update entities seen.
         // See things you don't already see.
@@ -45,7 +67,7 @@ public class VisionSystem : TileMap
                 }
                 if (canSee[other.id] == 0)
                 {
-                    model.NewEvent(new ModelEvent(e.id, "See", null, other.id));
+                    model.CoolerApiEvent(e.id, "See", null, other.id);
                 }
                 canSee[other.id] |= 1 << e.id;
             }
@@ -66,7 +88,7 @@ public class VisionSystem : TileMap
                     if (canSee[other.id] == 0)
                     {
                         canSee.Remove(other.id);
-                        model.NewEvent(new ModelEvent(other.id, "Unsee"));
+                        model.CoolerApiEvent(other.id, "Unsee");
                     }
                 }
             }

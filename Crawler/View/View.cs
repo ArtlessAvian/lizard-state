@@ -1,13 +1,14 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
 // Holds a model and shows what's happening.
 public partial class View : Node2D
 {
-    public static (int x, int y) TILESIZE = (32, 24);
+    public static Vector2 TILESIZE = new Vector2(32, 24);
 
-    public List<ModelEvent> eventQueue = new List<ModelEvent>();
+    public List<Dictionary> eventQueue = new List<Dictionary>();
     public List<Actor> roles = new List<Actor>();
 
     // convenience
@@ -45,7 +46,12 @@ public partial class View : Node2D
     {
         while (eventQueue.Count > 0)
         {
-            ModelEvent ev = eventQueue[0];
+            ModelEvent ev;
+            ev.subject = (int)eventQueue[0]["subject"];
+            ev.action = (string)eventQueue[0]["action"];
+            ev.args = eventQueue[0]["args"];
+            ev.obj = (int)eventQueue[0]["object"];
+
             if (ev.subject == -1 && ev.action == "Wait")
             {
                 if (!impatientMode && AnyActorAnimating()) { break; }
@@ -116,8 +122,10 @@ public partial class View : Node2D
 
         else if (ev.action == "SeeMap")
         {
-            ((int x, int y) center, int[,] tiles) = (((int, int), int[,]))ev.args;
-            GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
+            Dictionary args = (Dictionary)ev.args;
+            Vector2 centerVec = (Vector2)args["center"];
+            (int, int) center = ((int, int))(centerVec.x, centerVec.y);
+            GetNode<MapView>("Map").AddVision(ev.subject, center, (int[,])args["tiles"]);
         }
 
         // else if (ev.action == "Print")

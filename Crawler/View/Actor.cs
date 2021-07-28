@@ -7,7 +7,8 @@ public partial class Actor : Node2D
 {
     public Entity role;
 
-    public (int x, int y) targetPosition;
+    // vector2i
+    public Vector2 targetPosition;
     int health = 0;
     bool stunned = false;
     bool seen = false;
@@ -23,11 +24,12 @@ public partial class Actor : Node2D
 
     public void ModelSync()
     {
-        targetPosition = role.position;
-        Position = new Vector2(
-            targetPosition.x * View.TILESIZE.x,
-            targetPosition.y * View.TILESIZE.y
-        );
+        targetPosition = new Vector2((int)role.position.x, (int)role.position.y);
+        // Position = new Vector2(
+        //     targetPosition.x * View.TILESIZE.x,
+        //     targetPosition.y * View.TILESIZE.y
+        // );
+        Position = targetPosition * View.TILESIZE; // elementwise
 
         health = role.health;
         TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
@@ -45,7 +47,7 @@ public partial class Actor : Node2D
         displayName = role.species.displayName;
     }
 
-    private void FaceDirection(int dx, int dy)
+    private void FaceDirection(float dx, float dy)
     {
         if (dy == 0 && dx == 0) { return; }
 
@@ -66,6 +68,11 @@ public partial class Actor : Node2D
     private void FacePosition((int x, int y) position)
     {
         FaceDirection(position.x - targetPosition.x, position.y - targetPosition.y);
+    }
+
+    private void FacePosition(Vector2 position)
+    {
+        FacePosition(((int x, int y))(position.x, position.y));
     }
 
     public bool IsAnimating()

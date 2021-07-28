@@ -54,7 +54,7 @@ public class MoveAction : Action
         // TODO: Maybe put elsewhere.
         e.dirtyVision |= e.providesVision;
 
-        api.ApiEvent(new ModelEvent(e.id, "Move", e.position));
+        api.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
     private void DoSwap(ModelAPI api, Entity e, Entity teammate)
@@ -69,10 +69,10 @@ public class MoveAction : Action
         e.dirtyVision |= e.providesVision;
         teammate.dirtyVision |= teammate.providesVision;
 
-        api.ApiEvent(new ModelEvent(-1, "Wait"));
+        api.CoolerApiEvent(-1, "Wait");
         // api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {teammate.species.displayName}."));
-        api.ApiEvent(new ModelEvent(e.id, "Swap", teammate.position, teammate.id));
-        api.ApiEvent(new ModelEvent(-1, "Wait"));
+        api.CoolerApiEvent(e.id, "Swap", new Vector2(teammate.position.x, teammate.position.y), teammate.id);
+        api.CoolerApiEvent(-1, "Wait");
     }
 
     public override bool IsValid(ModelAPI api, Entity e)

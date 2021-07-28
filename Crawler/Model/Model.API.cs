@@ -10,7 +10,8 @@ using System.Collections.Generic;
 // Some of these queries are important tho.
 public interface ModelAPI
 {
-    void ApiEvent(ModelEvent ev);
+    void CoolerApiEvent(int subject, string action, object args = null, int @object = -1);
+    void CoolerApiEvent(Godot.Collections.Dictionary @event);
 
     // Maybe make MapAPI. (MapQueries?)
     CrawlerMap GetMap();
@@ -26,13 +27,24 @@ public interface ModelAPI
 
 public partial class Model : ModelAPI
 {
-    public void ApiEvent(ModelEvent ev)
+    public void CoolerApiEvent(int subject, string action, object args = null, int @object = -1)
     {
-        // Entity subject = Entities.GetChild<Entity>(ev.subject);
-        // if (GetNode<VisionSystem>("Systems/VisionSystem").GetCell(subject.position.y, subject.position.y) == 1)
-        // {
-            this.NewEvent(ev);
-        // }
+        CoolerApiEvent(new Godot.Collections.Dictionary()
+        {
+            {"subject", subject},
+            {"action", action},
+            {"args", args},
+            {"object", @object},
+        });
+    }
+
+    public void CoolerApiEvent(Godot.Collections.Dictionary @event)
+    {
+        // For each system, handle/decorate the event.
+        // Send the event to the view, if the player('s team) sees it.
+
+        // TODO: Temporary. Just send the dictionary when the View is rewritten to take it.
+        this.NewEvent(@event);
     }
 
     public CrawlerMap GetMap()
@@ -90,6 +102,8 @@ public partial class Model : ModelAPI
         }
         else
         {
+            // Just find check distance and line of sight directly.
+            // TODO: Write it.
             return new List<Entity>{};
         }
     }

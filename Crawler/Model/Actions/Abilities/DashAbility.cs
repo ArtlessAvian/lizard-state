@@ -20,7 +20,7 @@ public class DashAbility : Action
         e.position = targetPos;
         e.nextMove += 10;
 
-        api.ApiEvent(new ModelEvent(e.id, "Move", e.position));
+        api.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
 
         return true;
     }

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -14,12 +15,12 @@ public class MessageLog : RichTextLabel
         }
         else if (ev.action == "Hit")
         {
-            AttackResult result = (AttackResult)ev.args; 
+            Dictionary result = (Dictionary)ev.args; 
             Actor subject = roles[ev.subject];
             Actor obj = roles[ev.obj];
             this.AppendBbcode($"\n * {subject.displayName} hits the {obj.displayName}.");
             
-            if (result.stuns)
+            if ((bool)result["stuns"])
             {
                 this.AppendBbcode($"\n * {obj.displayName} is stunned!");
             }

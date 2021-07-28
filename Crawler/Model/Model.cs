@@ -50,7 +50,7 @@ public partial class Model : Node
     // given to model by generator
     public Dictionary generatorData;
 
-    public delegate void EventHandler(ModelEvent ev);
+    public delegate void EventHandler(Dictionary ev);
     public EventHandler NewEvent;
 
     // public Model() {}
@@ -60,7 +60,7 @@ public partial class Model : Node
         e.id = Entities.GetChildCount();
         Entities.AddChild(e);
 
-        this.NewEvent(new ModelEvent(-1, "Create", e, e.id));
+        this.CoolerApiEvent(-1, "Create", e, e.id);
 
         if (e.providesVision)
         {
@@ -97,7 +97,7 @@ public partial class Model : Node
 
         if (e.stunned)
         {
-            NewEvent(new ModelEvent(e.id, "Unstun"));
+            this.CoolerApiEvent(e.id, "Unstun");
             e.ResetCombo();
         }
 

@@ -28,7 +28,7 @@ public class Crawler : Node2D, InputStateMachine
         EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP.tscn");
         gen.Generate(Model);
 
-        Model.ApiEvent(new ModelEvent(-1, "Print", "[G]et the moss, then leave the cave from where you entered."));
+        Model.CoolerApiEvent(-1, "Print", "[G]et the moss, then leave the cave from where you entered.");
     }
 
     public override void _Process(float delta)
