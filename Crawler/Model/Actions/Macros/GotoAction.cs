@@ -8,42 +8,62 @@ public class GotoAction : Action
 
     public override bool Do(ModelAPI api, Entity e)
     {
-        // TODO: Do not run macro if dangerous!
+        if (AnyEnemiesInSight(api, e))
+        {
+            // No op! On view, print stuff.
+            api.ApiEvent(new ModelEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)"));
+            return true;
+        }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        // TODO: uhh, what does this condition do?
-        if (api.CanWalkFromTo(e.position, targetPos))
+        FindPathLazy(api, e.position, targetPos);
+        
+        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(api, e);
+
+        if (!success) { return false; }
+        
+        // queue same action object
+        if (e.position.x != targetPos.x || e.position.y != targetPos.y)
         {
-            if (result == null)
-            {
-                PathFinder pather = new PathFinder();
-                pather.maxLength = 100000;
-                result = PathFinder.ShortestPath(e.position, targetPos, Walkable(api));
-                if (result.steps == int.MaxValue)
-                {
-                    return false;
-                }
-            } 
-            
-            bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(api, e);
+            e.queuedAction = this;
+        }
 
-            if (!success) { return false; }
-            
-            // queue same action object
-            if (e.position.x != targetPos.x || e.position.y != targetPos.y)
+        // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. also, TODO: make systems more like callbacks??
+        return success;
+    }
+
+    private bool FindPathLazy(ModelAPI api, (int, int) from, (int, int) to)
+    {
+        if (result == null)
+        {
+            PathFinder pather = new PathFinder();
+            pather.maxLength = 100000;
+            result = PathFinder.ShortestPath(from, to, Walkable(api));
+        }
+        return result.steps != int.MaxValue;
+    }
+
+    private bool AnyEnemiesInSight(ModelAPI api, Entity e)
+    {
+        foreach (Entity other in api.GetEntitiesInSight(0))
+        {
+            if (other.team != 0)
             {
-                e.queuedAction = this;
+                return true;
             }
-
-            // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. also, TODO: make systems more like callbacks??
-            return success;
         }
         return false;
     }
 
     public override bool IsValid(ModelAPI api, Entity e)
     {
+        // assume path does not change after this is called.
+        if (!FindPathLazy(api, e.position, GetTargetPos(e.position)))
+        {
+            return false;
+        }
+
         return true;
     }
 

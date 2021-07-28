@@ -45,6 +45,7 @@ public class AbilityInputState : InputState
 
     public void _on_AbilitiesMenu_id_pressed(int id)
     {
+        GD.Print("eeee");
         Crawler crawler = this.GetCrawler();
 
         Action action;
@@ -71,5 +72,11 @@ public class AbilityInputState : InputState
             return;
         }
 
+    }
+
+    public void _on_AbilitiesMenu_popup_hide()
+    {
+        // TODO: Fix softlock when using ui_cancel to dismiss modal.
+        // GD.Print("hello!!!!");
     }
 }

@@ -19,6 +19,7 @@ public interface ModelAPI
     Entity GetPlayer();
     Entity GetEntityAt((int x, int y) position);
     List<Entity> GetEntitiesInRadius((int x, int y) position, int radius);
+    List<Entity> GetEntitiesInSight(int team);
 
     bool CanWalkFromTo((int x, int y) position, (int x, int y) position2);
 }
@@ -75,14 +76,35 @@ public partial class Model : ModelAPI
         return inRadius;
     }
 
+    public List<Entity> GetEntitiesInSight(int team)
+    {
+        if (team == 0)
+        {
+            VisionSystem visionSystem = GetNode<VisionSystem>("Systems/Vision");
+            List<Entity> entities = new List<Entity>();
+            foreach (int i in visionSystem.canSee.Keys)
+            {
+                entities.Add(GetEntity(i));
+            }
+            return entities;
+        }
+        else
+        {
+            return new List<Entity>{};
+        }
+    }
+
     // TODO: Disallow corner cutting?
+    // Should be symmetric. f(x, y) = f(y, x).
     public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
     {
-        return !CrawlerMap.TileIsWall(Map.GetCell(position2.x, position2.y)) && !CrawlerMap.TileIsWall(Map.GetCell(position.x, position.y));
+        return !CrawlerMap.TileIsWall(Map.GetCell(position2.x, position2.y)) &&
+                !CrawlerMap.TileIsWall(Map.GetCell(position.x, position.y));
     }
 
     public int Distance((int x, int y) pos, (int x, int y) pos2)
     {
-        return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y));
+        return GridHelper.Distance(pos, pos2);
+        // return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y));
     }
 }

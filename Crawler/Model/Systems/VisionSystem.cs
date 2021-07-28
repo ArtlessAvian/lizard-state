@@ -22,13 +22,18 @@ public class VisionSystem : TileMap
             if (e.dirtyVision)
             {
                 UpdateVision(model, e);
+                e.dirtyVision = false;
             }
         }
     }
 
     public void UpdateVision(Model model, Entity e)
-    {
+    {        
+        // See the map
         model.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, this.GetVisibleTiles(e.position, 10))));
+        
+        // Update entities seen.
+        // See things you don't already see.
         foreach (Entity other in model.GetEntitiesInRadius(e.position, 10))
         {
             bool seeing = GetCell(other.position.x, other.position.y) == 1;
@@ -44,17 +49,28 @@ public class VisionSystem : TileMap
                 }
                 canSee[other.id] |= 1 << e.id;
             }
-            else if (canSee.ContainsKey(other.id) && canSee[other.id] > 0)
+        }
+        
+        // Unsee things you already see.
+        foreach (Entity other in model.Entities.GetChildren())
+        {
+            if (canSee.ContainsKey(other.id) && (canSee[other.id] & (1 << e.id)) != 0)
             {
-                canSee[other.id] &= ~(1 << e.id);
-                GD.Print(canSee[other.id]);
-                if (canSee[other.id] == 0)
+                bool seeing = !other.downed;
+                GD.Print(seeing);
+                seeing &= GetCell(other.position.x, other.position.y) == 1;
+                if (!seeing)
                 {
-                    model.NewEvent(new ModelEvent(other.id, "Unsee"));
+                    canSee[other.id] &= ~(1 << e.id);
+                    GD.Print(canSee[other.id]);
+                    if (canSee[other.id] == 0)
+                    {
+                        canSee.Remove(other.id);
+                        model.NewEvent(new ModelEvent(other.id, "Unsee"));
+                    }
                 }
             }
         }
-        e.dirtyVision = false;
     }
 
     // Return value to be sent to ViewModel.
