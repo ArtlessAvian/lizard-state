@@ -87,6 +87,12 @@ public class MainInputState : InputState
             return true;
         }
 
+        if (Input.IsKeyPressed((int)KeyList.F11))
+        {
+            GetTree().ChangeScene("res://Crawler/Crawler.tscn");
+            return true;
+        }
+
         if (Input.IsKeyPressed((int)KeyList.Quoteleft))
         {
             Control debugLog = crawler.View.GetNode<Control>("UILayer/DebugLog");
@@ -154,12 +160,12 @@ public class MainInputState : InputState
             return true;
         }
 
-        if (ev.IsActionPressed("exit_action"))
-        {
-            crawler.Model.SetPlayerAction(new ExitAction());
-            crawler.notPlayerTurn = true;
-            return true;
-        }
+        // if (ev.IsActionPressed("exit_action"))
+        // {
+        //     crawler.Model.SetPlayerAction(new ExitAction());
+        //     crawler.notPlayerTurn = true;
+        //     return true;
+        // }
 
         if (ev is InputEventMouse evMouse)
         {

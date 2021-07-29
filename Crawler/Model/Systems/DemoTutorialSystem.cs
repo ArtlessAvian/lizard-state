@@ -31,6 +31,7 @@ public class DemoTutorialSystem : Node, CrawlerSystem
     private void DumpStats(Model model)
     {
         DemoStatisticsSystem stats = GetNode<DemoStatisticsSystem>("../DemoStatistics");
+        model.CoolerApiEvent(-1, "Print", "");
         if (stats.gotMoss)
         {
             model.CoolerApiEvent(-1, "Print", $"You got the moss and exited! (you win!)");
@@ -40,6 +41,7 @@ public class DemoTutorialSystem : Node, CrawlerSystem
             model.CoolerApiEvent(-1, "Print", $"You did not get the moss.");
         }
         model.CoolerApiEvent(-1, "Print", "");
+        model.CoolerApiEvent(-1, "Print", $"You spent {model.time} time units in the cave.");
         model.CoolerApiEvent(-1, "Print", $"You got {stats.kills} kills.");
         model.CoolerApiEvent(-1, "Print", $"You did {stats.playerDamage} damage.");
         model.CoolerApiEvent(-1, "Print", $"Your partner did {stats.partnerDamage}." + (stats.partnerDead ? " (rip)" : ""));
@@ -62,6 +64,7 @@ public class DemoTutorialSystem : Node, CrawlerSystem
         model.CoolerApiEvent(-1, "Print", "");
         model.CoolerApiEvent(-1, "Print", "Thanks for playing!");
         model.CoolerApiEvent(-1, "Print", "Take a screenshot of this and send it to me!");
+        model.CoolerApiEvent(-1, "Print", "(Press F11 to restart! RNG will be different tho.)");
         model.CoolerApiEvent(-1, "Print", "");
         model.CoolerApiEvent(-1, "Print", "            -ArtlessAvian (Ryan)");
     }
