@@ -138,7 +138,7 @@ public partial class View : Node2D
             GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
         }
 
-        else if (ev.action == "Exit")
+        else if (ev.action == "Exit" || (ev.action == "Downed" && ev.subject == 0))
         {
             // Temporary!
             GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
