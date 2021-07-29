@@ -124,8 +124,18 @@ public partial class View : Node2D
         {
             Dictionary args = (Dictionary)ev.args;
             Vector2 centerVec = (Vector2)args["center"];
+            int[] tiles1d = (int[])args["tiles"];
+
             (int, int) center = ((int, int))(centerVec.x, centerVec.y);
-            GetNode<MapView>("Map").AddVision(ev.subject, center, (int[,])args["tiles"]);
+            
+            int sidelen = (int)Math.Sqrt(tiles1d.Length);
+            int[,] tiles = new int[sidelen, sidelen];
+            for (int i = 0; i < tiles1d.Length; i++)
+            {
+                tiles[i / sidelen, i % sidelen] = tiles1d[i];
+            }
+
+            GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
         }
 
         // else if (ev.action == "Print")

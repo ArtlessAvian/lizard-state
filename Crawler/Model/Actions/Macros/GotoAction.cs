@@ -48,7 +48,7 @@ public class GotoAction : Action
     {
         foreach (Entity other in api.GetEntitiesInSight(0))
         {
-            if (other.team != 0)
+            if (other.team != 0 && !other.downed)
             {
                 return true;
             }

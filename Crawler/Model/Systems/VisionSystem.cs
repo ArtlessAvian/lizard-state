@@ -78,9 +78,7 @@ public class VisionSystem : TileMap, CrawlerSystem
         {
             if (canSee.ContainsKey(other.id) && (canSee[other.id] & (1 << e.id)) != 0)
             {
-                bool seeing = !other.downed;
-                GD.Print(seeing);
-                seeing &= GetCell(other.position.x, other.position.y) == 1;
+                bool seeing = GetCell(other.position.x, other.position.y) == 1;
                 if (!seeing)
                 {
                     canSee[other.id] &= ~(1 << e.id);
