@@ -138,6 +138,14 @@ public partial class View : Node2D
             GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
         }
 
+        else if (ev.action == "Exit")
+        {
+            // Temporary!
+            GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
+            GetNode<MessageLog>("UILayer/MessageLog").MarginTop = 20;
+            GetNode<ColorRect>("UILayer/MessageLog/Background").Color = Color.FromHsv(0, 0, 0);
+        }
+
         // else if (ev.action == "Print")
         // {
         //     string message = (string)ev.args;

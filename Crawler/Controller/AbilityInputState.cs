@@ -9,8 +9,12 @@ public class AbilityInputState : InputState
     List<AttackData> attackData;
     List<string> abilities;
 
+    bool success;
+
     public override void Enter(Crawler crawler)
     {
+        success = false;
+
         PopupMenu menu = crawler.FindNode("Modals").GetNode<PopupMenu>("AbilitiesMenu");
 
         menu.Clear();
@@ -45,7 +49,8 @@ public class AbilityInputState : InputState
 
     public void _on_AbilitiesMenu_id_pressed(int id)
     {
-        GD.Print("eeee");
+        success = true;
+        // GD.Print("eeeeeeeeeeee first");
         Crawler crawler = this.GetCrawler();
 
         Action action;
@@ -76,7 +81,11 @@ public class AbilityInputState : InputState
 
     public void _on_AbilitiesMenu_popup_hide()
     {
-        // TODO: Fix softlock when using ui_cancel to dismiss modal.
-        // GD.Print("hello!!!!");
+        if (!success)
+        {
+            Crawler crawler = this.GetCrawler();
+            crawler.ChangeState((InputState)this.GetParent());
+        }
+        // GD.Print("eeeeeeeeeeee second");
     }
 }

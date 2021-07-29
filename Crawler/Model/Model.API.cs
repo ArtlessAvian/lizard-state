@@ -41,9 +41,13 @@ public partial class Model : ModelAPI
     public void CoolerApiEvent(Godot.Collections.Dictionary @event)
     {
         // For each system, handle/decorate the event.
+        foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        {
+            system.ProcessEvent(this, @event);
+        }
         // Send the event to the view, if the player('s team) sees it.
 
-        // TODO: Temporary. Just send the dictionary when the View is rewritten to take it.
+        // this.EmitSignal("")
         this.NewEvent(@event);
     }
 

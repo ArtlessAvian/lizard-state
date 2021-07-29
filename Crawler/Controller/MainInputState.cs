@@ -105,7 +105,7 @@ public class MainInputState : InputState
             return true;
         }
 
-        if (ev.IsActionPressed("look") || ev.IsActionPressed("ui_cancel"))
+        if (ev.IsActionPressed("look"))
         {
             crawler.ChangeState(this.GetNode<InputState>("Look"));
             return true;

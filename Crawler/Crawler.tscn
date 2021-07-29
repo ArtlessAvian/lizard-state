@@ -21,6 +21,17 @@ script = ExtResource( 1 )
 texture = ExtResource( 3 )
 script = ExtResource( 9 )
 
+[node name="CancelButton" type="Button" parent="."]
+visible = false
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 102.0
+margin_bottom = 38.0
+text = "Cancel"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Modals" type="CanvasLayer" parent="."]
 
 [node name="MainMenu" type="PopupMenu" parent="Modals"]

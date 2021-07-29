@@ -15,7 +15,8 @@ public class ExitAction : Action
 
         if (api.GetMap().GetCell(x, y) == 5)
         {
-            api.CoolerApiEvent(-1, "Print", "You leave the cave. (You win!)");
+            api.CoolerApiEvent(-1, "Print", "You leave the cave.");
+            api.CoolerApiEvent(0, "Exit");
             e.nextMove = -1;
             return true;
         }

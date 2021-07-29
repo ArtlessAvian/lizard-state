@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Collections.Generic;
 
 public class Crawler : Node2D, InputStateMachine
@@ -66,10 +67,10 @@ public class Crawler : Node2D, InputStateMachine
     {
         if (notPlayerTurn) { return; }
         if (View.eventQueue.Count > 0) { return; }
-        foreach (Control p in FindNode("Modals").GetChildren())
-        {
-            if (p.Visible) { return; }
-        }
+        // foreach (Control p in FindNode("Modals").GetChildren())
+        // {
+        //     if (p.Visible) { return; }
+        // }
 
         activeInputState.HandleInput(this, ev);
     }
@@ -79,6 +80,11 @@ public class Crawler : Node2D, InputStateMachine
         activeInputState.Exit(this);
         activeInputState = to;
         activeInputState.Enter(this);
+    }
+
+    internal void ChangeState(Node node)
+    {
+        throw new NotImplementedException();
     }
 
     // public void ChangeState(string to)
