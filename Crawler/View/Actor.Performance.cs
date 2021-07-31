@@ -67,6 +67,12 @@ public partial class Actor : Node2D
 
             Label popup = (Label)damagePopupScene.Instance();
             popup.Text = $"-{(int)result["damage"]}";
+            popup.AddColorOverride("font_color", Color.Color8(168, 168, 168));
+            if ((bool)result["stuns"])
+            {
+                popup.AddColorOverride("font_color", Color.Color8(255, 0, 0));
+                popup.Text += "!";
+            }
             this.GetNode("DamagePopups").AddChild(popup);
 
             AnimationPlayer animation = GetNode<AnimationPlayer>("AnimationPlayer");

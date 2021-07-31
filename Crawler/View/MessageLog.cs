@@ -18,7 +18,7 @@ public class MessageLog : RichTextLabel
             Dictionary result = (Dictionary)ev.args; 
             Actor subject = roles[ev.subject];
             Actor obj = roles[ev.obj];
-            this.AppendBbcode($"\n * {subject.displayName} hits the {obj.displayName}.");
+            this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
             
             if ((bool)result["stuns"])
             {

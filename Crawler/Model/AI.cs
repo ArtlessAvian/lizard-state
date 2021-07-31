@@ -10,7 +10,7 @@ public class AI
 
     public Action GetMove(ModelAPI api, Entity e)
     {
-        List<Entity> entities = api.GetEntitiesInRadius(e.position, 8);
+        List<Entity> entities = api.GetEntitiesInRadius(e.position, 12);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
@@ -24,7 +24,10 @@ public class AI
             }
             else
             {
-                enemyPositions.Add(other.position);
+                if (GridHelper.Distance(e.position, other.position) <= 8)
+                {
+                    enemyPositions.Add(other.position);
+                }
             }
         }
 

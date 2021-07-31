@@ -10,7 +10,8 @@ public class PathFinder
     public Predicate<((int x, int y) from, (int x, int y) to)> walkable;
 
     // Optional.
-    public int maxLength = 20;
+    public int maxLength = 64;
+    // worst case default is ~90 tiles searched. 2\sqrt{2} r^2
 
     // Results, ofc.
     public class PathResult

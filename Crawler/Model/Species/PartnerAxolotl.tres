@@ -13,4 +13,4 @@ bumpAttack = ExtResource( 2 )
 attacks = [ ExtResource( 3 ) ]
 abilities = null
 maxHealth = 30
-displayName = "Partner"
+displayName = "[color=#E38FD5]Partner[/color]"

@@ -13,4 +13,4 @@ bumpAttack = ExtResource( 2 )
 attacks = [ ExtResource( 3 ) ]
 abilities = [ "DashAbility" ]
 maxHealth = 30
-displayName = "You"
+displayName = "[color=#AF5050]You[/color]"
