@@ -8,8 +8,9 @@ easier than trello since its only just me (for now?)
 * Draw ranges for abilities.
 * Adjust MessageLog size.
 * Add turn indicator
-* Add crit/stun indicator
+<!-- * Add crit/stun indicator -->
 * On "Goto," draw path taken, or add animation.
+* Healthbar blocked by entity
 
 * New Mechanics:
     * Control schemes.

@@ -1,5 +1,5 @@
 using Godot;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class AttackAction : Action
 {
@@ -35,13 +35,32 @@ public class AttackAction : Action
         e.energy -= data.energy;
 
         api.CoolerApiEvent(-1, "Wait");
-        
-        api.CoolerApiEvent(e.id, "StartAttack", new Vector2(targetPos.x, targetPos.y));
+         
+        // for each target
         
         AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
-        targeted.GetAttacked(api, result, e.id);
+        targeted.GetAttacked(result);
 
-        // TODO: e is possibly null. Investigate?
+        Dictionary hitResult = result.ToDict();
+        hitResult.Add("target", targeted.id);
+        
+        // add to array
+        // end for
+
+        Dictionary attackResult = new Dictionary(){
+            {"subject", e.id},
+            {"action", "Attack"},
+            {"targetPos", new Vector2(targetPos.x, targetPos.y)},
+            {"hit", hitResult}
+        };
+        api.CoolerApiEvent(attackResult);
+
+        // for each target
+        if (targeted.health <= 0)
+        {
+            api.CoolerApiEvent(targeted.id, "Downed");
+        }
+
         e.nextMove += data.recovery;
 
         api.CoolerApiEvent(-1, "Wait");

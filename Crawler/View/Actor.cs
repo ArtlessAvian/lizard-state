@@ -45,34 +45,36 @@ public partial class Actor : Node2D
 
         // TODO: Temporary
         displayName = role.species.displayName;
+
+        seen = true;
     }
 
-    private void FaceDirection(float dx, float dy)
+    private void FaceDirection(Vector2 dir)
     {
-        if (dy == 0 && dx == 0) { return; }
+        if (dir == Vector2.Zero) { return; }
 
         AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
         int frame = sprite.Frame;
-        if (dx != 0)
+        if (dir.x != 0)
         {
             sprite.Animation = "East";
-            sprite.FlipH = dx < 0;
+            sprite.FlipH = dir.x < 0;
         }
         else
         {
-            sprite.Animation = dy > 0 ? "South" : "North";
+            sprite.Animation = dir.y > 0 ? "South" : "North";
         }
         sprite.Frame = frame;
     }
 
-    private void FacePosition((int x, int y) position)
-    {
-        FaceDirection(position.x - targetPosition.x, position.y - targetPosition.y);
-    }
+    // private void FacePosition((int x, int y) position)
+    // {
+    //     FaceDirection(position.x - targetPosition.x, position.y - targetPosition.y);
+    // }
 
-    private void FacePosition(Vector2 position)
+    public void FacePosition(Vector2 position)
     {
-        FacePosition(((int x, int y))(position.x, position.y));
+        FaceDirection(position - targetPosition);
     }
 
     public bool IsAnimating()

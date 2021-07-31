@@ -121,6 +121,7 @@ public partial class Model : Node
         if (action == null)
         {
             if (!e.species.isPlayer) { GD.Print("no move!"); }
+            else { CoolerApiEvent(e.id, "YourTurn"); }
             return false;
         }
 

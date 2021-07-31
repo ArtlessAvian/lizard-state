@@ -34,12 +34,17 @@ public partial class Model : ModelAPI
             {"subject", subject},
             {"action", action},
             {"args", args},
-            {"object", @object},
+            {"object", @object}
         });
     }
 
     public void CoolerApiEvent(Godot.Collections.Dictionary @event)
     {
+        // TODO: Remove compatibility
+        if (!@event.Contains("subject")) {@event.Add("subject", -1);}
+        if (!@event.Contains("args")) {@event.Add("args", null);}
+        if (!@event.Contains("object")) {@event.Add("object", -1);}
+
         // For each system, handle/decorate the event.
         foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
         {

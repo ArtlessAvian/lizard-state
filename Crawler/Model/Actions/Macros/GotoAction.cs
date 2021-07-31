@@ -19,6 +19,7 @@ public class GotoAction : Action
 
         FindPathLazy(api, e.position, targetPos);
         
+        // api.CoolerApiEvent(-1, "Wait"); // painfully slow. make optional?
         bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(api, e);
 
         if (!success) { return false; }
@@ -29,7 +30,6 @@ public class GotoAction : Action
             e.queuedAction = this;
         }
 
-        // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. also, TODO: make systems more like callbacks??
         return success;
     }
 

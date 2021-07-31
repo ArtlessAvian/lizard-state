@@ -46,11 +46,21 @@ public partial class View : Node2D
     {
         while (eventQueue.Count > 0)
         {
+            Dictionary ev2 = eventQueue[0];
+            
+            string action = (string)ev2["action"];
+            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd"))
+            {
+                Node node = (Node)GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd").New(ev2, roles);
+                node.QueueFree();
+            }
+
+            // Old code, to replace.
             ModelEvent ev;
-            ev.subject = (int)eventQueue[0]["subject"];
-            ev.action = (string)eventQueue[0]["action"];
-            ev.args = eventQueue[0]["args"];
-            ev.obj = (int)eventQueue[0]["object"];
+            ev.subject = ev2.Contains("subject") ? (int)ev2["subject"] : -1;
+            ev.action = (string)ev2["action"];
+            ev.args = ev2.Contains("args") ? ev2["args"] : null;
+            ev.obj = ev2.Contains("object") ? (int)ev2["object"] : -1;
 
             if (ev.subject == -1 && ev.action == "Wait")
             {
@@ -59,16 +69,7 @@ public partial class View : Node2D
             eventQueue.RemoveAt(0);
 
             HandleNonActorEvent(ev);
-
-            if (ev.subject >= 0)
-            {
-                // Comment to go super fast! Completely ignores any ModelEvents in favor of using ModelSync(). Useful for...
-                // TODO: move code out from Actor.Performance.cs to classes mirroring actions.
-
-                roles[ev.subject].PerformAsSubject(ev, roles);
-                if (ev.obj >= 0) { roles[ev.obj].PerformAsObject(ev, roles); }
-            }
-
+            
             // Everything gets sent to the logs.
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.obj + " " + ev.args);
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);

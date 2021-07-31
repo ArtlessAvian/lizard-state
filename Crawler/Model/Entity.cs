@@ -58,31 +58,20 @@ public class Entity : Node
         this.stunned = false;
     }
 
-    public void GetAttacked(ModelAPI api, AttackResult result, int attackerID)
+    public void GetAttacked(AttackResult result)
     {
-        if (result.damage == 0)
+        this.health -= result.damage;
+        
+        if (this.health <= 0)
         {
-            api.CoolerApiEvent(attackerID, "Miss", result.ToDict(), this.id);
+            this.downed = true;
+            this.nextMove = -1;
         }
-        else
+        else if (result.stuns)
         {
-            api.CoolerApiEvent(attackerID, "Hit", result.ToDict(), this.id);
-
-            this.health -= result.damage;
-            
-            if (this.health <= 0)
-            {
-                api.CoolerApiEvent(id, "Downed");
-                this.downed = true;
-                this.nextMove = -1;
-            }
-            else if (result.stuns)
-            {
-                this.nextMove = Math.Max(result.stunUntil, this.nextMove);
-                this.stunned = true;
-                this.queuedAction = null;
-            }
-
+            this.nextMove = Math.Max(result.stunUntil, this.nextMove);
+            this.stunned = true;
+            this.queuedAction = null;
         }
     }
 
