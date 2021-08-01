@@ -18,11 +18,7 @@ func do_hit_result(result : Dictionary, entity):
 	entity.get_node("HealthBar").value = entity.health
 
 	var popup = damage_popup_scene.instance();
-	popup.set("color_override/font_color", Color(168, 168, 168))
-	popup.text = "-%s" % result["damage"]
-	if result["stuns"]:
-		popup.set("color_override/font_color", Color(255, 0, 0))
-		popup.text += "!";
+	popup.parse_hit_result(result)
 	entity.get_node("DamagePopups").add_child(popup)
 
 	var animation = entity.get_node("AnimationPlayer")

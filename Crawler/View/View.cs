@@ -17,6 +17,7 @@ public partial class View : Node2D
     [Export] public bool impatientMode = false;
 
     private bool queueSync = false;
+    private float modelSyncDelay = 0;
 
     public override void _Ready()
     {
@@ -33,12 +34,19 @@ public partial class View : Node2D
             }
         }
 
-        if (queueSync && !this.AnyActorAnimating())
+        if (queueSync && !this.AnyActorAnimating() && eventQueue.Count == 0)
         {
-            queueSync = false;
-            this.ModelSync();
-            Model debugggModel = GetNode<Model>("../Model");
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + debugggModel.time;
+            // // prevents a camera jittering bug.
+            // // model syncs before actually done.
+            // modelSyncDelay += delta;
+            // if (modelSyncDelay > 0.1)
+            // {
+                // modelSyncDelay = 0;
+                queueSync = false;
+                this.ModelSync();
+                Model debugggModel = GetNode<Model>("../Model");
+                GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + debugggModel.time + " (sync!)";
+            // }
         }
     }
 
@@ -54,6 +62,7 @@ public partial class View : Node2D
                 Node node = (Node)GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd").New(ev2, roles);
                 node.QueueFree();
             }
+            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev2["timestamp"];
 
             // Old code, to replace.
             ModelEvent ev;
@@ -62,17 +71,29 @@ public partial class View : Node2D
             ev.args = ev2.Contains("args") ? ev2["args"] : null;
             ev.obj = ev2.Contains("object") ? (int)ev2["object"] : -1;
 
-            if (ev.subject == -1 && ev.action == "Wait")
+            if (!impatientMode && ev.subject == -1 && ev.action == "Wait")
             {
-                if (!impatientMode && AnyActorAnimating()) { break; }
+                if (AnyActorAnimating()) { break; }
             }
             eventQueue.RemoveAt(0);
+            if (!impatientMode && ev.subject == -1 && ev.action == "SmallWait")
+            {
+                break;
+            }
 
             HandleNonActorEvent(ev);
-            
+            // End old code.
+
             // Everything gets sent to the logs.
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.obj + " " + ev.args);
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
+        }
+        GetNode<RichTextLabel>("UILayer/DebugQueue").Text = "";
+        for (int i = 0; i < eventQueue.Count && i < 30; i++)
+        {
+            Dictionary ev = eventQueue[i];
+            // interpolated strings with quotes makes me uncomfortable.
+            GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"{i}\t{ev["subject"]}\t{ev["action"]}\n");
         }
     }
 
@@ -117,7 +138,7 @@ public partial class View : Node2D
             if (entity.id == 0)
             {
                 playerActor = actor;
-                GetNode<CrawlerCamera>("Camera2D").focus = actor;
+                GetNode("Camera2D").Set("focus", actor);
             }
         }
 

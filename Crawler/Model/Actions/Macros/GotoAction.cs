@@ -19,7 +19,7 @@ public class GotoAction : Action
 
         FindPathLazy(api, e.position, targetPos);
         
-        // api.CoolerApiEvent(-1, "Wait"); // painfully slow. make optional?
+        api.CoolerApiEvent(-1, "SmallWait");
         bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(api, e);
 
         if (!success) { return false; }
@@ -39,7 +39,10 @@ public class GotoAction : Action
         {
             PathFinder pather = new PathFinder();
             pather.maxLength = 100000;
-            result = PathFinder.ShortestPath(from, to, Walkable(api));
+            pather.source = from;
+            pather.goals = new List<(int, int)>(){to};
+            pather.walkable = Walkable(api);
+            result = pather.Run();
         }
         return result.steps != int.MaxValue;
     }

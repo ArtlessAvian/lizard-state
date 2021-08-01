@@ -44,6 +44,7 @@ public partial class Model : ModelAPI
         if (!@event.Contains("subject")) {@event.Add("subject", -1);}
         if (!@event.Contains("args")) {@event.Add("args", null);}
         if (!@event.Contains("object")) {@event.Add("object", -1);}
+        @event.Add("timestamp", time);
 
         // For each system, handle/decorate the event.
         foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
