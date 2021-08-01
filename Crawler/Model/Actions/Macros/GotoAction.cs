@@ -47,7 +47,8 @@ public class GotoAction : Action
         return result.steps != int.MaxValue;
     }
 
-    private bool AnyEnemiesInSight(ModelAPI api, Entity e)
+    // shared by RunAction.
+    public static bool AnyEnemiesInSight(ModelAPI api, Entity e)
     {
         foreach (Entity other in api.GetEntitiesInSight(0))
         {

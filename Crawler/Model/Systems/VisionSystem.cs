@@ -23,6 +23,7 @@ public class VisionSystem : TileMap, CrawlerSystem
             if (subject.team == 0)
             {
                 UpdateVision(model, subject);
+                subject.dirtyVision = false;
             }
         }
     }
@@ -47,11 +48,8 @@ public class VisionSystem : TileMap, CrawlerSystem
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
             {"action", "SeeMap"},
-            {"args", new Dictionary{
-                {"center", new Vector2(e.position.x, e.position.y)},
-                {"tiles", (tiles)}
-            }},
-            {"object", -1}
+            {"center", new Vector2(e.position.x, e.position.y)},
+            {"tiles", (tiles)}
         });
         
         // Update entities seen.
@@ -82,7 +80,6 @@ public class VisionSystem : TileMap, CrawlerSystem
                 if (!seeing)
                 {
                     canSee[other.id] &= ~(1 << e.id);
-                    GD.Print(canSee[other.id]);
                     if (canSee[other.id] == 0)
                     {
                         canSee.Remove(other.id);
@@ -94,20 +91,22 @@ public class VisionSystem : TileMap, CrawlerSystem
     }
 
     // Return value to be sent to ViewModel.
-    // Radius should be a small reasonable number, like 6.
-    public int[,] GetVisibleTiles((int x, int y) pos, int radius = 6)
+    // Radius should be a small reasonable number, like 5.
+    public int[,] GetVisibleTiles((int x, int y) pos, int radius = 10)
     {
         if (map == null) { map = GetNode<CrawlerMap>(mapPath); }
 
         ClearVisibility();
         UpdateVisibility(pos, radius);
 
-        int[,] tiles = new int[radius * 2 + 1, radius * 2 + 1];
-        for (int dy = -radius; dy <= radius; dy++)
+        int tileRadius = radius / 2;
+
+        int[,] tiles = new int[tileRadius * 2 + 1, tileRadius * 2 + 1];
+        for (int dy = -tileRadius; dy <= tileRadius; dy++)
         {
-            for (int dx = -radius; dx <= radius; dx++)
+            for (int dx = -tileRadius; dx <= tileRadius; dx++)
             {
-                tiles[dx + radius, dy + radius] = 
+                tiles[dx + tileRadius, dy + tileRadius] = 
                     this.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
                     map.GetCell(pos.x + dx, pos.y + dy) : -2;
                     // -2 and not -1, in case theres a hole in the ground or something
@@ -127,24 +126,21 @@ public class VisionSystem : TileMap, CrawlerSystem
     // Tiles marked as VISIBLE are not meant to be saved!
     public void UpdateVisibility((int x, int y) pos, int radius)
     {
+        int tileRadius = radius / 2; // integer division.
         // For each unique slope passing through a cell,
-        foreach ((int x, int y) in GridHelper.ListRationals(radius))
+        foreach ((int rise, int run) in GridHelper.ListRationals(tileRadius))
         {
-            // ~~Experiment with diagonal stuff. This makes a big octagon.~~
-            // Honestly, all this affects is the density of raycasts.
-            // int scale = (int)(radius / (y + 0.5 * x)); // Compromise
-            // int scale = (int)(radius / (y + x)); // Taxicab 
-            int scale = radius / y; // Chebyshev
+            int thing = tileRadius * rise / run;
 
             // Mark every cell on that slope, for each of the 8 octants.
-            MarkLineOfSight((pos.x, pos.y), (pos.x + x * scale, pos.y + y * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - x * scale, pos.y + y * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + x * scale, pos.y - y * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - x * scale, pos.y - y * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + y * scale, pos.y + x * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - y * scale, pos.y + x * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + y * scale, pos.y - x * scale), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - y * scale, pos.y - x * scale), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + tileRadius, pos.y + thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - tileRadius, pos.y + thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + tileRadius, pos.y - thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - tileRadius, pos.y - thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y + tileRadius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y + tileRadius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y - tileRadius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y - tileRadius), radius);
         }
     }
 

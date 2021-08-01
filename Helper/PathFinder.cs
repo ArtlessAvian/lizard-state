@@ -58,8 +58,7 @@ public class PathFinder
             
             if (cost[current] > maxLength)
             {
-                Godot.GD.Print(cost[current]);
-                Godot.GD.Print("Cancelled!");
+                Godot.GD.Print("Path too long.");
                 return result;
             }
 

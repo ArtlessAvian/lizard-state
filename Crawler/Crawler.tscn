@@ -70,5 +70,7 @@ script = ExtResource( 8 )
 [node name="Look" type="Node" parent="InputStates/Main"]
 script = ExtResource( 10 )
 
+[node name="UISounds" type="Node" parent="."]
+
 [connection signal="id_pressed" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_id_pressed"]
 [connection signal="popup_hide" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_popup_hide"]

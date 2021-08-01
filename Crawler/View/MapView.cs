@@ -6,6 +6,24 @@ public class MapView : Node2D
 {
     Dictionary<int, ((int, int), int[,])> entityVisions = new Dictionary<int, ((int, int), int[,])>();
 
+    public void AddVision(Godot.Collections.Dictionary ev)
+    {
+        // GD.Print(ev);
+        int seeer = (int)ev["subject"];
+        GD.Print("butt " + seeer);
+        Vector2 center = (Vector2)ev["center"];
+        int[] tiles1d = (int[])ev["tiles"];
+
+        int sidelen = (int)Math.Sqrt(tiles1d.Length);
+        int[,] tiles = new int[sidelen,sidelen];
+        for (int i = 0; i < tiles1d.Length; i++)
+        {
+            tiles[i / sidelen, i % sidelen] = tiles1d[i];
+        }
+
+        AddVision(seeer, ((int)center.x, (int)center.y), tiles);
+    }
+
     public void AddVision(int seeer, (int x, int y) center, int[,] tiles)
     {
         AddHistory(center, tiles);

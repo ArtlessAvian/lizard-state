@@ -72,32 +72,35 @@ public class MainInputState : InputState
             return true;
         }
 
-        if (Input.IsKeyPressed((int)KeyList.F1))
+        if (ev is InputEventKey eventKey && eventKey.Pressed)
         {
-            crawler.View.impatientMode = !crawler.View.impatientMode;
-            string thing = (crawler.View.impatientMode ? "on" : "off");
+            if (eventKey.Scancode == (int)KeyList.F1)
+            {
+                crawler.View.impatientMode = !crawler.View.impatientMode;
+                string thing = (crawler.View.impatientMode ? "on" : "off");
 
-            crawler.View.GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode($"\n * Impatient mode {thing}!");
-            return true;
-        }
+                crawler.View.GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode($"\n * Impatient mode {thing}!");
+                return true;
+            }
 
-        if (Input.IsKeyPressed((int)KeyList.F9))
-        {
-            crawler.View.GetNode("Map/Floors").Set("tile_data", crawler.Model.Map.Get("tile_data"));
-            return true;
-        }
+            if (eventKey.Scancode == (int)KeyList.F9)
+            {
+                crawler.View.GetNode("Map/Floors").Set("tile_data", crawler.Model.Map.Get("tile_data"));
+                return true;
+            }
 
-        if (Input.IsKeyPressed((int)KeyList.F11))
-        {
-            GetTree().ChangeScene("res://Crawler/Crawler.tscn");
-            return true;
-        }
+            if (eventKey.Scancode == (int)KeyList.F11)
+            {
+                GetTree().ChangeScene("res://Crawler/Crawler.tscn");
+                return true;
+            }
 
-        if (Input.IsKeyPressed((int)KeyList.Quoteleft))
-        {
-            Control debugLog = crawler.View.GetNode<Control>("UILayer/DebugLog");
-            debugLog.Visible = !debugLog.Visible;
-            return true;
+            if (eventKey.Scancode == (int)KeyList.Quoteleft)
+            {
+                Control debugLog = crawler.View.GetNode<Control>("UILayer/DebugLog");
+                debugLog.Visible = !debugLog.Visible;
+                return true;
+            }
         }
 
         return false;

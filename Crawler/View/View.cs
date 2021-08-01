@@ -81,7 +81,7 @@ public partial class View : Node2D
                 break;
             }
 
-            HandleNonActorEvent(ev);
+            HandleNonActorEvent(ev, ev2);
             // End old code.
 
             // Everything gets sent to the logs.
@@ -93,7 +93,14 @@ public partial class View : Node2D
         {
             Dictionary ev = eventQueue[i];
             // interpolated strings with quotes makes me uncomfortable.
-            GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"{i}\t{ev["subject"]}\t{ev["action"]}\n");
+            if ((string)ev["action"] == "Wait")
+            {
+                GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"[color=#AAAAFF]{i}\t{ev["subject"]}\t{ev["action"]}\n[/color]");
+            }
+            else
+            {            
+                GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"{i}\t{ev["subject"]}\t{ev["action"]}\n");
+            }
         }
     }
 
@@ -108,7 +115,7 @@ public partial class View : Node2D
         }
     }
 
-    private void HandleNonActorEvent(ModelEvent ev)
+    private void HandleNonActorEvent(ModelEvent ev, Dictionary ev2)
     {
         if (ev.action == "Create")
         {
@@ -144,20 +151,7 @@ public partial class View : Node2D
 
         else if (ev.action == "SeeMap")
         {
-            Dictionary args = (Dictionary)ev.args;
-            Vector2 centerVec = (Vector2)args["center"];
-            int[] tiles1d = (int[])args["tiles"];
-
-            (int, int) center = ((int, int))(centerVec.x, centerVec.y);
-            
-            int sidelen = (int)Math.Sqrt(tiles1d.Length);
-            int[,] tiles = new int[sidelen, sidelen];
-            for (int i = 0; i < tiles1d.Length; i++)
-            {
-                tiles[i / sidelen, i % sidelen] = tiles1d[i];
-            }
-
-            GetNode<MapView>("Map").AddVision(ev.subject, center, tiles);
+            GetNode<MapView>("Map").AddVision(ev2);
         }
 
         else if (ev.action == "Exit" || (ev.action == "Downed" && ev.subject == 0))

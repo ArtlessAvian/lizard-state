@@ -14,6 +14,12 @@ public class RunAction : Action
     public override bool Do(ModelAPI api, Entity e)
     {
         // TODO: Do not run macro if dangerous!
+        if (GotoAction.AnyEnemiesInSight(api, e))
+        {
+            // No op.
+            api.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
+            return true;
+        }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
         if (!api.CanWalkFromTo(e.position, targetPos))
@@ -35,6 +41,7 @@ public class RunAction : Action
             e.queuedAction = this;
         }
 
+        api.CoolerApiEvent(-1, "SmallWait");
         // target would be the new one lol
         bool success = new MoveAction().SetTarget(oldTarget).Do(api, e);
         // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. see GotoAction.
