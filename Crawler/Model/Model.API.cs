@@ -19,7 +19,7 @@ public interface ModelAPI
     Entity GetEntity(int id);
     Entity GetPlayer();
     Entity GetEntityAt((int x, int y) position);
-    List<Entity> GetEntitiesInRadius((int x, int y) position, int radius);
+    List<Entity> GetEntitiesInRadius((int x, int y) position, float radius);
     List<Entity> GetEntitiesInSight(int team);
 
     bool CanWalkFromTo((int x, int y) position, (int x, int y) position2);
@@ -85,7 +85,7 @@ public partial class Model : ModelAPI
         return null;
     }
 
-    public List<Entity> GetEntitiesInRadius((int x, int y) position, int radius)
+    public List<Entity> GetEntitiesInRadius((int x, int y) position, float radius)
     {
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in Entities.GetChildren())
@@ -126,7 +126,7 @@ public partial class Model : ModelAPI
                 !CrawlerMap.TileIsWall(Map.GetCell(position.x, position.y));
     }
 
-    public int Distance((int x, int y) pos, (int x, int y) pos2)
+    public float Distance((int x, int y) pos, (int x, int y) pos2)
     {
         return GridHelper.Distance(pos, pos2);
         // return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y));

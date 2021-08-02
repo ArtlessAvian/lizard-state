@@ -33,5 +33,5 @@ public class ExitAction : Action
         return false;
     }
 
-    public override (int, int) Range => (1, 3);
+    public override (float, float) Range => (1, 1.5f);
 }

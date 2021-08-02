@@ -42,4 +42,12 @@ easier than trello since its only just me (for now?)
 * Should the map be bigger? smaller?
 * Should the fov be bigger? smaller?
 * Did the your partner or the enemies (the AI) do something dumb/unexpected?
-* 
+
+# Notes to self
+<!-- * Distances are given in "half-tile" units.
+    * (This might change: refactor to use "tile" units everywhere. Cost, floats everywhere.)
+    * Be careful about units! -->
+* The view has perfect information
+    * The view /can/ show the true state of the game if it wanted to.
+    * Having the model hide information from the view would be cool
+        * But also hard.

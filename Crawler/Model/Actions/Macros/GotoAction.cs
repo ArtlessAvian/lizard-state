@@ -44,7 +44,7 @@ public class GotoAction : Action
             pather.walkable = Walkable(api);
             result = pather.Run();
         }
-        return result.steps != int.MaxValue;
+        return result.success;
     }
 
     // shared by RunAction.

@@ -17,7 +17,7 @@ public class PathFinder
     public class PathResult
     {
         public bool success = false;
-        public int steps = int.MaxValue;
+        public float steps = -1;
         public (int, int) nextStep; // Convenience. nextStepFor[source]
         public Dictionary<(int, int), (int, int)> nextStepFor;
     }
@@ -31,7 +31,7 @@ public class PathFinder
     /// Makes the heuristic easy.
     public PathResult Run()
     {
-        Dictionary<(int, int), int> cost = new Dictionary<(int, int), int>();
+        Dictionary<(int, int), float> cost = new Dictionary<(int, int), float>();
         SimplePriorityQueue<(int, int)> frontier = new SimplePriorityQueue<(int, int)>();
         
         result.nextStepFor = new Dictionary<(int, int), (int, int)>();
@@ -67,7 +67,7 @@ public class PathFinder
                 // Filter neighbors. This search goes backwards, remember.
                 if (!walkable((neighbor, current))) { continue; }
 
-                int distance = GridHelper.Distance(current, neighbor);
+                float distance = GridHelper.Distance(current, neighbor);
                 if (!cost.ContainsKey(neighbor) || cost[current] + distance < cost[neighbor])
                 {
                     cost[neighbor] = cost[current] + distance;

@@ -91,5 +91,5 @@ public class AttackAction : Action
         return true;
     }
 
-    public override (int, int) Range => (1, data.range);
+    public override (float, float) Range => (1, data.range);
 }

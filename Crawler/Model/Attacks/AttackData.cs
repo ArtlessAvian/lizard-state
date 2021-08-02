@@ -16,7 +16,7 @@ public struct AttackResult
 
 public class AttackData : Resource
 {
-    [Export] public int range = 3;
+    [Export] public float range = 1.5f;
     [Export] public int energy = 0;
     [Export] public int recovery = 10;
 

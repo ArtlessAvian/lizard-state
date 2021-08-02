@@ -48,5 +48,5 @@ public abstract class Action
     }
 
     /// For AI and UI use. Range is inclusive.
-    public virtual (int min, int max) Range => (0, 0);
+    public virtual (float min, float max) Range => (0, 0);
 }

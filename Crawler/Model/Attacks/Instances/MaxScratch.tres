@@ -5,7 +5,7 @@
 [resource]
 resource_name = "MaxScratch"
 script = ExtResource( 1 )
-range = 3
+range = 1.5
 energy = 0
 recovery = 8
 comboStartChance = 0.3

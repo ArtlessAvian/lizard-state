@@ -29,7 +29,7 @@ public class DashAbility : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        if (GridHelper.Distance(e.position, targetPos) > 10)
+        if (GridHelper.Distance(e.position, targetPos) > Range.max)
         {
             return false;
         }
@@ -37,5 +37,5 @@ public class DashAbility : Action
         return true;
     }
 
-    public override (int min, int max) Range => (1, 10);
+    public override (float min, float max) Range => (1, 5);
 }

@@ -43,7 +43,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     public void UpdateVision(Model model, Entity e)
     {        
         // See the map
-        int[,] tiles = this.GetVisibleTiles(e.position, 10);
+        int[,] tiles = this.GetVisibleTiles(e.position, 5);
 
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
@@ -54,7 +54,7 @@ public class VisionSystem : TileMap, CrawlerSystem
         
         // Update entities seen.
         // See things you don't already see.
-        foreach (Entity other in model.GetEntitiesInRadius(e.position, 10))
+        foreach (Entity other in model.GetEntitiesInRadius(e.position, 5))
         {
             bool seeing = GetCell(other.position.x, other.position.y) == 1;
             if (seeing)
@@ -92,21 +92,19 @@ public class VisionSystem : TileMap, CrawlerSystem
 
     // Return value to be sent to ViewModel.
     // Radius should be a small reasonable number, like 5.
-    public int[,] GetVisibleTiles((int x, int y) pos, int radius = 10)
+    public int[,] GetVisibleTiles((int x, int y) pos, int radius = 5)
     {
         if (map == null) { map = GetNode<CrawlerMap>(mapPath); }
 
         ClearVisibility();
         UpdateVisibility(pos, radius);
 
-        int tileRadius = radius / 2;
-
-        int[,] tiles = new int[tileRadius * 2 + 1, tileRadius * 2 + 1];
-        for (int dy = -tileRadius; dy <= tileRadius; dy++)
+        int[,] tiles = new int[radius * 2 + 1, radius * 2 + 1];
+        for (int dy = -radius; dy <= radius; dy++)
         {
-            for (int dx = -tileRadius; dx <= tileRadius; dx++)
+            for (int dx = -radius; dx <= radius; dx++)
             {
-                tiles[dx + tileRadius, dy + tileRadius] = 
+                tiles[dx + radius, dy + radius] = 
                     this.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
                     map.GetCell(pos.x + dx, pos.y + dy) : -2;
                     // -2 and not -1, in case theres a hole in the ground or something
@@ -126,21 +124,20 @@ public class VisionSystem : TileMap, CrawlerSystem
     // Tiles marked as VISIBLE are not meant to be saved!
     public void UpdateVisibility((int x, int y) pos, int radius)
     {
-        int tileRadius = radius / 2; // integer division.
         // For each unique slope passing through a cell,
-        foreach ((int rise, int run) in GridHelper.ListRationals(tileRadius))
+        foreach ((int rise, int run) in GridHelper.ListRationals(radius))
         {
-            int thing = tileRadius * rise / run;
+            int thing = radius * rise / run;
 
             // Mark every cell on that slope, for each of the 8 octants.
-            MarkLineOfSight((pos.x, pos.y), (pos.x + tileRadius, pos.y + thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - tileRadius, pos.y + thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + tileRadius, pos.y - thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - tileRadius, pos.y - thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y + tileRadius), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y + tileRadius), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y - tileRadius), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y - tileRadius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + radius, pos.y + thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - radius, pos.y + thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + radius, pos.y - thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - radius, pos.y - thing), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y + radius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y + radius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y - radius), radius);
+            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y - radius), radius);
         }
     }
 

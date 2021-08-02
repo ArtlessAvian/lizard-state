@@ -192,7 +192,7 @@ public class MainInputState : InputState
                 targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
 
                 Entity player = crawler.Model.GetPlayer();
-                if (GridHelper.Distance(player.position, targetPosition) <= 3)
+                if (GridHelper.Distance(player.position, targetPosition) <= 1.5f)
                 {
                     crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;

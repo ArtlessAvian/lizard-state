@@ -10,7 +10,7 @@ public class AI
 
     public Action GetMove(ModelAPI api, Entity e)
     {
-        List<Entity> entities = api.GetEntitiesInRadius(e.position, 12);
+        List<Entity> entities = api.GetEntitiesInRadius(e.position, 6);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
@@ -24,7 +24,7 @@ public class AI
             }
             else
             {
-                if (GridHelper.Distance(e.position, other.position) <= 8)
+                if (GridHelper.Distance(e.position, other.position) <= 4)
                 {
                     enemyPositions.Add(other.position);
                 }
@@ -33,7 +33,7 @@ public class AI
 
         // Select a move and try to attack an enemy in range.
         int bestAttack = -1;
-        int bestRangeMax = 3;
+        float bestRangeMax = 1.5f;
         for (int i = 0; i < e.species.attacks.Count; i++)
         {
             AttackData data = e.species.attacks[i];
@@ -46,7 +46,7 @@ public class AI
         }
         foreach ((int, int) pos in enemyPositions)
         {
-            int distance = GridHelper.Distance(e.position, pos);
+            float distance = GridHelper.Distance(e.position, pos);
             if (distance <= bestRangeMax)
             {
                 return new AttackAction(e, bestAttack).SetTarget(pos);
@@ -57,7 +57,7 @@ public class AI
         // Pathfinding should be cheap since the paths are short and probably straight lines.
         // PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
         PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api, e));
-        if (result.steps != Int32.MaxValue)
+        if (result.success)
         {
             return new MoveAction().SetTarget(result.nextStep);
         }
@@ -66,11 +66,11 @@ public class AI
         result = PathFinder.ShortestPathToMany(e.position, allyPositions, WalkThroughAllies(api));
         if (result.success)
         {
-            if (result.steps <= 5)
+            if (result.steps > 2.5f)
             {
-                return new MoveAction().SetTarget(e.position);
+                return new MoveAction().SetTarget(result.nextStep);
             }
-            return new MoveAction().SetTarget(result.nextStep);
+            return new MoveAction().SetTarget(e.position);
         }
 
         return new MoveAction().SetTarget(e.position);
