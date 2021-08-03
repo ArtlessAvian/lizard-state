@@ -4,30 +4,6 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// How the model communicates *what order things happen* to the view.
-/// See NewEvent() in the ModelAPI interface.
-/// </summary>
-/// If the view peeked at the model, the model could be running ahead of the view.
-/// It is OK to peek if the view is in sync (waiting on player input), but it (ideally) shouldn't need to.
-public struct ModelEvent
-{
-    public int subject;
-    public string action;
-    // arg type can be inferred from action.
-    // use like an adverb or adverb phrase!
-    public object args; // can be null!
-    public int obj; // "null" is -1
-
-    public ModelEvent(int subject, string action, object args = null, int @object = -1)
-    {
-        this.subject = subject;
-        this.action = action;
-        this.args = args;
-        this.obj = @object;
-    }
-}
-
-/// <summary>
 /// Represents something. [a trip somewhere and back, or a "run."]
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!

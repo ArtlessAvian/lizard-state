@@ -64,29 +64,23 @@ public partial class View : Node2D
             }
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev2["timestamp"];
 
-            // Old code, to replace.
-            ModelEvent ev;
-            ev.subject = ev2.Contains("subject") ? (int)ev2["subject"] : -1;
-            ev.action = (string)ev2["action"];
-            ev.args = ev2.Contains("args") ? ev2["args"] : null;
-            ev.obj = ev2.Contains("object") ? (int)ev2["object"] : -1;
-
-            if (!impatientMode && ev.subject == -1 && ev.action == "Wait")
+            if (!impatientMode && (int)ev2["subject"] == -1 && (string)ev2["action"] == "Wait")
             {
                 if (AnyActorAnimating()) { break; }
             }
             eventQueue.RemoveAt(0);
-            if (!impatientMode && ev.subject == -1 && ev.action == "SmallWait")
+            if (!impatientMode && (int)ev2["subject"] == -1 && (string)ev2["action"] == "SmallWait")
             {
                 break;
             }
 
-            HandleNonActorEvent(ev, ev2);
-            // End old code.
+            // old code to replace.
+            HandleNonActorEvent(ev2);
 
             // Everything gets sent to the logs.
-            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev.subject + " " + ev.action + " " + ev.obj + " " + ev.args);
-            GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
+            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev2["action"] + " " + ev2);
+            GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev2, roles);
+            // End old code.
         }
         GetNode<RichTextLabel>("UILayer/DebugQueue").Text = "";
         for (int i = 0; i < eventQueue.Count && i < 30; i++)
@@ -115,11 +109,11 @@ public partial class View : Node2D
         }
     }
 
-    private void HandleNonActorEvent(ModelEvent ev, Dictionary ev2)
+    private void HandleNonActorEvent(Dictionary ev)
     {
-        if (ev.action == "Create")
+        if ((string)ev["action"] == "Create")
         {
-            Entity entity = ev.args as Entity;
+            Entity entity = ev["args"] as Entity;
 
             // Find the actor, else, get a generic actor and try to recolor it i guess
             // TODO: don't make a new directory every time.
@@ -149,12 +143,12 @@ public partial class View : Node2D
             }
         }
 
-        else if (ev.action == "SeeMap")
+        else if ((string)ev["action"] == "SeeMap")
         {
-            GetNode<MapView>("Map").AddVision(ev2);
+            GetNode<MapView>("Map").AddVision(ev);
         }
 
-        else if (ev.action == "Exit" || (ev.action == "Downed" && ev.subject == 0))
+        else if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
         {
             // Temporary!
             GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;

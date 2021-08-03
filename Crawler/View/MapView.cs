@@ -10,7 +10,6 @@ public class MapView : Node2D
     {
         // GD.Print(ev);
         int seeer = (int)ev["subject"];
-        GD.Print("butt " + seeer);
         Vector2 center = (Vector2)ev["center"];
         int[] tiles1d = (int[])ev["tiles"];
 

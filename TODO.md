@@ -1,6 +1,7 @@
 easier than trello since its only just me (for now?)
 
 # TODO
+## Edits, Fixes
 * Make Energy visible.
 * Test making AbilitySelect window dragable (like an MMO).
 * Add prompt to denote AbilityAiming (which ability is selected, or even that you've selected something).
@@ -8,29 +9,28 @@ easier than trello since its only just me (for now?)
 * Draw ranges for abilities.
 * Adjust MessageLog size.
 * Add turn indicator
-<!-- * Add crit/stun indicator -->
-* On "Goto," draw path taken, or add animation.
 * Healthbar blocked by entity
 
-* New Mechanics:
-    * Control schemes.
-    * "Are you sure?" prompt.
-    * Multiple caves.
-    * Heal between caves.
-    * Items for meta-progression.
-    * Incentive to explore.
+## New Features:
+* On "Goto," draw path taken, or add animation.
+* Control schemes (WASD + diagonals?)
+* "Are you sure?" prompt.
+* Multiple caves.
+* Heal between caves.
+* Items for meta-progression.
+* Incentive to explore.
 
-# Low Priority
+## Low Priority
 * Limit dash with LOS check, unoccupied tile.
 * Experiment more with friendly fire.
 * Find art. Find sfx.
 
-# Fun Stuff
+## Fun Stuff
 * add damage on dashing through people
 * make partner give tutorial
 * check for partner nearby (if alive) before leaving
 
-# Redos
+## Redos
 * Redo vision system. (Buggy, awkward.)
 * Redo view. (In GDScript?)
 
@@ -44,10 +44,18 @@ easier than trello since its only just me (for now?)
 * Did the your partner or the enemies (the AI) do something dumb/unexpected?
 
 # Notes to self
-<!-- * Distances are given in "half-tile" units.
-    * (This might change: refactor to use "tile" units everywhere. Cost, floats everywhere.)
-    * Be careful about units! -->
 * The view has perfect information
     * The view /can/ show the true state of the game if it wanted to.
     * Having the model hide information from the view would be cool
         * But also hard.
+
+* The game does not like hot-reloading
+    * This would have been really nice.
+    * I blame the model being in the scene tree.
+
+* The model is in the scene tree.
+    * The model is dependent on Godot as a consequence.
+        * I also use Godot as a library at times.
+            * TileMaps as sparse int arrays
+            * Resources as data files
+    * 

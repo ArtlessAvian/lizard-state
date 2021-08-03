@@ -5,40 +5,41 @@ using System.Collections.Generic;
 
 public class MessageLog : RichTextLabel
 {
-    public void HandleModelEvent(ModelEvent ev, List<Actor> roles)
+    // move responsibility to event handlers.
+    public void HandleModelEvent(Dictionary ev, List<Actor> roles)
     {
-        if (ev.action == "Swap")
+        string action = (string)ev["action"];
+        if (action == "Swap")
         {
-            Actor subject = roles[ev.subject];            
-            Actor obj = roles[ev.obj];            
+            Actor subject = roles[(int)ev["subject"]];            
+            Actor obj = roles[(int)ev["object"]];            
             this.AppendBbcode($"\n * {subject.displayName} swaps with {obj.displayName}.");
         }
-        else if (ev.action == "Hit")
+        else if (action == "Hit")
         {
-            Dictionary result = (Dictionary)ev.args; 
-            Actor subject = roles[ev.subject];
-            Actor obj = roles[ev.obj];
+            Actor subject = roles[(int)ev["subject"]];            
+            Actor obj = roles[(int)ev["object"]];            
             this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
             
-            if ((bool)result["stuns"])
+            if ((bool)ev["stuns"])
             {
                 this.AppendBbcode($"\n * {obj.displayName} is stunned!");
             }
         }
-        else if (ev.action == "Miss")
+        else if (action == "Miss")
         {
-            Actor subject = roles[ev.subject];
-            Actor obj = roles[ev.obj];
+            Actor subject = roles[(int)ev["subject"]];            
+            Actor obj = roles[(int)ev["object"]];            
             this.AppendBbcode($"\n * {subject.displayName} misses the {obj.displayName}.");
         }
-        else if (ev.action == "Downed")
+        else if (action == "Downed")
         {
-            Actor subject = roles[ev.subject];
+            Actor subject = roles[(int)ev["subject"]];            
             this.AppendBbcode($"\n * {subject.displayName} is downed!");
         }
-        else if (ev.action == "Print")
+        else if (action == "Print")
         {
-            string message = (string)ev.args;
+            string message = (string)ev["args"];
             this.AppendBbcode($"\n * {message}");
         }
     }
