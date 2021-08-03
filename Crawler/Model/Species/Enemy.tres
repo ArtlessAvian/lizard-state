@@ -3,7 +3,6 @@
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Attacks/Instances/BasicAttack.tres" type="Resource" id=2]
 
-
 [resource]
 resource_name = "Enemy"
 script = ExtResource( 1 )

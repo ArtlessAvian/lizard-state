@@ -5,7 +5,7 @@
 [resource]
 resource_name = "NanoZap"
 script = ExtResource( 1 )
-range = 4
+range = 4.0
 energy = 1
 recovery = 10
 comboStartChance = 0.0

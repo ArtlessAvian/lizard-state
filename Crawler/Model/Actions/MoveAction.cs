@@ -48,8 +48,8 @@ public class MoveAction : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
+        e.nextMove += (int)(10 * GridHelper.Distance(e.position, targetPos));
         e.position = targetPos;
-        e.nextMove += 10;
 
         // TODO: Maybe put elsewhere.
         e.dirtyVision |= e.providesVision;
@@ -77,7 +77,8 @@ public class MoveAction : Action
 
     public override bool IsValid(ModelAPI api, Entity e)
     {
-        return true; // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
+        // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
+        return GridHelper.Distance(e.position, GetTargetPos(e.position)) <= 1.5f;
     }
 
     public override (float, float) Range => (1, 1.5f);
