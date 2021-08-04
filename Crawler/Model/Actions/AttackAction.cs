@@ -22,19 +22,19 @@ public class AttackAction : Action
         }
     }
 
-    public override bool Do(ModelAPI api, Entity e)
+    public override bool Do(Model model, Entity e)
     {
-        if (!IsValid(api, e))
+        if (!IsValid(model, e))
         {
             return false;
         }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
-        Entity targeted = api.GetEntityAt(targetPos);
+        Entity targeted = model.GetEntityAt(targetPos);
 
         e.energy -= data.energy;
 
-        api.CoolerApiEvent(-1, "Wait");
+        model.CoolerApiEvent(-1, "Wait");
          
         // for each target
         
@@ -53,21 +53,21 @@ public class AttackAction : Action
             {"targetPos", new Vector2(targetPos.x, targetPos.y)},
             {"hit", hitResult}
         };
-        api.CoolerApiEvent(attackResult);
+        model.CoolerApiEvent(attackResult);
 
         // for each target
         if (targeted.health <= 0)
         {
-            api.CoolerApiEvent(targeted.id, "Downed");
+            model.CoolerApiEvent(targeted.id, "Downed");
         }
 
         e.nextMove += data.recovery;
 
-        api.CoolerApiEvent(-1, "Wait");
+        model.CoolerApiEvent(-1, "Wait");
         return true;
     }
 
-    public override bool IsValid(ModelAPI api, Entity e)
+    public override bool IsValid(Model model, Entity e)
     {
         if (e.energy < data.energy)
         {
@@ -82,7 +82,7 @@ public class AttackAction : Action
             return false;
         }
 
-        Entity targeted = api.GetEntityAt(targetPos);
+        Entity targeted = model.GetEntityAt(targetPos);
         if ((targeted is null) || targeted == e)
         {
             return false;

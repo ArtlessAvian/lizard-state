@@ -8,9 +8,9 @@ public class AI
 {
     public AI() {}
 
-    public Action GetMove(ModelAPI api, Entity e)
+    public Action GetMove(Model model, Entity e)
     {
-        List<Entity> entities = api.GetEntitiesInRadius(e.position, 6);
+        List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
@@ -56,7 +56,7 @@ public class AI
         // Move towards enemies.
         // Pathfinding should be cheap since the paths are short and probably straight lines.
         // PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
-        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api, e));
+        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(model, e));
         if (result.success)
         {
             GD.Print(e.id, " moving towards thing ", bestRangeMax);
@@ -64,7 +64,7 @@ public class AI
         }
 
         // low priority todo: big clumps of ai. 
-        result = PathFinder.ShortestPathToMany(e.position, allyPositions, WalkThroughAllies(api));
+        result = PathFinder.ShortestPathToMany(e.position, allyPositions, WalkThroughAllies(model));
         if (result.success)
         {
             if (result.steps > 2.5f)
@@ -78,18 +78,18 @@ public class AI
     }
 
     // kinda ugly but i dont care.
-    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api, Entity e)
+    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(Model model, Entity e)
     {
         return (((int, int) from, (int, int) to) tuple) => (
-            api.CanWalkFromTo(tuple.from, tuple.to) &&
-            (api.GetEntityAt(tuple.to) == null || api.GetEntityAt(tuple.to).team != e.team)
+            model.CanWalkFromTo(tuple.from, tuple.to) &&
+            (model.GetEntityAt(tuple.to) == null || model.GetEntityAt(tuple.to).team != e.team)
         );
     }
 
-    private Predicate<((int x, int y) from, (int x, int y) to)> WalkThroughAllies(ModelAPI api)
+    private Predicate<((int x, int y) from, (int x, int y) to)> WalkThroughAllies(Model model)
     {
         return (((int, int) from, (int, int) to) tuple) => (
-            api.CanWalkFromTo(tuple.from, tuple.to)
+            model.CanWalkFromTo(tuple.from, tuple.to)
         );
     }
 

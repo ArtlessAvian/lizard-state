@@ -6,21 +6,21 @@ public class GotoAction : Action
 {
     PathFinder.PathResult result;
 
-    public override bool Do(ModelAPI api, Entity e)
+    public override bool Do(Model model, Entity e)
     {
-        if (AnyEnemiesInSight(api, e))
+        if (AnyEnemiesInSight(model, e))
         {
             // No op! On view, print stuff.
-            api.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
+            model.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
             return true;
         }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        FindPathLazy(api, e.position, targetPos);
+        FindPathLazy(model, e.position, targetPos);
         
-        api.CoolerApiEvent(-1, "SmallWait");
-        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(api, e);
+        model.CoolerApiEvent(-1, "SmallWait");
+        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
 
         if (!success) { return false; }
         
@@ -33,7 +33,7 @@ public class GotoAction : Action
         return success;
     }
 
-    private bool FindPathLazy(ModelAPI api, (int, int) from, (int, int) to)
+    private bool FindPathLazy(Model model, (int, int) from, (int, int) to)
     {
         if (result == null)
         {
@@ -41,16 +41,16 @@ public class GotoAction : Action
             pather.maxLength = 100000;
             pather.source = from;
             pather.goals = new List<(int, int)>(){to};
-            pather.walkable = Walkable(api);
+            pather.walkable = Walkable(model);
             result = pather.Run();
         }
         return result.success;
     }
 
     // shared by RunAction.
-    public static bool AnyEnemiesInSight(ModelAPI api, Entity e)
+    public static bool AnyEnemiesInSight(Model model, Entity e)
     {
-        foreach (Entity other in api.GetEntitiesInSight(0))
+        foreach (Entity other in model.GetEntitiesInSight(0))
         {
             if (other.team != 0 && !other.downed)
             {
@@ -60,10 +60,10 @@ public class GotoAction : Action
         return false;
     }
 
-    public override bool IsValid(ModelAPI api, Entity e)
+    public override bool IsValid(Model model, Entity e)
     {
         // assume path does not change after this is called.
-        if (!FindPathLazy(api, e.position, GetTargetPos(e.position)))
+        if (!FindPathLazy(model, e.position, GetTargetPos(e.position)))
         {
             return false;
         }
@@ -71,13 +71,12 @@ public class GotoAction : Action
         return true;
     }
 
-    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(ModelAPI api)
+    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(Model model)
     {
-        Model model = (Model)api; // whatever.
         VisionSystem fog = model.GetNode<VisionSystem>("Systems/Vision");
 
         return (((int x, int y) from, (int x, int y) to) tuple) =>
-                api.CanWalkFromTo(tuple.from, tuple.to) &&
+                model.CanWalkFromTo(tuple.from, tuple.to) &&
                 fog.GetCell(tuple.from.x, tuple.from.y) != -1 &&
                 fog.GetCell(tuple.to.x, tuple.to.y) != -1;
     }

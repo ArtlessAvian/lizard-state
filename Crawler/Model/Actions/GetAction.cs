@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 public class GetAction : Action
 {
-    public override bool Do(ModelAPI api, Entity e)
+    public override bool Do(Model model, Entity e)
     {
-        if (!IsValid(api, e))
+        if (!IsValid(model, e))
         {
             return false;
         }
 
-        if (api.GetMap().GetCell(e.position.x, e.position.y) == 2)
+        if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
         {
-            api.CoolerApiEvent(-1, "Print", "Got the moss.");
+            model.CoolerApiEvent(-1, "Print", "Got the moss.");
             e.nextMove += 100;
             return true;
         }
@@ -21,9 +21,9 @@ public class GetAction : Action
         return false;
     }
 
-    public override bool IsValid(ModelAPI api, Entity e)
+    public override bool IsValid(Model model, Entity e)
     {
-        if (api.GetMap().GetCell(e.position.x, e.position.y) == 2)
+        if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
         {
             return true;
         }

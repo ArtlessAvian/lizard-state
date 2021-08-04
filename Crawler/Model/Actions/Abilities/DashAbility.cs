@@ -8,9 +8,9 @@ public class DashAbility : Action
 
     }
 
-    public override bool Do(ModelAPI api, Entity e)
+    public override bool Do(Model model, Entity e)
     {
-        if (!IsValid(api, e))
+        if (!IsValid(model, e))
         {
             return false;
         }
@@ -20,12 +20,12 @@ public class DashAbility : Action
         e.position = targetPos;
         e.nextMove += 10;
 
-        api.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+        model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
 
         return true;
     }
 
-    public override bool IsValid(ModelAPI api, Entity e)
+    public override bool IsValid(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 

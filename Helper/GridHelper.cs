@@ -19,13 +19,14 @@ static class GridHelper
 
     public static IEnumerable<(int numerator, int denominator)> ListRationals(int maxDenominator)
     {
+        // it doesn't make sense to say 0 is coprime with anything.
+        yield return (0, 1);
         for (int denom = 1; denom <= maxDenominator; denom++)
         {
-            for (int numer = 0; numer <= denom; numer++)
+            for (int numer = 1; numer <= denom; numer++)
             {
-                if (GCD(denom, numer) == 1)
+                if (GCD(denom, numer) == 1) // if coprime
                 {
-                    // int scale = (int)((float)radius/denom);
                     yield return (numer, denom);
                 }
             }
@@ -100,38 +101,18 @@ static class GridHelper
         return (dx, dy);
     }
 
+    // Euclidean algorithm :P
+    // Literally /who/ told me the previous algorithm?
+    // im actually mad that i overcomplicated it. don't search it up.
     public static int GCD(int a, int b)
     {
         if (a < b)
         {
             return GCD(b, a);
         }
-        if (b == 0) { return a; }
-
-        bool evenA = (a % 2) == 0;
-        bool evenB = (b % 2) == 0;
-        if (evenA)
-        {
-            if (evenB)
-            {
-                return 2 * GCD(a/2, b/2);
-            }
-            else
-            {
-                return GCD(a/2, b);
-            }
-        }
-        else
-        {
-            if (evenB)
-            {
-                return GCD(a, b/2);
-            }
-            else
-            {
-                return GCD(a-b, b);
-            }
-        }
+        if (b == 0) { return 0; } // this should never happen!!
+        if (a % b == 0) {return b;}
+        return GCD(b, a % b);
     }
 
     public static float Distance(int dx, int dy)

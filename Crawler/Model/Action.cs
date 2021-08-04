@@ -9,10 +9,10 @@ using System.Collections.Generic;
 public abstract class Action
 {
     // If !IsValid, returns false and no-ops. Otherwise, tries to do the thing, even if dumb. 
-    public abstract bool Do(ModelAPI api, Entity e);
+    public abstract bool Do(Model model, Entity e);
 
     // Checks if the action is valid. This is mostly so the AI doesn't make an invalid move.
-    public abstract bool IsValid(ModelAPI api, Entity e);
+    public abstract bool IsValid(Model model, Entity e);
 
     // Gives a list of reasons this may be a bad move.
     // public abstract string[] GetWarnings(ModelAPI api, Entity e);

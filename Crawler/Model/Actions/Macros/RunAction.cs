@@ -11,18 +11,18 @@ public class RunAction : Action
         this.limit = limit;
     }
 
-    public override bool Do(ModelAPI api, Entity e)
+    public override bool Do(Model model, Entity e)
     {
         // TODO: Do not run macro if dangerous!
-        if (GotoAction.AnyEnemiesInSight(api, e))
+        if (GotoAction.AnyEnemiesInSight(model, e))
         {
             // No op.
-            api.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
+            model.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
             return true;
         }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
-        if (!api.CanWalkFromTo(e.position, targetPos))
+        if (!model.CanWalkFromTo(e.position, targetPos))
         {
             return false;
         }
@@ -41,17 +41,17 @@ public class RunAction : Action
             e.queuedAction = this;
         }
 
-        api.CoolerApiEvent(-1, "SmallWait");
+        model.CoolerApiEvent(-1, "SmallWait");
         // target would be the new one lol
-        bool success = new MoveAction().SetTarget(oldTarget).Do(api, e);
+        bool success = new MoveAction().SetTarget(oldTarget).Do(model, e);
         // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. see GotoAction.
         return success;
     }
 
-    public override bool IsValid(ModelAPI api, Entity e)
+    public override bool IsValid(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
-        if (!api.CanWalkFromTo(e.position, targetPos))
+        if (!model.CanWalkFromTo(e.position, targetPos))
         {
             return false;
         }
