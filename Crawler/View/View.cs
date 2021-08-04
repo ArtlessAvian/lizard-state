@@ -1,15 +1,16 @@
 using Godot;
 using Godot.Collections;
-using System;
-using System.Collections.Generic;
 
 // Holds a model and shows what's happening.
 public partial class View : Node2D
 {
     public static Vector2 TILESIZE = new Vector2(32, 24);
 
-    public List<Dictionary> eventQueue = new List<Dictionary>();
-    public List<Actor> roles = new List<Actor>();
+    // might be bad performance on dequeue.
+    // who cares
+    public Array<Dictionary> eventQueue = new Array<Dictionary>();
+    // Could be an dictionary?
+    public Array<Actor> roles = new Array<Actor>();
 
     // convenience
     [Export] public Actor playerActor;
@@ -59,8 +60,10 @@ public partial class View : Node2D
             string action = (string)ev2["action"];
             if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd"))
             {
-                Node node = (Node)GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd").New(ev2, roles);
-                node.QueueFree();
+                GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
+                script.New(this, ev2, roles);
+                // ev.Free() // resource counted!
+                // if event wants to persist, then it creates a node and puts itself in there.
             }
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev2["timestamp"];
 
@@ -75,7 +78,13 @@ public partial class View : Node2D
             }
 
             // old code to replace.
-            HandleNonActorEvent(ev2);
+            if ((string)ev2["action"] == "Exit" || ((string)ev2["action"] == "Downed" && (int)ev2["subject"] == 0))
+            {
+                // Temporary!
+                GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
+                GetNode<MessageLog>("UILayer/MessageLog").MarginTop = 20;
+                GetNode<ColorRect>("UILayer/MessageLog/Background").Color = Color.FromHsv(0, 0, 0);
+            }
 
             // Everything gets sent to the logs.
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev2["action"] + " " + ev2);
@@ -107,61 +116,6 @@ public partial class View : Node2D
         {
             a.ModelSync();
         }
-    }
-
-    private void HandleNonActorEvent(Dictionary ev)
-    {
-        if ((string)ev["action"] == "Create")
-        {
-            Entity entity = ev["args"] as Entity;
-
-            // Find the actor, else, get a generic actor and try to recolor it i guess
-            // TODO: don't make a new directory every time.
-            Actor actor;
-            if (new Godot.Directory().FileExists($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn"))
-            {
-                actor = GD.Load<PackedScene>($"res://Crawler/View/Actors/{entity.species.ResourceName}.tscn").Instance() as Actor;
-            }
-            else
-            {
-                actor = GD.Load<PackedScene>($"res://Crawler/View/Actor.tscn").Instance() as Actor;
-                actor.GetNode<AnimatedSprite>("AnimatedSprite").Frames =
-                        GD.Load<SpriteFrames>($"res://Crawler/View/Assets/ActorAtlas/{entity.species.ResourceName}.tres");
-            }
-            
-            roles.Add(actor);
-            actor.Name = entity.id.ToString();
-            actor.ActAs(entity);
-
-            FindNode("Actors").AddChild(actor);
-
-            // HACK: lmao
-            if (entity.id == 0)
-            {
-                playerActor = actor;
-                GetNode("Camera2D").Set("focus", actor);
-            }
-        }
-
-        else if ((string)ev["action"] == "SeeMap")
-        {
-            GetNode<MapView>("Map").AddVision(ev);
-        }
-
-        else if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
-        {
-            // Temporary!
-            GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
-            GetNode<MessageLog>("UILayer/MessageLog").MarginTop = 20;
-            GetNode<ColorRect>("UILayer/MessageLog/Background").Color = Color.FromHsv(0, 0, 0);
-        }
-
-        // else if (ev.action == "Print")
-        // {
-        //     string message = (string)ev.args;
-        //     GD.Print(message);
-        //     GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode("\n * " + message);
-        // }
     }
 
     private bool AnyActorAnimating()

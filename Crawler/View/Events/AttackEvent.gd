@@ -1,8 +1,8 @@
-extends Node
+extends Resource
 
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
-func _init(event : Dictionary, roles : Array):
+func _init(view, event : Dictionary, roles : Array):
 	# print(event)
 	var subject = roles[event["subject"]]
 	subject.FacePosition(event["targetPos"]);
@@ -11,6 +11,8 @@ func _init(event : Dictionary, roles : Array):
 	
 	var result = event["hit"]
 	do_hit_result(result, roles[result["target"]])
+
+	
 
 func do_hit_result(result : Dictionary, entity):
 	entity.health -= result["damage"]

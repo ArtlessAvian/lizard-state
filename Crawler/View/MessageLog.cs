@@ -1,12 +1,10 @@
 using Godot;
 using Godot.Collections;
-using System;
-using System.Collections.Generic;
 
 public class MessageLog : RichTextLabel
 {
     // move responsibility to event handlers.
-    public void HandleModelEvent(Dictionary ev, List<Actor> roles)
+    public void HandleModelEvent(Dictionary ev, Array<Actor> roles)
     {
         string action = (string)ev["action"];
         if (action == "Swap")
@@ -18,7 +16,7 @@ public class MessageLog : RichTextLabel
         else if (action == "Hit")
         {
             Actor subject = roles[(int)ev["subject"]];            
-            Actor obj = roles[(int)ev["object"]];            
+            Actor obj = roles[(int)ev["object"]];
             this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
             
             if ((bool)ev["stuns"])

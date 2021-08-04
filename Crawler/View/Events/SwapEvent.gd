@@ -1,6 +1,6 @@
-extends Node
+extends Resource
 
-func _init(event : Dictionary, roles : Array):
+func _init(view, event : Dictionary, roles : Array):
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
 
