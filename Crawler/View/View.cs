@@ -56,17 +56,8 @@ public partial class View : Node2D
         while (eventQueue.Count > 0)
         {
             Dictionary ev2 = eventQueue[0];
-            
-            string action = (string)ev2["action"];
-            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd"))
-            {
-                GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
-                script.New(this, ev2, roles);
-                // ev.Free() // resource counted!
-                // if event wants to persist, then it creates a node and puts itself in there.
-            }
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev2["timestamp"];
 
+            // Waiting, dequeuing.
             if (!impatientMode && (int)ev2["subject"] == -1 && (string)ev2["action"] == "Wait")
             {
                 if (AnyActorAnimating()) { break; }
@@ -77,7 +68,20 @@ public partial class View : Node2D
                 break;
             }
 
-            // old code to replace.
+            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev2["timestamp"];
+            FindNode("WaitPrompt").Set("visible", true);
+
+            // handle the event
+            string action = (string)ev2["action"];
+            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd"))
+            {
+                GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
+                script.New(this, ev2, roles);
+                // ev.Free() // resource counted!
+                // if event wants to persist, then it creates a node and puts itself in there.
+            }
+
+            // TODO: also move below into handling scripts.
             if ((string)ev2["action"] == "Exit" || ((string)ev2["action"] == "Downed" && (int)ev2["subject"] == 0))
             {
                 // Temporary!
@@ -89,22 +93,21 @@ public partial class View : Node2D
             // Everything gets sent to the logs.
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev2["action"] + " " + ev2);
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev2, roles);
-            // End old code.
         }
-        GetNode<RichTextLabel>("UILayer/DebugQueue").Text = "";
-        for (int i = 0; i < eventQueue.Count && i < 30; i++)
-        {
-            Dictionary ev = eventQueue[i];
-            // interpolated strings with quotes makes me uncomfortable.
-            if ((string)ev["action"] == "Wait")
-            {
-                GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"[color=#AAAAFF]{i}\t{ev["subject"]}\t{ev["action"]}\n[/color]");
-            }
-            else
-            {            
-                GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"{i}\t{ev["subject"]}\t{ev["action"]}\n");
-            }
-        }
+        // GetNode<RichTextLabel>("UILayer/DebugQueue").Text = "";
+        // for (int i = 0; i < eventQueue.Count && i < 30; i++)
+        // {
+        //     Dictionary ev = eventQueue[i];
+        //     // interpolated strings with quotes makes me uncomfortable.
+        //     if ((string)ev["action"] == "Wait")
+        //     {
+        //         GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"[color=#AAAAFF]{i}\t{ev["subject"]}\t{ev["action"]}\n[/color]");
+        //     }
+        //     else
+        //     {            
+        //         GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"{i}\t{ev["subject"]}\t{ev["action"]}\n");
+        //     }
+        // }
     }
 
     private void ModelSync()

@@ -3,18 +3,33 @@ using Godot;
 
 public class AbilityTargetInputState : InputState
 {
-    (int, int) playerPos;
+    (int x, int y) playerPos;
     Cursor cursor;
     internal Action action;
 
     public override void Enter(Crawler crawler)
     {
-        cursor = crawler.GetNode<Cursor>("Cursor");
-        
         playerPos = crawler.Model.GetPlayer().position;
+
+        cursor = crawler.GetNode<Cursor>("Cursor");
         cursor.targetPosition = playerPos;
         cursor.SnapToTarget();
         cursor.Show();
+
+        TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
+        for (int dx = -(int)(action.Range.max + 0.5f); dx <= action.Range.max; dx++)
+        {
+            for (int dy = -(int)(action.Range.max + 0.5f); dy <= action.Range.max; dy++)
+            {
+                // todo, make line of sight check.
+                float dist = GridHelper.Distance(dx, dy);
+                if (action.Range.min > dist) {continue;}
+                if (dist > action.Range.max) {continue;}
+
+                // todo: magic number 1.
+                attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
+            }
+        }
     }
 
     public override void HandleInput(Crawler crawler, InputEvent ev)
@@ -80,5 +95,8 @@ public class AbilityTargetInputState : InputState
     public override void Exit(Crawler crawler)
     {
         cursor.Hide();
+
+        TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
+        attackRange.Clear();
     }
 }
