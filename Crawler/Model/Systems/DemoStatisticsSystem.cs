@@ -35,11 +35,11 @@ public class DemoStatisticsSystem : Node, CrawlerSystem
             Entity subject = model.GetEntity((int)ev["subject"]);
             if (subject.id == 0)
             {
-                playerDamage += (int)(ev["args"] as Dictionary)["damage"]; // ew
+                playerDamage += (int)(ev["hit"] as Dictionary)["damage"]; // ew
             }
             if (subject.id == 1)
             {
-                partnerDamage += (int)(ev["args"] as Dictionary)["damage"];
+                partnerDamage += (int)(ev["hit"] as Dictionary)["damage"];
             }
         }
 

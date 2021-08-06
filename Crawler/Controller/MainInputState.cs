@@ -202,6 +202,7 @@ public class MainInputState : InputState
                 {
                     crawler.Model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
+                    return true;
                 }
             } 
         }
@@ -222,6 +223,6 @@ public class MainInputState : InputState
 
     public override void Exit(Crawler crawler)
     {
-
+        cursor.Hide();
     }
 }

@@ -35,7 +35,8 @@ public class AttackAction : Action
         e.energy -= data.energy;
 
         model.CoolerApiEvent(-1, "Wait");
-         
+
+        model.CoolerApiEvent(e.id, "StartAttack");
         // for each target
         
         AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
@@ -49,8 +50,9 @@ public class AttackAction : Action
 
         Dictionary attackResult = new Dictionary(){
             {"subject", e.id},
-            {"action", "Attack"},
-            {"targetPos", new Vector2(targetPos.x, targetPos.y)},
+            {"action", "Hit"},
+            {"object", targeted.id},
+            // {"targetPos", new Vector2(targetPos.x, targetPos.y)},
             {"hit", hitResult}
         };
         model.CoolerApiEvent(attackResult);

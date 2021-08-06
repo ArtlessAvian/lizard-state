@@ -96,7 +96,7 @@ public partial class Model : Node
         // If no action, return
         if (action == null)
         {
-            if (!e.species.isPlayer) { GD.Print("no move!"); }
+            if (!e.species.isPlayer) { GD.Print("ai returned null!"); }
             else { CoolerApiEvent(e.id, "YourTurn"); }
             return false;
         }

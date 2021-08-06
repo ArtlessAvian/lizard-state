@@ -5,7 +5,7 @@ var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.t
 func _init(view, event : Dictionary, roles : Array):
 	# print(event)
 	var subject = roles[event["subject"]]
-	subject.FacePosition(event["targetPos"]);
+	# subject.FacePosition(event["targetPos"]);
 	var animation = subject.get_node("AnimationPlayer");
 	animation.play("Attack");
 	
