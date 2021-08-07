@@ -12,7 +12,6 @@ public class Entity : Node
 {
     [Export] public int id;
     [Export] public Species species;
-    public AI ai;
 
     public (int x, int y) position;
     public int nextMove = 0;
@@ -43,7 +42,6 @@ public class Entity : Node
     public void SetSpecies(Species species)
     {
         this.species = species;
-        this.ai = species.isPlayer ? null : new AI();
         this.health = species.maxHealth;
     }
 
@@ -133,8 +131,5 @@ public class Entity : Node
         this.energy = (int)dict["energy"];
         this.team = (int)dict["team"];
         this.providesVision = (bool)dict["providesVision"];
-
-        // this.ai = new AI((Dictionary)dict["AI"]);
-        this.ai = this.species.isPlayer ? null : new AI();
     }
 }

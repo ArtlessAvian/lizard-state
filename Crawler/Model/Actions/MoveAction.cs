@@ -6,17 +6,14 @@ public class MoveAction : Action
 {
     public override bool Do(Model model, Entity e)
     {
+        if (!IsValid(model, e)) { return false; }
+
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         if (targetPos.x == e.position.x && targetPos.y == e.position.y)
         {
             DoNothing(model, e);
             return true;
-        }
-        
-        if (!model.CanWalkFromTo(e.position, targetPos))
-        {
-            return false;
         }
 
         Entity entityAt = model.GetEntityAt(targetPos);
@@ -78,7 +75,11 @@ public class MoveAction : Action
     public override bool IsValid(Model model, Entity e)
     {
         // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
-        return GridHelper.Distance(e.position, GetTargetPos(e.position)) <= 1.5f;
+
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > 1.5f) { return false; }
+        if (!model.CanWalkFromTo(e.position, targetPos)) { return false; }
+        return true;
     }
 
     public override (float, float) Range => (1, 1.5f);

@@ -90,15 +90,22 @@ public partial class Model : Node
         // If no action, get the ai's action.
         if (action == null)
         {
-            action = e.ai?.GetMove(this, e);
+            action = e.species?.ai?.GetMove(this, e);
         }
 
         // If no action, return
         if (action == null)
         {
-            if (!e.species.isPlayer) { GD.Print("ai returned null!"); }
-            else { CoolerApiEvent(e.id, "YourTurn"); }
-            return false;
+            if (!e.species.isPlayer) {
+                GD.PrintErr($"{e.species.displayName} has no ai or ai returned null!");
+                GD.PrintErr("waiting instead..");
+                action = new MoveAction().SetTargetRelative((0, 0));
+            }
+            else
+            {
+                CoolerApiEvent(e.id, "YourTurn");
+                return false;
+            }
         }
 
         bool success = action.Do(this, e);

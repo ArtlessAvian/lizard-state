@@ -29,6 +29,7 @@ easier than trello since its only just me (for now?)
 * add damage on dashing through people
 * make partner give tutorial
 * check for partner nearby (if alive) before leaving
+* Android support!! (aaaaaaa so cool!!!)
 
 ## Redos
 * Redo vision system. (Buggy, awkward.)

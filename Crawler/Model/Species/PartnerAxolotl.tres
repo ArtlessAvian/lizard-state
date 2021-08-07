@@ -1,14 +1,18 @@
-[gd_resource type="Resource" load_steps=4 format=2]
+[gd_resource type="Resource" load_steps=6 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Attacks/Instances/BasicAttack.tres" type="Resource" id=2]
 [ext_resource path="res://Crawler/Model/Attacks/Instances/NanoZap.tres" type="Resource" id=3]
+[ext_resource path="res://Crawler/Model/AIs/PartnerAI.cs" type="Script" id=4]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 4 )
 
 [resource]
 resource_name = "PartnerAxolotl"
 script = ExtResource( 1 )
 isPlayer = false
-aiType = "PartnerAI"
+ai = SubResource( 1 )
 bumpAttack = ExtResource( 2 )
 attacks = [ ExtResource( 3 ) ]
 abilities = null

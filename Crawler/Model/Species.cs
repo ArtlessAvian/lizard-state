@@ -6,7 +6,7 @@ public class Species : Resource
 {
     // Game Logic
     [Export] public bool isPlayer = false;
-    [Export] public string aiType;
+    [Export] public AI ai = null;
 
     [Export] public AttackData bumpAttack;
     [Export] public List<AttackData> attacks;

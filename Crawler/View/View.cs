@@ -22,6 +22,10 @@ public partial class View : Node2D
 
     public override void _Ready()
     {
+        // get the model
+        // for every entity in the model
+            // create that entity.
+        // subscribe to the event thing.
     }
 
     public override void _Process(float delta)
@@ -73,7 +77,8 @@ public partial class View : Node2D
 
             // handle the event
             string action = (string)ev2["action"];
-            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd"))
+            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
+                new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
             {
                 GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
                 script.New(this, ev2, roles);
