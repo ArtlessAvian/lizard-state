@@ -89,11 +89,12 @@ public class MainInputState : InputState
                 return true;
             }
 
-            if (eventKey.Scancode == (int)KeyList.F11)
-            {
-                GetTree().ChangeScene("res://Crawler/Crawler.tscn");
-                return true;
-            }
+            // this makes people very confused. also its a hack anyways.
+            // if (eventKey.Scancode == (int)KeyList.F11)
+            // {
+            //     GetTree().ChangeScene("res://Crawler/Crawler.tscn");
+            //     return true;
+            // }
 
             if (eventKey.Scancode == (int)KeyList.Quoteleft)
             {
@@ -144,13 +145,15 @@ public class MainInputState : InputState
                 if (Input.IsKeyPressed((int)KeyList.Control))
                 {
                     crawler.Model.SetPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
-                    crawler.notPlayerTurn = true;
+                    crawler.notPlayerTurn = true;        
+                    cursor.Hide();
                     return true;                    
                 }
                 else
                 {
                     crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
+                    cursor.Hide();
                     return true;
                 }
             }

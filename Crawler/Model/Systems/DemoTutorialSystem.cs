@@ -64,7 +64,7 @@ public class DemoTutorialSystem : Node, CrawlerSystem
         model.CoolerApiEvent(-1, "Print", "");
         model.CoolerApiEvent(-1, "Print", "Thanks for playing!");
         model.CoolerApiEvent(-1, "Print", "Take a screenshot of this and send it to me!");
-        model.CoolerApiEvent(-1, "Print", "(Press F11 to restart! RNG will be different tho.)");
+        // model.CoolerApiEvent(-1, "Print", "(Press F11 to restart! RNG will be different tho.)");
         model.CoolerApiEvent(-1, "Print", "");
         model.CoolerApiEvent(-1, "Print", "            -ArtlessAvian (Ryan)");
     }

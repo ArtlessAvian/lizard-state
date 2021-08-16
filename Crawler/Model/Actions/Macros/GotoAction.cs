@@ -8,12 +8,13 @@ public class GotoAction : Action
 
     public override bool Do(Model model, Entity e)
     {
-        if (AnyEnemiesInSight(model, e))
-        {
-            // No op! On view, print stuff.
-            model.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
-            return true;
-        }
+        // bool enemiesBeforeMove = AnyEnemiesInSight(model, e);
+        // if (AnyEnemiesInSight(model, e))
+        // {
+        //     // No op! On view, print stuff.
+        //     model.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
+        //     return true;
+        // }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
@@ -25,7 +26,7 @@ public class GotoAction : Action
         if (!success) { return false; }
         
         // queue same action object
-        if (e.position.x != targetPos.x || e.position.y != targetPos.y)
+        if (!(AnyEnemiesInSight(model, e) || e.position.x == targetPos.x && e.position.y == targetPos.y))
         {
             e.queuedAction = this;
         }
