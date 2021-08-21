@@ -8,15 +8,16 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Action
 {
-    // If !IsValid, returns false and no-ops. Otherwise, tries to do the thing, even if dumb. 
+    // If !IsValid, wastes some time and sends error event.
+    // Otherwise, tries to do the thing, even if unreasonable. 
     public abstract bool Do(Model model, Entity e);
 
-    // Checks if the action is valid. This is mostly so the AI doesn't make an invalid move.
+    // Checks if the action is valid.
+    // This is used by the UI and the AI.
     public abstract bool IsValid(Model model, Entity e);
 
     // Gives a list of reasons this may be a bad move.
     // public abstract string[] GetWarnings(ModelAPI api, Entity e);
-
 
     // Targeting
     private (int x, int y) targetInternal = (0, 0);

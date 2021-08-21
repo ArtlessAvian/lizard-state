@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 
 // Like a ViewModel. Also, a pile of callbacks for the View.
+[Tool]
 public partial class Actor : Node2D
 {
     public Entity role;
 
-    // vector2i
-    public Vector2 targetPosition;
+    [Export] public Vector2 targetPosition;
+    // [Export] public Vector2 positionTwo;
+    // [Export] public float positionLerp;
+
     int health = 0;
     bool stunned = false;
     bool seen = false;
@@ -30,13 +33,20 @@ public partial class Actor : Node2D
         //     targetPosition.y * View.TILESIZE.y
         // );
         Position = targetPosition * View.TILESIZE; // elementwise
+        // positionLerp = 0;
 
         health = role.health;
         TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
         healthbar.MaxValue = role.species.maxHealth;
         healthbar.Value = role.health;
 
+        // sprite stuff
         if (health <= 0) { this.Visible = false; }
+        else
+        {
+            // AnimationPlayer aniPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+            // aniPlayer.Queue("Reset");
+        }
 
         stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
@@ -88,6 +98,10 @@ public partial class Actor : Node2D
 
     public override void _Process(float delta)
     {
+        // Position = targetPosition.LinearInterpolate(
+        //     positionTwo,
+        //     positionLerp
+        // ) * View.TILESIZE;
         Position = Position.LinearInterpolate(
             new Vector2(
                 targetPosition.x * View.TILESIZE.x,
@@ -97,7 +111,7 @@ public partial class Actor : Node2D
         );
 
         // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
-        if (seen)
+        if (seen || Engine.EditorHint)
         {
             this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1-0.1f, delta * 60f));
         }

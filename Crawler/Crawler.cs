@@ -39,8 +39,10 @@ public class Crawler : Node2D, InputStateMachine
         this.RunModel(start);
     }
 
+    // Treat as daemon.
     private void RunModel(uint start)
     {
+        // while (true) // treat as daemon (its not designed for that yet)
         while (notPlayerTurn) // and not timed out
         {
             bool success = Model.DoStep();

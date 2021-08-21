@@ -4,5 +4,5 @@ func _init(view, event : Dictionary, roles : Array):
 	var subject = roles[event["subject"]]   
 	subject.stunned = false
 
-	var aniSprite = subject.get_node("AnimatedSprite")
-	aniSprite.frame = 0;
+	var aniPlayer = subject.get_node("AnimationPlayer")
+	aniPlayer.play("Reset")

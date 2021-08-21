@@ -57,7 +57,6 @@ public class PartnerAI : AI
         PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(model, e));
         if (result.success)
         {
-            GD.Print(e.id, " moving towards thing ", bestRangeMax);
             return new MoveAction().SetTarget(result.nextStep);
         }
 

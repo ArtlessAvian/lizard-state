@@ -6,19 +6,17 @@ public partial class View : Node2D
 {
     public static Vector2 TILESIZE = new Vector2(32, 24);
 
-    // might be bad performance on dequeue.
-    // who cares
+    // Possibly bad performance on dequeue. Not relevant yet.
     public Array<Dictionary> eventQueue = new Array<Dictionary>();
     // Could be an dictionary?
     public Array<Actor> roles = new Array<Actor>();
 
-    // convenience
+    // conveniences
     [Export] public Actor playerActor;
     // super buggy but convenient
-    [Export] public bool impatientMode = false;
+    [Export] public bool impatientMode = true;
 
     private bool queueSync = false;
-    private float modelSyncDelay = 0;
 
     public override void _Ready()
     {
@@ -41,17 +39,10 @@ public partial class View : Node2D
 
         if (queueSync && !this.AnyActorAnimating() && eventQueue.Count == 0)
         {
-            // // prevents a camera jittering bug.
-            // // model syncs before actually done.
-            // modelSyncDelay += delta;
-            // if (modelSyncDelay > 0.1)
-            // {
-                // modelSyncDelay = 0;
-                queueSync = false;
-                this.ModelSync();
-                Model debugggModel = GetNode<Model>("../Model");
-                GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + debugggModel.time + " (sync!)";
-            // }
+            queueSync = false;
+            this.ModelSync();
+            Model debugggModel = GetNode<Model>("../Model");
+            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + debugggModel.time + " (sync!)";
         }
     }
 
@@ -99,27 +90,10 @@ public partial class View : Node2D
             GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev2["action"] + " " + ev2);
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev2, roles);
         }
-        // GetNode<RichTextLabel>("UILayer/DebugQueue").Text = "";
-        // for (int i = 0; i < eventQueue.Count && i < 30; i++)
-        // {
-        //     Dictionary ev = eventQueue[i];
-        //     // interpolated strings with quotes makes me uncomfortable.
-        //     if ((string)ev["action"] == "Wait")
-        //     {
-        //         GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"[color=#AAAAFF]{i}\t{ev["subject"]}\t{ev["action"]}\n[/color]");
-        //     }
-        //     else
-        //     {            
-        //         GetNode<RichTextLabel>("UILayer/DebugQueue").AppendBbcode($"{i}\t{ev["subject"]}\t{ev["action"]}\n");
-        //     }
-        // }
     }
 
     private void ModelSync()
     {
-        // Sync things with model.
-        // GD.Print("Sync!");
-
         foreach (Actor a in roles)
         {
             a.ModelSync();

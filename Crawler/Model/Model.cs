@@ -50,7 +50,8 @@ public partial class Model : Node
     /// Sets the next action for the player character.
     /// <returns> true if its the player turn AND action is valid AND (reasonable OR forced)  </returns>
     /// </summary>
-    // 
+    // I wrote this to avoid code duplication between player and entity actions.
+    // I don't think I did that correctly.
     public bool SetPlayerAction(Action action, bool force = false)
     {
         Entity e = NextEntity();
