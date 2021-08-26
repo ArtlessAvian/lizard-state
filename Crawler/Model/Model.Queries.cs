@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-
 public partial class Model
 {
     // todo: rename this lmao
@@ -101,8 +100,8 @@ public partial class Model
     // Should be symmetric. f(x, y) = f(y, x).
     public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
     {
-        return !CrawlerMap.TileIsWall(Map.GetCell(position2.x, position2.y)) &&
-                !CrawlerMap.TileIsWall(Map.GetCell(position.x, position.y));
+        return !Map.TileIsWall((position2.x, position2.y)) &&
+                !Map.TileIsWall((position.x, position.y));
     }
 
     public float Distance((int x, int y) pos, (int x, int y) pos2)

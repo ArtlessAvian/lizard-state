@@ -151,7 +151,7 @@ public class VisionSystem : TileMap, CrawlerSystem
             }
 
             this.SetCell(x, y, VISIBLE);
-            if (CrawlerMap.TileIsWall(map.GetCell(x, y)))
+            if (map.TileIsWall((x, y)))
             {
                 return;
             }
