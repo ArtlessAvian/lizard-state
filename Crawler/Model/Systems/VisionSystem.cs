@@ -43,7 +43,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     public void UpdateVision(Model model, Entity e)
     {        
         // See the map
-        int[,] tiles = this.GetVisibleTiles(e.position, 5);
+        int[,] tiles = this.GetVisibleTiles(e.position, 10);
 
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
@@ -54,7 +54,7 @@ public class VisionSystem : TileMap, CrawlerSystem
         
         // Update entities seen.
         // See things you don't already see.
-        foreach (Entity other in model.GetEntitiesInRadius(e.position, 5))
+        foreach (Entity other in model.GetEntitiesInRadius(e.position, 10))
         {
             bool seeing = GetCell(other.position.x, other.position.y) == 1;
             if (seeing)

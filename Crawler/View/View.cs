@@ -4,7 +4,7 @@ using Godot.Collections;
 // Holds a model and shows what's happening.
 public partial class View : Node2D
 {
-    public static Vector2 TILESIZE = new Vector2(32, 24);
+    public static Vector2 TILESIZE = new Vector2(24, 16);
 
     // Possibly bad performance on dequeue. Not relevant yet.
     public Array<Dictionary> eventQueue = new Array<Dictionary>();

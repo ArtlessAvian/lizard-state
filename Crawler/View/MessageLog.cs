@@ -35,6 +35,12 @@ public class MessageLog : RichTextLabel
             Actor subject = roles[(int)ev["subject"]];            
             this.AppendBbcode($"\n * {subject.displayName} is downed!");
         }
+        else if (action == "See")
+        {
+            Actor subject = roles[(int)ev["subject"]];
+            Actor objectt = roles[(int)ev["object"]];
+            this.AppendBbcode($"\n * {subject.displayName} spotted a {objectt.displayName}!");
+        }
         else if (action == "Print")
         {
             string message = (string)ev["args"];
