@@ -43,19 +43,19 @@ public class EditorGenerator : LevelGenerator
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
         model.AddEntity(CreateEntity(playerTegu, (0, -1), 0));
-        model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
+        // model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
 
-        // model.AddEntity(new Entity(enemy, (0, 10), 1));
-        // model.AddEntity(new Entity(enemy, (1, 20), 1));
-        // model.AddEntity(new Entity(enemy, (2, 20), 1));
+        // // model.AddEntity(new Entity(enemy, (0, 10), 1));
+        // // model.AddEntity(new Entity(enemy, (1, 20), 1));
+        // // model.AddEntity(new Entity(enemy, (2, 20), 1));
 
-        Array tiles = model.Map.GetUsedCells();
-        tiles.Shuffle();
-        for (int i = 0; i < 10; i++)
-        {
-            Vector2 vec = (Vector2)tiles[i+5];
-            model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
-        }
+        // Array tiles = model.Map.GetUsedCells();
+        // tiles.Shuffle();
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     Vector2 vec = (Vector2)tiles[i+5];
+        //     model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
+        // }
     }
 
     // TODO: duplicated code! from NoiseGenerator.

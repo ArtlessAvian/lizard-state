@@ -53,16 +53,21 @@ public class Crawler : Node2D, InputStateMachine
                 break;
             }
 
-            if (OS.GetTicksMsec() - start > 1000/120f)
-            {
-                GD.PrintErr("Timed out!");
-                break;
-            }
+            // if (OS.GetTicksMsec() - start > 1000/120f)
+            // {
+            //     GD.PrintErr("Timed out!");
+            //     break;
+            // }
 
             // if model.done
             // generate new model
             // replace model
             // clear view
+        }
+        float frameTime = OS.GetTicksMsec() - start;
+        if (frameTime > 1000/120f)
+        {
+            GD.Print($"High frame time! ({frameTime} ms)");
         }
     }
 

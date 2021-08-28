@@ -53,6 +53,7 @@ public class PathFinder
                 result.success = true;
                 result.steps = cost[current];
                 result.nextStep = result.nextStepFor[source];
+                // Godot.GD.Print(cost.Keys.Count); // i checked, seems good.
                 return result;
             }
             

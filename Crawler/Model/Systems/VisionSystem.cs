@@ -109,6 +109,8 @@ public class VisionSystem : TileMap, CrawlerSystem
                     this.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
                     map.GetCell(pos.x + dx, pos.y + dy) : -2;
                     // -2 and not -1, in case theres a hole in the ground or something
+                    
+                    // map.GetCell(pos.x + dx, pos.y + dy);
             }
         }
         return tiles;
@@ -125,6 +127,17 @@ public class VisionSystem : TileMap, CrawlerSystem
     // Tiles marked as VISIBLE are not meant to be saved!
     public void UpdateVisibility((int x, int y) pos, int radius)
     {
+        // skip visibility check, for speed comparison.
+        // TODO: (half the time is spent on vision checks.)
+        // for (int y = pos.y - radius; y <= pos.y + radius; y++)
+        // {
+        //     for (int x = pos.x - radius; x <= pos.x + radius; x++)
+        //     {
+        //         this.SetCell(x, y, VISIBLE);
+        //     }
+        // }
+        // return;
+
         // For each unique slope passing through a cell,
         foreach ((int rise, int run) in GridHelper.ListRationals(radius))
         {

@@ -5,9 +5,12 @@ var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.t
 func _init(view, event : Dictionary, roles : Array):
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
-	
-	subject.FacePosition(object.targetPosition)
 	object.seen = true
+	
+	if subject == object:
+		return
+
+	subject.FacePosition(object.targetPosition)
 
 	var popup = damage_popup_scene.instance();
 	popup.text = "!"

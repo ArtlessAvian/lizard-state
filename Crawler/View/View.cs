@@ -13,7 +13,7 @@ public partial class View : Node2D
 
     // Animation Statefulness
     private bool queueSync = false;
-    private Resource unconsumedResource = null; 
+    private Resource unconsumedEvent = null; 
 
     // conveniences
     [Export] public Actor playerActor;
@@ -30,16 +30,16 @@ public partial class View : Node2D
 
     public override void _Process(float delta)
     {
-        if (eventQueue.Count > 0)
+        if (!IsQueueClear())
         {
             this.ClearQueue();
-            if (eventQueue.Count == 0)
+            if (IsQueueClear())
             {
                 queueSync = true;
             }
         }
 
-        if (queueSync && !this.AnyActorAnimating() && eventQueue.Count == 0)
+        if (queueSync && !this.AnyActorAnimating() && IsQueueClear())
         {
             queueSync = false;
             this.ModelSync();
@@ -48,39 +48,54 @@ public partial class View : Node2D
         }
     }
 
+    public bool IsQueueClear()
+    {
+        return eventQueue.Count == 0 && unconsumedEvent == null;
+    }
+
     public void ClearQueue()
     {
-        while (eventQueue.Count > 0)
+        while (!IsQueueClear())
         {
-            Dictionary ev2 = eventQueue[0];
-
-            // Waiting, dequeuing.
-            if (!impatientMode && (int)ev2["subject"] == -1 && (string)ev2["action"] == "Wait")
-            {
-                if (AnyActorAnimating()) { break; }
-            }
-            eventQueue.RemoveAt(0);
-            if (!impatientMode && (int)ev2["subject"] == -1 && (string)ev2["action"] == "SmallWait")
-            {
-                break;
-            }
-
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev2["timestamp"];
             FindNode("WaitPrompt").Set("visible", true);
 
-            // handle the event
-            string action = (string)ev2["action"];
-            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
-                new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
+            Dictionary ev = eventQueue[0];
+            // Create the eventhandler
+            if (unconsumedEvent == null)
             {
-                GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
-                script.New(this, ev2, roles);
-                // ev.Free() // resource counted!
-                // if event wants to persist, then it creates a node and puts itself in there.
+                string action = ev["action"] as string;
+                // honestly kinda dangerous. arbitrary code can run!
+                if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
+                    new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
+                {
+                    GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
+                    unconsumedEvent = script.New(this, ev, roles) as Resource;
+                }
             }
 
+            // Run the eventhandler
+            if (unconsumedEvent != null)
+            {
+                unconsumedEvent.Call("run", this, ev, roles);
+
+                // If you can't consume. Weird, but eh.
+                object canConsume = unconsumedEvent.Call("can_consume");
+                // GD.Print("checking", canConsume);
+                if (canConsume is bool eeee && !eeee)
+                {
+                    // GD.Print("done waiting");
+                    break;
+                }    
+            }
+
+            // consume the event
+            eventQueue.RemoveAt(0);
+            unconsumedEvent = null;
+
+            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev["timestamp"];
+
             // TODO: also move below into handling scripts.
-            if ((string)ev2["action"] == "Exit" || ((string)ev2["action"] == "Downed" && (int)ev2["subject"] == 0))
+            if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
             {
                 // Temporary!
                 GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
@@ -89,8 +104,8 @@ public partial class View : Node2D
             }
 
             // Everything gets sent to the logs.
-            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev2["action"] + " " + ev2);
-            GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev2, roles);
+            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev["action"] + " " + ev);
+            GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
         }
     }
 
