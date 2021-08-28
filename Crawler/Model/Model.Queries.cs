@@ -23,16 +23,20 @@ public partial class Model
         @event.Add("timestamp", time);
 
         // For each system, decorate the event.
-        foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
-        {
-            system.ProcessEvent(this, @event);
-        }
+        // foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        // {
+        //     system.ProcessEvent(this, @event);
+        // }
 
         // Send the event to the view, if the player('s team) sees it.
         this.NewEvent(@event);
 
         // For each system, react to the event.
         // (Skill procs, or something? could be fun)
+        foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        {
+            system.ProcessEvent(this, @event);
+        }
     }
 
     public CrawlerMap GetMap()

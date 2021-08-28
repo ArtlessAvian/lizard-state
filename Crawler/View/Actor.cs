@@ -65,7 +65,7 @@ public partial class Actor : Node2D
 
         AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
         int frame = sprite.Frame;
-        if (Math.Abs(dir.y / dir.x) > 2)
+        if (Math.Abs(dir.y / dir.x) > 1)
         {
             sprite.Animation = dir.y > 0 ? "South" : "North";
         }

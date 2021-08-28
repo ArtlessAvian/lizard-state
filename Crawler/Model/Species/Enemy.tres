@@ -1,17 +1,14 @@
-[gd_resource type="Resource" load_steps=5 format=2]
+[gd_resource type="Resource" load_steps=4 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Attacks/Instances/BasicAttack.tres" type="Resource" id=2]
-[ext_resource path="res://Crawler/Model/AIs/PartnerAI.cs" type="Script" id=3]
-
-[sub_resource type="Resource" id=1]
-script = ExtResource( 3 )
+[ext_resource path="res://Crawler/Model/AIs/PartnerAI.tres" type="Resource" id=3]
 
 [resource]
 resource_name = "Enemy"
 script = ExtResource( 1 )
 isPlayer = false
-ai = SubResource( 1 )
+ai = ExtResource( 3 )
 bumpAttack = ExtResource( 2 )
 attacks = null
 abilities = null

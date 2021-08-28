@@ -11,12 +11,14 @@ public partial class View : Node2D
     // Could be an dictionary?
     public Array<Actor> roles = new Array<Actor>();
 
+    // Animation Statefulness
+    private bool queueSync = false;
+    private Resource unconsumedResource = null; 
+
     // conveniences
     [Export] public Actor playerActor;
     // super buggy but convenient
-    [Export] public bool impatientMode = true;
-
-    private bool queueSync = false;
+    [Export] public bool impatientMode = false;
 
     public override void _Ready()
     {

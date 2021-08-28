@@ -66,6 +66,7 @@ public class VisionSystem : TileMap, CrawlerSystem
                 if (canSee[other.id] == 0)
                 {
                     model.CoolerApiEvent(e.id, "See", null, other.id);
+                    model.CoolerApiEvent(-1, "Wait");
                 }
                 canSee[other.id] |= 1 << e.id;
             }
