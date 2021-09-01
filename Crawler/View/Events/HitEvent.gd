@@ -17,7 +17,9 @@ func _init(view, event : Dictionary, roles : Array):
 func do_hit_result(result : Dictionary, entity):
 	entity.health -= result["damage"]
 	entity.stunned = result["stuns"] or entity.stunned
-	entity.get_node("HealthBar").value = entity.health
+	
+	if entity.status != null:
+		entity.status.set_health(entity.health)
 
 	var popup = damage_popup_scene.instance();
 	popup.parse_hit_result(result)

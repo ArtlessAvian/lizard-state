@@ -16,6 +16,9 @@ public partial class Actor : Node2D
     bool stunned = false;
     bool seen = false;
 
+    // Other elements.
+    Node status = null;
+
     // TODO: Temporary
     public string displayName;
 
@@ -36,9 +39,10 @@ public partial class Actor : Node2D
         // positionLerp = 0;
 
         health = role.health;
-        TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-        healthbar.MaxValue = role.species.maxHealth;
-        healthbar.Value = role.health;
+        status?.Call("set_health", role.health, role.species.maxHealth);
+        // TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+        // healthbar.MaxValue = role.species.maxHealth;
+        // healthbar.Value = role.health;
 
         // sprite stuff
         if (health <= 0) { this.Visible = false; }
