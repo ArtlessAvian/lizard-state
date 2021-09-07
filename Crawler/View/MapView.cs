@@ -32,14 +32,14 @@ public class MapView : Node2D
         TileMap floors = GetNode<TileMap>("Floors");
         TileMap walls = GetNode<TileMap>("Walls");
 
-        int[,] tiles = Squareify1d(tiles1d);
-        int r = tiles.GetLength(0) / 2; // floored
+        int sidelen = (int)Math.Sqrt(tiles1d.Length);
+        int r = sidelen / 2; // floored
 
         for (int dy = -r; dy <= r; dy++)
         {
             for (int dx = -r; dx <= r; dx++)
             {
-                int tile = tiles[dx + r, dy + r];
+                int tile = tiles1d[(dx + r) * sidelen + dy + r];
                 if (tile != -2)
                 {
                     if (CrawlerMap.TileIsWall(tile))
@@ -66,14 +66,15 @@ public class MapView : Node2D
         foreach (int seeer in entityVisions.Keys)
         {
             Vector2 center = entityVisions[seeer];
-            int[,] tiles = Squareify1d(entityVisions2[seeer]);
+            int[] tiles1d = entityVisions2[seeer];
 
-            int r = tiles.GetLength(0) / 2; // floored
+            int sidelen = (int)Math.Sqrt(tiles1d.Length);
+            int r = sidelen / 2; // floored
             for (int dy = -r; dy <= r; dy++)
             {
                 for (int dx = -r; dx <= r; dx++)
                 {
-                    int tile = tiles[dx + r, dy + r];
+                    int tile = tiles1d[(dx + r) * sidelen + dy + r];
                     if (tile != -2)
                     {
                         if (CrawlerMap.TileIsWall(tile))
@@ -88,16 +89,5 @@ public class MapView : Node2D
                 }
             }
         }
-    }
-
-    public int[,] Squareify1d(int[] tiles1d)
-    {
-        int sidelen = (int)Math.Sqrt(tiles1d.Length);
-        int[,] tiles = new int[sidelen,sidelen];
-        for (int i = 0; i < tiles1d.Length; i++)
-        {
-            tiles[i / sidelen, i % sidelen] = tiles1d[i];
-        }
-        return tiles;
     }
 }

@@ -30,7 +30,7 @@ public class VisionSystem : TileMap, CrawlerSystem
 
     public void Run(Model model) // ModelAPI maybe?
     {
-        foreach (Entity e in model.Entities.GetChildren())
+        foreach (Entity e in model.GetEntities())
         {
             if (e.dirtyVision)
             {
@@ -73,7 +73,7 @@ public class VisionSystem : TileMap, CrawlerSystem
         }
         
         // Unsee things you already see.
-        foreach (Entity other in model.Entities.GetChildren())
+        foreach (Entity other in model.GetEntities())
         {
             if (canSee.ContainsKey(other.id) && (canSee[other.id] & (1 << e.id)) != 0)
             {

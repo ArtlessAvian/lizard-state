@@ -18,7 +18,7 @@ public partial class Model : Node
         get { return GetNode<CrawlerMap>("Map"); }
     }
 
-    public Node Entities
+    private Node Entities
     {
         get { return GetNode("Entities"); } 
     }
@@ -131,7 +131,7 @@ public partial class Model : Node
     private Entity NextEntity()
     {
         Entity result = GetEntity(0);
-        foreach (Entity e in Entities.GetChildren())
+        foreach (Entity e in GetEntities())
         {
             if (e.nextMove == -1) { continue; }
             if (e.nextMove < result.nextMove)
@@ -147,5 +147,39 @@ public partial class Model : Node
     {
         int delta = finalTime - time;
         time = finalTime;
+    }
+
+    // todo: rename this lmao
+    // [Obsolete]
+    public void CoolerApiEvent(int subject, string action, object args = null, int @object = -1)
+    {
+        CoolerApiEvent(new Godot.Collections.Dictionary()
+        {
+            {"subject", subject},
+            {"action", action},
+            {"args", args},
+            {"object", @object}
+        });
+    }
+
+    public void CoolerApiEvent(Godot.Collections.Dictionary @event)
+    {
+        @event.Add("timestamp", time);
+
+        // For each system, decorate the event.
+        // foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        // {
+        //     system.ProcessEvent(this, @event);
+        // }
+
+        // Send the event to the view, if the player('s team) sees it.
+        this.EmitSignal("NewEvent", @event);
+
+        // For each system, react to the event.
+        // (Skill procs, or something? could be fun)
+        foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        {
+            system.ProcessEvent(this, @event);
+        }
     }
 }

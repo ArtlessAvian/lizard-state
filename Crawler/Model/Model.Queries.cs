@@ -4,44 +4,26 @@ using System.Collections.Generic;
 
 public partial class Model
 {
-    // todo: rename this lmao
-    // also move out of the "queries" file.
-    // [Obsolete]
-    public void CoolerApiEvent(int subject, string action, object args = null, int @object = -1)
-    {
-        CoolerApiEvent(new Godot.Collections.Dictionary()
-        {
-            {"subject", subject},
-            {"action", action},
-            {"args", args},
-            {"object", @object}
-        });
-    }
-
-    public void CoolerApiEvent(Godot.Collections.Dictionary @event)
-    {
-        @event.Add("timestamp", time);
-
-        // For each system, decorate the event.
-        // foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
-        // {
-        //     system.ProcessEvent(this, @event);
-        // }
-
-        // Send the event to the view, if the player('s team) sees it.
-        this.EmitSignal("NewEvent", @event);
-
-        // For each system, react to the event.
-        // (Skill procs, or something? could be fun)
-        foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
-        {
-            system.ProcessEvent(this, @event);
-        }
-    }
-
     public CrawlerMap GetMap()
     {
         return this.Map;
+    }
+
+    // Really, really slow.
+    // public T GetSystem<T>() where T : CrawlerSystem
+    // {
+    //     foreach (object sys in GetNode("Systems").GetChildren())
+    //     {
+    //         if (sys is T systemCast) { return systemCast; }
+    //     }
+    //     return default(T);
+    // }
+
+    /// Reminder, the array is a shallow copy.
+    /// You can't add to / remove from it.
+    public Godot.Collections.Array GetEntities()
+    {
+        return Entities.GetChildren();
     }
 
     public Entity GetEntity(int id)
