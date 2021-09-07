@@ -10,24 +10,27 @@ public class Crawler : Node2D, InputStateMachine
         get { return GetNode<View>("View"); }
     }
 
-    public Model model = new Model();
+    public Model Model
+    {
+        get { return GetNode<Model>("Model");}
+    }
 
     public InputState activeInputState;
     public bool notPlayerTurn = true;
 
     public override void _Ready()
     {
-        model.NewEvent += View.eventQueue.Add; // So clean!!
+        Model.NewEvent += View.eventQueue.Add; // So clean!!
 
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
 
         // NoiseGenerator gen = new NoiseGenerator();
         EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
-        gen.Generate(model);
+        gen.Generate(Model);
 
-        model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
-        model.CoolerApiEvent(-1, "Print", "Then leave the cave from where you entered.");
+        Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
+        Model.CoolerApiEvent(-1, "Print", "Then leave the cave from where you entered.");
     }
 
     public override void _Process(float delta)
@@ -42,7 +45,7 @@ public class Crawler : Node2D, InputStateMachine
         // while (true) // treat as daemon (its not designed for that yet)
         while (notPlayerTurn) // and not timed out
         {
-            bool success = model.DoStep();
+            bool success = Model.DoStep();
             if (!success)
             {
                 // let the player move again.

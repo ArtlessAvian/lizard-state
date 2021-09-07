@@ -7,6 +7,7 @@ public partial class Model
     public Dictionary SaveToDictionary()
     {
         Dictionary dict = new Dictionary();
+        dict["Filename"] = this.Filename;
         dict["time"] = time;
         dict["Entities"] = SaveEntities();
         dict["generatorData"] = generatorData;
@@ -17,7 +18,7 @@ public partial class Model
     Array SaveEntities()
     {
         Array dict = new Array();
-        foreach (Entity e in entities)
+        foreach (Entity e in Entities.GetChildren())
         {
             dict.Add(e.SaveToDictionary());
         }

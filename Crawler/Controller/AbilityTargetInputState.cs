@@ -9,7 +9,7 @@ public class AbilityTargetInputState : InputState
 
     public override void Enter(Crawler crawler)
     {
-        playerPos = crawler.model.GetPlayer().position;
+        playerPos = crawler.Model.GetPlayer().position;
 
         cursor = crawler.GetNode<Cursor>("Cursor");
         cursor.targetPosition = playerPos;
@@ -84,7 +84,7 @@ public class AbilityTargetInputState : InputState
     private void Select(Crawler crawler)
     {
         action.SetTarget(cursor.targetPosition);
-        bool success = crawler.model.SetPlayerAction(action);
+        bool success = crawler.Model.SetPlayerAction(action);
         crawler.notPlayerTurn = true;
         if (success)
         {

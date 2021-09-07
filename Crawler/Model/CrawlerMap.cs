@@ -7,25 +7,20 @@ using System.Collections.Generic;
 /// </summary>
 // Parasitically based on TileMap.
 // Would change, but its quite convenient.
-public class CrawlerMap
+public class CrawlerMap : TileMap
 {
-    public TileMap map = new TileMap();
-
-    ~CrawlerMap()
+    public CrawlerMap()
     {
-        // TODO: This doesn't work the way I think it does.
-        // GD.Print("DEEESSSSTRUUUCTTIOOOON");
-        map.QueueFree();
     }
 
-    public int GetCell(int x, int y)
-    {
-        return map.GetCell(x, y);
-    }
+    // public new int GetCell(int x, int y)
+    // {
+    //     return base.GetCell(x/2, y/2);
+    // }
 
     public bool TileIsWall((int x, int y) position)
     {
-        return TileIsWall(map.GetCell(position.x, position.y));
+        return TileIsWall(this.GetCell(position.x, position.y));
     }
 
     public static bool TileIsWall(int id)

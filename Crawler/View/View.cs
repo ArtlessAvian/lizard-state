@@ -43,7 +43,7 @@ public partial class View : Node2D
         {
             queueSync = false;
             this.ModelSync();
-            Model debugggModel = GetParent<Crawler>().model;
+            Model debugggModel = GetNode<Model>("../Model");
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + debugggModel.time + " (sync!)";
         }
     }

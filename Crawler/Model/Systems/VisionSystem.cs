@@ -5,27 +5,15 @@ using Godot.Collections;
 /// Stores map and vision information.
 /// Maybe ask the 
 /// </summary>
-public class VisionSystem : CrawlerSystem
+public class VisionSystem : TileMap, CrawlerSystem
 {
-    TileMap visionMap; // back to parasitic inheritance.
-    CrawlerMap map;
+    [Export] NodePath mapPath;
+    CrawlerMap map = null;
 
     public Dictionary<int, int> canSee = new Dictionary<int, int>();
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
-
-    public VisionSystem(CrawlerMap map)
-    {
-        this.visionMap = new TileMap();
-        this.map = map;
-    }
-
-    ~VisionSystem()
-    {
-        // TODO: This doesn't work the way I think it does.
-        visionMap.QueueFree();
-    }
 
     public void ProcessEvent(Model model, Dictionary ev)
     {
@@ -42,7 +30,7 @@ public class VisionSystem : CrawlerSystem
 
     public void Run(Model model) // ModelAPI maybe?
     {
-        foreach (Entity e in model.entities)
+        foreach (Entity e in model.Entities.GetChildren())
         {
             if (e.dirtyVision)
             {
@@ -68,7 +56,7 @@ public class VisionSystem : CrawlerSystem
         // See things you don't already see.
         foreach (Entity other in model.GetEntitiesInRadius(e.position, 10))
         {
-            bool seeing = visionMap.GetCell(other.position.x, other.position.y) == 1;
+            bool seeing = GetCell(other.position.x, other.position.y) == 1;
             if (seeing)
             {   
                 if (!canSee.ContainsKey(other.id))
@@ -85,11 +73,11 @@ public class VisionSystem : CrawlerSystem
         }
         
         // Unsee things you already see.
-        foreach (Entity other in model.entities)
+        foreach (Entity other in model.Entities.GetChildren())
         {
             if (canSee.ContainsKey(other.id) && (canSee[other.id] & (1 << e.id)) != 0)
             {
-                bool seeing = visionMap.GetCell(other.position.x, other.position.y) == 1;
+                bool seeing = GetCell(other.position.x, other.position.y) == 1;
                 if (!seeing)
                 {
                     canSee[other.id] &= ~(1 << e.id);
@@ -107,6 +95,8 @@ public class VisionSystem : CrawlerSystem
     // Radius should be a small reasonable number, like 5.
     public int[,] GetVisibleTiles((int x, int y) pos, int radius = 5)
     {
+        if (map == null) { map = GetNode<CrawlerMap>(mapPath); }
+
         ClearVisibility();
         UpdateVisibility(pos, radius);
 
@@ -116,7 +106,7 @@ public class VisionSystem : CrawlerSystem
             for (int dx = -radius; dx <= radius; dx++)
             {
                 tiles[dx + radius, dy + radius] = 
-                    visionMap.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
+                    this.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
                     map.GetCell(pos.x + dx, pos.y + dy) : -2;
                     // -2 and not -1, in case theres a hole in the ground or something
                     
@@ -128,9 +118,9 @@ public class VisionSystem : CrawlerSystem
 
     private void ClearVisibility()
     {
-        foreach (Vector2 vec in visionMap.GetUsedCellsById(VISIBLE))
+        foreach (Vector2 vec in this.GetUsedCellsById(VISIBLE))
         {
-            visionMap.SetCellv(vec, REVEALED);
+            this.SetCellv(vec, REVEALED);
         }
     }
 
@@ -174,17 +164,12 @@ public class VisionSystem : CrawlerSystem
                 return;
             }
 
-            visionMap.SetCell(x, y, VISIBLE);
+            this.SetCell(x, y, VISIBLE);
             if (map.TileIsWall((x, y)))
             {
                 return;
             }
         }
         return;
-    }
-
-    public int GetCell(int x, int y)
-    {
-        return visionMap.GetCell(x, y);
     }
 }

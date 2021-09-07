@@ -20,7 +20,7 @@ public class AbilityInputState : InputState
         menu.Clear();
         menu.AddSeparator("Attacks");
         
-        attackData = crawler.model.GetPlayer().species.attacks;
+        attackData = crawler.Model.GetPlayer().species.attacks;
         for (int i = 0; i < attackData.Count; i++)
         {            
             menu.AddItem(attackData[i].ResourceName, i);
@@ -28,7 +28,7 @@ public class AbilityInputState : InputState
 
         menu.AddSeparator("Abilities");
         
-        abilities = crawler.model.GetPlayer().species.abilities;
+        abilities = crawler.Model.GetPlayer().species.abilities;
         for (int i = 0; i < attackData.Count; i++)
         {            
             menu.AddItem(abilities[i], i + bigNumber);
@@ -56,7 +56,7 @@ public class AbilityInputState : InputState
         Action action;
         if (id < bigNumber)
         {
-            action = new AttackAction(crawler.model.GetPlayer(), id);
+            action = new AttackAction(crawler.Model.GetPlayer(), id);
         }
         else
         {
@@ -65,7 +65,7 @@ public class AbilityInputState : InputState
 
         if (action.Range.max == 0)
         {
-            crawler.model.SetPlayerAction(action);
+            crawler.Model.SetPlayerAction(action);
             crawler.notPlayerTurn = true;
             crawler.ResetState();
         }
