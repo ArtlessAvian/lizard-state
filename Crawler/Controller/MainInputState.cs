@@ -32,7 +32,7 @@ public class MainInputState : InputState
     {
         if (ev.IsActionPressed("quicksave", false))
         {
-            temp = crawler.Model.SaveToDictionary();
+            temp = crawler.model.SaveToDictionary();
             return true;
         }
 
@@ -45,28 +45,22 @@ public class MainInputState : InputState
                 old.QueueFree();
                 
                 // dude your going to lose subscriber
-                crawler.Model.NewEvent -= old.eventQueue.Add;
-
-                Model oldd = crawler.Model;
-                crawler.RemoveChild(oldd);
-                oldd.QueueFree();
+                crawler.model.NewEvent -= old.eventQueue.Add;
+                crawler.model = null;
             }
 
             // Add the new stuff.
             {
-                PackedScene modelScene = GD.Load<PackedScene>((string)temp["Filename"]);
-                Model model = (Model)modelScene.Instance();
-                model.Name = "Model";
-                crawler.AddChild(model);
+                crawler.model = new Model();
 
                 PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
                 View view = (View)viewScene.Instance();
                 view.Name = "View";
                 crawler.AddChild(view);
                 
-                crawler.Model.NewEvent += view.eventQueue.Add;
+                crawler.model.NewEvent += view.eventQueue.Add;
                 LoadedGenerator gen = new LoadedGenerator(temp);
-                gen.Generate(crawler.Model);
+                gen.Generate(crawler.model);
             }
 
             return true;
@@ -85,7 +79,7 @@ public class MainInputState : InputState
 
             if (eventKey.Scancode == (int)KeyList.F9)
             {
-                crawler.View.GetNode("Map/Floors").Set("tile_data", crawler.Model.Map.Get("tile_data"));
+                crawler.View.GetNode("Map/Floors").Set("tile_data", crawler.model.map.map.Get("tile_data"));
                 return true;
             }
 
@@ -139,19 +133,19 @@ public class MainInputState : InputState
         {
             if (ev.IsActionPressed(tuple.name, true))
             {
-                Entity player = crawler.Model.GetPlayer();
+                Entity player = crawler.model.GetPlayer();
                 (int x, int y) offset = (player.position.x + tuple.dir.x, player.position.y + tuple.dir.y);
 
                 if (Input.IsKeyPressed((int)KeyList.Control))
                 {
-                    crawler.Model.SetPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
+                    crawler.model.SetPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;        
                     cursor.Hide();
                     return true;                    
                 }
                 else
                 {
-                    crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
+                    crawler.model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
                     cursor.Hide();
                     return true;
@@ -161,7 +155,7 @@ public class MainInputState : InputState
 
         if (ev.IsActionPressed("get_action"))
         {
-            crawler.Model.SetPlayerAction(new GetAction());
+            crawler.model.SetPlayerAction(new GetAction());
             crawler.notPlayerTurn = true;
             return true;
         }
@@ -194,16 +188,16 @@ public class MainInputState : InputState
                 targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
                 targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
 
-                Entity player = crawler.Model.GetPlayer();
+                Entity player = crawler.model.GetPlayer();
                 if (GridHelper.Distance(player.position, targetPosition) <= 1.5f)
                 {
-                    crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(targetPosition));
+                    crawler.model.SetPlayerAction(new MoveOrAttackAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
                 }
                 else
                 {
-                    crawler.Model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
+                    crawler.model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
                 }

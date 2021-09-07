@@ -27,8 +27,8 @@ public class EditorGenerator : LevelGenerator
     {
         TileMap map = (TileMap)scene.Instance();
 
-        model.Map.Set("format", 1);
-        model.Map.Set(
+        model.map.map.Set("format", 1);
+        model.map.map.Set(
             "tile_data",
             map.Get("tile_data")
         );
@@ -49,7 +49,7 @@ public class EditorGenerator : LevelGenerator
         // model.AddEntity(new Entity(enemy, (1, 20), 1));
         // model.AddEntity(new Entity(enemy, (2, 20), 1));
 
-        Array tiles = model.Map.GetUsedCells();
+        Array tiles = model.map.map.GetUsedCells();
         tiles.Shuffle();
         for (int i = 0; i < 10; i++)
         {

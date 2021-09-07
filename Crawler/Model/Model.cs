@@ -8,20 +8,14 @@ using System.Collections.Generic;
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>
-public partial class Model : Node
+public partial class Model
 {
     // Everything is saved!!
     [Export] public int time = 0;
 
-    public CrawlerMap Map
-    {
-        get { return GetNode<CrawlerMap>("Map"); }
-    }
-
-    public Node Entities
-    {
-        get { return GetNode("Entities"); } 
-    }
+    public CrawlerMap map = new CrawlerMap();
+    public List<Entity> entities = new List<Entity>();
+    public List<CrawlerSystem> systems = new List<CrawlerSystem>();
 
     // given to model by generator
     public Dictionary generatorData;
@@ -30,18 +24,21 @@ public partial class Model : Node
     public delegate void EventHandler(Dictionary ev);
     public EventHandler NewEvent;
 
-    // public Model() {}
+    public Model()
+    {
+        systems.Add(new VisionSystem(map));
+    }
 
     public void AddEntity(Entity e)
     {
-        e.id = Entities.GetChildCount();
-        Entities.AddChild(e);
+        e.id = entities.Count;
+        entities.Add(e);
 
         this.CoolerApiEvent(-1, "Create", e, e.id);
 
         if (e.providesVision)
         {
-            GetNode<VisionSystem>("Systems/Vision").UpdateVision(this, e);
+            GetSystem<VisionSystem>().UpdateVision(this, e);
             // this.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
         }
     }
@@ -126,13 +123,13 @@ public partial class Model : Node
     /// </summary>
     private void RunSystems()
     {
-        GetNode<VisionSystem>("Systems/Vision").Run(this);
+        GetSystem<VisionSystem>().Run(this);
     }
 
     private Entity NextEntity()
     {
         Entity result = GetEntity(0);
-        foreach (Entity e in Entities.GetChildren())
+        foreach (Entity e in entities)
         {
             if (e.nextMove == -1) { continue; }
             if (e.nextMove < result.nextMove)
@@ -148,5 +145,39 @@ public partial class Model : Node
     {
         int delta = finalTime - time;
         time = finalTime;
+    }
+
+    // todo: rename this lmao
+    // [Obsolete]
+    public void CoolerApiEvent(int subject, string action, object args = null, int @object = -1)
+    {
+        CoolerApiEvent(new Godot.Collections.Dictionary()
+        {
+            {"subject", subject},
+            {"action", action},
+            {"args", args},
+            {"object", @object}
+        });
+    }
+
+    public void CoolerApiEvent(Godot.Collections.Dictionary @event)
+    {
+        @event.Add("timestamp", time);
+
+        // For each system, decorate the event.
+        // foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        // {
+        //     system.ProcessEvent(this, @event);
+        // }
+
+        // Send the event to the view, if the player('s team) sees it.
+        this.NewEvent(@event);
+
+        // For each system, react to the event.
+        // (Skill procs, or something? could be fun)
+        foreach (CrawlerSystem system in systems)
+        {
+            system.ProcessEvent(this, @event);
+        }
     }
 }
