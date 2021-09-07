@@ -28,6 +28,11 @@ public partial class View : Node2D
         // subscribe to the event thing.
     }
 
+    public void OnModelNewEvent(Dictionary @event)
+    {
+        eventQueue.Add(@event);
+    }
+
     public override void _Process(float delta)
     {
         if (!IsQueueClear())

@@ -20,7 +20,8 @@ public class Crawler : Node2D, InputStateMachine
 
     public override void _Ready()
     {
-        Model.NewEvent += View.eventQueue.Add; // So clean!!
+        Model.Connect("NewEvent", View, "OnModelNewEvent");
+        // Model.NewEvent += View.eventQueue.Add; // So clean!!
 
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);

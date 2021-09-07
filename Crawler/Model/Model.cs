@@ -26,9 +26,8 @@ public partial class Model : Node
     // given to model by generator
     public Dictionary generatorData;
 
-    // [Signal]
-    public delegate void EventHandler(Dictionary ev);
-    public EventHandler NewEvent;
+    [Signal]
+    public delegate void NewEvent(Dictionary ev);
 
     // public Model() {}
 

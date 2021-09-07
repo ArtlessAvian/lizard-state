@@ -29,7 +29,7 @@ public partial class Model
         // }
 
         // Send the event to the view, if the player('s team) sees it.
-        this.NewEvent(@event);
+        this.EmitSignal("NewEvent", @event);
 
         // For each system, react to the event.
         // (Skill procs, or something? could be fun)

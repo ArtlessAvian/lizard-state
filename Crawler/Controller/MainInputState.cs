@@ -43,9 +43,6 @@ public class MainInputState : InputState
                 View old = crawler.GetNode<View>("View");
                 crawler.RemoveChild(old);
                 old.QueueFree();
-                
-                // dude your going to lose subscriber
-                crawler.Model.NewEvent -= old.eventQueue.Add;
 
                 Model oldd = crawler.Model;
                 crawler.RemoveChild(oldd);
@@ -64,7 +61,7 @@ public class MainInputState : InputState
                 view.Name = "View";
                 crawler.AddChild(view);
                 
-                crawler.Model.NewEvent += view.eventQueue.Add;
+                model.Connect("NewEvent", view, "OnModelNewEvent");
                 LoadedGenerator gen = new LoadedGenerator(temp);
                 gen.Generate(crawler.Model);
             }

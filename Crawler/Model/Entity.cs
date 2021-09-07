@@ -13,7 +13,12 @@ public class Entity : Node
     [Export] public int id;
     [Export] public Species species;
 
-    public (int x, int y) position;
+    private Vector2 _position = new Vector2();
+    public (int x, int y) position
+    {
+        get { return ((int)_position.x, (int)_position.y); }
+        set { _position.x = value.x; _position.y = value.y; }
+    }
     public int nextMove = 0;
 
     public Action queuedAction;
@@ -92,8 +97,7 @@ public class Entity : Node
     {
         Dictionary dict = new Dictionary();
         dict["species"] = species.ResourcePath;
-        dict["x"] = position.x;
-        dict["y"] = position.y;
+        dict["position"] = _position;
         dict["nextMove"] = nextMove;
 
         if (queuedAction != null)
@@ -115,8 +119,7 @@ public class Entity : Node
     public Entity(Dictionary dict)
     {
         this.species = GD.Load<Species>((string)dict["species"]);
-        this.position.x = (int)dict["x"];
-        this.position.y = (int)dict["y"];
+        this._position = (Vector2)dict["position"];
         this.nextMove = (int)dict["nextMove"];
 
         if (dict.Contains("queuedAction"))
