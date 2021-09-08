@@ -33,32 +33,31 @@ static class GridHelper
         }
     }
 
+    // Found a better algorithm from https://github.com/denismr/SymmetricPCVT
+    // Tran Thong "A symmetric linear algorithm for line segment generation."
     public static IEnumerable<(int x, int y)> LineBetween((int x, int y) from, (int x, int y) to)
     {
         if (to.x == from.x && to.y == from.y)
         {
             yield return from;
-            yield break;
+            yield break; // its redundant but clearer.
         }
-
-        (int octantX, int octantY, int octant) = Octantify(to.x - from.x, to.y - from.y);
-
-        float accumulator = 0.5f;
-        // float previousAcc = accumulator;
-        for (int i = 0; i <= octantX; i++)
+        else
         {
-            // no corner cutting!
-            // if (Math.Floor(accumulator) != Math.Floor(previousAcc))
-            // {
-            //     (int dx2, int dy2) = DeOctantify(i, (int)previousAcc, octant);
-            //     yield return (dx2 + from.x, dy2 + from.y);
-            // }
+            (int octantX, int octantY, int octant) = Octantify(to.x - from.x, to.y - from.y);
+            int localDy = 0;
 
-            (int dx, int dy) = DeOctantify(i, (int)accumulator, octant);
-            yield return (dx + from.x, dy + from.y);
-            // previousAcc = accumulator;
-            accumulator += (float)octantY / octantX;
-        }        
+            for (int localDx = 0; localDx <= octantX; localDx++)
+            {
+                (int dx, int dy) = DeOctantify(localDx, localDy, octant);
+                yield return (dx + from.x, dy + from.y);
+                if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
+                {
+                    localDy++;
+                }
+            }
+            yield break; // same as last yield break.
+        }
     }
 
     public static (int dx, int dy, int octant) Octantify(int dx, int dy)
