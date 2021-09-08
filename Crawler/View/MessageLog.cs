@@ -46,5 +46,10 @@ public class MessageLog : RichTextLabel
             string message = (string)ev["args"];
             this.AppendBbcode($"\n * {message}");
         }
+        else if (action == "Debug")
+        {
+            string message = (string)ev["args"];
+            this.AppendBbcode($"\n * [color=#aaffff]{message}[/color]");
+        }
     }
 }

@@ -26,8 +26,8 @@ public class Crawler : Node2D, InputStateMachine
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
 
-        // NoiseGenerator gen = new NoiseGenerator();
-        EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
+        NoiseGenerator gen = new NoiseGenerator();
+        // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
         gen.Generate(Model);
 
         Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
@@ -54,6 +54,7 @@ public class Crawler : Node2D, InputStateMachine
                 break;
             }
 
+            // Uncomment if not lag testing (which should be always)
             // if (OS.GetTicksMsec() - start > 1000/120f)
             // {
             //     GD.PrintErr("Timed out!");
@@ -68,7 +69,7 @@ public class Crawler : Node2D, InputStateMachine
         float frameTime = OS.GetTicksMsec() - start;
         if (frameTime > 1000/120f)
         {
-            GD.Print($"High frame time! ({frameTime} ms)");
+            Print($"High frame time! ({frameTime} ms)");
         }
     }
 
@@ -104,5 +105,13 @@ public class Crawler : Node2D, InputStateMachine
     public void ResetState()
     {
         this.ChangeState(GetNode<InputState>("InputStates/Main"));
+    }
+
+    private void Print(string message)
+    {
+        GD.Print(message);
+        View.GetNode<MessageLog>("UILayer/MessageLog").AppendBbcode(
+            $"\n * [color=#aa0000]{message}[/color]"
+        );
     }
 }

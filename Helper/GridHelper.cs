@@ -35,28 +35,30 @@ static class GridHelper
 
     // Found a better algorithm from https://github.com/denismr/SymmetricPCVT
     // Tran Thong "A symmetric linear algorithm for line segment generation."
+    public static IEnumerable<(int x, int y)> RayThrough((int x, int y) from, (int x, int y) through)
+    {
+        (int octantX, int octantY, int octant) = Octantify(through.x - from.x, through.y - from.y);
+        int localDy = 0;
+        for (int localDx = 0; localDx <= 100; localDx++)
+        {
+            (int dx, int dy) = DeOctantify(localDx, localDy, octant);
+            yield return (dx + from.x, dy + from.y);
+            if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
+            {
+                localDy++;
+            }
+        }
+    }
+    
     public static IEnumerable<(int x, int y)> LineBetween((int x, int y) from, (int x, int y) to)
     {
-        if (to.x == from.x && to.y == from.y)
+        foreach ((int x, int y) p in RayThrough(from, to))
         {
-            yield return from;
-            yield break; // its redundant but clearer.
-        }
-        else
-        {
-            (int octantX, int octantY, int octant) = Octantify(to.x - from.x, to.y - from.y);
-            int localDy = 0;
-
-            for (int localDx = 0; localDx <= octantX; localDx++)
+            yield return p;
+            if (p.x == to.x && p.y == to.y)
             {
-                (int dx, int dy) = DeOctantify(localDx, localDy, octant);
-                yield return (dx + from.x, dy + from.y);
-                if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
-                {
-                    localDy++;
-                }
+                break;
             }
-            yield break; // same as last yield break.
         }
     }
 

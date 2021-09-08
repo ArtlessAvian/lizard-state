@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 
 // See http://www.roguebasin.com/index.php?title=Pre-Computed_Visibility_Tries
@@ -46,16 +47,15 @@ public class VisibilityTrie
         if (this.currentRadius >= radius) { return; }
         this.currentRadius = radius;
         
-        // For each unique slope passing through a cell,
+        // For each unique ray in the octant passing through a cell,
         foreach ((int rise, int run) in GridHelper.ListRationals(radius))
         {
-            // extend the ray to the end of the square
-            int thing = radius * rise / run;
-
+            // Add the tiles the ray hits to the trie.
             TrieNode current = origin;
-            foreach ((int x, int y) in GridHelper.LineBetween((0, 0), (radius, thing)))
+            foreach ((int x, int y) in GridHelper.RayThrough((0, 0), (run, rise)))
             {
                 if (x == 0) {continue;} // skip the first one.
+                if (x > radius) { break; } // finish up
                 if (y == current.y)
                 {
                     if (current.straight is null)
