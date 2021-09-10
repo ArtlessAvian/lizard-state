@@ -23,6 +23,11 @@ public partial class Model : Node
         get { return GetNode("Entities"); } 
     }
 
+    private Node FloorItems
+    {
+        get { return GetNode("FloorItems"); } 
+    }
+
     // given to model by generator
     public Dictionary generatorData;
 
@@ -43,6 +48,14 @@ public partial class Model : Node
             GetNode<VisionSystem>("Systems/Vision").UpdateVision(this, e);
             // this.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
         }
+    }
+
+    public void AddFloorItem(FloorItem item)
+    {
+        item.id = FloorItems.GetChildCount();
+        FloorItems.AddChild(item);
+
+        this.CoolerApiEvent(-1, "CreateItem", item, item.id);
     }
 
     /// <summary>

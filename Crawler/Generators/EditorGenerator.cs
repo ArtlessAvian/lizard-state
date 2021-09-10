@@ -20,6 +20,14 @@ public class EditorGenerator : LevelGenerator
         model.generatorData = this.SaveToDict();
         GenerateMap(model);
         GenerateEntities(model);
+
+        FloorItem item = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
+        item.position = (4, 0);
+        model.AddFloorItem(item);
+        FloorItem item2 = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
+        item2.position = (5, 0);
+        model.AddFloorItem(item2);
+
         return model;
     }
 

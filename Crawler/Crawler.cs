@@ -26,8 +26,8 @@ public class Crawler : Node2D, InputStateMachine
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
 
-        NoiseGenerator gen = new NoiseGenerator();
-        // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
+        // NoiseGenerator gen = new NoiseGenerator();
+        EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
         gen.Generate(Model);
 
         Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");

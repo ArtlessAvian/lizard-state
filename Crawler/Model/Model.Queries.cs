@@ -38,7 +38,7 @@ public partial class Model
 
     public Entity GetEntityAt((int x, int y) position)
     {
-        foreach (Entity e in Entities.GetChildren())
+        foreach (Entity e in GetEntities())
         {
             // rip no tuple equality
             if (e.position.x == position.x && e.position.y == position.y && !e.downed)
@@ -52,7 +52,7 @@ public partial class Model
     public List<Entity> GetEntitiesInRadius((int x, int y) position, float radius)
     {
         List<Entity> inRadius = new List<Entity>();
-        foreach (Entity e in Entities.GetChildren())
+        foreach (Entity e in GetEntities())
         {
             if (Distance(position, e.position) <= radius && !e.downed)
             {
@@ -61,6 +61,8 @@ public partial class Model
         }
         return inRadius;
     }
+
+    
 
     public List<Entity> GetEntitiesInSight(int team)
     {

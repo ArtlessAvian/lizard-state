@@ -6,7 +6,7 @@
 [ext_resource path="res://Crawler/View/MessageLog.cs" type="Script" id=4]
 [ext_resource path="res://Crawler/View/View.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=6]
-[ext_resource path="res://Crawler/View/Assets/Items/Something.png" type="Texture" id=7]
+[ext_resource path="res://Crawler/View/Item.tscn" type="PackedScene" id=7]
 
 [node name="View" type="Node2D"]
 script = ExtResource( 5 )
@@ -66,10 +66,7 @@ tile_data = PoolIntArray( -196612, 6, 0, -196611, 6, 0, -196610, 6, 0, -196609, 
 [node name="Items" type="YSort" parent="Map/Walls"]
 position = Vector2( 12, 4 )
 
-[node name="Something" type="Sprite" parent="Map/Walls/Items"]
-position = Vector2( 0, -128 )
-texture = ExtResource( 7 )
-offset = Vector2( 0, 4 )
+[node name="Item" parent="Map/Walls/Items" instance=ExtResource( 7 )]
 
 [node name="Actors" type="YSort" parent="Map/Walls"]
 position = Vector2( 12, 8 )
