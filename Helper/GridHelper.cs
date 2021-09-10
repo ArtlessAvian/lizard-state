@@ -121,7 +121,8 @@ static class GridHelper
         dx = Math.Abs(dx);
         dy = Math.Abs(dy);
 
-        // return 2 * Math.Max(dx, dy); // Chebyshev
+        // Chebyshev
+        // return Math.Max(dx, dy);
         
         // Approximate Approximate Euclidean
         return Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Crawler/View/MapView.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/CrawlerCamera.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Crawler/View/MessageLog.cs" type="Script" id=4]
 [ext_resource path="res://Crawler/View/View.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=6]
+[ext_resource path="res://Crawler/View/Assets/Items/Something.png" type="Texture" id=7]
 
 [node name="View" type="Node2D"]
 script = ExtResource( 5 )
@@ -61,6 +62,14 @@ cell_tile_origin = 1
 cell_y_sort = true
 format = 1
 tile_data = PoolIntArray( -196612, 6, 0, -196611, 6, 0, -196610, 6, 0, -196609, 6, 0, -262144, 6, 0, -262143, 6, 0, -262142, 6, 0, -262141, 6, 0, -262140, 6, 0, -131076, 6, 0, -196604, 6, 0, -65540, 6, 0, -131068, 6, 0, -4, 6, 0, -65532, 6, 0, 65532, 6, 0, 4, 6, 0, 131068, 6, 0, 65540, 6, 0, 196604, 6, 0, 131076, 6, 0, 262140, 6, 0, 196612, 6, 0, 327676, 6, 0, 327677, 6, 0, 327678, 6, 0, 327679, 6, 0, 262144, 6, 0, 262145, 6, 0, 262146, 6, 0, 262147, 6, 0, 262148, 6, 0 )
+
+[node name="Items" type="YSort" parent="Map/Walls"]
+position = Vector2( 12, 4 )
+
+[node name="Something" type="Sprite" parent="Map/Walls/Items"]
+position = Vector2( 0, -128 )
+texture = ExtResource( 7 )
+offset = Vector2( 0, 4 )
 
 [node name="Actors" type="YSort" parent="Map/Walls"]
 position = Vector2( 12, 8 )

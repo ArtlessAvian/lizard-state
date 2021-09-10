@@ -22,7 +22,7 @@ public class NoiseGenerator : LevelGenerator
     public void GenerateMap(Model model)
     {
         OpenSimplexNoise noise = new OpenSimplexNoise();
-        noise.Period = 5;
+        noise.Period = 6;
         noise.Octaves = 1;
 
         noise.Seed = 3;
