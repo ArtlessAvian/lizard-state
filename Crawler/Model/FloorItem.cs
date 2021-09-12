@@ -15,6 +15,8 @@ public class FloorItem : Node
         set { positionX = value.x; positionY = value.y; }
     }
 
+    
+
     public FloorItem() {}
 
     public FloorItem(Dictionary dict)

@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Crawler/View/Assets/cursor.png" type="Texture" id=3]
+[ext_resource path="res://Crawler/Controller/ItemInputState.cs" type="Script" id=4]
 [ext_resource path="res://Crawler/Controller/MainInputState.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/Model/Model.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Crawler/Controller/AbilityInputState.cs" type="Script" id=7]
@@ -57,6 +58,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ItemsMenu" type="PopupMenu" parent="Modals"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 210.0
+margin_bottom = 71.0
+items = [ "Abilities", null, 0, false, false, 0, 0, null, "", false ]
+hide_on_item_selection = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="InputStates" type="Node" parent="."]
 
 [node name="Main" type="Node" parent="InputStates"]
@@ -68,6 +80,12 @@ script = ExtResource( 7 )
 [node name="Targeting" type="Node" parent="InputStates/Main/Ability"]
 script = ExtResource( 8 )
 
+[node name="Item" type="Node" parent="InputStates/Main"]
+script = ExtResource( 4 )
+
+[node name="Targeting" type="Node" parent="InputStates/Main/Item"]
+script = ExtResource( 8 )
+
 [node name="Look" type="Node" parent="InputStates/Main"]
 script = ExtResource( 10 )
 
@@ -75,3 +93,5 @@ script = ExtResource( 10 )
 
 [connection signal="id_pressed" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_id_pressed"]
 [connection signal="popup_hide" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_popup_hide"]
+[connection signal="id_pressed" from="Modals/ItemsMenu" to="InputStates/Main/Item" method="_on_ItemsMenu_id_pressed"]
+[connection signal="popup_hide" from="Modals/ItemsMenu" to="InputStates/Main/Item" method="_on_ItemsMenu_popup_hide"]

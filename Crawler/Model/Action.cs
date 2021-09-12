@@ -33,7 +33,7 @@ public abstract class Action
     }
 
     // its absolute
-    public Action SetTarget((int x, int y) target)
+    public virtual Action SetTarget((int x, int y) target)
     {
         this.isRelative = false;
         this.targetInternal = target;
@@ -41,7 +41,7 @@ public abstract class Action
     }
 
     // hey its me ur brother
-    public Action SetTargetRelative((int x, int y) delta)
+    public virtual Action SetTargetRelative((int x, int y) delta)
     {
         this.isRelative = true;
         this.targetInternal = delta;

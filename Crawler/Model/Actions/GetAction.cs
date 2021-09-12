@@ -18,6 +18,18 @@ public class GetAction : Action
             return true;
         }
 
+        foreach (FloorItem item in model.GetNode("FloorItems").GetChildren())
+        {
+            if (item.positionX == e.positionX && item.positionY == e.positionY)
+            {
+                model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
+                e.inventory = new HeldItem();
+                model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.GetName()}.");
+                e.nextMove += 100;
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -26,6 +38,14 @@ public class GetAction : Action
         if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
         {
             return true;
+        }
+
+        foreach (FloorItem item in model.GetNode("FloorItems").GetChildren())
+        {
+            if (item.positionX == e.positionX && item.positionY == e.positionY)
+            {
+                return true;
+            }
         }
 
         return false;

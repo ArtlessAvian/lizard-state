@@ -15,7 +15,7 @@ public class AttackAction : Action
         {
             this.data = e.species.attacks[id];
         }
-        // data ??= GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
+
         if (data is null)
         {
             this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
