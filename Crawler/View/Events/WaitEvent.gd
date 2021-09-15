@@ -6,5 +6,10 @@ func _init(_view, event : Dictionary, roles : Array):
 	view = _view
 
 func can_consume():
-	return not view.AnyActorAnimating()
-	# return OS.get_system_time_msecs() >= time + 0.5
+	if not view.AnyActorAnimating():		
+		## This doesn't work, since the model is /far/ ahead
+		## The model only stops for user inputs, which is when
+		## it is safe to sync.
+		# view.ModelSync()
+		return true
+	return false

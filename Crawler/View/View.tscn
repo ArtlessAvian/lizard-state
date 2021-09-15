@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Crawler/View/MapView.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/CrawlerCamera.gd" type="Script" id=2]
@@ -6,7 +6,6 @@
 [ext_resource path="res://Crawler/View/MessageLog.cs" type="Script" id=4]
 [ext_resource path="res://Crawler/View/View.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=6]
-[ext_resource path="res://Crawler/View/Item.tscn" type="PackedScene" id=7]
 
 [node name="View" type="Node2D"]
 script = ExtResource( 5 )
@@ -47,7 +46,6 @@ format = 1
 tile_data = PoolIntArray( -655356, 2, 0, -327688, 2, 0, -327686, 2, 0, -327683, 2, 0, -327682, 2, 0, -393216, 2, 0, -393209, 2, 0, -393208, 2, 0, -196612, 6, 0, 393206, 3, 0 )
 
 [node name="Walls" type="TileMap" parent="Map"]
-self_modulate = Color( 0.392157, 0.392157, 0.392157, 1 )
 use_parent_material = true
 tile_set = ExtResource( 6 )
 cell_size = Vector2( 24, 16 )
@@ -66,12 +64,46 @@ tile_data = PoolIntArray( -196612, 6, 0, -196611, 6, 0, -196610, 6, 0, -196609, 
 [node name="Items" type="YSort" parent="Map/Walls"]
 position = Vector2( 12, 4 )
 
-[node name="Item" parent="Map/Walls/Items" instance=ExtResource( 7 )]
-
 [node name="Actors" type="YSort" parent="Map/Walls"]
 position = Vector2( 12, 8 )
 
 [node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="PartyStatus" type="VBoxContainer" parent="UILayer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Time" type="RichTextLabel" parent="UILayer"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -420.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = 44.0
+mouse_filter = 2
+text = "Debug Time:"
+scroll_active = false
+scroll_following = true
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="ColorRect" parent="UILayer/Time"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 0.25098 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MessageLog" type="RichTextLabel" parent="UILayer"]
 anchor_left = 0.5
@@ -106,29 +138,29 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Time" type="RichTextLabel" parent="UILayer"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -420.0
-margin_top = 20.0
-margin_right = -20.0
-margin_bottom = 44.0
-mouse_filter = 2
-text = "Debug Time:"
-scroll_active = false
-scroll_following = true
+[node name="WaitPrompt" type="Label" parent="UILayer"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 300.0
+margin_top = -42.0
+margin_right = 400.0
+margin_bottom = -20.0
+text = "Wait..."
+align = 1
+valign = 1
 __meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true,
-"_edit_use_anchors_": false
+"_edit_lock_": true
 }
 
-[node name="Background" type="ColorRect" parent="UILayer/Time"]
+[node name="Background" type="ColorRect" parent="UILayer/WaitPrompt"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_top = -3.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 0.25098 )
+color = Color( 0.552941, 0, 0, 0.25098 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -166,7 +198,7 @@ anchor_bottom = 1.0
 margin_left = 20.0
 margin_top = 20.0
 margin_right = 280.0
-margin_bottom = -20.0
+margin_bottom = -2.0
 mouse_filter = 2
 scroll_active = false
 scroll_following = true
@@ -181,42 +213,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color( 0, 0, 0, 0.25098 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="WaitPrompt" type="Label" parent="UILayer"]
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = 300.0
-margin_top = -42.0
-margin_right = 400.0
-margin_bottom = -20.0
-text = "Wait..."
-align = 1
-valign = 1
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="Background" type="ColorRect" parent="UILayer/WaitPrompt"]
-show_behind_parent = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = -3.0
-mouse_filter = 2
-color = Color( 0.552941, 0, 0, 0.25098 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PartyStatus" type="VBoxContainer" parent="UILayer"]
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 40.0
-margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

@@ -12,7 +12,8 @@
 script = ExtResource( 2 )
 
 [node name="Map" type="TileMap" parent="."]
-self_modulate = Color( 0.168627, 0.164706, 0.168627, 1 )
+visible = false
+self_modulate = Color( 0.207843, 0.431373, 1, 1 )
 position = Vector2( -12, -8 )
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 24, 16 )

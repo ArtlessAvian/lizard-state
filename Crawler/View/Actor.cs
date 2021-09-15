@@ -52,6 +52,8 @@ public partial class Actor : Node2D
             // aniPlayer.Queue("Reset");
         }
 
+        status?.Call("set_energy", role.energy, 10);
+
         stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");

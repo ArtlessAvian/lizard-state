@@ -118,9 +118,9 @@
 7/z_index = 0
 8/name = "wall.png 8"
 8/texture = ExtResource( 2 )
-8/tex_offset = Vector2( 0, 0 )
+8/tex_offset = Vector2( 0, -8 )
 8/modulate = Color( 1, 1, 1, 1 )
-8/region = Rect2( 0, 32, 32, 32 )
+8/region = Rect2( 0, 0, 24, 24 )
 8/tile_mode = 0
 8/occluder_offset = Vector2( 0, 0 )
 8/navigation_offset = Vector2( 0, 0 )

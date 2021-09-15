@@ -69,7 +69,7 @@ public class MainInputState : InputState
             return true;
         }
 
-        if (ev is InputEventKey eventKey && eventKey.Pressed)
+        if (ev is InputEventKey eventKey && eventKey.Pressed && !eventKey.IsEcho())
         {
             if (eventKey.Scancode == (int)KeyList.F1)
             {
@@ -82,7 +82,8 @@ public class MainInputState : InputState
 
             if (eventKey.Scancode == (int)KeyList.F9)
             {
-                crawler.View.GetNode("Map/Floors").Set("tile_data", crawler.Model.Map.Get("tile_data"));
+                Node2D map = (Node2D)crawler.Model.FindNode("Map");
+                map.Visible = !map.Visible;
                 return true;
             }
 

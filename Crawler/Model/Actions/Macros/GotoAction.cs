@@ -20,8 +20,8 @@ public class GotoAction : Action
 
         FindPathLazy(model, e.position, targetPos);
         
-        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
         model.CoolerApiEvent(-1, "SmallWait");
+        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
 
         if (!success) { return false; }
         
