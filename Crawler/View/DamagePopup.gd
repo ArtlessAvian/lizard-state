@@ -17,8 +17,9 @@ func _ready():
 	self.velocity += Vector2.RIGHT * 10 * (randf() * 2 - 1)
 
 func _process(delta):
-	self.velocity += Vector2.DOWN * delta * 40
-	self.rect_position = self.rect_position + velocity * delta
+	var acc = Vector2.DOWN * delta * 40
+	self.rect_position = self.rect_position + velocity * delta + 0.5 * acc * delta * delta
+	self.velocity += acc
 
 	timer += delta
 

@@ -28,7 +28,7 @@ public partial class Actor : Node2D
         ModelSync();
     }
 
-    public void ModelSync()
+    public void ModelSync(int? viewTime = null)
     {
         targetPosition = new Vector2((int)role.position.x, (int)role.position.y);
         // Position = new Vector2(
@@ -40,9 +40,12 @@ public partial class Actor : Node2D
 
         health = role.health;
         status?.Call("set_health", role.health, role.species.maxHealth);
-        // TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-        // healthbar.MaxValue = role.species.maxHealth;
-        // healthbar.Value = role.health;
+
+        if (viewTime is int time)
+        {
+            TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+            healthbar.Value = role.nextMove - time;
+        }
 
         // sprite stuff
         if (health <= 0) { this.Visible = false; }

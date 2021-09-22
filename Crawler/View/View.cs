@@ -15,6 +15,8 @@ public partial class View : Node2D
     private bool queueSync = false;
     private Resource unconsumedEvent = null; 
 
+    int viewTime;
+
     // conveniences
     [Export] public Actor playerActor;
     // super buggy but convenient
@@ -47,9 +49,12 @@ public partial class View : Node2D
         if (queueSync && !this.AnyActorAnimating() && IsQueueClear())
         {
             queueSync = false;
-            this.ModelSync();
+
             Model debugggModel = GetNode<Model>("../Model");
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + debugggModel.time + " (sync!)";
+            viewTime = debugggModel.time;
+            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime + " (sync!)";
+
+            this.ModelSync();
         }
     }
 
@@ -97,7 +102,8 @@ public partial class View : Node2D
             eventQueue.RemoveAt(0);
             unconsumedEvent = null;
 
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + ev["timestamp"];
+            viewTime = (int)ev["timestamp"];
+            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
 
             // TODO: also move below into handling scripts.
             if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
@@ -118,7 +124,7 @@ public partial class View : Node2D
     {
         foreach (Actor a in roles)
         {
-            a.ModelSync();
+            a.ModelSync(viewTime);
         }
     }
 

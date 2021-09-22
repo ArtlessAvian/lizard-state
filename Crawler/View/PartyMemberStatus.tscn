@@ -19,6 +19,7 @@ margin_left = 5.0
 margin_top = 5.0
 margin_right = -5.0
 margin_bottom = -5.0
+mouse_filter = 2
 custom_constants/separation = 0
 script = ExtResource( 3 )
 __meta__ = {
@@ -39,6 +40,7 @@ margin_top = 22.0
 margin_right = 950.0
 margin_bottom = 66.0
 rect_min_size = Vector2( 100, 22 )
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -47,6 +49,7 @@ __meta__ = {
 margin_right = 40.0
 margin_bottom = 44.0
 rect_min_size = Vector2( 40, 40 )
+mouse_filter = 2
 texture = SubResource( 1 )
 expand = true
 stretch_mode = 6
@@ -55,6 +58,7 @@ stretch_mode = 6
 margin_left = 44.0
 margin_right = 244.0
 margin_bottom = 44.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -63,6 +67,7 @@ __meta__ = {
 margin_right = 200.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 200, 20 )
+mouse_filter = 2
 max_value = 10.0
 value = 5.0
 texture_under = SubResource( 2 )
@@ -87,6 +92,7 @@ margin_top = 24.0
 margin_right = 200.0
 margin_bottom = 44.0
 rect_min_size = Vector2( 200, 20 )
+mouse_filter = 2
 max_value = 10.0
 value = 5.0
 texture_under = SubResource( 2 )
