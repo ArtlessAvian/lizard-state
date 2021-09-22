@@ -54,7 +54,7 @@ public class EditorGenerator : LevelGenerator
         for (int i = 0; i < 10; i++)
         {
             Vector2 vec = (Vector2)tiles[i+5];
-            model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
+            // model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
         }
     }
 

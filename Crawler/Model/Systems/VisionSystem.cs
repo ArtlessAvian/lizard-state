@@ -44,7 +44,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     {        
         // See the map
         int[,] tiles = this.GetVisibleTiles(e.position, 10);
-
+        
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
             {"action", "SeeMap"},
@@ -91,6 +91,23 @@ public class VisionSystem : TileMap, CrawlerSystem
         }
     }
 
+    Array<ulong> crudeProfiling = new Array<ulong>();
+    
+    public override void _Notification(int what)
+    {
+        if (what == MainLoop.NotificationWmQuitRequest)
+        {
+            File dump = new File();
+            // wont work outside of editor, since res://
+            dump.Open("res://profiling.txt", File.ModeFlags.Write);
+            foreach (uint time in crudeProfiling)
+            {
+                dump.StoreString(time.ToString() + "\n");
+            }
+            dump.Close();
+        }
+    }
+
     // Return value to be sent to ViewModel.
     // Radius should be a small reasonable number, like 5.
     public int[,] GetVisibleTiles((int x, int y) pos, int radius = 5)
@@ -98,7 +115,10 @@ public class VisionSystem : TileMap, CrawlerSystem
         if (map == null) { map = GetNode<CrawlerMap>(mapPath); }
 
         ClearVisibility();
+        ulong start = OS.GetTicksUsec();
         UpdateVisibility(pos, radius);
+        ulong stop = OS.GetTicksUsec();
+        crudeProfiling.Add(stop - start);
 
         int[,] tiles = new int[radius * 2 + 1, radius * 2 + 1];
         for (int dy = -radius; dy <= radius; dy++)
