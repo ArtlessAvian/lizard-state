@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Godot.Collections;
 
@@ -11,6 +12,8 @@ public class VisionSystem : TileMap, CrawlerSystem
     CrawlerMap map = null;
 
     public Dictionary<int, int> canSee = new Dictionary<int, int>();
+
+    private VisibilityTrie trie = new VisibilityTrie();
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
@@ -144,52 +147,84 @@ public class VisionSystem : TileMap, CrawlerSystem
         }
     }
 
-    // Tiles marked as VISIBLE are not meant to be saved!
+    // // Tiles marked as VISIBLE are not meant to be saved!
     public void UpdateVisibility((int x, int y) pos, int radius)
     {
-        // skip visibility check, for speed comparison.
-        // TODO: (half the time is spent on vision checks.)
-        // for (int y = pos.y - radius; y <= pos.y + radius; y++)
-        // {
-        //     for (int x = pos.x - radius; x <= pos.x + radius; x++)
-        //     {
-        //         this.SetCell(x, y, VISIBLE);
-        //     }
-        // }
-        // return;
-
-        // For each unique slope passing through a cell,
-        foreach ((int rise, int run) in GridHelper.ListRationals(radius))
+        trie.ExtendRadius(radius);
+        // Traverse the trie 8 times. Could be done in one pass.
+        for (int octant = 0; octant < 8; octant++)
         {
-            int thing = radius * rise / run;
-
-            // Mark every cell on that slope, for each of the 8 octants.
-            MarkLineOfSight((pos.x, pos.y), (pos.x + radius, pos.y + thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - radius, pos.y + thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + radius, pos.y - thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - radius, pos.y - thing), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y + radius), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y + radius), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y - radius), radius);
-            MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y - radius), radius);
+            FollowTrie(pos, trie.origin, octant, radius);
         }
     }
 
-    private void MarkLineOfSight((int x, int y) from, (int x, int y) to, int radius)
+    private void FollowTrie((int x, int y) origin, VisibilityTrie.TrieNode node, int octant, int radius)
     {
-        foreach ((int x, int y) in GridHelper.LineBetween(from, to))
-        {
-            if (GridHelper.Distance(from, (x, y)) > radius)
-            {
-                return;
-            }
+        if (node == null) {return;}
 
-            this.SetCell(x, y, VISIBLE);
-            if (map.TileIsWall((x, y)))
-            {
-                return;
-            }
+        if (GridHelper.Distance(node.x, node.y) > radius)
+        {
+            return;
         }
-        return;
+        
+        (int dx, int dy) = GridHelper.DeOctantify(node.x, node.y, octant);
+
+        this.SetCell(origin.x + dx, origin.y + dy, VISIBLE);
+
+        if (!map.TileIsWall((origin.x + dx, origin.y + dy)))
+        {
+            FollowTrie(origin, node.straight, octant, radius);
+            FollowTrie(origin, node.diag, octant, radius);
+        }
     }
+
+
+
+    // public void UpdateVisibility((int x, int y) pos, int radius)
+    // {
+    //     // skip visibility check, for speed comparison.
+    //     // TODO: (half the time is spent on vision checks.)
+    //     // for (int y = pos.y - radius; y <= pos.y + radius; y++)
+    //     // {
+    //     //     for (int x = pos.x - radius; x <= pos.x + radius; x++)
+    //     //     {
+    //     //         this.SetCell(x, y, VISIBLE);
+    //     //     }
+    //     // }
+    //     // return;
+
+    //     // For each unique slope passing through a cell,
+    //     foreach ((int rise, int run) in GridHelper.ListRationals(radius))
+    //     {
+    //         int thing = radius * rise / run;
+
+    //         // Mark every cell on that slope, for each of the 8 octants.
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x + radius, pos.y + thing), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x - radius, pos.y + thing), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x + radius, pos.y - thing), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x - radius, pos.y - thing), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y + radius), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y + radius), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x + thing, pos.y - radius), radius);
+    //         MarkLineOfSight((pos.x, pos.y), (pos.x - thing, pos.y - radius), radius);
+    //     }
+    // }
+
+    // private void MarkLineOfSight((int x, int y) from, (int x, int y) to, int radius)
+    // {
+    //     foreach ((int x, int y) in GridHelper.LineBetween(from, to))
+    //     {
+    //         if (GridHelper.Distance(from, (x, y)) > radius)
+    //         {
+    //             return;
+    //         }
+
+    //         this.SetCell(x, y, VISIBLE);
+    //         if (map.TileIsWall((x, y)))
+    //         {
+    //             return;
+    //         }
+    //     }
+    //     return;
+    // }
 }

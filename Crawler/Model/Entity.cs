@@ -13,14 +13,17 @@ public class Entity : Node
     [Export] public int id;
     [Export] public Species species;
 
-    private Vector2 _position = new Vector2();
+    // Godot doesn't like serializing tuples, and I don't want to use Vector2.
+    // So this is what we have to do.
+    public int positionX;
+    public int positionY;
     public (int x, int y) position
     {
-        get { return ((int)_position.x, (int)_position.y); }
-        set { _position.x = value.x; _position.y = value.y; }
+        get { return (positionX, positionY); }
+        set { positionX = value.x; positionY = value.y; }
     }
-    public int nextMove = 0;
 
+    public int nextMove = 0;
     public Action queuedAction;
 
     public int health;
@@ -97,7 +100,8 @@ public class Entity : Node
     {
         Dictionary dict = new Dictionary();
         dict["species"] = species.ResourcePath;
-        dict["position"] = _position;
+        dict["positionX"] = positionX;
+        dict["positionY"] = positionY;
         dict["nextMove"] = nextMove;
 
         if (queuedAction != null)
@@ -119,7 +123,8 @@ public class Entity : Node
     public Entity(Dictionary dict)
     {
         this.species = GD.Load<Species>((string)dict["species"]);
-        this._position = (Vector2)dict["position"];
+        this.positionX = (int)dict["positionX"];
+        this.positionY = (int)dict["positionY"];
         this.nextMove = (int)dict["nextMove"];
 
         if (dict.Contains("queuedAction"))
