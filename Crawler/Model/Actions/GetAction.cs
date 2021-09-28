@@ -23,8 +23,8 @@ public class GetAction : Action
             if (item.positionX == e.positionX && item.positionY == e.positionY)
             {
                 model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
-                e.inventory = new HeldItem();
-                model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.GetName()}.");
+                e.inventory = new InventoryItem();
+                model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
                 e.nextMove += 100;
                 return true;
             }

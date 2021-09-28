@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Attacks/Instances/BasicAttack.tres" type="Resource" id=2]
-[ext_resource path="res://Crawler/Model/AIs/PartnerAI.tres" type="Resource" id=3]
+[ext_resource path="res://Crawler/Model/AIs/WildAI.tres" type="Resource" id=3]
 
 [resource]
 resource_name = "Enemy"

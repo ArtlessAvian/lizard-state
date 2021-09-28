@@ -31,7 +31,7 @@ public class Entity : Node
     public bool downed = false;
 
     public int energy = 10;
-    public HeldItem inventory = null;
+    public InventoryItem inventory = null;
 
     public int team;
     public bool providesVision;

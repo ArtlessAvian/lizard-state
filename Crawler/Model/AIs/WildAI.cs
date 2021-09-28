@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 // using static PathFinding;
 
-public class PartnerAI : AI
+// Research flocking behaviors.
+public class WildAI : AI
 {
     public override Action GetMove(Model model, Entity e)
     {
-        List<Entity> entities = model.GetEntitiesInRadius(e.position, 100);
+        List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();

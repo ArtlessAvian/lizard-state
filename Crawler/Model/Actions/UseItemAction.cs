@@ -1,15 +1,17 @@
+using System;
 using Godot;
 using Godot.Collections;
 
 public class UseItemAction : Action
 {
-    HeldItem item;
+    InventoryItem item;
     Action proxyAction;
 
     public UseItemAction(Entity e, int id)
     {
         item = e.inventory;
-        proxyAction = new AttackAction(e, -1); // e.inventory.something()
+        proxyAction = (Action)Activator.CreateInstance(Type.GetType(item.data.associatedAction));
+        // proxyAction = new AttackAction(e, -1); // e.inventory.something()
     }
 
     public override bool Do(Model model, Entity e)
@@ -19,7 +21,7 @@ public class UseItemAction : Action
             return false;
         }
 
-        // item.uses -= 1;
+        item.uses -= 1;
         proxyAction.Do(model, e);
 
         return true;
@@ -37,6 +39,7 @@ public class UseItemAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
+        if (item.uses <= 0) { return false; }
         return proxyAction.IsValid(model, e);
     }
 

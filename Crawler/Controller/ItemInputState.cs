@@ -16,9 +16,18 @@ public class ItemInputState : InputState
         PopupMenu menu = crawler.FindNode("Modals").GetNode<PopupMenu>("ItemsMenu");
 
         menu.Clear();
+        menu.AddSeparator("Inventory");
 
-        string name = crawler.Model.GetPlayer().inventory.GetName();
-        menu.AddItem(name, 0);
+        if (crawler.Model.GetPlayer().inventory is InventoryItem item)
+        {
+            string name = item.data.ResourceName;
+            menu.AddItem($"{item.data.ResourceName} ({item.uses}/{item.data.maxUses})", 0);
+        }
+        else
+        {
+            menu.AddItem("Nothing :(", 100);
+            menu.SetItemDisabled(1, true);
+        }
 
         menu.Popup_();
     }

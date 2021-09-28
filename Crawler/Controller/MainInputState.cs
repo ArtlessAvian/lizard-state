@@ -113,7 +113,7 @@ public class MainInputState : InputState
             return true;
         }
 
-        if (ev.IsActionPressed("menu_items", false) && crawler.Model.GetPlayer().inventory != null)
+        if (ev.IsActionPressed("menu_items", false))
         {
             crawler.ChangeState(this.GetNode<InputState>("Item"));
             return true;
