@@ -24,7 +24,7 @@ public class RunAction : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
         if (!model.CanWalkFromTo(e.position, targetPos))
         {
-            return false;
+            return true; // do nothing.
         }
 
         (int x, int y) oldTarget = targetPos;

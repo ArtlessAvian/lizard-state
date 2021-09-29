@@ -29,7 +29,7 @@ public class AbilityInputState : InputState
         menu.AddSeparator("Abilities");
         
         abilities = crawler.Model.GetPlayer().species.abilities;
-        for (int i = 0; i < attackData.Count; i++)
+        for (int i = 0; i < abilities.Count; i++)
         {            
             menu.AddItem(abilities[i], i + bigNumber);
         }

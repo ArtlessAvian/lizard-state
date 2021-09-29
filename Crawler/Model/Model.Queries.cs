@@ -62,7 +62,28 @@ public partial class Model
         return inRadius;
     }
 
-    
+    public List<Entity> GetEntitiesInLOS((int x, int y) position, float radius)
+    {
+        VisionSystem vision = GetNode<VisionSystem>("Systems/Vision");
+        vision.trie.ExtendRadius(radius);
+
+        List<Entity> inCone = GetEntitiesInRadius(position, radius);
+        GD.Print($"{inCone.Count} at first");
+
+        Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
+
+        for (int i = inCone.Count-1; i >= 0; i--)
+        {
+            (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
+            if (!vision.trie.AnyLineOfSight(relative, isBlocked))
+            {
+                GD.Print($"{inCone[i].Name} removed");
+                inCone.RemoveAt(i);
+            }
+        }
+        GD.Print($"{inCone.Count} iuegie");
+        return inCone;
+    }
 
     public List<Entity> GetEntitiesInSight(int team)
     {

@@ -46,6 +46,7 @@ format = 1
 tile_data = PoolIntArray( -655356, 2, 0, -327688, 2, 0, -327686, 2, 0, -327683, 2, 0, -327682, 2, 0, -393216, 2, 0, -393209, 2, 0, -393208, 2, 0, -196612, 6, 0, 393206, 3, 0 )
 
 [node name="Walls" type="TileMap" parent="Map"]
+self_modulate = Color( 0.392157, 0.392157, 0.392157, 1 )
 use_parent_material = true
 tile_set = ExtResource( 6 )
 cell_size = Vector2( 24, 16 )

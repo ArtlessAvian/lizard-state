@@ -13,7 +13,7 @@ public class VisionSystem : TileMap, CrawlerSystem
 
     public Dictionary<int, int> canSee = new Dictionary<int, int>();
 
-    private VisibilityTrie trie = new VisibilityTrie();
+    public VisibilityTrie trie = new VisibilityTrie();
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
@@ -131,32 +131,41 @@ public class VisionSystem : TileMap, CrawlerSystem
     public void UpdateVisibility((int x, int y) pos, int radius)
     {
         trie.ExtendRadius(radius);
-        // Traverse the trie 8 times. Could be done in one pass.
-        for (int octant = 0; octant < 8; octant++)
-        {
-            FollowTrie(pos, trie.origin, octant, radius);
-        }
-    }
+        
+        Predicate<(int, int)> isBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));
 
-    private void FollowTrie((int x, int y) origin, VisibilityTrie.TrieNode node, int octant, int radius)
-    {
-        if (node == null) {return;}
-
-        if (GridHelper.Distance(node.x, node.y) > radius)
+        foreach ((int x, int y) relative in trie.FieldOfView(isBlocked, radius))
         {
-            return;
+            this.SetCell(pos.x + relative.x, pos.y + relative.y, VISIBLE);
         }
         
-        (int dx, int dy) = GridHelper.DeOctantify(node.x, node.y, octant);
-
-        this.SetCell(origin.x + dx, origin.y + dy, VISIBLE);
-
-        if (!map.TileIsWall((origin.x + dx, origin.y + dy)))
-        {
-            FollowTrie(origin, node.straight, octant, radius);
-            FollowTrie(origin, node.diag, octant, radius);
-        }
+        // Traverse the trie 8 times. Could be done in one pass.
+        
+        // for (int octant = 0; octant < 8; octant++)
+        // {
+        //     FollowTrie(pos, trie.origin, octant, radius);
+        // }
     }
+
+    // private void FollowTrie((int x, int y) origin, VisibilityTrie.TrieNode node, int octant, int radius)
+    // {
+    //     if (node == null) {return;}
+
+    //     if (GridHelper.Distance(node.x, node.y) > radius)
+    //     {
+    //         return;
+    //     }
+        
+    //     (int dx, int dy) = GridHelper.DeOctantify(node.x, node.y, octant);
+
+    //     this.SetCell(origin.x + dx, origin.y + dy, VISIBLE);
+
+    //     if (!map.TileIsWall((origin.x + dx, origin.y + dy)))
+    //     {
+    //         FollowTrie(origin, node.straight, octant, radius);
+    //         FollowTrie(origin, node.diag, octant, radius);
+    //     }
+    // }
 
 
 
