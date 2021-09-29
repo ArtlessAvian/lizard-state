@@ -44,7 +44,7 @@ public partial class Actor : Node2D
         if (viewTime is int time)
         {
             TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            healthbar.Value = role.nextMove - time;
+            healthbar.Value = (role.nextMove - time) - healthbar.Step / 2.0;
         }
 
         // sprite stuff

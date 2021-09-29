@@ -12,7 +12,7 @@ public partial class View : Node2D
     public Array<Actor> roles = new Array<Actor>();
 
     // Animation Statefulness
-    private bool queueSync = false;
+    public bool queueSync = false;
     private Resource unconsumedEvent = null; 
 
     int viewTime;
@@ -40,10 +40,6 @@ public partial class View : Node2D
         if (!IsQueueClear())
         {
             this.ClearQueue();
-            if (IsQueueClear())
-            {
-                queueSync = true;
-            }
         }
 
         if (queueSync && !this.AnyActorAnimating() && IsQueueClear())

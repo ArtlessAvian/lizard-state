@@ -56,6 +56,7 @@ public class Crawler : Node2D, InputStateMachine
             {
                 // let the player move again.
                 notPlayerTurn = false;
+                View.queueSync = true;
                 break;
             }
 
