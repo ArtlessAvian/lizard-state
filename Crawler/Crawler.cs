@@ -31,7 +31,7 @@ public class Crawler : Node2D, InputStateMachine
         gen.Generate(Model);
 
         Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
-        Model.CoolerApiEvent(-1, "Print", "Then leave the cave from where you entered.");
+        Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
 
         if (GetViewport().Size.x >= 960 * 2)
         {
@@ -61,22 +61,22 @@ public class Crawler : Node2D, InputStateMachine
             }
 
             // Uncomment if not lag testing (which should be always)
-            // if (OS.GetTicksMsec() - start > 1000/120f)
-            // {
+            if (OS.GetTicksMsec() - start > 1000/144f)
+            {
             //     GD.PrintErr("Timed out!");
-            //     break;
-            // }
+                break;
+            }
 
             // if model.done
             // generate new model
             // replace model
             // clear view
         }
-        float frameTime = OS.GetTicksMsec() - start;
-        if (frameTime > 1000/120f)
-        {
-            Print($"High frame time! ({frameTime} ms)");
-        }
+        // float frameTime = OS.GetTicksMsec() - start;
+        // if (frameTime > 1000/120f)
+        // {
+        //     Print($"High frame time! ({frameTime} ms)");
+        // }
     }
 
     public override void _UnhandledInput(InputEvent ev)

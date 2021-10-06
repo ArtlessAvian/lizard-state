@@ -10,14 +10,14 @@ public partial class Model
     }
 
     // Really, really slow.
-    // public T GetSystem<T>() where T : CrawlerSystem
-    // {
-    //     foreach (object sys in GetNode("Systems").GetChildren())
-    //     {
-    //         if (sys is T systemCast) { return systemCast; }
-    //     }
-    //     return default(T);
-    // }
+    public T GetSystem<T>() where T : CrawlerSystem
+    {
+        foreach (object sys in GetNode("Systems").GetChildren())
+        {
+            if (sys is T systemCast) { return systemCast; }
+        }
+        return default(T);
+    }
 
     /// Reminder, the array is a shallow copy.
     /// You can't add to / remove from it.
@@ -67,15 +67,41 @@ public partial class Model
         VisionSystem vision = GetNode<VisionSystem>("Systems/Vision");
         vision.trie.ExtendRadius(radius);
 
+        List<Entity> inSight = GetEntitiesInRadius(position, radius);
+        GD.Print($"{inSight.Count} at first");
+
+        Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
+
+        for (int i = inSight.Count-1; i >= 0; i--)
+        {
+            (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
+            if (!vision.trie.AnyLineOfSight(relative, isBlocked))
+            {
+                GD.Print($"{inSight[i].Name} removed");
+                inSight.RemoveAt(i);
+            }
+        }
+        GD.Print($"{inSight.Count} iuegie");
+        return inSight;
+    }
+
+    public List<Entity> GetEntitiesInCone((int x, int y) position, float radius, (int x, int y) direction, float sectorDegrees)
+    {
+        // Not good code reuse. Copy-pasted from LOS.
+        VisionSystem vision = GetNode<VisionSystem>("Systems/Vision");
+        vision.trie.ExtendRadius(radius);
+
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
         GD.Print($"{inCone.Count} at first");
 
+        Predicate<(int, int)> notInCone = ((int x, int y) rel) => Math.Acos((rel.x * direction.x + rel.y * direction.y)) > (sectorDegrees/2) * Math.PI/180;
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
+        Predicate<(int, int)> isEither = ((int, int) rel) => notInCone(rel) || isBlocked(rel);
 
         for (int i = inCone.Count-1; i >= 0; i--)
         {
             (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
-            if (!vision.trie.AnyLineOfSight(relative, isBlocked))
+            if (!vision.trie.AnyLineOfSight(relative, isEither))
             {
                 GD.Print($"{inCone[i].Name} removed");
                 inCone.RemoveAt(i);

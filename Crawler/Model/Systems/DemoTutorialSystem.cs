@@ -4,11 +4,18 @@ using Godot.Collections;
 
 public class DemoTutorialSystem : Node, CrawlerSystem
 {
+    bool movePrompt = false;
     bool abilitiesPrompt = false;
     int kills = 0;
 
     public void ProcessEvent(Model model, Dictionary ev)
     {
+        if ((string)ev["action"] == "Move" && !movePrompt)
+        {
+            movePrompt = true;
+            model.CoolerApiEvent(-1, "Print", "Use the numpad to move. Hold Ctrl to move 5 spaces.");
+            model.CoolerApiEvent(-1, "Print", "Or, click to path somewhere. (Use arrow keys if you must.)");
+        }
         if ((string)ev["action"] == "Downed")
         {
             Entity subject = model.GetEntity((int)ev["subject"]);
@@ -38,7 +45,7 @@ public class DemoTutorialSystem : Node, CrawlerSystem
         }
         else
         {
-            model.CoolerApiEvent(-1, "Print", $"You did not get the moss.");
+            model.CoolerApiEvent(-1, "Print", $"You did not get the moss. (you win but less so)");
         }
         model.CoolerApiEvent(-1, "Print", "");
         model.CoolerApiEvent(-1, "Print", $"You spent {model.time} time units in the cave.");

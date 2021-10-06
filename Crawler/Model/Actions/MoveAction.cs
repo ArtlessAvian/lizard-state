@@ -41,6 +41,7 @@ public class MoveAction : Action
     private void DoNothing(Model model, Entity e)
     {
         e.nextMove += 10;
+        // model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
     private void DoMove(Model model, Entity e)

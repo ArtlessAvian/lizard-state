@@ -36,7 +36,7 @@ public class AttackAction : Action
 
         model.CoolerApiEvent(-1, "Wait");
 
-        model.CoolerApiEvent(e.id, "StartAttack");
+        model.CoolerApiEvent(e.id, "StartAttack", new Vector2(targetPos.x, targetPos.y));
         // for each target
         
         AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
