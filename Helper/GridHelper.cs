@@ -122,10 +122,10 @@ static class GridHelper
         dy = Math.Abs(dy);
 
         // Chebyshev
-        // return Math.Max(dx, dy);
+        return Math.Max(dx, dy);
         
         // Approximate Approximate Euclidean
-        return Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy);
+        // return Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy);
     }
 
     public static float Distance((int x, int y) pos, (int x, int y) pos2)

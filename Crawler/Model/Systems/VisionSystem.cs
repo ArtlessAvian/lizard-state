@@ -46,7 +46,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     public void UpdateVision(Model model, Entity e)
     {        
         // See the map
-        int[,] tiles = this.GetVisibleTiles(e.position, 10);
+        int[,] tiles = this.GetVisibleTiles(e.position, 8);
 
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
