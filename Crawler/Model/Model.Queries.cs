@@ -64,9 +64,6 @@ public partial class Model
 
     public List<Entity> GetEntitiesInLOS((int x, int y) position, float radius)
     {
-        VisionSystem vision = GetNode<VisionSystem>("Systems/Vision");
-        vision.trie.ExtendRadius(radius);
-
         List<Entity> inSight = GetEntitiesInRadius(position, radius);
         GD.Print($"{inSight.Count} at first");
 
@@ -75,7 +72,7 @@ public partial class Model
         for (int i = inSight.Count-1; i >= 0; i--)
         {
             (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
-            if (!vision.trie.AnyLineOfSight(relative, isBlocked))
+            if (!VisibilityTrie.AnyLineOfSight(relative, isBlocked))
             {
                 GD.Print($"{inSight[i].Name} removed");
                 inSight.RemoveAt(i);
@@ -89,19 +86,19 @@ public partial class Model
     {
         // Not good code reuse. Copy-pasted from LOS.
         VisionSystem vision = GetNode<VisionSystem>("Systems/Vision");
-        vision.trie.ExtendRadius(radius);
+        // vision.trie.ExtendRadius(radius);
 
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
         GD.Print($"{inCone.Count} at first");
 
-        Predicate<(int, int)> notInCone = ((int x, int y) rel) => Math.Acos((rel.x * direction.x + rel.y * direction.y)) > (sectorDegrees/2) * Math.PI/180;
+        Predicate<(int, int)> notInCone = ((int x, int y) rel) => !VisibilityTrie.TileInCone(rel, direction, sectorDegrees);
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
         Predicate<(int, int)> isEither = ((int, int) rel) => notInCone(rel) || isBlocked(rel);
 
         for (int i = inCone.Count-1; i >= 0; i--)
         {
             (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
-            if (!vision.trie.AnyLineOfSight(relative, isEither))
+            if (!VisibilityTrie.AnyLineOfSight(relative, isEither))
             {
                 GD.Print($"{inCone[i].Name} removed");
                 inCone.RemoveAt(i);

@@ -1,8 +1,11 @@
 
 using System;
 using System.Collections.Generic;
+using Godot;
 
 // See http://www.roguebasin.com/index.php?title=Pre-Computed_Visibility_Tries
+//  Don't worry about static. Treat as big constant!
+// TODO: Revise the staticness of it
 public class VisibilityTrie
 {
     public class TrieNode
@@ -21,22 +24,23 @@ public class VisibilityTrie
         }
     }
 
-    public TrieNode origin;
+    private static TrieNode origin;
+    private static float currentRadius = 0;
+    private static Dictionary<(int x, int y), HashSet<TrieNode>> reverse;
 
-    private float currentRadius = 0;
-    public Dictionary<(int x, int y), HashSet<TrieNode>> reverse;
-
-    public VisibilityTrie()
+    static VisibilityTrie()
     {
         origin = new TrieNode(0, 0);
         reverse = new Dictionary<(int x, int y), HashSet<TrieNode>>();
         AddToReverse(origin);
+
+        ExtendRadius(20);
     }
 
-    public void ExtendRadius(float radius)
+    private static void ExtendRadius(float radius)
     {
-        if (this.currentRadius >= radius) { return; }
-        this.currentRadius = radius;
+        if (currentRadius >= radius) { return; }
+        currentRadius = radius;
         
         // For each unique ray in the octant passing through a cell,
         foreach ((int rise, int run) in GridHelper.ListRationals((int)radius + 1))
@@ -69,7 +73,7 @@ public class VisibilityTrie
         }
     }
 
-    public void AddToReverse(TrieNode node)
+    private static void AddToReverse(TrieNode node)
     {
         (int x, int y) pos = (node.x, node.y);
         if (!reverse.ContainsKey(pos))
@@ -80,9 +84,8 @@ public class VisibilityTrie
     }
 
     /// May yield duplicates! If critical, use a set.
-    public IEnumerable<(int relX, int relY)> FieldOfView(Predicate<(int relX, int relY)> isBlocked, int radius)
+    public static IEnumerable<(int relX, int relY)> FieldOfView(Predicate<(int relX, int relY)> isBlocked, float radius)
     {
-        // Note that recurring has awful performance, but its easier. See the dumptree function.
         for (int octant = 0; octant < 8; octant++)
         {
             List<TrieNode> stack = new List<TrieNode>{origin};
@@ -107,7 +110,59 @@ public class VisibilityTrie
         }
     }
 
-    public bool AnyLineOfSight((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)
+    public static IEnumerable<(int relX, int relY)> ConeOfView(Predicate<(int relX, int relY)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
+    {
+        for (int octant = 0; octant < 8; octant++)
+        {
+            List<TrieNode> stack = new List<TrieNode>{origin};
+            while (stack.Count > 0)
+            {
+                TrieNode current = stack[stack.Count - 1]; // TIL the hat operator ^0
+                stack.RemoveAt(stack.Count - 1);
+
+                if (current == null || GridHelper.Distance(current.x, current.y) > radius)
+                {
+                    continue;
+                }
+
+                (int, int) relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
+                if (!TileInCone(relativePos, direction, sectorDegrees))
+                {
+                    continue;
+                }
+                
+                yield return relativePos;
+                if (!isBlocked(relativePos))
+                {
+                    stack.Add(current.straight);
+                    stack.Add(current.diag);
+                }
+            }
+        }
+    }
+
+    // TODO. Mess with signature. Vector2?
+    public static bool TileInCone((int x, int y) tile, (int x, int y) direction, float sectorDegrees)
+    {
+        if (tile.x == 0 && tile.y == 0) { return true; }
+        // check the four corners.
+        if (PointInCone((tile.x + 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x - 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x + 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x - 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        return false;
+    }
+
+    private static bool PointInCone((float x, float y) point, (int x, int y) direction, float sectorDegrees)
+    {
+        if (point.x == 0 && point.y == 0) { return true; }
+
+        double pointLen = Math.Sqrt(point.x * point.x + point.y * point.y);
+        double dirLen = Math.Sqrt(direction.x * direction.x + direction.y * direction.y);
+        return Math.Acos((point.x * direction.x + point.y * direction.y) / pointLen / dirLen) <= sectorDegrees/2 * Math.PI/180;
+    }
+
+    public static bool AnyLineOfSight((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)
     {
         (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
 
@@ -131,7 +186,7 @@ public class VisibilityTrie
     }
 
     // debug
-    public IEnumerable<TrieNode> DumpTree(TrieNode node)
+    public static IEnumerable<TrieNode> DumpTree(TrieNode node)
     {
         yield return node;
         if (node.straight is object)

@@ -16,20 +16,19 @@ public class AbilityTargetInputState : InputState
         cursor.SnapToTarget();
         cursor.Show();
 
-        TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
-        for (int dx = -(int)(action.Range.max + 0.5f); dx <= action.Range.max; dx++)
-        {
-            for (int dy = -(int)(action.Range.max + 0.5f); dy <= action.Range.max; dy++)
-            {
-                // todo, make line of sight check.
-                float dist = GridHelper.Distance(dx, dy);
-                if (action.Range.min > dist) {continue;}
-                if (dist > action.Range.max) {continue;}
+        // for (int dx = -(int)(action.Range.max + 0.5f); dx <= action.Range.max; dx++)
+        // {
+        //     for (int dy = -(int)(action.Range.max + 0.5f); dy <= action.Range.max; dy++)
+        //     {
+        //         // todo, make line of sight check.
+        //         float dist = GridHelper.Distance(dx, dy);
+        //         if (action.Range.min > dist) {continue;}
+        //         if (dist > action.Range.max) {continue;}
 
-                // todo: magic number 1.
-                attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
-            }
-        }
+        //         // todo: magic number 1.
+        //         attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
+        //     }
+        // }
     }
 
     public override void HandleInput(Crawler crawler, InputEvent ev)
@@ -40,6 +39,7 @@ public class AbilityTargetInputState : InputState
             {
                 cursor.targetPosition.x += tuple.dir.x;
                 cursor.targetPosition.y += tuple.dir.y;
+                RangeRefresh(crawler);
             }
         }
 
@@ -50,6 +50,7 @@ public class AbilityTargetInputState : InputState
             // Temporary.
             cursor.targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
             cursor.targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
+            RangeRefresh(crawler);
         }
 
         if (ev.IsActionPressed("ui_accept"))
@@ -78,6 +79,20 @@ public class AbilityTargetInputState : InputState
         if (ev.IsActionPressed("ui_cancel"))
         {
             crawler.ResetState();
+        }
+    }
+
+    private void RangeRefresh(Crawler crawler)
+    {
+        TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
+        attackRange.Clear();
+        foreach ((int dx, int dy) in VisibilityTrie.ConeOfView(x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
+        {
+            // float dist = GridHelper.Distance(dx, dy);
+            // if (action.Range.min > dist) {continue;}
+            // if (dist > action.Range.max) {continue;}
+
+            attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
         }
     }
 
