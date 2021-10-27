@@ -50,7 +50,7 @@ public class AbilityTargetInputState : InputState
             // Temporary.
             cursor.targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
             cursor.targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
-            RangeRefresh(crawler);
+            RangeRefresh(crawler); // TODO: This is expensive.
         }
 
         if (ev.IsActionPressed("ui_accept"))

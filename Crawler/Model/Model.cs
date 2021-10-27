@@ -1,7 +1,6 @@
+using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
-using System;
-using System.Collections.Generic;
 
 /// <summary>
 /// Represents something. [a trip somewhere and back, or a "run."]
@@ -18,10 +17,8 @@ public partial class Model : Node
         get { return GetNode<CrawlerMap>("Map"); }
     }
 
-    private Node Entities
-    {
-        get { return GetNode("Entities"); } 
-    }
+    [Export]
+    private List<Entity> Entities = new List<Entity>();
 
     private Node FloorItems
     {
@@ -38,8 +35,8 @@ public partial class Model : Node
 
     public void AddEntity(Entity e)
     {
-        e.id = Entities.GetChildCount();
-        Entities.AddChild(e);
+        e.id = Entities.Count;
+        Entities.Add(e);
 
         this.CoolerApiEvent(-1, "Create", e, e.id);
 

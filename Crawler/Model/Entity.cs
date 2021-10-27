@@ -8,20 +8,21 @@ using System.Collections.Generic;
 /// </summary>
 // TODO: Rework Entities to have logic and to use callbacks.
 // TODO: Make Entity a class of structs?
-public class Entity : Node
+public class Entity : Resource
 {
     [Export] public int id;
     [Export] public Species species;
 
     // Godot doesn't like serializing tuples, and I don't want to use Vector2.
     // So this is what we have to do.
-    public int positionX;
-    public int positionY;
+    [Export] public int positionX;
+    [Export] public int positionY;
     public (int x, int y) position
     {
         get { return (positionX, positionY); }
         set { positionX = value.x; positionY = value.y; }
     }
+    public bool visibleToPlayer = false;
 
     public int nextMove = 0;
     public Action queuedAction;
@@ -39,14 +40,14 @@ public class Entity : Node
 
     public Entity() {}
 
-    public override void _EnterTree()
-    {
-        if (species == null)
-        {
-            GD.Print($"Entity {id} missing species!");
-            this.SetSpecies(GD.Load<Species>("res://Crawler/Model/Species/Enemy.tres"));
-        }
-    }
+    // public override void _EnterTree()
+    // {
+    //     if (species == null)
+    //     {
+    //         GD.Print($"Entity {id} missing species!");
+    //         this.SetSpecies(GD.Load<Species>("res://Crawler/Model/Species/Enemy.tres"));
+    //     }
+    // }
 
     public void SetSpecies(Species species)
     {

@@ -22,12 +22,25 @@ public partial class View : Node2D
     // super buggy but convenient
     [Export] public bool impatientMode = false;
 
-    public override void _Ready()
+    public override void _Ready() {}
+
+    public void ConnectToModel(Model model)
     {
-        // get the model
-        // for every entity in the model
-            // create that entity.
-        // subscribe to the event thing.
+        // Connect to the signal.
+        model.Connect("NewEvent", this, "OnModelNewEvent");
+        
+        // Copy the map.
+
+        // Create all entities.
+        // TODO: Rework things. This is silly.        
+        GDScript createEvent = GD.Load<GDScript>($"res://Crawler/View/Events/CreateEvent.gd");
+        foreach (Entity e in model.GetEntities())
+        {
+            Dictionary fakeEvent = new Dictionary(){{"args", e}};
+            createEvent.New(this, fakeEvent, roles);
+        }
+        
+        ModelSync();
     }
 
     public void OnModelNewEvent(Dictionary @event)
@@ -116,8 +129,14 @@ public partial class View : Node2D
         }
     }
 
+    private void AddActor()
+    {
+
+    }
+
     private void ModelSync()
     {
+        // does not sync map.
         foreach (Actor a in roles)
         {
             a.ModelSync(viewTime);

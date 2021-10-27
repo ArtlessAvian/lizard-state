@@ -18,7 +18,7 @@ public partial class Model
     Array SaveEntities()
     {
         Array dict = new Array();
-        foreach (Entity e in Entities.GetChildren())
+        foreach (Entity e in Entities)
         {
             dict.Add(e.SaveToDictionary());
         }

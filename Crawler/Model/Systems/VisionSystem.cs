@@ -68,6 +68,7 @@ public class VisionSystem : TileMap, CrawlerSystem
                 }
                 if (canSee[other.id] == 0)
                 {
+                    other.visibleToPlayer = true;
                     model.CoolerApiEvent(e.id, "See", null, other.id);
                     model.CoolerApiEvent(-1, "Wait");
                 }
@@ -86,6 +87,7 @@ public class VisionSystem : TileMap, CrawlerSystem
                     canSee[other.id] &= ~(1 << e.id);
                     if (canSee[other.id] == 0)
                     {
+                        other.visibleToPlayer = false;
                         canSee.Remove(other.id);
                         model.CoolerApiEvent(other.id, "Unsee");
                     }

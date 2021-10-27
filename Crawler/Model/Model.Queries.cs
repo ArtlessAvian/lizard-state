@@ -1,6 +1,6 @@
-using Godot;
 using System;
 using System.Collections.Generic;
+using Godot;
 
 public partial class Model
 {
@@ -21,14 +21,14 @@ public partial class Model
 
     /// Reminder, the array is a shallow copy.
     /// You can't add to / remove from it.
-    public Godot.Collections.Array GetEntities()
+    public List<Entity> GetEntities()
     {
-        return Entities.GetChildren();
+        return Entities;
     }
 
     public Entity GetEntity(int id)
     {
-        return (Entity)Entities.GetChild(id);
+        return Entities[id];
     }
 
     public Entity GetPlayer()
@@ -74,7 +74,7 @@ public partial class Model
             (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
             if (!VisibilityTrie.AnyLineOfSight(relative, isBlocked))
             {
-                GD.Print($"{inSight[i].Name} removed");
+                GD.Print($"{inSight[i].id} removed");
                 inSight.RemoveAt(i);
             }
         }
@@ -100,7 +100,7 @@ public partial class Model
             (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
             if (!VisibilityTrie.AnyLineOfSight(relative, isEither))
             {
-                GD.Print($"{inCone[i].Name} removed");
+                GD.Print($"{inCone[i].id} removed");
                 inCone.RemoveAt(i);
             }
         }

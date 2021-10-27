@@ -2,7 +2,7 @@ extends VBoxContainer
 
 func initialize(actor):
 	actor.status = self
-	set_health(actor.role.health, actor.role.species.maxHealth)
+	set_health(actor.health, actor.role.species.maxHealth)
 	
 	var east_idle : AtlasTexture = actor.get_node("AnimatedSprite").frames.get_frame("East", 0)
 	var texture : AtlasTexture = $HBoxContainer/Portrait.texture.duplicate() 

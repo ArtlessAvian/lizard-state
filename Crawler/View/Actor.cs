@@ -65,7 +65,7 @@ public partial class Actor : Node2D
         // TODO: Temporary
         displayName = role.species.displayName;
 
-        // seen = true;
+        seen = role.visibleToPlayer;
     }
 
     private void FaceDirection(Vector2 dir)
