@@ -34,10 +34,10 @@ public class Crawler : Node2D, InputStateMachine
         Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
         Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
 
-        if (GetViewport().Size.x >= 960 * 2)
-        {
-            ProjectSettings.SetSetting("display/window/stretch/shrink", (int)GetViewport().Size.x / 960);
-        }
+        // if (GetViewport().Size.x >= 960 * 2)
+        // {
+        //     ProjectSettings.SetSetting("display/window/stretch/shrink", (int)GetViewport().Size.x / 960);
+        // }
     }
 
     public override void _Process(float delta)

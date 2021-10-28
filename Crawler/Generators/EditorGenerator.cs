@@ -57,13 +57,25 @@ public class EditorGenerator : LevelGenerator
         // model.AddEntity(new Entity(enemy, (1, 20), 1));
         // model.AddEntity(new Entity(enemy, (2, 20), 1));
 
-        Array tiles = model.Map.GetUsedCells();
-        tiles.Shuffle();
-        for (int i = 0; i < 10; i++)
-        {
-            Vector2 vec = (Vector2)tiles[i+5];
-            model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
-        }
+        model.AddEntity(CreateEntity(enemy, (21, 10), 1));
+        model.AddEntity(CreateEntity(enemy, (8, 34), 1));
+        model.AddEntity(CreateEntity(enemy, (32, 47), 1));
+        model.AddEntity(CreateEntity(enemy, (-11, -5), 1));
+        model.AddEntity(CreateEntity(enemy, (35, 4), 1));
+        model.AddEntity(CreateEntity(enemy, (17, -29), 1));
+        model.AddEntity(CreateEntity(enemy, (-18, -12), 1));
+        model.AddEntity(CreateEntity(enemy, (23, -17), 1));
+        model.AddEntity(CreateEntity(enemy, (9, -25), 1));
+        model.AddEntity(CreateEntity(enemy, (16, 16), 1));
+
+        // Array tiles = model.Map.GetUsedCells();
+        // tiles.Shuffle();
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     Vector2 vec = (Vector2)tiles[i+5];
+        //     model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
+        //     GD.Print((int)vec.x, " ", (int)vec.y);
+        // }
     }
 
     // TODO: duplicated code! from NoiseGenerator.
