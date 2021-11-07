@@ -29,6 +29,7 @@ public class Entity : Resource
 
     public int health;
     public bool stunned; // TODO: Rework all this.
+    public int comboCounter; // Undizzy.
     public bool downed = false;
 
     public int energy = 10;
@@ -63,11 +64,13 @@ public class Entity : Resource
 
     public void ResetCombo()
     {
+        this.comboCounter = 0;
         this.stunned = false;
     }
 
     public void GetAttacked(AttackResult result)
     {
+        this.comboCounter += 1;
         this.health -= result.damage;
         
         if (this.health <= 0)
@@ -77,7 +80,7 @@ public class Entity : Resource
         }
         else if (result.stuns)
         {
-            this.nextMove = Math.Max(result.stunUntil, this.nextMove);
+            this.nextMove = Math.Max(this.nextMove, result.stunUntil - (comboCounter > 3 ? (comboCounter - 3) * 5 : 0));
             this.stunned = true;
             this.queuedAction = null;
         }

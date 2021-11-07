@@ -24,7 +24,7 @@ public class ExplodeAbility : Action
         // for each target
         foreach (Entity targeted in model.GetEntitiesInLOS(e.position, 20))
         {
-            AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
+            AttackResult result = data.DoAttack(targeted, e.nextMove); // e.nextMove is now!
             result.damage = 29;
             targeted.GetAttacked(result);
 

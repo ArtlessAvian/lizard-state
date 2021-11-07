@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://Crawler/Model/Attacks/AttackData.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Attacks/PokeAttackData.cs" type="Script" id=1]
 
 [resource]
 resource_name = "BasicAttack"
@@ -9,7 +9,6 @@ range = 1.5
 energy = 0
 recovery = 10
 comboStartChance = 0.0
-comboLinkChance = 0.0
 hitDamage = 3
-missDamage = 1
+chipDamage = 1
 stun = 15

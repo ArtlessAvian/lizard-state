@@ -56,7 +56,7 @@ public class AbilityInputState : InputState
         Action action;
         if (id < bigNumber)
         {
-            action = new AttackAction(crawler.Model.GetPlayer(), id);
+            action = new AttackAction(attackData[id]);
         }
         else
         {

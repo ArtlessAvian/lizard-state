@@ -5,22 +5,27 @@ public class AttackAction : Action
 {
     AttackData data;
 
-    public AttackAction(Entity e, int id = -1)
+    public AttackAction(AttackData data)
     {
-        if (id < 0)
-        {
-            this.data = e.species.bumpAttack;
-        }
-        else
-        {
-            this.data = e.species.attacks[id];
-        }
-
-        if (data is null)
-        {
-            this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
-        }
+        this.data = data;
     }
+
+    // public AttackAction(Entity e, int id = -1)
+    // {
+    //     if (id < 0)
+    //     {
+    //         this.data = e.species.bumpAttack;
+    //     }
+    //     else
+    //     {
+    //         this.data = e.species.attacks[id];
+    //     }
+
+    //     if (data is null)
+    //     {
+    //         this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
+    //     }
+    // }
 
     public override bool Do(Model model, Entity e)
     {
@@ -38,31 +43,29 @@ public class AttackAction : Action
 
         model.CoolerApiEvent(e.id, "StartAttack", new Vector2(targetPos.x, targetPos.y));
         // for each target
-        
-        AttackResult result = data.TryAttack(targeted, e.nextMove); // e.nextMove is now!
-        targeted.GetAttacked(result);
-
-        Dictionary hitResult = result.ToDict();
-        hitResult.Add("target", targeted.id);
-        
-        // add to array
-        // end for
-
-        Dictionary attackResult = new Dictionary(){
-            {"subject", e.id},
-            {"action", "Hit"},
-            {"object", targeted.id},
-            // {"targetPos", new Vector2(targetPos.x, targetPos.y)},
-            {"hit", hitResult}
-        };
-        model.CoolerApiEvent(attackResult);
-
-        // for each target
-        if (targeted.health <= 0)
         {
-            model.CoolerApiEvent(targeted.id, "Downed");
-        }
+            AttackResult hitResult = data.DoAttack(targeted, e.nextMove); // e.nextMove is now!
+            targeted.GetAttacked(hitResult);
 
+            Dictionary attackResult = new Dictionary(){
+                {"subject", e.id},
+                {"action", "Hit"},
+                {"object", targeted.id},
+                // {"targetPos", new Vector2(targetPos.x, targetPos.y)},
+                {"hit", hitResult.ToDict()}
+            };
+
+            model.CoolerApiEvent(attackResult);
+        }
+        
+        // for each target
+        {
+            if (targeted.health <= 0)
+            {
+                model.CoolerApiEvent(targeted.id, "Downed");
+            }
+        }
+        
         e.nextMove += data.recovery;
 
         model.CoolerApiEvent(-1, "Wait");
@@ -71,6 +74,11 @@ public class AttackAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
+        if (e.species.bumpAttack != data && !e.species.attacks.Contains(data))
+        {
+            return false;
+        }
+
         if (e.energy < data.energy)
         {
             return false;

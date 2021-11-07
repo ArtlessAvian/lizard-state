@@ -31,14 +31,14 @@ public class WildAI : AI
         }
 
         // Select a move and try to attack an enemy in range.
-        int bestAttack = -1;
+        AttackData bestAttack = e.species.bumpAttack;
         float bestRangeMax = 1.5f;
         for (int i = 0; i < e.species.attacks.Count; i++)
         {
             AttackData data = e.species.attacks[i];
             if (data.energy < e.energy)
             {
-                bestAttack = i;
+                bestAttack = data;
                 bestRangeMax = data.range;
                 break;
             }
@@ -48,7 +48,7 @@ public class WildAI : AI
             float distance = GridHelper.Distance(e.position, pos);
             if (distance <= bestRangeMax)
             {
-                return new AttackAction(e, bestAttack).SetTarget(pos);
+                return new AttackAction(bestAttack).SetTarget(pos);
             }
         }
 

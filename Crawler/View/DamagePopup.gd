@@ -6,11 +6,16 @@ var timer : float;
 var velocity : Vector2;
 
 func parse_hit_result(result):
-	self.set("color_override/font_color", Color(168, 168, 168))
+	# Changing font color makes it bold? weird.
+	# self.add_color_override
+	# self.set("custom_colors/font_color", Color(168, 168, 168))
+	
 	self.text = "-%s" % result["damage"]
 	if result["stuns"]:
-		self.set("color_override/font_color", Color(255, 0, 0))
+		# self.set("custom_colors/font_color", Color(255, 0, 0))
 		self.text += "!";
+	if not result["hit"]:
+		self.text = "Miss"
 
 func _ready():
 	self.velocity = Vector2.UP * 20

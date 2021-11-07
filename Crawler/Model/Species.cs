@@ -8,7 +8,7 @@ public class Species : Resource
     [Export] public bool isPlayer = false;
     [Export] public AI ai = null;
 
-    [Export] public AttackData bumpAttack;
+    [Export] public PokeAttackData bumpAttack;
     [Export] public List<AttackData> attacks;
     [Export] public List<string> abilities;
 

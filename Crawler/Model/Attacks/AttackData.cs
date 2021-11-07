@@ -4,34 +4,27 @@ using System;
 
 public struct AttackResult
 {
+    public bool hit;
     public bool stuns;
     public int damage;
     public int stunUntil;
 
     public Dictionary ToDict()
     {
-        return new Dictionary{{"stuns", stuns}, {"damage", damage}, {"stunUntil", stunUntil}};
+        return new Dictionary{{"hit", hit}, {"stuns", stuns}, {"damage", damage}, {"stunUntil", stunUntil}};
     }
 }
 
-public class AttackData : Resource
+public abstract class AttackData : Resource
 {
     [Export] public float range = 1.5f;
     [Export] public int energy = 0;
     [Export] public int recovery = 10;
 
-    [Export] public float comboStartChance;
-    [Export] public float comboLinkChance;
-    [Export] public int hitDamage;
-    [Export] public int missDamage;
-    [Export] public int stun;
+    public abstract AttackResult DoAttack(Entity target, int timeNow);
 
-    public AttackResult TryAttack(Entity target, int timeNow)
+    public virtual Action CreateAction()
     {
-        AttackResult result;
-        result.stuns = GD.Randf() < (target.stunned ? comboLinkChance : comboStartChance);
-        result.damage = result.stuns ? hitDamage : missDamage;
-        result.stunUntil = result.stuns ? timeNow + stun : 0;
-        return result;
+        return new AttackAction(this);
     }
 }

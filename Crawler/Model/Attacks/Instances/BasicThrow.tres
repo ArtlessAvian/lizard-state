@@ -1,15 +1,14 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://Crawler/Model/Attacks/AttackData.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Attacks/EnderAttackData.cs" type="Script" id=1]
 
 [resource]
-resource_name = "Stun Attack"
+resource_name = "Throw"
 script = ExtResource( 1 )
 range = 1.5
 energy = 1
 recovery = 20
-comboStartChance = 0.5
+comboStartChance = 1.0
 comboLinkChance = 0.0
 hitDamage = 3
-missDamage = 0
 stun = 20
