@@ -19,11 +19,14 @@ public partial class Model
         return default(T);
     }
 
-    /// Reminder, the array is a shallow copy.
-    /// You can't add to / remove from it.
     public List<Entity> GetEntities()
     {
         return Entities;
+    }
+
+    public List<FloorItem> GetFloorItems()
+    {
+        return FloorItems;
     }
 
     public Entity GetEntity(int id)

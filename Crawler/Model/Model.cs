@@ -19,11 +19,7 @@ public partial class Model : Node
 
     [Export]
     private List<Entity> Entities = new List<Entity>();
-
-    private Node FloorItems
-    {
-        get { return GetNode("FloorItems"); } 
-    }
+    private List<FloorItem> FloorItems = new List<FloorItem>();
 
     // given to model by generator
     public Dictionary generatorData;
@@ -49,8 +45,8 @@ public partial class Model : Node
 
     public void AddFloorItem(FloorItem item)
     {
-        item.id = FloorItems.GetChildCount();
-        FloorItems.AddChild(item);
+        item.id = FloorItems.Count;
+        FloorItems.Add(item);
 
         this.CoolerApiEvent(-1, "CreateItem", item, item.id);
     }

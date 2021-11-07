@@ -42,12 +42,12 @@ public class Crawler : Node2D, InputStateMachine
 
     public override void _Process(float delta)
     {
-        uint start = OS.GetTicksMsec();
+        ulong start = OS.GetTicksMsec();
         this.RunModel(start);
     }
 
     // Treat as daemon.
-    private void RunModel(uint start)
+    private void RunModel(ulong start)
     {
         // while (true) // treat as daemon (its not designed for that yet)
         while (notPlayerTurn) // and not timed out

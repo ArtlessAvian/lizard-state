@@ -57,9 +57,9 @@ public class MapView : Node2D
         int sidelen = (int)Math.Sqrt(tiles1d.Length);
         int r = sidelen / 2; // floored
 
-        for (int dy = -r; dy <= r; dy++)
+        for (int dx = -r; dx <= r; dx++)
         {
-            for (int dx = -r; dx <= r; dx++)
+            for (int dy = -r; dy <= r; dy++)
             {
                 int tile = tiles1d[(dx + r) * sidelen + dy + r];
                 if (tile != -2)

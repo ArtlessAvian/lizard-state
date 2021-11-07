@@ -18,7 +18,7 @@ public class GetAction : Action
             return true;
         }
 
-        foreach (FloorItem item in model.GetNode("FloorItems").GetChildren())
+        foreach (FloorItem item in model.GetFloorItems())
         {
             if (item.positionX == e.positionX && item.positionY == e.positionY)
             {
@@ -40,7 +40,7 @@ public class GetAction : Action
             return true;
         }
 
-        foreach (FloorItem item in model.GetNode("FloorItems").GetChildren())
+        foreach (FloorItem item in model.GetFloorItems())
         {
             if (item.positionX == e.positionX && item.positionY == e.positionY)
             {

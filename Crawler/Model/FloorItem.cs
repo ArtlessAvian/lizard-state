@@ -3,7 +3,7 @@ using Godot.Collections;
 using System;
 
 // TODO:? Extract Superclass with Entity.
-public class FloorItem : Node
+public class FloorItem : Resource
 {
     public int id;
 
