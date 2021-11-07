@@ -25,6 +25,8 @@ public partial class Actor : Node2D
     public void ActAs(Entity role)
     {
         this.role = role;
+        TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+        healthbar.MaxValue = role.species.maxHealth;
         ModelSync();
     }
 
@@ -41,11 +43,11 @@ public partial class Actor : Node2D
         health = role.health;
         status?.Call("set_health", role.health, role.species.maxHealth);
 
-        if (viewTime is int time)
-        {
-            TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
-            healthbar.Value = (role.nextMove - time) - healthbar.Step / 2.0;
-        }
+        TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
+        healthbar.Value = role.health;
+
+        TextureProgress combobar = GetNode<TextureProgress>("ComboBar");
+        combobar.Value = role.comboCounter;
 
         // sprite stuff
         if (health <= 0) { this.Visible = false; }

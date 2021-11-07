@@ -6,3 +6,5 @@ func _init(view, event : Dictionary, roles : Array):
 
 	var aniPlayer = subject.get_node("AnimationPlayer")
 	aniPlayer.play("Reset")
+
+	subject.get_node("ComboBar").value = 0

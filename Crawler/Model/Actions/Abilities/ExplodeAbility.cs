@@ -26,7 +26,7 @@ public class ExplodeAbility : Action
         {
             AttackResult result = data.DoAttack(targeted, e.nextMove); // e.nextMove is now!
             result.damage = 29;
-            targeted.GetAttacked(result);
+            targeted.TakeDamage(result);
 
             Dictionary hitResult = result.ToDict();
             hitResult.Add("target", targeted.id);

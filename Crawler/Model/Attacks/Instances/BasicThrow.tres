@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://Crawler/Model/Attacks/EnderAttackData.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Attacks/AttackData.cs" type="Script" id=1]
 
 [resource]
 resource_name = "Throw"
@@ -11,4 +11,6 @@ recovery = 20
 comboStartChance = 1.0
 comboLinkChance = 0.0
 hitDamage = 3
+chipDamage = 0
 stun = 20
+missable = true

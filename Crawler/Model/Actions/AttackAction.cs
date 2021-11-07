@@ -45,14 +45,15 @@ public class AttackAction : Action
         // for each target
         {
             AttackResult hitResult = data.DoAttack(targeted, e.nextMove); // e.nextMove is now!
-            targeted.GetAttacked(hitResult);
+            targeted.TakeDamage(hitResult);
 
             Dictionary attackResult = new Dictionary(){
                 {"subject", e.id},
                 {"action", "Hit"},
                 {"object", targeted.id},
                 // {"targetPos", new Vector2(targetPos.x, targetPos.y)},
-                {"hit", hitResult.ToDict()}
+                {"hit", hitResult.ToDict()},
+                {"combo", targeted.comboCounter}
             };
 
             model.CoolerApiEvent(attackResult);

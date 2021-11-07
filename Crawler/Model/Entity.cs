@@ -68,9 +68,9 @@ public class Entity : Resource
         this.stunned = false;
     }
 
-    public void GetAttacked(AttackResult result)
+    // TODO: Move into 
+    public void TakeDamage(AttackResult result)
     {
-        this.comboCounter += 1;
         this.health -= result.damage;
         
         if (this.health <= 0)
@@ -80,26 +80,13 @@ public class Entity : Resource
         }
         else if (result.stuns)
         {
+            this.comboCounter += 1;
+
             this.nextMove = Math.Max(this.nextMove, result.stunUntil - (comboCounter > 3 ? (comboCounter - 3) * 5 : 0));
             this.stunned = true;
             this.queuedAction = null;
         }
     }
-
-    // public void TakeDamage(AttackResult roll)
-    // {
-    //     this.health -= roll.damage;
-    //     if (this.health <= 0)
-    //     {
-    //         this.downed = true;
-    //         this.nextMove = -1;
-    //     }
-    //     else if (roll.hit)
-    //     {
-    //         this.nextMove = Math.Max(roll.stunUntil, this.nextMove);
-    //         this.stunned = true;
-    //     }
-    // }
 
     public Dictionary SaveToDictionary()
     {

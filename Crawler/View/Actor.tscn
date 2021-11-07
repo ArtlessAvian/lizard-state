@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/ActorAtlas/PlayerTegu.tres" type="SpriteFrames" id=2]
 [ext_resource path="res://Crawler/View/Assets/smol_dots.png" type="Texture" id=3]
+[ext_resource path="res://Crawler/View/Assets/Tiles/Visibility.png" type="Texture" id=4]
 [ext_resource path="res://Crawler/View/DamagePopup.tscn" type="PackedScene" id=5]
 
 [sub_resource type="Animation" id=1]
@@ -223,6 +224,10 @@ tracks/2/keys = {
 "values": [  ]
 }
 
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 40, 2 )
+
 [node name="Actor" type="Node2D"]
 script = ExtResource( 1 )
 
@@ -241,14 +246,32 @@ speed_scale = 0.0
 offset = Vector2( 0, -10 )
 
 [node name="HealthBar" type="TextureProgress" parent="."]
-visible = false
 margin_left = -16.0
 margin_top = 5.0
 margin_right = 16.0
-margin_bottom = 9.0
+margin_bottom = 7.0
+mouse_filter = 2
 max_value = 20.0
-step = 5.0
-value = 5.0
+step = 0.0
+value = 20.0
+texture_progress = SubResource( 7 )
+tint_progress = Color( 0, 1, 0, 1 )
+nine_patch_stretch = true
+stretch_margin_left = 2
+stretch_margin_right = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ComboBar" type="TextureProgress" parent="."]
+visible = false
+margin_left = -16.0
+margin_top = 8.0
+margin_right = 16.0
+margin_bottom = 12.0
+mouse_filter = 2
+max_value = 4.0
+value = 4.0
 texture_progress = ExtResource( 3 )
 tint_progress = Color( 0.403922, 0.682353, 0.831373, 1 )
 nine_patch_stretch = true

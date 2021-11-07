@@ -21,10 +21,23 @@ public abstract class AttackData : Resource
     [Export] public int energy = 0;
     [Export] public int recovery = 10;
 
-    public abstract AttackResult DoAttack(Entity target, int timeNow);
+    [Export] public float comboStartChance;
+    [Export] public float comboLinkChance;
+    [Export] public int hitDamage = 1;
+    [Export] public int chipDamage = 0;
+    [Export] public int stun;
 
-    public virtual Action CreateAction()
+    [Export] public bool missable = false; // Display "miss" instead of "-0" 
+
+    public AttackResult DoAttack(Entity target, int timeNow)
     {
-        return new AttackAction(this);
+        AttackResult result;
+        result.stuns = GD.Randf() < (target.stunned ? comboLinkChance : comboStartChance);
+        result.damage = result.stuns ? hitDamage : chipDamage;
+        result.stunUntil = result.stuns ? timeNow + stun : 0;
+
+        result.hit = result.damage != 0 || !missable;
+
+        return result;        
     }
 }
