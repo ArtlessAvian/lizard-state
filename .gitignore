@@ -4,6 +4,7 @@
 # Commented for CI.
 # export.cfg
 # export_presets.cfg
+export_presets_local.cfg
 
 # Imported translations (automatically generated from CSV files)
 *.translation
