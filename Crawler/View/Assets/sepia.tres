@@ -1,0 +1,138 @@
+[gd_resource type="ShaderMaterial" load_steps=13 format=2]
+
+[sub_resource type="VisualShaderNodeScalarOp" id=6]
+default_input_values = [ 0, 1.0, 1, 0.0 ]
+operator = 1
+
+[sub_resource type="VisualShaderNodeVectorOp" id=11]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.5, 0.5, 0.5 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=12]
+uniform_name = "Sepianess"
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=13]
+uniform_name = "ValueScale"
+
+[sub_resource type="VisualShaderNodeInput" id=1]
+input_name = "texture"
+
+[sub_resource type="VisualShaderNodeTexture" id=2]
+source = 5
+
+[sub_resource type="VisualShaderNodeInput" id=3]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeColorFunc" id=4]
+function = 1
+
+[sub_resource type="VisualShaderNodeVectorOp" id=7]
+
+[sub_resource type="VisualShaderNodeVectorOp" id=8]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 2, 2, 2 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id=9]
+operator = 2
+
+[sub_resource type="VisualShader" id=5]
+code = "shader_type canvas_item;
+uniform float Sepianess;
+uniform float ValueScale;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Input:4
+	vec3 n_out4p0 = vec3(UV, 0.0);
+
+// Input:2
+
+// Texture:3
+	vec3 n_out3p0;
+	float n_out3p1;
+	{
+		vec4 TEXTURE_tex_read = texture(TEXTURE, n_out4p0.xy);
+		n_out3p0 = TEXTURE_tex_read.rgb;
+		n_out3p1 = TEXTURE_tex_read.a;
+	}
+
+// ColorFunc:5
+	vec3 n_out5p0;
+	{
+		vec3 c = n_out3p0;
+		float r = (c.r * .393) + (c.g *.769) + (c.b * .189);
+		float g = (c.r * .349) + (c.g *.686) + (c.b * .168);
+		float b = (c.r * .272) + (c.g *.534) + (c.b * .131);
+		n_out5p0 = vec3(r, g, b);
+	}
+
+// ScalarUniform:13
+	float n_out13p0 = Sepianess;
+
+// VectorOp:7
+	vec3 n_out7p0 = n_out5p0 * vec3(n_out13p0);
+
+// ScalarOp:10
+	float n_in10p0 = 1.00000;
+	float n_out10p0 = n_in10p0 - n_out13p0;
+
+// VectorOp:8
+	vec3 n_out8p0 = n_out3p0 * vec3(n_out10p0);
+
+// VectorOp:6
+	vec3 n_out6p0 = n_out7p0 + n_out8p0;
+
+// ScalarUniform:14
+	float n_out14p0 = ValueScale;
+
+// VectorOp:11
+	vec3 n_out11p0 = n_out6p0 * vec3(n_out14p0);
+
+// Output:0
+	COLOR.rgb = n_out11p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -164, 203 )
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2( 780, 180 )
+nodes/fragment/2/node = SubResource( 1 )
+nodes/fragment/2/position = Vector2( -440, 200 )
+nodes/fragment/3/node = SubResource( 2 )
+nodes/fragment/3/position = Vector2( -240, 140 )
+nodes/fragment/4/node = SubResource( 3 )
+nodes/fragment/4/position = Vector2( -440, 140 )
+nodes/fragment/5/node = SubResource( 4 )
+nodes/fragment/5/position = Vector2( -40, 60 )
+nodes/fragment/6/node = SubResource( 7 )
+nodes/fragment/6/position = Vector2( 380, 180 )
+nodes/fragment/7/node = SubResource( 8 )
+nodes/fragment/7/position = Vector2( 160, 140 )
+nodes/fragment/8/node = SubResource( 9 )
+nodes/fragment/8/position = Vector2( 160, 260 )
+nodes/fragment/10/node = SubResource( 6 )
+nodes/fragment/10/position = Vector2( -20, 360 )
+nodes/fragment/11/node = SubResource( 11 )
+nodes/fragment/11/position = Vector2( 580, 220 )
+nodes/fragment/13/node = SubResource( 12 )
+nodes/fragment/13/position = Vector2( -240, 280 )
+nodes/fragment/14/node = SubResource( 13 )
+nodes/fragment/14/position = Vector2( 360, 320 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 3, 2, 4, 0, 3, 0, 3, 0, 5, 0, 5, 0, 7, 0, 7, 0, 6, 0, 8, 0, 6, 1, 3, 0, 8, 0, 10, 0, 8, 1, 6, 0, 11, 0, 11, 0, 0, 0, 13, 0, 10, 1, 13, 0, 7, 1, 14, 0, 11, 1 )
+
+[resource]
+shader = SubResource( 5 )
+shader_param/Sepianess = 0.75
+shader_param/ValueScale = 0.5

@@ -124,7 +124,10 @@ public partial class View : Node2D
             }
 
             // Everything gets sent to the logs.
-            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev["action"] + " " + ev);
+            if (GetNode<RichTextLabel>("UILayer/DebugLog").Visible)
+            {
+                GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev["action"] + " " + ev);
+            }
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
         }
     }
