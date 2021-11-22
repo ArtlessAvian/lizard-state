@@ -68,7 +68,6 @@ public class Entity : Resource
         this.stunned = false;
     }
 
-    // TODO: Move into 
     public void TakeDamage(AttackResult result)
     {
         this.health -= result.damage;
