@@ -37,37 +37,34 @@ public class AttackAction : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
-        e.energy -= data.energy;
+        // e.energy -= data.energy;
 
         model.CoolerApiEvent(-1, "Wait");
 
         model.CoolerApiEvent(e.id, "StartAttack", new Vector2(targetPos.x, targetPos.y));
-        // for each target
-        {
-            AttackResult hitResult = data.DoAttack(targeted, e.nextMove); // e.nextMove is now!
-            targeted.TakeDamage(hitResult);
+        AttackResult hitResult = data.DoAttack(targeted, e.nextMove); // e.nextMove is now!
+        targeted.TakeDamage(hitResult);
 
-            Dictionary attackResult = new Dictionary(){
-                {"subject", e.id},
-                {"action", "Hit"},
-                {"object", targeted.id},
-                // {"targetPos", new Vector2(targetPos.x, targetPos.y)},
-                {"hit", hitResult.ToDict()},
-                {"combo", targeted.comboCounter}
-            };
+        Dictionary attackResult = new Dictionary(){
+            {"subject", e.id},
+            {"action", "Hit"},
+            {"object", targeted.id},
+            // {"targetPos", new Vector2(targetPos.x, targetPos.y)},
+            {"hit", hitResult.ToDict()},
+            {"combo", targeted.comboCounter}
+        };
 
-            model.CoolerApiEvent(attackResult);
-        }
+        model.CoolerApiEvent(attackResult);
         
-        // for each target
+        if (targeted.health <= 0)
         {
-            if (targeted.health <= 0)
-            {
-                model.CoolerApiEvent(targeted.id, "Downed");
-            }
+            model.CoolerApiEvent(targeted.id, "Downed");
         }
-        
-        e.nextMove += data.recovery;
+
+        if (!hitResult.stuns)
+        {
+            e.nextMove += data.recovery;
+        }
 
         model.CoolerApiEvent(-1, "Wait");
         return true;
