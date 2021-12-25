@@ -29,27 +29,59 @@ public class PartnerAI : AI
             }
         }
 
-        // Select a move and try to attack an enemy in range.
-        AttackData bestAttack = e.species.bumpAttack;
-        float bestRangeMax = 1.5f;
-        for (int i = 0; i < e.species.attacks.Count; i++)
-        {
-            AttackData data = e.species.attacks[i];
-            if (data.energy < e.energy)
-            {
-                bestAttack = data;
-                bestRangeMax = data.range;
-                break;
-            }
-        }
-        foreach ((int, int) pos in enemyPositions)
+        // Attack the closest enemy.
+        float closestDistance = 100;
+        foreach((int, int) pos in enemyPositions)
         {
             float distance = GridHelper.Distance(e.position, pos);
-            if (distance <= bestRangeMax)
+            if (distance <= closestDistance)
             {
-                return new AttackAction(bestAttack).SetTarget(pos);
+                closestDistance = distance;
             }
         }
+
+        if (closestDistance <= 1.5)
+        {
+            // Attack an enemy in melee range
+            // TODO: randomly walk away.
+            foreach((int, int) pos in enemyPositions)
+            {
+                if (GridHelper.Distance(e.position, pos) <= 1.5f)
+                {
+                    return new RushAttackAction().SetTarget(pos);
+                }
+            }
+        }
+        else
+        {
+            // old code
+            // // get reach attacks in range.
+            // for (int i = 0; i < e.species.attacks.Count; i++)
+            // {
+            //     AttackData data = e.species.attacks[i];
+            //     if (data.energy < e.energy)
+            //     {
+            //         bestAttack = data;
+            //         bestRangeMax = data.range;
+            //         break;
+            //     }
+            // }
+
+            // Select a move and try to attack an enemy in range.
+            // AttackData bestAttack = e.species.bumpAttack;
+            // float bestRangeMax = 1.5f;
+
+            // foreach ((int, int) pos in enemyPositions)
+            // {
+            //     float distance = GridHelper.Distance(e.position, pos);
+            //     if (distance <= bestRangeMax)
+            //     {
+            //         return new AttackAction().SetTarget(pos);
+            //     }
+            // }
+        }
+
+
 
         // Move towards enemies.
         // Pathfinding should be cheap since the paths are short and probably straight lines.

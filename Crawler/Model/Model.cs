@@ -140,6 +140,7 @@ public partial class Model : Node
         Entity result = GetEntity(0);
         foreach (Entity e in GetEntities())
         {
+            if (e.downed) { continue; }
             if (e.nextMove == -1) { continue; }
             if (e.nextMove < result.nextMove)
             {
@@ -188,5 +189,10 @@ public partial class Model : Node
         {
             system.ProcessEvent(this, @event);
         }
+    }
+
+    public void Debug(string message)
+    {
+        CoolerApiEvent(-1, "Debug", message);
     }
 }

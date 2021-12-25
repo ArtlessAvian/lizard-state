@@ -24,6 +24,7 @@ func do_hit_result(result : Dictionary, actor):
 
 	var popup = damage_popup_scene.instance();
 	popup.parse_hit_result(result)
+	popup.rect_position.y = actor.get_node("DamagePopups").get_child_count() * -10
 	actor.get_node("DamagePopups").add_child(popup)
 
 	if result["hit"]:

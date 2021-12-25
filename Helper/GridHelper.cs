@@ -126,6 +126,7 @@ static class GridHelper
         
         // Approximate Approximate Euclidean
         // return Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy);
+        // return (int)(Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy));
     }
 
     public static float Distance((int x, int y) pos, (int x, int y) pos2)

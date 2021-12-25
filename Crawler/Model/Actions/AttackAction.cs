@@ -3,29 +3,9 @@ using Godot.Collections;
 
 public class AttackAction : Action
 {
-    AttackData data;
-
-    public AttackAction(AttackData data)
+    public AttackAction()
     {
-        this.data = data;
     }
-
-    // public AttackAction(Entity e, int id = -1)
-    // {
-    //     if (id < 0)
-    //     {
-    //         this.data = e.species.bumpAttack;
-    //     }
-    //     else
-    //     {
-    //         this.data = e.species.attacks[id];
-    //     }
-
-    //     if (data is null)
-    //     {
-    //         this.data = GD.Load<AttackData>("res://Crawler/Model/Attacks/Instances/BasicAttack.tres");
-    //     }
-    // }
 
     public override bool Do(Model model, Entity e)
     {
@@ -34,6 +14,8 @@ public class AttackAction : Action
             return false;
         }
 
+        AttackData data = e.species.bumpAttack;
+ 
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
@@ -72,6 +54,8 @@ public class AttackAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
+        AttackData data = e.species.bumpAttack;
+
         if (e.species.bumpAttack != data && !e.species.attacks.Contains(data))
         {
             return false;
@@ -99,5 +83,5 @@ public class AttackAction : Action
         return true;
     }
 
-    public override (float, float) Range => (1, data.range);
+    public override (float, float) Range => (1, 1.5f);
 }

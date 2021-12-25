@@ -114,7 +114,7 @@ public class Crawler : Node2D, InputStateMachine
         this.ChangeState(GetNode<InputState>("InputStates/Main"));
     }
 
-    private void Print(string message)
+    public void Print(string message)
     {
         GD.Print(message);
         View.GetNode<MessageLog>("UILayer/MessageLog").AppendBbcode(

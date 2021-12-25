@@ -56,7 +56,8 @@ public class AbilityInputState : InputState
         Action action;
         if (id < bigNumber)
         {
-            action = new AttackAction(attackData[id]);
+            action = new AttackAction();
+            // action = new AttackAction(attackData[id]);
         }
         else
         {

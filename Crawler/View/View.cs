@@ -20,8 +20,8 @@ public partial class View : Node2D
     // conveniences
     [Export] public Actor playerActor;
     // super buggy but convenient
-    [Export] public bool impatientMode = false;
 
+    [Export] public bool impatientMode = false;
     public override void _Ready() {}
 
     public void ConnectToModel(Model model)
@@ -100,7 +100,7 @@ public partial class View : Node2D
                 // If you can't consume. Weird, but eh.
                 object canConsume = unconsumedEvent.Call("can_consume");
                 // GD.Print("checking", canConsume);
-                if (canConsume is bool eeee && !eeee)
+                if (!impatientMode && canConsume is bool eeee && !eeee)
                 {
                     // GD.Print("done waiting");
                     break;

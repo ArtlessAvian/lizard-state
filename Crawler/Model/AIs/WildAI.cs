@@ -48,7 +48,7 @@ public class WildAI : AI
             float distance = GridHelper.Distance(e.position, pos);
             if (distance <= bestRangeMax)
             {
-                return new AttackAction(bestAttack).SetTarget(pos);
+                return new RushAttackAction().SetTarget(pos);
             }
         }
 
