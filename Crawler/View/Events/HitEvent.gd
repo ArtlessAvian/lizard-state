@@ -3,32 +3,24 @@ extends Resource
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
 func _init(view, event : Dictionary, roles : Array):
-	# print(event)
 	var subject = roles[event["subject"]]
-	# subject.FacePosition(event["targetPos"]);
 	var animation = subject.get_node("AnimationPlayer");
 	animation.play("Attack");
 	
-	do_hit_result(event["hit"], roles[event["object"]])
-	
-	# hack, will refactor hitting hopefully.
-	roles[event["object"]].get_node("ComboBar").value = event["combo"]
-	
+	var object = roles[event["object"]]
 
-func do_hit_result(result : Dictionary, actor):
-	actor.health -= result["damage"]
-	actor.stunned = result["stuns"] or actor.stunned
+	object.health -= event["damage"]
+	object.stunned = true
 
-	if actor.status != null:
-		actor.status.set_health(actor.health)
+	if object.status != null:
+		object.status.set_health(object.health)
 
 	var popup = damage_popup_scene.instance();
-	popup.parse_hit_result(result)
-	popup.rect_position.y = actor.get_node("DamagePopups").get_child_count() * -10
-	actor.get_node("DamagePopups").add_child(popup)
+	popup.text = "-" + str(event["damage"])
+	popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10
+	object.get_node("DamagePopups").add_child(popup)
 
-	if result["hit"]:
-		var animation = actor.get_node("AnimationPlayer")
-		animation.play("Stunned" if actor.stunned else "Hurt")
+	var otheranimation = object.get_node("AnimationPlayer")
+	otheranimation.play("Stunned")
 
-	actor.get_node("HealthBar").value = actor.health
+	object.get_node("HealthBar").value = object.health

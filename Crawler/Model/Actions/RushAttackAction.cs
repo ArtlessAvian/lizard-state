@@ -10,6 +10,7 @@ public class RushAttackAction : Action
             return false;
         }
 
+        // TODO: This NPEs sometimes
         RushAttackData data = e.species.rushAttack ?? ResourceLoader.Load<RushAttackData>("res://Crawler/Model/Attacks/RushAttacks/ExpectedOne.tres");
  
         GD.Print(data.MissChance);
@@ -33,22 +34,29 @@ public class RushAttackAction : Action
         }
         else
         {
+            // TODO: Move into entity?
+            
+            // model.Debug($"{targeted.ResourceName}: ouch");
             targeted.health -= data.damagePerHit;
+            targeted.queuedAction = null;
 
+            if (targeted.health <= 0)
+            {
+                targeted.downed = true;
+                targeted.nextMove = -1;
+            }
+            
             model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
                 {"action", "Rush"},
                 {"object", targeted.id},
                 {"damage", data.damagePerHit}
             });
-            // model.Debug($"{targeted.ResourceName}: ouch");
-        }
-        
-        if (targeted.health <= 0)
-        {
-            targeted.downed = true;
-            targeted.nextMove = -1;
-            model.CoolerApiEvent(targeted.id, "Downed");
+
+            if (targeted.health <= 0)
+            {
+                model.CoolerApiEvent(targeted.id, "Downed");
+            }
         }
 
         model.CoolerApiEvent(-1, "SmallWait");

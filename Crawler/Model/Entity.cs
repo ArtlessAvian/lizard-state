@@ -68,24 +68,35 @@ public class Entity : Resource
         this.stunned = false;
     }
 
-    public void TakeDamage(AttackResult result)
-    {
-        this.health -= result.damage;
-        
-        if (this.health <= 0)
-        {
-            this.downed = true;
-            this.nextMove = -1;
-        }
-        else if (result.stuns)
-        {
-            this.comboCounter += 1;
+    // public void TakeDamage(int damage) // add callback param
+    // {
+    //     this.health -= damage;
+    //     this.queuedAction = null;
 
-            this.nextMove = Math.Max(this.nextMove, result.stunUntil - (comboCounter > 3 ? (comboCounter - 3) * 5 : 0));
-            this.stunned = true;
-            this.queuedAction = null;
-        }
-    }
+    //     if (this.health <= 0)
+    //     {
+    //         this.downed = true;
+    //     }
+    // }
+
+    // public void TakeDamage(AttackResult result)
+    // {
+    //     this.health -= result.damage;
+        
+    //     if (this.health <= 0)
+    //     {
+    //         this.downed = true;
+    //         this.nextMove = -1;
+    //     }
+    //     else if (result.stuns)
+    //     {
+    //         this.comboCounter += 1;
+
+    //         this.nextMove = Math.Max(this.nextMove, result.stunUntil - (comboCounter > 3 ? (comboCounter - 3) * 5 : 0));
+    //         this.stunned = true;
+    //         this.queuedAction = null;
+    //     }
+    // }
 
     public Dictionary SaveToDictionary()
     {

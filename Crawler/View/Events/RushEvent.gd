@@ -25,7 +25,7 @@ func _init(view, event : Dictionary, roles : Array):
 	var otheranimation = object.get_node("AnimationPlayer")
 	otheranimation.play("Reset")
 	otheranimation.advance(0)
-	otheranimation.play("Hurt")
+	otheranimation.play("Stunned" if object.stunned else "Hurt")
 	otheranimation.advance(0)
 
 	object.get_node("HealthBar").value = object.health

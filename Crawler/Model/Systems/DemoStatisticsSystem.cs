@@ -30,16 +30,16 @@ public class DemoStatisticsSystem : Node, CrawlerSystem
             }
         }
 
-        if ((string)ev["action"] == "Hit")
+        if ((string)ev["action"] == "Hit" || (string)ev["action"] == "Rush")
         {
             Entity subject = model.GetEntity((int)ev["subject"]);
             if (subject.id == 0)
             {
-                playerDamage += (int)(ev["hit"] as Dictionary)["damage"]; // ew
+                playerDamage += (int)(ev["damage"]); // ew
             }
             if (subject.id == 1)
             {
-                partnerDamage += (int)(ev["hit"] as Dictionary)["damage"];
+                partnerDamage += (int)(ev["damage"]);
             }
         }
 

@@ -18,11 +18,18 @@ public class MessageLog : RichTextLabel
             Actor subject = roles[(int)ev["subject"]];            
             Actor obj = roles[(int)ev["object"]];
             this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
-            
-            if ((bool)(ev["hit"] as Dictionary)["stuns"])
-            {
-                this.AppendBbcode($"\n * {obj.displayName} is stunned!");
-            }
+            this.AppendBbcode($"\n * {obj.displayName} is stunned!");
+        }
+        else if (action == "Unstun")
+        {
+            Actor subject = roles[(int)ev["subject"]];
+            this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} recovers.[/color]");
+        }
+        else if (action == "Rush")
+        {
+            Actor subject = roles[(int)ev["subject"]];            
+            Actor obj = roles[(int)ev["object"]];
+            this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
         }
         else if (action == "Miss")
         {
