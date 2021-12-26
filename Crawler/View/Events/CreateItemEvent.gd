@@ -2,7 +2,10 @@ extends Resource
 
 var item_scene = preload("res://Crawler/View/Item.tscn")
 
-func _init(view, event : Dictionary, roles : Array):
+func _init():
+	pass
+
+func run(view, event : Dictionary, roles : Array):
 	var entity = event["args"]
 
 	var item = item_scene.instance();

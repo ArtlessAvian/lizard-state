@@ -13,7 +13,8 @@ public partial class View : Node2D
 
     // Animation Statefulness
     public bool queueSync = false;
-    private Resource unconsumedEvent = null; 
+
+    Dictionary<string, Resource> eventHandlers = new Dictionary<string, Resource>();
 
     int viewTime;
 
@@ -69,9 +70,10 @@ public partial class View : Node2D
 
     public bool IsQueueClear()
     {
-        return eventQueue.Count == 0 && unconsumedEvent == null;
+        return eventQueue.Count == 0;
     }
 
+    private bool eventFirstRun = true;
     public void ClearQueue()
     {
         while (!IsQueueClear())
@@ -79,27 +81,35 @@ public partial class View : Node2D
             FindNode("WaitPrompt").Set("visible", true);
 
             Dictionary ev = eventQueue[0];
-            // Create the eventhandler
-            if (unconsumedEvent == null)
+            string action = ev["action"] as string;
+            // Lazy create the eventhandler
+            if (!eventHandlers.ContainsKey(action))
             {
-                string action = ev["action"] as string;
                 // honestly kinda dangerous. arbitrary code can run!
                 if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
                     new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
                 {
                     GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
-                    unconsumedEvent = script.New(this, ev, roles) as Resource;
+                    eventHandlers.Add(action, script.New() as Resource);
+                }
+                else
+                {
+                    eventHandlers.Add(action, null);
                 }
             }
 
             // Run the eventhandler
-            if (unconsumedEvent != null)
+            if (eventHandlers[action] is Resource handler)
             {
-                unconsumedEvent.Call("run", this, ev, roles);
+                if (eventFirstRun)
+                {
+                    eventFirstRun = false;
+                    handler.Call("first_run", this, ev, roles);
+                }
+                handler.Call("run", this, ev, roles);
 
+                object canConsume = handler.Call("can_consume");
                 // If you can't consume. Weird, but eh.
-                object canConsume = unconsumedEvent.Call("can_consume");
-                // GD.Print("checking", canConsume);
                 if (!impatientMode && canConsume is bool eeee && !eeee)
                 {
                     // GD.Print("done waiting");
@@ -109,7 +119,7 @@ public partial class View : Node2D
 
             // consume the event
             eventQueue.RemoveAt(0);
-            unconsumedEvent = null;
+            eventFirstRun = true;
 
             viewTime = (int)ev["timestamp"];
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();

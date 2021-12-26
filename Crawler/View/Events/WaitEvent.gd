@@ -2,7 +2,10 @@ extends Resource
 
 var view
 
-func _init(_view, event : Dictionary, roles : Array):
+func _init():
+	pass
+
+func run(_view, event : Dictionary, roles : Array):
 	view = _view
 
 func can_consume():
