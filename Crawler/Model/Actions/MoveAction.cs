@@ -85,5 +85,5 @@ public class MoveAction : Action
         return true;
     }
 
-    public override (float, float) Range => (1, 1.5f);
+    public override (int, int) Range => (1, 1);
 }

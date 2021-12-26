@@ -58,15 +58,12 @@ public class PartnerAI : AI
             for (int i = 0; i < e.species.attacks.Count; i++)
             {
                 ReachAttackData data = e.species.attacks[i];
-                GD.Print(data.range, closestDistance);
                 if (closestDistance <= data.range)
                 {
                     foreach ((int, int) pos in enemyPositions)
                     {
-                        GD.Print("b");
                         if (GridHelper.Distance(e.position, pos) == closestDistance)
                         {
-                            GD.Print("c");
                             return new ReachAttackAction(data).SetTarget(pos);
                         }
                     }

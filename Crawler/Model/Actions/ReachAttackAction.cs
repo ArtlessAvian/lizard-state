@@ -15,13 +15,14 @@ public class ReachAttackAction : Action
         if (data is null) { data = ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/Poke.tres"); }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
-        model.CoolerApiEvent(e.id, "FaceDirection");
-        model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
+        if (data.startup > 0)
+        {
+            model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
+        }
 
         e.nextMove += data.startup;
         e.queuedAction = new ReachAttackActive(data).SetTarget(targetPos);
 
-        model.Debug($"ready {model.time}");
         return true;
     }
 
@@ -36,7 +37,7 @@ public class ReachAttackAction : Action
         return true;
     }
 
-    public override (float, float) Range => (1, data.range);
+    public override (int, int) Range => (1, data.range);
 
     private class ReachAttackActive : Action
     {
@@ -60,8 +61,12 @@ public class ReachAttackAction : Action
             if (targeted is object)
             {
                 targeted.health -= data.damage;
-                targeted.nextMove = Math.Max(targeted.nextMove, model.time + data.stun);
+
+                // think of it as "lose {stun} turns." The term here (VVVVVVVVV) ensures that lower id's lose their turn.
+                int stunUntil = model.time + data.stun + (targeted.id < e.id ? 1 : 0);
+                targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
                 targeted.stunned = true;
+                
                 targeted.queuedAction = null;
                 
                 if (targeted.health <= 0)

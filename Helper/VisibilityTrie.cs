@@ -25,7 +25,7 @@ public class VisibilityTrie
     }
 
     private static TrieNode origin;
-    private static float currentRadius = 0;
+    private static int currentRadius = 0;
     private static Dictionary<(int x, int y), HashSet<TrieNode>> reverse;
 
     static VisibilityTrie()
@@ -37,7 +37,7 @@ public class VisibilityTrie
         ExtendRadius(20);
     }
 
-    private static void ExtendRadius(float radius)
+    private static void ExtendRadius(int radius)
     {
         if (currentRadius >= radius) { return; }
         currentRadius = radius;

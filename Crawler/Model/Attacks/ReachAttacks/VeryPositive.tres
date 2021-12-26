@@ -8,4 +8,4 @@ startup = 1
 recovery = 0
 stun = 1
 damage = 2
-range = 2.0
+range = 2

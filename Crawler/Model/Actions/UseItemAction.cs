@@ -43,5 +43,5 @@ public class UseItemAction : Action
         return proxyAction.IsValid(model, e);
     }
 
-    public override (float, float) Range => proxyAction.Range;
+    public override (int, int) Range => proxyAction.Range;
 }

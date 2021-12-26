@@ -116,7 +116,7 @@ static class GridHelper
         return GCD(b, a % b);
     }
 
-    public static float Distance(int dx, int dy)
+    public static int Distance(int dx, int dy)
     {
         dx = Math.Abs(dx);
         dy = Math.Abs(dy);
@@ -129,7 +129,7 @@ static class GridHelper
         // return (int)(Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy));
     }
 
-    public static float Distance((int x, int y) pos, (int x, int y) pos2)
+    public static int Distance((int x, int y) pos, (int x, int y) pos2)
     {
         return Distance(pos.x - pos2.x, pos.y - pos2.y);
     }

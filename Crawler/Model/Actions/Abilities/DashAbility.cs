@@ -37,5 +37,5 @@ public class DashAbility : Action
         return true;
     }
 
-    public override (float min, float max) Range => (1, 5);
+    public override (int min, int max) Range => (1, 5);
 }

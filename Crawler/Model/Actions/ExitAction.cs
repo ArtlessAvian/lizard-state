@@ -32,6 +32,4 @@ public class ExitAction : Action
         }
         return false;
     }
-
-    public override (float, float) Range => (1, 1.5f);
 }
