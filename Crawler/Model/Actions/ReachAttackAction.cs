@@ -7,7 +7,7 @@ public class ReachAttackAction : Action
     ReachAttackData data;
     public ReachAttackAction(ReachAttackData data)
     {
-        this.data = data ?? ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/Poke.tres");
+        this.data = data ?? ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/VeryPositive.tres");
     }
 
     public override bool Do(Model model, Entity e)
@@ -15,7 +15,8 @@ public class ReachAttackAction : Action
         if (data is null) { data = ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/Poke.tres"); }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
-        model.CoolerApiEvent(e.id, "StartAttack", new Vector2(targetPos.x, targetPos.y));
+        model.CoolerApiEvent(e.id, "FaceDirection", new Vector2(targetPos.x, targetPos.y));
+        model.CoolerApiEvent(e.id, "AttackStartup");
 
         e.nextMove += data.startup;
         e.queuedAction = new ReachAttackActive(data).SetTarget(targetPos);

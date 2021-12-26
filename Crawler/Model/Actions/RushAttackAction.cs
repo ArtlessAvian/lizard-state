@@ -20,7 +20,7 @@ public class RushAttackAction : Action
 
         model.CoolerApiEvent(-1, "SmallWait");
 
-        model.CoolerApiEvent(e.id, "StartAttack", new Vector2(targetPos.x, targetPos.y));
+        model.CoolerApiEvent(e.id, "FaceDirection", new Vector2(targetPos.x, targetPos.y));
         
         if (GD.Randf() < data.MissChance)
         {

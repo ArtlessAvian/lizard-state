@@ -3,9 +3,9 @@ extends Resource
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
 func _init(view, event : Dictionary, roles : Array):
-	var subject = roles[event["subject"]]
-	var animation = subject.get_node("AnimationPlayer");
-	animation.play("Attack");
+	# var subject = roles[event["subject"]]
+	# var animation = subject.get_node("AnimationPlayer");
+	# animation.play("Attack");
 	
 	var object = roles[event["object"]]
 

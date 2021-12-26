@@ -13,12 +13,21 @@ public class MessageLog : RichTextLabel
             Actor obj = roles[(int)ev["object"]];            
             this.AppendBbcode($"\n * {subject.displayName} swaps with {obj.displayName}.");
         }
+        else if (action == "AttackStartup")
+        {
+            Actor subject = roles[(int)ev["subject"]];
+            this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} prepares to attack.[/color]");
+        }
+        else if (action == "AttackActive")
+        {
+            Actor subject = roles[(int)ev["subject"]];
+            this.AppendBbcode($"\n * {subject.displayName} attacks!");
+        }
         else if (action == "Hit")
         {
             Actor subject = roles[(int)ev["subject"]];            
             Actor obj = roles[(int)ev["object"]];
-            this.AppendBbcode($"\n [color=#aaaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
-            this.AppendBbcode($"\n * {obj.displayName} is stunned!");
+            this.AppendBbcode($"\n * Hits the {obj.displayName}.[/color]");
         }
         else if (action == "Unstun")
         {

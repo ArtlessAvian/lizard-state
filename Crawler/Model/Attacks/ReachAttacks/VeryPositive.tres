@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Crawler/Model/Attacks/ReachAttackData.cs" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+startup = 15
+recovery = 0
+stun = 10
+damage = 2
+range = 2.0
