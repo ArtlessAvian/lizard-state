@@ -6,7 +6,7 @@ public class AbilityInputState : InputState
 {
     const int bigNumber = 100;
 
-    List<AttackData> attackData;
+    List<ReachAttackData> attackData;
     List<string> abilities;
 
     bool success;

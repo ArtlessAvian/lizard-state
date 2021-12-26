@@ -8,7 +8,7 @@ public class PartnerAI : AI
 {
     public override Action GetMove(Model model, Entity e)
     {
-        List<Entity> entities = model.GetEntitiesInRadius(e.position, 100);
+        List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
         
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
@@ -54,18 +54,24 @@ public class PartnerAI : AI
         }
         else
         {
-            // old code
-            // // get reach attacks in range.
-            // for (int i = 0; i < e.species.attacks.Count; i++)
-            // {
-            //     AttackData data = e.species.attacks[i];
-            //     if (data.energy < e.energy)
-            //     {
-            //         bestAttack = data;
-            //         bestRangeMax = data.range;
-            //         break;
-            //     }
-            // }
+            // get reach attacks in range.
+            for (int i = 0; i < e.species.attacks.Count; i++)
+            {
+                ReachAttackData data = e.species.attacks[i];
+                GD.Print(data.range, closestDistance);
+                if (closestDistance <= data.range)
+                {
+                    foreach ((int, int) pos in enemyPositions)
+                    {
+                        GD.Print("b");
+                        if (GridHelper.Distance(e.position, pos) == closestDistance)
+                        {
+                            GD.Print("c");
+                            return new ReachAttackAction(data).SetTarget(pos);
+                        }
+                    }
+                }
+            }
 
             // Select a move and try to attack an enemy in range.
             // AttackData bestAttack = e.species.bumpAttack;

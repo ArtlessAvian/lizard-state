@@ -24,7 +24,7 @@ public class MoveAction : Action
             if (entityAt.team != e.team)
             {
                 GD.Print($"{e.species.displayName} bumps into {entityAt.species.displayName}");
-                e.nextMove += 10;
+                e.nextMove += 1;
                 return false;
             }
             else
@@ -40,7 +40,7 @@ public class MoveAction : Action
 
     private void DoNothing(Model model, Entity e)
     {
-        e.nextMove += 10;
+        e.nextMove += 1;
         // model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
@@ -48,7 +48,7 @@ public class MoveAction : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        e.nextMove += (int)(10 * GridHelper.Distance(e.position, targetPos));
+        e.nextMove += (int)(1 * GridHelper.Distance(e.position, targetPos));
         e.position = targetPos;
 
         // TODO: Maybe put elsewhere.
@@ -63,7 +63,7 @@ public class MoveAction : Action
 
         teammate.position = e.position;
         e.position = targetPos;
-        e.nextMove += 10;
+        e.nextMove += 1;
 
         // TODO: Maybe put elsewhere.
         e.dirtyVision |= e.providesVision;

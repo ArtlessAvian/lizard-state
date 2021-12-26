@@ -7,14 +7,15 @@ func _init():
 
 func run(view, event : Dictionary, roles : Array):
 	var subject = roles[event["subject"]]
-	var animation = subject.get_node("AnimationPlayer")
+	var object = roles[event["object"]]
 
+	subject.FacePosition(object.targetPosition)
+
+	var animation = subject.get_node("AnimationPlayer")
 	animation.play("Reset")
 	animation.advance(0)
 	animation.play("Attack")
 	
-	var object = roles[event["object"]]
-
 	var popup = damage_popup_scene.instance()
 	popup.text = "Miss"
 	popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10

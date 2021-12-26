@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource( 1 )
-recovery = 10
+recovery = 1
 damagePerHit = 1
 expectedDamage = 3.0

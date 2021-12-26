@@ -15,8 +15,8 @@ public class ReachAttackAction : Action
         if (data is null) { data = ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/Poke.tres"); }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
-        model.CoolerApiEvent(e.id, "FaceDirection", new Vector2(targetPos.x, targetPos.y));
-        model.CoolerApiEvent(e.id, "AttackStartup");
+        model.CoolerApiEvent(e.id, "FaceDirection");
+        model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
 
         e.nextMove += data.startup;
         e.queuedAction = new ReachAttackActive(data).SetTarget(targetPos);
@@ -55,7 +55,7 @@ public class ReachAttackAction : Action
             // e.energy -= data.energy;
 
             model.CoolerApiEvent(-1, "Wait");
-            model.CoolerApiEvent(e.id, "AttackActive");
+            model.CoolerApiEvent(e.id, "AttackActive", new Vector2(targetPos.x, targetPos.y));
 
             if (targeted is object)
             {

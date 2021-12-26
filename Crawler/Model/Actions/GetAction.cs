@@ -14,7 +14,7 @@ public class GetAction : Action
         if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
         {
             model.CoolerApiEvent(-1, "Print", "Got the moss.");
-            e.nextMove += 100;
+            e.nextMove += 3;
             return true;
         }
 
@@ -25,7 +25,7 @@ public class GetAction : Action
                 model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
                 e.inventory = new InventoryItem();
                 model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
-                e.nextMove += 100;
+                e.nextMove += 3;
                 return true;
             }
         }

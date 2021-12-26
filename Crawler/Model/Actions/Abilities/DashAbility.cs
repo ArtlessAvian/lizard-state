@@ -18,7 +18,7 @@ public class DashAbility : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         e.position = targetPos;
-        e.nextMove += 10;
+        e.nextMove += 2;
 
         model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
 

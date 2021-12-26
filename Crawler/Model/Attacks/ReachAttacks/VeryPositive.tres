@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource( 1 )
-startup = 15
+startup = 1
 recovery = 0
-stun = 10
+stun = 1
 damage = 2
 range = 2.0

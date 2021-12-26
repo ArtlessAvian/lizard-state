@@ -7,13 +7,14 @@ func _init():
 
 func run(view, event : Dictionary, roles : Array):
 	var subject = roles[event["subject"]]
-	var animation = subject.get_node("AnimationPlayer")
+	var object = roles[event["object"]]
 
+	subject.FacePosition(object.targetPosition)
+
+	var animation = subject.get_node("AnimationPlayer")
 	animation.play("Reset")
 	animation.advance(0)
-	animation.play("Attack")
-	
-	var object = roles[event["object"]]
+	animation.play("Attack")	
 
 	object.health -= event["damage"]
 

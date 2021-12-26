@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ItemInputState : InputState
 {
-    List<AttackData> attackData;
+    // List<AttackData> attackData;
     List<string> abilities;
 
     bool success;

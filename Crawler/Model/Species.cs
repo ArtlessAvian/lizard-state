@@ -8,9 +8,9 @@ public class Species : Resource
     [Export] public bool isPlayer = false;
     [Export] public AI ai = null;
 
-    [Export] public AttackData bumpAttack;
+    // [Export] public AttackData bumpAttack;
     [Export] public RushAttackData rushAttack;
-    [Export] public List<AttackData> attacks;
+    [Export] public List<ReachAttackData> attacks;
     [Export] public List<string> abilities;
 
     // Stat Block
