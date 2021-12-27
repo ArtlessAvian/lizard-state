@@ -1,9 +1,7 @@
-extends Resource
+extends "../EventHandler.gd"
 
-func _init():
-	pass
 
-func run(view, event : Dictionary, roles : Array):
+func run():
 	var subject = roles[event["subject"]]
 
 	var temp = event.args

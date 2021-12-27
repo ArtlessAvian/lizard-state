@@ -1,10 +1,8 @@
-extends Resource
+extends "../EventHandler.gd"
 
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 var last_attacker = null
 
-func _init():
-	pass
 
 # func should_wait_before(view, event : Dictionary):
 # 	var subject = view.roles[event.subject]
@@ -13,7 +11,7 @@ func _init():
 # 		return !view.AnyActorAnimating()
 # 	return false
 
-func run(view, event : Dictionary, roles : Array):
+func run():
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
 

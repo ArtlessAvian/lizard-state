@@ -1,11 +1,9 @@
-extends Resource
+extends "../EventHandler.gd"
 
 var item_scene = preload("res://Crawler/View/Item.tscn")
 
-func _init():
-	pass
 
-func run(view, event : Dictionary, roles : Array):
+func run():
 	var entity = event["args"]
 
 	var item = item_scene.instance();

@@ -23,7 +23,8 @@ public partial class View : Node2D
     // super buggy but convenient
 
     [Export] public bool impatientMode = false;
-    private Resource initializedHandler = null; 
+    private Resource initializedHandler = null;
+    private Dictionary previousEvent = new Dictionary(){{"subject", -1}, {"action", "null"}};
 
     public override void _Ready() {}
 
@@ -84,33 +85,34 @@ public partial class View : Node2D
             Dictionary ev = eventQueue[0];
             string action = ev["action"] as string;
 
-            // Lazy create the eventhandler
-            LazyInitHandler(action);
-
             // "Initialize" the event if it hasn't been already
-            if (initializedHandler is null && eventHandlers[action] is Resource handler)
+            if (initializedHandler is null)
             {
-                // todo: rename first_run to reinit
-                handler.Call("first_run", this, ev, roles);
-                initializedHandler = handler;
+                // (do not compress for clarity)
+                // (also i plan to yeet this code anyways)
+                var handler = GetEventHandlerOrNull(action);
+                if (handler is object)
+                {
+                    handler.Call("reinit", this, ev, previousEvent); // called in EventHandler.gd
+                    handler.Call("setup"); // done in a subclass
+                    initializedHandler = handler;
+                }
             }
 
             // todon't: merge this with previous if statement. the logic is different.
             if (initializedHandler is object)
             {
-                object shouldWaitBefore = initializedHandler.Call("should_wait_before", this, ev);
-                if (!impatientMode && shouldWaitBefore is bool aaaa && !aaaa)
+                object shouldWaitBefore = initializedHandler.Call("should_wait_before");
+                if (!impatientMode && shouldWaitBefore is bool aaaa && aaaa)
                 {
-                    // GD.Print("waiting before");
                     break;
                 }
 
-                initializedHandler.Call("run", this, ev, roles);
+                initializedHandler.Call("run");
 
-                object can_consume = initializedHandler.Call("can_consume");
-                if (!impatientMode && can_consume is bool eeee && !eeee)
+                object shouldWaitAfter = initializedHandler.Call("should_wait_after");
+                if (!impatientMode && shouldWaitAfter is bool eeee && eeee)
                 {
-                    // GD.Print("waiting during/after");
                     break;
                 }
             }
@@ -118,10 +120,12 @@ public partial class View : Node2D
             // consume the event
             eventQueue.RemoveAt(0);
             initializedHandler = null;
+            previousEvent = ev;
 
             viewTime = (int)ev["timestamp"];
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
 
+            // TODO: ASAP for cleanliness!!!!!! eughuegheu.
             // TODO: also move below into handling scripts.
             if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
             {
@@ -140,7 +144,7 @@ public partial class View : Node2D
         }
     }
 
-    private void LazyInitHandler(string action)
+    private Resource GetEventHandlerOrNull(string action)
     {
         if (!eventHandlers.ContainsKey(action))
         {
@@ -156,6 +160,8 @@ public partial class View : Node2D
                 eventHandlers.Add(action, null);
             }
         }
+
+        return eventHandlers[action];
     }
 
     private void ModelSync()

@@ -1,12 +1,10 @@
-extends Resource
+extends "../EventHandler.gd"
 
 var actor_scene = preload("res://Crawler/View/Actor.tscn")
 var status_scene = preload("res://Crawler/View/PartyMemberStatus.tscn")
 
-func _init():
-	pass
 
-func run(view, event : Dictionary, roles : Array):
+func run():
 	var entity = event["args"]
 
 	# Find the actor, else, get a generic actor and try to recolor it i guess

@@ -1,11 +1,8 @@
-extends Resource
+extends "../EventHandler.gd"
 
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
-func _init():
-	pass
-
-func run(view, event : Dictionary, roles : Array):
+func run():
 	# var subject = roles[event["subject"]]
 	# var animation = subject.get_node("AnimationPlayer");
 	# animation.play("Attack");
