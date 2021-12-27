@@ -17,10 +17,6 @@ public class RushAttackAction : Action
 
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
-
-        model.CoolerApiEvent(-1, "SmallWait");
-
-        model.CoolerApiEvent(e.id, "FaceDirection", new Vector2(targetPos.x, targetPos.y));
         
         if (GD.Randf() < data.MissChance)
         {
@@ -59,7 +55,6 @@ public class RushAttackAction : Action
             }
         }
 
-        model.CoolerApiEvent(-1, "SmallWait");
         return true;
     }
 

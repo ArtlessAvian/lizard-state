@@ -1,17 +1,18 @@
 extends "../EventHandler.gd"
 
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
-var last_attacker = null
 
+var start_time
 
-# func should_wait_before(view, event : Dictionary):
-# 	var subject = view.roles[event.subject]
-# 	if last_attacker != subject:
-# 		print("eeee")
-# 		return !view.AnyActorAnimating()
-# 	return false
+func should_wait_before():
+	if is_same_subject():
+		# print("skipping wait")
+		# if previous_event.action == "Rush":
+		return false
+	return view.AnyActorAnimating()
 
 func run():
+	start_time = now()
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
 
@@ -39,3 +40,6 @@ func run():
 	otheranimation.advance(0)
 
 	object.get_node("HealthBar").value = object.health
+
+func should_wait_after():
+	return now() - start_time < 12 * (1000/60)

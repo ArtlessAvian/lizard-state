@@ -24,6 +24,8 @@ public partial class View : Node2D
 
     [Export] public bool impatientMode = false;
     private Resource initializedHandler = null;
+    private bool handlerRan = false;
+
     private Dictionary previousEvent = new Dictionary(){{"subject", -1}, {"action", "null"}};
 
     public override void _Ready() {}
@@ -100,15 +102,20 @@ public partial class View : Node2D
             }
 
             // todon't: merge this with previous if statement. the logic is different.
+            // also todo: ugly logic.
             if (initializedHandler is object)
             {
-                object shouldWaitBefore = initializedHandler.Call("should_wait_before");
-                if (!impatientMode && shouldWaitBefore is bool aaaa && aaaa)
+                if (!handlerRan)
                 {
-                    break;
-                }
+                    object shouldWaitBefore = initializedHandler.Call("should_wait_before");
+                    if (!impatientMode && shouldWaitBefore is bool aaaa && aaaa)
+                    {
+                        break;
+                    }
 
-                initializedHandler.Call("run");
+                    initializedHandler.Call("run");
+                    handlerRan = true;
+                }
 
                 object shouldWaitAfter = initializedHandler.Call("should_wait_after");
                 if (!impatientMode && shouldWaitAfter is bool eeee && eeee)
@@ -120,6 +127,7 @@ public partial class View : Node2D
             // consume the event
             eventQueue.RemoveAt(0);
             initializedHandler = null;
+            handlerRan = false;
             previousEvent = ev;
 
             viewTime = (int)ev["timestamp"];
