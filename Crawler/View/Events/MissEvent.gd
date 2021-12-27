@@ -16,7 +16,7 @@ func run(view, event : Dictionary, roles : Array):
 	animation.advance(0)
 	animation.play("Attack")
 	
-	var popup = damage_popup_scene.instance()
-	popup.text = "Miss"
-	popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10
-	object.get_node("DamagePopups").add_child(popup)
+	# var popup = damage_popup_scene.instance()
+	# popup.text = "Miss"
+	# popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10
+	# object.get_node("DamagePopups").add_child(popup)

@@ -264,7 +264,6 @@ __meta__ = {
 }
 
 [node name="ComboBar" type="TextureProgress" parent="."]
-visible = false
 margin_left = -16.0
 margin_top = 8.0
 margin_right = 16.0

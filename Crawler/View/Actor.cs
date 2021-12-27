@@ -46,8 +46,12 @@ public partial class Actor : Node2D
         TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
         healthbar.Value = role.health;
 
-        TextureProgress combobar = GetNode<TextureProgress>("ComboBar");
-        combobar.Value = role.comboCounter;
+        // idk, its kind of ugly
+        if (viewTime is int viewTimeeeee)
+        {
+            TextureProgress combobar = GetNode<TextureProgress>("ComboBar");
+            combobar.Value = role.nextMove - viewTimeeeee;
+        }
 
         // sprite stuff
         if (health <= 0) { this.Visible = false; }

@@ -23,6 +23,8 @@ public partial class View : Node2D
     // super buggy but convenient
 
     [Export] public bool impatientMode = false;
+    private Resource initializedHandler = null; 
+
     public override void _Ready() {}
 
     public void ConnectToModel(Model model)
@@ -73,7 +75,6 @@ public partial class View : Node2D
         return eventQueue.Count == 0;
     }
 
-    private bool eventFirstRun = true;
     public void ClearQueue()
     {
         while (!IsQueueClear())
@@ -82,44 +83,41 @@ public partial class View : Node2D
 
             Dictionary ev = eventQueue[0];
             string action = ev["action"] as string;
+
             // Lazy create the eventhandler
-            if (!eventHandlers.ContainsKey(action))
+            LazyInitHandler(action);
+
+            // "Initialize" the event if it hasn't been already
+            if (initializedHandler is null && eventHandlers[action] is Resource handler)
             {
-                // honestly kinda dangerous. arbitrary code can run!
-                if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
-                    new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
-                {
-                    GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
-                    eventHandlers.Add(action, script.New() as Resource);
-                }
-                else
-                {
-                    eventHandlers.Add(action, null);
-                }
+                // todo: rename first_run to reinit
+                handler.Call("first_run", this, ev, roles);
+                initializedHandler = handler;
             }
 
-            // Run the eventhandler
-            if (eventHandlers[action] is Resource handler)
+            // todon't: merge this with previous if statement. the logic is different.
+            if (initializedHandler is object)
             {
-                if (eventFirstRun)
+                object shouldWaitBefore = initializedHandler.Call("should_wait_before", this, ev);
+                if (!impatientMode && shouldWaitBefore is bool aaaa && !aaaa)
                 {
-                    eventFirstRun = false;
-                    handler.Call("first_run", this, ev, roles);
-                }
-                handler.Call("run", this, ev, roles);
-
-                object canConsume = handler.Call("can_consume");
-                // If you can't consume. Weird, but eh.
-                if (!impatientMode && canConsume is bool eeee && !eeee)
-                {
-                    // GD.Print("done waiting");
+                    // GD.Print("waiting before");
                     break;
-                }    
+                }
+
+                initializedHandler.Call("run", this, ev, roles);
+
+                object can_consume = initializedHandler.Call("can_consume");
+                if (!impatientMode && can_consume is bool eeee && !eeee)
+                {
+                    // GD.Print("waiting during/after");
+                    break;
+                }
             }
 
             // consume the event
             eventQueue.RemoveAt(0);
-            eventFirstRun = true;
+            initializedHandler = null;
 
             viewTime = (int)ev["timestamp"];
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
@@ -142,9 +140,22 @@ public partial class View : Node2D
         }
     }
 
-    private void AddActor()
+    private void LazyInitHandler(string action)
     {
-
+        if (!eventHandlers.ContainsKey(action))
+        {
+            // honestly kinda dangerous. arbitrary code can run!
+            if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
+                new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
+            {
+                GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
+                eventHandlers.Add(action, script.New() as Resource);
+            }
+            else
+            {
+                eventHandlers.Add(action, null);
+            }
+        }
     }
 
     private void ModelSync()
