@@ -55,8 +55,7 @@ public class AbilityTargetInputState : InputState
 
         if (ev.IsActionPressed("ui_accept"))
         {
-            float distance = GridHelper.Distance(playerPos, cursor.targetPosition);
-            GD.Print(distance);
+            int distance = GridHelper.Distance(playerPos, cursor.targetPosition);
             if (action.Range.min <= distance && distance <= action.Range.max)
             {
                 Select(crawler);
@@ -67,8 +66,7 @@ public class AbilityTargetInputState : InputState
         {
             if (evMouseButton.ButtonIndex == (int)ButtonList.Left && evMouseButton.IsPressed())
             {
-                float distance = GridHelper.Distance(playerPos, cursor.targetPosition);
-                GD.Print(distance);
+                int distance = GridHelper.Distance(playerPos, cursor.targetPosition);
                 if (action.Range.min <= distance && distance <= action.Range.max)
                 {
                     Select(crawler);

@@ -49,32 +49,26 @@ public class EditorGenerator : LevelGenerator
         Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
+        Species enemy2 = GD.Load<Resource>("res://Crawler/Model/Species/Enemy2.tres") as Species;
 
         model.AddEntity(CreateEntity(playerTegu, (0, -1), 0));
-        // model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
+        model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
 
         // model.AddEntity(new Entity(enemy, (0, 10), 1));
         // model.AddEntity(new Entity(enemy, (1, 20), 1));
         // model.AddEntity(new Entity(enemy, (2, 20), 1));
-        model.AddEntity(CreateEntity(enemy, (4, 5 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (4, 6 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (4, 7 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (4, 8 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (5, 5 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (5, 6 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (5, 7 - 5), 1));
-        model.AddEntity(CreateEntity(enemy, (5, 8 - 5), 1));
+
 
         model.AddEntity(CreateEntity(enemy, (21, 10), 1));
         model.AddEntity(CreateEntity(enemy, (8, 34), 1));
         model.AddEntity(CreateEntity(enemy, (32, 47), 1));
         model.AddEntity(CreateEntity(enemy, (-11, -5), 1));
         model.AddEntity(CreateEntity(enemy, (35, 4), 1));
-        model.AddEntity(CreateEntity(enemy, (17, -29), 1));
-        model.AddEntity(CreateEntity(enemy, (-18, -12), 1));
-        model.AddEntity(CreateEntity(enemy, (23, -17), 1));
-        model.AddEntity(CreateEntity(enemy, (9, -25), 1));
-        model.AddEntity(CreateEntity(enemy, (16, 16), 1));
+        model.AddEntity(CreateEntity(enemy2, (17, -29), 1));
+        model.AddEntity(CreateEntity(enemy2, (-18, -12), 1));
+        model.AddEntity(CreateEntity(enemy2, (23, -17), 1));
+        model.AddEntity(CreateEntity(enemy2, (9, -25), 1));
+        model.AddEntity(CreateEntity(enemy2, (16, 16), 1));
 
         // Array tiles = model.Map.GetUsedCells();
         // tiles.Shuffle();

@@ -21,7 +21,6 @@ func reinit(vieww, eventt, previous_eventt):
 
 ## Helpers
 func is_same_subject():
-	print(event.subject, previous_event.subject)
 	return event.subject == previous_event.subject
 
 func now():

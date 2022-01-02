@@ -30,17 +30,17 @@ public class PartnerAI : AI
         }
 
         // Attack the closest enemy.
-        float closestDistance = 100;
+        int closestDistance = 100;
         foreach((int, int) pos in enemyPositions)
         {
-            float distance = GridHelper.Distance(e.position, pos);
+            int distance = GridHelper.Distance(e.position, pos);
             if (distance <= closestDistance)
             {
                 closestDistance = distance;
             }
         }
 
-        if (closestDistance <= 1.5)
+        if (closestDistance <= 1 && e.species.rushAttack != null)
         {
             // Attack an enemy in melee range
             // TODO: randomly walk away.
@@ -60,6 +60,7 @@ public class PartnerAI : AI
                 ReachAttackData data = e.species.attacks[i];
                 if (closestDistance <= data.range)
                 {
+                    GD.Print("considering ", e.species.attacks[i]);
                     foreach ((int, int) pos in enemyPositions)
                     {
                         if (GridHelper.Distance(e.position, pos) == closestDistance)

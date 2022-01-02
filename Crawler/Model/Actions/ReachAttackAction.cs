@@ -60,32 +60,22 @@ public class ReachAttackAction : Action
 
             if (targeted is object)
             {
-                targeted.health -= data.damage;
-
-                // think of it as "lose {stun} turns." The term here (VVVVVVVVV) ensures that lower id's lose their turn.
-                int stunUntil = model.time + data.stun + (targeted.id < e.id ? 1 : 0);
-                targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
-                targeted.stunned = true;
-                
                 targeted.queuedAction = null;
-                
-                if (targeted.health <= 0)
-                {
-                    targeted.downed = true;
-                    targeted.nextMove = -1;
-                }
-                
-                model.CoolerApiEvent(new Dictionary(){
-                    {"subject", e.id},
-                    {"action", "Hit"},
-                    {"object", targeted.id},
-                    {"damage", data.damage}
-                });
 
-                if (targeted.health <= 0)
+                if (GD.Randf() < data.blockChance)
                 {
-                    model.CoolerApiEvent(targeted.id, "Downed");
+                    // block!
+                    model.Debug($"{e.species.displayName} missed!");
                 }
+                else
+                {
+                    // clean hit!
+                    OnHit(model, e, targeted);
+                }
+            }
+            else
+            {
+                // whiff!
             }
 
             e.nextMove += data.recovery;
@@ -97,6 +87,34 @@ public class ReachAttackAction : Action
         public override bool IsValid(Model model, Entity e)
         {
             return true;
+        }
+
+        private void OnHit(Model model, Entity e, Entity targeted)
+        {
+            targeted.health -= data.damage;
+
+            // think of it as "lose {stun} turns." The term here (VVVVVVVVV) ensures that lower id's lose their turn.
+            int stunUntil = model.time + data.stun + (targeted.id < e.id ? 1 : 0);
+            targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
+            targeted.stunned = true;
+
+            if (targeted.health <= 0)
+            {
+                targeted.downed = true;
+                targeted.nextMove = -1;
+            }
+
+            model.CoolerApiEvent(new Dictionary(){
+                    {"subject", e.id},
+                    {"action", "Hit"},
+                    {"object", targeted.id},
+                    {"damage", data.damage}
+                });
+
+            if (targeted.health <= 0)
+            {
+                model.CoolerApiEvent(targeted.id, "Downed");
+            }
         }
     }
 }

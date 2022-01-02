@@ -68,7 +68,6 @@ public partial class Model
     public List<Entity> GetEntitiesInLOS((int x, int y) position, float radius)
     {
         List<Entity> inSight = GetEntitiesInRadius(position, radius);
-        GD.Print($"{inSight.Count} at first");
 
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
 
@@ -77,11 +76,9 @@ public partial class Model
             (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
             if (!VisibilityTrie.AnyLineOfSight(relative, isBlocked))
             {
-                GD.Print($"{inSight[i].id} removed");
                 inSight.RemoveAt(i);
             }
         }
-        GD.Print($"{inSight.Count} iuegie");
         return inSight;
     }
 
@@ -92,7 +89,6 @@ public partial class Model
         // vision.trie.ExtendRadius(radius);
 
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
-        GD.Print($"{inCone.Count} at first");
 
         Predicate<(int, int)> notInCone = ((int x, int y) rel) => !VisibilityTrie.TileInCone(rel, direction, sectorDegrees);
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
@@ -103,11 +99,9 @@ public partial class Model
             (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
             if (!VisibilityTrie.AnyLineOfSight(relative, isEither))
             {
-                GD.Print($"{inCone[i].id} removed");
                 inCone.RemoveAt(i);
             }
         }
-        GD.Print($"{inCone.Count} iuegie");
         return inCone;
     }
 

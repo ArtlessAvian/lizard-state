@@ -11,9 +11,7 @@ public class RushAttackAction : Action
         }
 
         // TODO: This NPEs sometimes
-        RushAttackData data = e.species.rushAttack ?? ResourceLoader.Load<RushAttackData>("res://Crawler/Model/Attacks/RushAttacks/ExpectedOne.tres");
- 
-        GD.Print(data.MissChance);
+        RushAttackData data = e.species.rushAttack ?? ResourceLoader.Load<RushAttackData>("res://Crawler/Model/Attacks/RushAttacks/ExpectedTwo.tres");
 
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
