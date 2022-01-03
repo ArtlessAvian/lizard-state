@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using Godot.Collections;
+using System.Collections.Generic;
 
 public class ReachAttackAction : Action
 {
@@ -13,6 +14,7 @@ public class ReachAttackAction : Action
     public override bool Do(Model model, Entity e)
     {
         if (data is null) { data = ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/Poke.tres"); }
+        GD.Print(data.ResourceName);
 
         (int x, int y) targetPos = GetTargetPos(e.position);
         if (data.startup > 0)
@@ -72,15 +74,15 @@ public class ReachAttackAction : Action
                 {
                     // clean hit!
                     OnHit(model, e, targeted);
+                    
+                    // TODO: This can put people inside walls. Or, inside each other.
+                    // (If they intersect a wall, they should "wallsplat" or something.)
+                    // (If they end up on a person, they should pop to a random nearby tile.)
+                    (int x, int y) knockback = KnockbackPosition(model, e.position, targeted.position, data.knockback);
+                    GD.Print(data.knockback);
+                    targeted.position = knockback;
+                    model.CoolerApiEvent(targeted.id, "Knockback", new Vector2(knockback.x, knockback.y));
                 }
-                
-                // TODO: This can put people inside walls. Or, inside each other.
-                // (If they intersect a wall, they should "wallsplat" or something.)
-                // (If they end up on a person, they should pop to a random nearby tile.)
-                (int x, int y) knockback = KnockbackPosition(e.position, targeted.position, data.knockback);
-                // GD.Print(knockback.x, knockback.y);
-                targeted.position = knockback;
-                model.CoolerApiEvent(targeted.id, "Knockback", new Vector2(knockback.x, knockback.y));
             }
             else
             {
@@ -126,16 +128,43 @@ public class ReachAttackAction : Action
             }
         }
 
-        private (int, int) KnockbackPosition((int x, int y) from, (int x, int y) to, int howMuch)
+        private (int, int) KnockbackPosition(Model model, (int x, int y) from, (int x, int y) to, int howMuch)
         {
-            (int dx, int dy, int octant) = GridHelper.Octantify(to.x - from.x, to.y - from.y);
+            // reflect from around to, then ray from to to reflected.
+            (int x, int y) reflected = ((to.x - from.x) + to.x, (to.y - from.y) + to.y);
+            IEnumerable<(int x, int y)> enumerable = GridHelper.RayThrough(to, reflected);
 
-            dy = dy + (int)(dy * howMuch / (float)dx);
-            dx = dx + howMuch;
+            // haha yeaa
+            (int, int) previousPosition = to;
+            foreach ((int, int) position in enumerable)
+            {
+                if (howMuch <= 0)
+                {
+                    return position;
+                }
+                howMuch--;
 
-            (dx, dy) = GridHelper.DeOctantify(dx, dy, octant);
-
-            return (from.x + dx, from.y + dy);
+                if (model.Map.TileIsWall(position))
+                {
+                    return previousPosition;
+                }
+                
+                previousPosition = position;
+            }
+            
+            return (0, 0); // this will never happen
         }
+
+        // private (int, int) KnockbackPosition((int x, int y) from, (int x, int y) to, int howMuch)
+        // {
+        //     (int dx, int dy, int octant) = GridHelper.Octantify(to.x - from.x, to.y - from.y);
+
+        //     dy = dy + (int)(dy * howMuch / (float)dx);
+        //     dx = dx + howMuch;
+
+        //     (dx, dy) = GridHelper.DeOctantify(dx, dy, octant);
+
+        //     return (from.x + dx, from.y + dy);
+        // }
     }
 }

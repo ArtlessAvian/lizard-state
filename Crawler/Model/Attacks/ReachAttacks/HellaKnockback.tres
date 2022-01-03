@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Crawler/Model/Attacks/ReachAttackData.cs" type="Script" id=1]
+
+[resource]
+resource_name = "Hella Knockback"
+script = ExtResource( 1 )
+startup = 0
+recovery = 1
+stun = 1
+damage = 2
+blockChance = 0.2
+range = 2
+knockback = 10
