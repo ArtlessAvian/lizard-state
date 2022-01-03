@@ -8,6 +8,7 @@ public abstract class ReachAttackData : Resource
     [Export] public int damage = 2;
     [Export] public float blockChance = 0.2f;
     [Export] public int range = 2;
+    [Export] public int knockback = 0;
 
     public void DoAttack(Entity target, int timeNow)
     {

@@ -5,8 +5,9 @@
 [resource]
 script = ExtResource( 1 )
 startup = 0
-recovery = 2
+recovery = 3
 stun = 1
 damage = 2
 blockChance = 0.2
 range = 7
+knockback = 0

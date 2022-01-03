@@ -60,7 +60,6 @@ public class PartnerAI : AI
                 ReachAttackData data = e.species.attacks[i];
                 if (closestDistance <= data.range)
                 {
-                    GD.Print("considering ", e.species.attacks[i]);
                     foreach ((int, int) pos in enemyPositions)
                     {
                         if (GridHelper.Distance(e.position, pos) == closestDistance)

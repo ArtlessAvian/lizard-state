@@ -39,11 +39,12 @@ public class ReachAttackAction : Action
 
     public override (int, int) Range => (1, data.range);
 
-    private class ReachAttackActive : Action
+    public class ReachAttackActive : Action
     {
         private ReachAttackData data;
 
-        public ReachAttackActive(ReachAttackData data)
+        // not sure if this is the right access modifier.
+        internal ReachAttackActive(ReachAttackData data)
         {
             this.data = data;
         }
@@ -72,6 +73,14 @@ public class ReachAttackAction : Action
                     // clean hit!
                     OnHit(model, e, targeted);
                 }
+                
+                // TODO: This can put people inside walls. Or, inside each other.
+                // (If they intersect a wall, they should "wallsplat" or something.)
+                // (If they end up on a person, they should pop to a random nearby tile.)
+                (int x, int y) knockback = KnockbackPosition(e.position, targeted.position, data.knockback);
+                // GD.Print(knockback.x, knockback.y);
+                targeted.position = knockback;
+                model.CoolerApiEvent(targeted.id, "Knockback", new Vector2(knockback.x, knockback.y));
             }
             else
             {
@@ -115,6 +124,18 @@ public class ReachAttackAction : Action
             {
                 model.CoolerApiEvent(targeted.id, "Downed");
             }
+        }
+
+        private (int, int) KnockbackPosition((int x, int y) from, (int x, int y) to, int howMuch)
+        {
+            (int dx, int dy, int octant) = GridHelper.Octantify(to.x - from.x, to.y - from.y);
+
+            dy = dy + (int)(dy * howMuch / (float)dx);
+            dx = dx + howMuch;
+
+            (dx, dy) = GridHelper.DeOctantify(dx, dy, octant);
+
+            return (from.x + dx, from.y + dy);
         }
     }
 }

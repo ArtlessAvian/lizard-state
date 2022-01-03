@@ -5,6 +5,6 @@ func run():
 	subject.stunned = false
 
 	var aniPlayer = subject.get_node("AnimationPlayer")
-	aniPlayer.play("Reset")
+	aniPlayer.play("RESET")
 
 	subject.get_node("ComboBar").value = 0

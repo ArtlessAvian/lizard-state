@@ -19,7 +19,7 @@ func run():
 	subject.FacePosition(object.targetPosition)
 
 	var animation = subject.get_node("AnimationPlayer")
-	animation.play("Reset")
+	animation.play("RESET")
 	animation.advance(0)
 	animation.play("Attack")	
 
@@ -34,7 +34,7 @@ func run():
 	object.get_node("DamagePopups").add_child(popup)
 
 	var otheranimation = object.get_node("AnimationPlayer")
-	otheranimation.play("Reset")
+	otheranimation.play("RESET")
 	otheranimation.advance(0)
 	otheranimation.play("Stunned" if object.stunned else "Hurt")
 	otheranimation.advance(0)

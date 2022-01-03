@@ -7,5 +7,7 @@ func run():
 	subject.FacePosition(temp)
 	
 	var animation = subject.get_node("AnimationPlayer")
-	animation.play("Reset")
+	animation.play("RESET")
+	animation.advance(0)
+	animation.play("Startup")
 	animation.advance(0)

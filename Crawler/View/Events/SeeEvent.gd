@@ -16,4 +16,4 @@ func run():
 	popup.text = "!"
 	subject.get_node("DamagePopups").add_child(popup)
 
-	# subject.get_node("AnimationPlayer").play("Reset");
+	# subject.get_node("AnimationPlayer").play("RESET");

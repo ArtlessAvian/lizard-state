@@ -10,3 +10,4 @@ stun = 1
 damage = 2
 blockChance = 0.2
 range = 2
+knockback = 1

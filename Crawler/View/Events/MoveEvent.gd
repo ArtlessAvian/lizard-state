@@ -11,4 +11,4 @@ func run():
 	# animation.play("Move");
 	# animation.advance(0);
 
-	# subject.get_node("AnimationPlayer").play("Reset");
+	# subject.get_node("AnimationPlayer").play("RESET");

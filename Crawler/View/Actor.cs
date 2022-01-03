@@ -66,7 +66,18 @@ public partial class Actor : Node2D
         stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");
-        aniSprite.Frame = role.stunned ? 1 : 0;
+        if (role.stunned)
+        {
+            aniSprite.Frame = 1;
+        }
+        else if (role.queuedAction is ReachAttackAction.ReachAttackActive)
+        {
+            aniSprite.Frame = 2;
+        }
+        else
+        {
+            aniSprite.Frame = 0;
+        }
 
         // TODO: Temporary
         displayName = role.species.displayName;
