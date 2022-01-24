@@ -32,7 +32,8 @@ public partial class Actor : Node2D
 
     public void ModelSync(int? viewTime = null)
     {
-        targetPosition = new Vector2((int)role.position.x, (int)role.position.y);
+        targetPosition = new Vector2(role.position.x, role.position.y + role.position.x/2);
+        // targetPosition = new Vector2(role.position.x, role.position.y);
         // Position = new Vector2(
         //     targetPosition.x * View.TILESIZE.x,
         //     targetPosition.y * View.TILESIZE.y
@@ -131,7 +132,8 @@ public partial class Actor : Node2D
         Position = Position.LinearInterpolate(
             new Vector2(
                 targetPosition.x * View.TILESIZE.x,
-                targetPosition.y * View.TILESIZE.y
+                (targetPosition.y + targetPosition.x/2) * View.TILESIZE.y
+                // targetPosition.y * View.TILESIZE.y
             ),
             1 - Mathf.Pow(1-0.3f, delta * 60f)
         );

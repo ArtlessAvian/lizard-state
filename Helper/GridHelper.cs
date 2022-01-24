@@ -64,42 +64,59 @@ static class GridHelper
 
     public static (int dx, int dy, int octant) Octantify(int dx, int dy)
     {
-        int octant = 0;
-        if (dy < 0)
+        // convert to cube coordinates, and permute. q + r + s = 0 always
+        int dodecant = 0; // theres only 6 permutations, but im going to use 8 values.
+        int q = dx;
+        int r = dy;
+        int s = -dx - dy;
+
+        if (q < r)
         {
-            octant += 4;
-            (dx, dy) = (-dx, -dy); // rotate 180
+            (q, r) = (r, q);
+            dodecant += 1;
         }
-        // dx and dy are in quadrants I and II.
-        if (dx < 0)
+        if (r < s)
         {
-            octant += 2;
-            (dx, dy) = (dy, -dx); // rotate 90 clockwise
+            (r, s) = (s, r); // s is now least
+            dodecant += 2;
         }
-        // dx and dy are in quadrant I.
-        if (dy > dx)
+        if (q < r)
         {
-            octant += 1;
-            (dx, dy) = (dy, dx); // flip along diagonal y = x.
+            (q, r) = (r, q); // qrs is sorted.
+            dodecant += 4;
         }
-        return (dx, dy, octant);
+        if (r < 0)
+        {
+            r = -r;
+            dodecant += 8;
+        }
+
+        return (q, r, dodecant);
     }
 
     public static (int dx, int dy) DeOctantify(int dx, int dy, int octant)
     {
-        if ((octant & 0b001) > 0)
+        int q = dx;
+        int r = dy;
+        int s = -dx - dy;
+
+        if ((octant & 0b1000) > 0)
         {
-            (dx, dy) = (dy, dx); // flip along diagonal y = x.
-        }
-        if ((octant & 0b010) > 0)
-        {
-            (dx, dy) = (-dy, dx); // rotate 90 counterclockwise
+            r = -r;
         }
         if ((octant & 0b100) > 0)
         {
-            (dx, dy) = (-dx, -dy); // rotate 180
+            (q, r) = (r, q);
         }
-        return (dx, dy);
+        if ((octant & 0b010) > 0)
+        {
+            (r, s) = (s, r);
+        }
+        if ((octant & 0b001) > 0)
+        {
+            (q, r) = (r, q);
+        }
+        return (q, r);
     }
 
     // Euclidean algorithm :P
@@ -118,11 +135,14 @@ static class GridHelper
 
     public static int Distance(int dx, int dy)
     {
-        dx = Math.Abs(dx);
-        dy = Math.Abs(dy);
+        // hexagon!!
+        return (Math.Abs(dx) + Math.Abs(dx + dy) + Math.Abs(dy))/2;
+
+        // dx = Math.Abs(dx);
+        // dy = Math.Abs(dy);
 
         // Chebyshev
-        return Math.Max(dx, dy);
+        // return Math.Max(dx, dy);
         
         // Approximate Approximate Euclidean
         // return Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy);

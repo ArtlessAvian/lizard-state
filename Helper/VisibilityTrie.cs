@@ -112,7 +112,7 @@ public class VisibilityTrie
 
     public static IEnumerable<(int relX, int relY)> ConeOfView(Predicate<(int relX, int relY)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
     {
-        for (int octant = 0; octant < 8; octant++)
+        for (int octant = 0; octant < 16; octant++)
         {
             List<TrieNode> stack = new List<TrieNode>{origin};
             while (stack.Count > 0)

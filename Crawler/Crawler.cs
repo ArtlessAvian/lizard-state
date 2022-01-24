@@ -38,6 +38,17 @@ public class Crawler : Node2D, InputStateMachine
         // {
         //     ProjectSettings.SetSetting("display/window/stretch/shrink", (int)GetViewport().Size.x / 960);
         // }
+
+        for (int dx = -3; dx <= 3; dx++)
+        {
+            for (int dy = -3; dy <= 3; dy++)
+            {
+                (int a, int b, int c) = GridHelper.Octantify(dx, dy);
+                GD.Print(a, b);
+                (int d, int e) = GridHelper.DeOctantify(a, b, c);
+                // GD.Print(d, e);
+            }
+        }
     }
 
     public override void _Process(float delta)
