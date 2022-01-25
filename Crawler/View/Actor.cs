@@ -32,13 +32,12 @@ public partial class Actor : Node2D
 
     public void ModelSync(int? viewTime = null)
     {
-        targetPosition = new Vector2(role.position.x, role.position.y + role.position.x/2);
-        // targetPosition = new Vector2(role.position.x, role.position.y);
+        targetPosition = new Vector2(role.position.x, role.position.y);
         // Position = new Vector2(
         //     targetPosition.x * View.TILESIZE.x,
         //     targetPosition.y * View.TILESIZE.y
         // );
-        Position = targetPosition * View.TILESIZE; // elementwise
+        Position = new Vector2(targetPosition.x, targetPosition.y + targetPosition.x/2.0f) * View.TILESIZE; // elementwise
         // positionLerp = 0;
 
         health = role.health;
@@ -116,8 +115,8 @@ public partial class Actor : Node2D
 
     public bool IsAnimating()
     {
-        if (Math.Abs(targetPosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
-        if (Math.Abs(targetPosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
+        // if (Math.Abs(targetPosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
+        // if (Math.Abs(targetPosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
         if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
         // if (GetNode<AnimationPlayer>("AnimationPlayer").) { return true; }
         return false;
@@ -131,10 +130,8 @@ public partial class Actor : Node2D
         // ) * View.TILESIZE;
         Position = Position.LinearInterpolate(
             new Vector2(
-                targetPosition.x * View.TILESIZE.x,
-                (targetPosition.y + targetPosition.x/2) * View.TILESIZE.y
-                // targetPosition.y * View.TILESIZE.y
-            ),
+                targetPosition.x, (targetPosition.y + targetPosition.x/2.0f)
+            ) * View.TILESIZE,
             1 - Mathf.Pow(1-0.3f, delta * 60f)
         );
 

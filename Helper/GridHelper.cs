@@ -11,10 +11,10 @@ static class GridHelper
         yield return (a.x + 1, a.y);
         yield return (a.x, a.y - 1);
         yield return (a.x, a.y + 1);
-        yield return (a.x - 1, a.y - 1);
+        // yield return (a.x - 1, a.y - 1);
         yield return (a.x + 1, a.y - 1);
         yield return (a.x - 1, a.y + 1);
-        yield return (a.x + 1, a.y + 1);
+        // yield return (a.x + 1, a.y + 1);
     }
 
     public static IEnumerable<(int numerator, int denominator)> ListRationals(int maxDenominator)
