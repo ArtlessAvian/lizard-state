@@ -9,8 +9,10 @@ public partial class Actor : Node2D
     public Entity role;
 
     [Export] public Vector2 targetPosition;
-    // [Export] public Vector2 positionTwo;
-    // [Export] public float positionLerp;
+    [Export] public Vector2 animationArg; // In Tiles
+    [Export] public float spriteLerp;
+    [Export] public float spriteZ;
+    [Export] public float attackAnimationStartup;
 
     int health = 0;
     bool stunned = false;
@@ -38,7 +40,6 @@ public partial class Actor : Node2D
         //     targetPosition.y * View.TILESIZE.y
         // );
         Position = targetPosition * View.TILESIZE; // elementwise
-        // positionLerp = 0;
 
         health = role.health;
         status?.Call("set_health", role.health, role.species.maxHealth);
@@ -124,10 +125,6 @@ public partial class Actor : Node2D
 
     public override void _Process(float delta)
     {
-        // Position = targetPosition.LinearInterpolate(
-        //     positionTwo,
-        //     positionLerp
-        // ) * View.TILESIZE;
         Position = Position.LinearInterpolate(
             new Vector2(
                 targetPosition.x * View.TILESIZE.x,
@@ -135,6 +132,9 @@ public partial class Actor : Node2D
             ),
             1 - Mathf.Pow(1-0.3f, delta * 60f)
         );
+
+        GetNode<Node2D>("AnimatedSprite").Position = animationArg.Clamped(1) * View.TILESIZE * spriteLerp;
+        GetNode<Node2D>("AnimatedSprite").Position += Vector2.Up * spriteZ;
 
         // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
         if (seen || Engine.EditorHint)

@@ -2,8 +2,17 @@ extends "../EventHandler.gd"
 
 var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
+var delay_until
+
+func before_run():
+	var subject = roles[event["subject"]]
+	delay_until = now() + subject.attackAnimationStartup * 1000
+
+func should_wait_before():
+	return now() < delay_until
+
 func run():
-	# var subject = roles[event["subject"]]
+	var subject = roles[event["subject"]]
 	# var animation = subject.get_node("AnimationPlayer");
 	# animation.play("Attack");
 	

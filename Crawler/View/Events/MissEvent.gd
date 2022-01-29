@@ -14,11 +14,12 @@ func run():
 	var object = roles[event["object"]]
 
 	subject.FacePosition(object.targetPosition)
+	subject.animationArg = object.targetPosition - subject.targetPosition
 
 	var animation = subject.get_node("AnimationPlayer")
 	animation.play("RESET")
 	animation.advance(0)
-	animation.play("Attack")
+	animation.play("Rush")
 	
 	# var popup = damage_popup_scene.instance()
 	# popup.text = "Miss"
@@ -26,4 +27,4 @@ func run():
 	# object.get_node("DamagePopups").add_child(popup)
 
 func should_wait_after():
-	return now() - start_time < 12 * (1000/60)
+	return now() - start_time < 30 * (1000/60)
