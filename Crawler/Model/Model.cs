@@ -61,7 +61,7 @@ public partial class Model : Node
     public bool SetPlayerAction(Action action, bool force = false)
     {
         Entity e = NextEntity();
-        if (!e.species.isPlayer) { return false; }
+        if (!e.isPlayer) { return false; }
 
         if (!action.IsValid(this, e)) { return false; }
         // if (!action.IsReasonable() && !force) { return false; }
@@ -95,7 +95,7 @@ public partial class Model : Node
         }
         
         // If no action, get the ai's action.
-        if (action == null)
+        if (action == null && !e.isPlayer)
         {
             action = e.species?.ai?.GetMove(this, e);
         }
@@ -103,7 +103,7 @@ public partial class Model : Node
         // If no action, return
         if (action == null)
         {
-            if (!e.species.isPlayer) {
+            if (!e.isPlayer) {
                 GD.PrintErr($"{e.species.displayName} has no ai or ai returned null!");
                 GD.PrintErr("waiting instead..");
                 action = new MoveAction().SetTargetRelative((0, 0));

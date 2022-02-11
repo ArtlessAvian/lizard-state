@@ -46,6 +46,9 @@ static class GridHelper
             if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
             {
                 localDy++;
+                // TODO: kinda want to do thicc lines. Magic expression above though.
+                // (dx, dy) = DeOctantify(localDx, localDy, octant);
+                // yield return (dx + from.x, dy + from.y);
             }
         }
     }

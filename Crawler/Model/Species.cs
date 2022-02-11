@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class Species : Resource
 {
     // Game Logic
-    [Export] public bool isPlayer = false;
     [Export] public AI ai = null;
 
     // [Export] public AttackData bumpAttack;

@@ -145,11 +145,23 @@ public class VisibilityTrie
     public static bool TileInCone((int x, int y) tile, (int x, int y) direction, float sectorDegrees)
     {
         if (tile.x == 0 && tile.y == 0) { return true; }
+
+        // TODO: Experiment with leniency
+        // check the middle
+        // if (PointInCone((tile.x, tile.y), direction, sectorDegrees)) {return true;}
+
+        // check the four edges.
+        if (PointInCone((tile.x + 0.5f, tile.y), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x - 0.5f, tile.y), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+
         // check the four corners.
-        if (PointInCone((tile.x + 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
-        if (PointInCone((tile.x - 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
-        if (PointInCone((tile.x + 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
-        if (PointInCone((tile.x - 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        // if (PointInCone((tile.x + 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
+        // if (PointInCone((tile.x - 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
+        // if (PointInCone((tile.x + 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        // if (PointInCone((tile.x - 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+
         return false;
     }
 
@@ -157,9 +169,9 @@ public class VisibilityTrie
     {
         if (point.x == 0 && point.y == 0) { return true; }
 
-        double pointLen = Math.Sqrt(point.x * point.x + point.y * point.y);
-        double dirLen = Math.Sqrt(direction.x * direction.x + direction.y * direction.y);
-        return Math.Acos((point.x * direction.x + point.y * direction.y) / pointLen / dirLen) <= sectorDegrees/2 * Math.PI/180;
+        double pointLenSqr = point.x * point.x + point.y * point.y;
+        double dirLenSqr = direction.x * direction.x + direction.y * direction.y;
+        return Math.Acos((point.x * direction.x + point.y * direction.y) / Math.Sqrt(pointLenSqr * dirLenSqr)) <= sectorDegrees/2 * Math.PI/180 + 0.01;
     }
 
     public static bool AnyLineOfSight((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)

@@ -13,6 +13,8 @@ public class Entity : Resource
     [Export] public int id;
     [Export] public Species species;
 
+    public bool isPlayer = false;
+
     // Godot doesn't like serializing tuples, and I don't want to use Vector2.
     // So this is what we have to do.
     [Export] public int positionX;
@@ -40,15 +42,6 @@ public class Entity : Resource
     public bool dirtyVision; // hehe
 
     public Entity() {}
-
-    // public override void _EnterTree()
-    // {
-    //     if (species == null)
-    //     {
-    //         GD.Print($"Entity {id} missing species!");
-    //         this.SetSpecies(GD.Load<Species>("res://Crawler/Model/Species/Enemy.tres"));
-    //     }
-    // }
 
     public void SetSpecies(Species species)
     {
@@ -102,6 +95,7 @@ public class Entity : Resource
     {
         Dictionary dict = new Dictionary();
         dict["species"] = species.ResourcePath;
+        dict["isPlayer"] = isPlayer;
         dict["positionX"] = positionX;
         dict["positionY"] = positionY;
         dict["nextMove"] = nextMove;
@@ -125,6 +119,7 @@ public class Entity : Resource
     public Entity(Dictionary dict)
     {
         this.species = GD.Load<Species>((string)dict["species"]);
+        this.isPlayer = (bool)dict["isPlayer"];
         this.positionX = (int)dict["positionX"];
         this.positionY = (int)dict["positionY"];
         this.nextMove = (int)dict["nextMove"];

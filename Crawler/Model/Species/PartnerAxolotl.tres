@@ -8,7 +8,6 @@
 [resource]
 resource_name = "PartnerAxolotl"
 script = ExtResource( 1 )
-isPlayer = false
 ai = ExtResource( 4 )
 rushAttack = ExtResource( 5 )
 attacks = [ ExtResource( 3 ) ]
