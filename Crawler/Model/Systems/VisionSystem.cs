@@ -35,7 +35,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     {
         foreach (Entity e in model.GetEntities())
         {
-            if (e.dirtyVision)
+            if (e.providesVision)
             {
                 UpdateVision(model, e);
                 e.dirtyVision = false;

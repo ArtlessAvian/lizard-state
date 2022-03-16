@@ -86,17 +86,17 @@ public class AbilityTargetInputState : InputState
         attackRange.Clear();
         // foreach ((int dx, int dy) in VisibilityTrie.ConeOfView(x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
         // {
-            // float dist = GridHelper.Distance(dx, dy);
-            // if (action.Range.min > dist) {continue;}
-            // if (dist > action.Range.max) {continue;}
+        // float dist = GridHelper.Distance(dx, dy);
+        // if (action.Range.min > dist) {continue;}
+        // if (dist > action.Range.max) {continue;}
 
-            // attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
+        // attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
         // }
 
-        foreach ((int x, int y) in GridHelper.RayThrough(playerPos, cursor.targetPosition))
-        {
-            attackRange.SetCell(x, y, 1);
-        }
+        // foreach ((int x, int y) in GridHelper.RayThrough(playerPos, cursor.targetPosition))
+        // {
+        //     attackRange.SetCell(x, y, 1);
+        // }
     }
 
     private void Select(Crawler crawler)
