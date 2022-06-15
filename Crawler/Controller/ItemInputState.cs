@@ -51,6 +51,7 @@ public class ItemInputState : InputState
 
         if (action.Range.max == 0)
         {
+            crawler.View.ModelSync();
             crawler.Model.SetPlayerAction(action);
             crawler.notPlayerTurn = true;
             crawler.ResetState();

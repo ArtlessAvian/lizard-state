@@ -172,7 +172,7 @@ public partial class View : Node2D
         return eventHandlers[action];
     }
 
-    private void ModelSync()
+    public void ModelSync()
     {
         // does not sync map.
         foreach (Actor a in roles)

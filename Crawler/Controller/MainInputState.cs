@@ -154,13 +154,15 @@ public class MainInputState : InputState
 
                 if (Input.IsKeyPressed((int)KeyList.Control))
                 {
+                    crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;        
                     cursor.Hide();
                     return true;                    
                 }
                 else
-                {
+                {            
+                    crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
                     cursor.Hide();
@@ -171,6 +173,7 @@ public class MainInputState : InputState
 
         if (ev.IsActionPressed("get_action"))
         {
+            crawler.View.ModelSync();
             crawler.Model.SetPlayerAction(new GetAction());
             crawler.notPlayerTurn = true;
             return true;
@@ -207,12 +210,14 @@ public class MainInputState : InputState
                 Entity player = crawler.Model.GetPlayer();
                 if (GridHelper.Distance(player.position, targetPosition) <= 1.5f)
                 {
+                    crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
                 }
                 else
                 {
+                    crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
                     return true;
