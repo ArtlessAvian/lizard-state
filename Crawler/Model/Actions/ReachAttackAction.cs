@@ -130,12 +130,13 @@ public class ReachAttackAction : Action
 
         private (int, int) KnockbackPosition(Model model, (int x, int y) from, (int x, int y) to, int howMuch)
         {
-            // reflect from around to, then ray from to to reflected.
+            // reflect "from" around "to", then ray from "to" to "reflected."
             (int x, int y) reflected = ((to.x - from.x) + to.x, (to.y - from.y) + to.y);
             IEnumerable<(int x, int y)> enumerable = GridHelper.RayThrough(to, reflected);
 
             // haha yeaa
-            (int, int) previousPosition = to;
+            // BUG: I was able to punch someone into a corner. Very weird. 
+            (int, int) previousPosition = to; // the enemy's current position is always valid.
             foreach ((int, int) position in enumerable)
             {
                 if (howMuch <= 0)

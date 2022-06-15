@@ -84,19 +84,22 @@ public class AbilityTargetInputState : InputState
     {
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
-        // foreach ((int dx, int dy) in VisibilityTrie.ConeOfView(x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
-        // {
-        // float dist = GridHelper.Distance(dx, dy);
-        // if (action.Range.min > dist) {continue;}
-        // if (dist > action.Range.max) {continue;}
+        foreach ((int dx, int dy) in VisibilityTrie.FieldOfView(x => false, action.Range.max))
+        // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
+        {
+            float dist = GridHelper.Distance(dx, dy);
+            if (action.Range.min > dist) {continue;}
+            if (dist > action.Range.max) {continue;}
+            attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
+        }
 
-        // attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
-        // }
-
-        // foreach ((int x, int y) in GridHelper.RayThrough(playerPos, cursor.targetPosition))
-        // {
-        //     attackRange.SetCell(x, y, 1);
-        // }
+        foreach ((int x, int y) in GridHelper.RayThrough(playerPos, cursor.targetPosition))
+        {
+            float dist = GridHelper.Distance(x - playerPos.x, y - playerPos.y);
+            if (dist > action.Range.max) {break;}
+            attackRange.SetCell(x, y, 3);
+            if (x == cursor.targetPosition.x && y == cursor.targetPosition.y) {break;}
+        }
     }
 
     private void Select(Crawler crawler)

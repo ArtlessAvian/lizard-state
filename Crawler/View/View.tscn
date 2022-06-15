@@ -41,7 +41,6 @@ tile_data = PoolIntArray( -589832, 2, 0, -589830, 2, 0, -655356, 2, 0, -524296, 
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 24, 16 )
 format = 1
-tile_data = PoolIntArray( -196612, 6, 0, 393206, 3, 0 )
 
 [node name="Walls" type="TileMap" parent="Map"]
 material = ExtResource( 7 )

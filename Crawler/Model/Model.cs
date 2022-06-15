@@ -119,7 +119,7 @@ public partial class Model : Node
         if (!success)
         {
             GD.Print($"{e.species.displayName} tried {action.GetType().ToString()} and failed!");
-            e.nextMove += 10;
+            e.nextMove += 1;
         }
 
         RunSystems();
