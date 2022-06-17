@@ -7,7 +7,6 @@
 [resource]
 resource_name = "Enemy"
 script = ExtResource( 1 )
-isPlayer = false
 ai = ExtResource( 3 )
 rushAttack = ExtResource( 2 )
 attacks = null

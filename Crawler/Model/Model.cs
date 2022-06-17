@@ -86,14 +86,14 @@ public partial class Model : Node
         }
 
         // Get the next action.
-        Action action = null;        
+        Action action = null;
         // Always get the queued action.
         if (e.queuedAction != null)
         {
             action = e.queuedAction;
             e.queuedAction = null;
         }
-        
+
         // If no action, get the ai's action.
         if (action == null && !e.isPlayer)
         {
@@ -103,7 +103,8 @@ public partial class Model : Node
         // If no action, return
         if (action == null)
         {
-            if (!e.isPlayer) {
+            if (!e.isPlayer)
+            {
                 GD.PrintErr($"{e.species.displayName} has no ai or ai returned null!");
                 GD.PrintErr("waiting instead..");
                 action = new MoveAction().SetTargetRelative((0, 0));

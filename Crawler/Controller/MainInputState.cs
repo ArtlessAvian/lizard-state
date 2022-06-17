@@ -23,7 +23,7 @@ public class MainInputState : InputState
 
         if (this.TransitionInput(crawler, ev))
         { GetTree().SetInputAsHandled(); return; }
-        
+
         if (this.LogicInput(crawler, ev))
         { GetTree().SetInputAsHandled(); return; }
     }
@@ -33,7 +33,7 @@ public class MainInputState : InputState
         if (ev.IsActionPressed("quicksave", false))
         {
             temp = crawler.Model.SaveToDictionary();
-            
+
             PackedScene packed = new PackedScene();
             packed.Pack(crawler.Model);
             ResourceSaver.Save("res://dump.tscn", packed);
@@ -55,8 +55,8 @@ public class MainInputState : InputState
 
             // Add the new stuff.
             {
-                // PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
-                PackedScene modelScene = GD.Load<PackedScene>((string)temp["Filename"]);
+                PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
+                // PackedScene modelScene = GD.Load<PackedScene>((string)temp["Filename"]);
                 Model model = (Model)modelScene.Instance();
                 model.Name = "Model";
                 crawler.AddChild(model);
@@ -66,10 +66,10 @@ public class MainInputState : InputState
                 view.Name = "View";
                 crawler.AddChild(view);
 
-                view.ConnectToModel(model);                
+                view.ConnectToModel(model);
 
-                LoadedGenerator gen = new LoadedGenerator(temp);
-                gen.Generate(crawler.Model);
+                // LoadedGenerator gen = new LoadedGenerator(temp);
+                // gen.Generate(crawler.Model);
             }
 
             return true;
@@ -156,12 +156,12 @@ public class MainInputState : InputState
                 {
                     crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new RunAction().SetTarget(offset)); //crawler, tuple.dir);
-                    crawler.notPlayerTurn = true;        
+                    crawler.notPlayerTurn = true;
                     cursor.Hide();
-                    return true;                    
+                    return true;
                 }
                 else
-                {            
+                {
                     crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset)); //crawler, tuple.dir);
                     crawler.notPlayerTurn = true;
@@ -222,9 +222,9 @@ public class MainInputState : InputState
                     crawler.notPlayerTurn = true;
                     return true;
                 }
-            } 
+            }
         }
-        
+
         return false;
     }
 

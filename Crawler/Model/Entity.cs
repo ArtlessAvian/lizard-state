@@ -13,7 +13,7 @@ public class Entity : Resource
     [Export] public int id;
     [Export] public Species species;
 
-    public bool isPlayer = false;
+    [Export] public bool isPlayer = false;
 
     // Godot doesn't like serializing tuples, and I don't want to use Vector2.
     // So this is what we have to do.
@@ -24,22 +24,22 @@ public class Entity : Resource
         get { return (positionX, positionY); }
         set { positionX = value.x; positionY = value.y; }
     }
-    public bool visibleToPlayer = false;
+    [Export] public bool visibleToPlayer = false;
 
-    public int nextMove = 0;
+    [Export] public int nextMove = 0;
     public Action queuedAction;
 
-    public int health;
-    public bool stunned; // TODO: Rework all this.
-    public int comboCounter; // Undizzy.
-    public bool downed = false;
+    [Export] public int health;
+    [Export] public bool stunned; // TODO: Rework all this.
+    [Export] public int comboCounter; // Undizzy.
+    [Export] public bool downed = false;
 
-    public int energy = 10;
+    [Export] public int energy = 10;
     public InventoryItem inventory = null;
 
-    public int team;
-    public bool providesVision;
-    public bool dirtyVision; // hehe
+    [Export] public int team;
+    [Export] public bool providesVision;
+    [Export] public bool dirtyVision; // hehe
 
     public Entity() { }
 

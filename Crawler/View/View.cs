@@ -26,26 +26,28 @@ public partial class View : Node2D
     private Resource initializedHandler = null;
     private bool handlerRan = false;
 
-    private Dictionary previousEvent = new Dictionary(){{"subject", -1}, {"action", "null"}};
+    private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
 
-    public override void _Ready() {}
+    public override void _Ready() { }
 
     public void ConnectToModel(Model model)
     {
         // Connect to the signal.
         model.Connect("NewEvent", this, "OnModelNewEvent");
-        
+
         // Copy the map.
 
         // Create all entities.
         // TODO: Rework things. This is silly.        
-        GDScript createEvent = GD.Load<GDScript>($"res://Crawler/View/Events/CreateEvent.gd");
+        Resource createEvent = GD.Load<GDScript>($"res://Crawler/View/Events/CreateEvent.gd").New() as Resource;
         foreach (Entity e in model.GetEntities())
         {
-            Dictionary fakeEvent = new Dictionary(){{"args", e}};
-            createEvent.New(this, fakeEvent, roles);
+            Dictionary fakeEvent = new Dictionary() { { "args", e } };
+            createEvent.Call("reinit", this, fakeEvent, null); // called in EventHandler.gd
+            createEvent.Call("setup"); // done in a subclass        
+            createEvent.Call("run");
         }
-        
+
         ModelSync();
     }
 
