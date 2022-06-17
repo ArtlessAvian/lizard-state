@@ -71,7 +71,7 @@ public partial class Actor : Node2D
         {
             aniSprite.Frame = 1;
         }
-        else if (role.queuedAction is ReachAttackAction.ReachAttackActive)
+        else if (role.queuedAction is ReachAttackFollowup)
         {
             aniSprite.Frame = 2;
         }
@@ -130,7 +130,7 @@ public partial class Actor : Node2D
                 targetPosition.x * View.TILESIZE.x,
                 targetPosition.y * View.TILESIZE.y
             ),
-            1 - Mathf.Pow(1-0.3f, delta * 60f)
+            1 - Mathf.Pow(1 - 0.3f, delta * 60f)
         );
 
         GetNode<Node2D>("AnimatedSprite").Position = animationArg.Clamped(1) * View.TILESIZE * spriteLerp;
@@ -139,11 +139,11 @@ public partial class Actor : Node2D
         // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
         if (seen || Engine.EditorHint)
         {
-            this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1-0.1f, delta * 60f));
+            this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
         }
         else
         {
-            this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1-0.1f, delta * 60f));
+            this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
         }
         // End TODO
     }

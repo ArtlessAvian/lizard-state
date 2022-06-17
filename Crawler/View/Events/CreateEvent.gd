@@ -32,5 +32,3 @@ func run():
 
 		var party_status = view.find_node("PartyStatus")
 		party_status.add_child(status)
-
-	print("eee", entity)

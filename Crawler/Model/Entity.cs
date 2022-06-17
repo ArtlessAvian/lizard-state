@@ -27,7 +27,7 @@ public class Entity : Resource
     [Export] public bool visibleToPlayer = false;
 
     [Export] public int nextMove = 0;
-    public Action queuedAction;
+    [Export] public Action queuedAction;
 
     [Export] public int health;
     [Export] public bool stunned; // TODO: Rework all this.
@@ -91,53 +91,53 @@ public class Entity : Resource
     //     }
     // }
 
-    public Dictionary SaveToDictionary()
-    {
-        Dictionary dict = new Dictionary();
-        dict["species"] = species.ResourcePath;
-        dict["isPlayer"] = isPlayer;
-        dict["positionX"] = positionX;
-        dict["positionY"] = positionY;
-        dict["nextMove"] = nextMove;
+    // public Dictionary SaveToDictionary()
+    // {
+    //     Dictionary dict = new Dictionary();
+    //     dict["species"] = species.ResourcePath;
+    //     dict["isPlayer"] = isPlayer;
+    //     dict["positionX"] = positionX;
+    //     dict["positionY"] = positionY;
+    //     dict["nextMove"] = nextMove;
 
-        if (queuedAction != null)
-        {
-            dict["queuedActionDictionary"] = queuedAction.SaveToDictionary();
-            dict["queuedAction"] = queuedAction?.GetType().ToString();
-        }
+    //     if (queuedAction != null)
+    //     {
+    //         dict["queuedActionDictionary"] = queuedAction.SaveToDictionary();
+    //         dict["queuedAction"] = queuedAction?.GetType().ToString();
+    //     }
 
-        dict["health"] = health;
-        dict["stunned"] = stunned;
-        dict["downed"] = downed;
-        dict["energy"] = energy;
-        dict["team"] = team;
-        dict["providesVision"] = providesVision;
-        // dict["AI"] = ai.SaveToDict();
-        return dict;
-    }
+    //     dict["health"] = health;
+    //     dict["stunned"] = stunned;
+    //     dict["downed"] = downed;
+    //     dict["energy"] = energy;
+    //     dict["team"] = team;
+    //     dict["providesVision"] = providesVision;
+    //     // dict["AI"] = ai.SaveToDict();
+    //     return dict;
+    // }
 
-    public Entity(Dictionary dict)
-    {
-        this.species = GD.Load<Species>((string)dict["species"]);
-        this.isPlayer = (bool)dict["isPlayer"];
-        this.positionX = (int)dict["positionX"];
-        this.positionY = (int)dict["positionY"];
-        this.nextMove = (int)dict["nextMove"];
+    // public Entity(Dictionary dict)
+    // {
+    //     this.species = GD.Load<Species>((string)dict["species"]);
+    //     this.isPlayer = (bool)dict["isPlayer"];
+    //     this.positionX = (int)dict["positionX"];
+    //     this.positionY = (int)dict["positionY"];
+    //     this.nextMove = (int)dict["nextMove"];
 
-        if (dict.Contains("queuedAction"))
-        {
-            GD.Print(dict["queuedActionDictionary"]);
-            Dictionary actionDict = dict["queuedActionDictionary"] as Dictionary;
-            GD.Print(actionDict.GetType().ToString());
-            // TODO: make sure everything that extends action serializes what it needs to save.
-            this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]), actionDict);
-        }
+    //     if (dict.Contains("queuedAction"))
+    //     {
+    //         GD.Print(dict["queuedActionDictionary"]);
+    //         Dictionary actionDict = dict["queuedActionDictionary"] as Dictionary;
+    //         GD.Print(actionDict.GetType().ToString());
+    //         // TODO: make sure everything that extends action serializes what it needs to save.
+    //         this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]), actionDict);
+    //     }
 
-        this.health = (int)dict["health"];
-        this.stunned = (bool)dict["stunned"];
-        this.downed = (bool)dict["downed"];
-        this.energy = (int)dict["energy"];
-        this.team = (int)dict["team"];
-        this.providesVision = (bool)dict["providesVision"];
-    }
+    //     this.health = (int)dict["health"];
+    //     this.stunned = (bool)dict["stunned"];
+    //     this.downed = (bool)dict["downed"];
+    //     this.energy = (int)dict["energy"];
+    //     this.team = (int)dict["team"];
+    //     this.providesVision = (bool)dict["providesVision"];
+    // }
 }

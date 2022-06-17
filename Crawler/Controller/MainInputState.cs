@@ -32,7 +32,7 @@ public class MainInputState : InputState
     {
         if (ev.IsActionPressed("quicksave", false))
         {
-            temp = crawler.Model.SaveToDictionary();
+            // temp = crawler.Model.SaveToDictionary();
 
             PackedScene packed = new PackedScene();
             packed.Pack(crawler.Model);

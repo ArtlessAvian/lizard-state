@@ -1,52 +1,52 @@
-using Godot;
-using Godot.Collections;
-using System.Collections.Generic;
+// using Godot;
+// using Godot.Collections;
+// using System.Collections.Generic;
 
-// Workaround for not knowing reflection well.
-// Will replace with reflection or something smarter.
-public class LoadedGenerator : LevelGenerator
-{
-    Dictionary dict;
-    LevelGenerator generator;
+// // Workaround for not knowing reflection well.
+// // Will replace with reflection or something smarter.
+// public class LoadedGenerator : LevelGenerator
+// {
+//     Dictionary dict;
+//     LevelGenerator generator;
 
-    public LoadedGenerator(Dictionary dict)
-    {
-        this.dict = dict;
-        Dictionary data = (Dictionary)dict["generatorData"];
-        switch ((string)data["Type"])
-        {
-            case "Editor":
-                this.generator = new EditorGenerator(data);
-                break;
-            case "Noise":
-                this.generator = new NoiseGenerator();
-                break;
-        }
-    }
+//     public LoadedGenerator(Dictionary dict)
+//     {
+//         this.dict = dict;
+//         Dictionary data = (Dictionary)dict["generatorData"];
+//         switch ((string)data["Type"])
+//         {
+//             case "Editor":
+//                 this.generator = new EditorGenerator(data);
+//                 break;
+//             case "Noise":
+//                 this.generator = new NoiseGenerator();
+//                 break;
+//         }
+//     }
 
-    public Model Generate(Model model)
-    {
-        model.generatorData = this.SaveToDict();        
-        
-        // Assumes the map stays constant.
-        GenerateMap(model);
+//     public Model Generate(Model model)
+//     {
+//         model.generatorData = this.SaveToDict();        
 
-        model.time = (int)dict["time"];
-        foreach (Dictionary entityDict in (Array)dict["Entities"])
-        {
-            model.AddEntity(new Entity(entityDict));
-        }
+//         // Assumes the map stays constant.
+//         GenerateMap(model);
 
-        return model;
-    }
+//         model.time = (int)dict["time"];
+//         foreach (Dictionary entityDict in (Array)dict["Entities"])
+//         {
+//             model.AddEntity(new Entity(entityDict));
+//         }
 
-    public void GenerateMap(Model model)
-    {
-        this.generator.GenerateMap(model);
-    }
+//         return model;
+//     }
 
-    public Dictionary SaveToDict()
-    {
-        return generator.SaveToDict();
-    }
-}
+//     public void GenerateMap(Model model)
+//     {
+//         this.generator.GenerateMap(model);
+//     }
+
+//     public Dictionary SaveToDict()
+//     {
+//         return generator.SaveToDict();
+//     }
+// }

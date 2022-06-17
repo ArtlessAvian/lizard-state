@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// The action can also be "unreasonable."
 /// Actions should be serializable.
 /// </summary>
-public abstract class Action
+public abstract class Action : Resource
 {
     // If !IsValid, wastes some time and sends error event.
     // Otherwise, tries to do the thing, even if unreasonable. 
@@ -21,7 +21,14 @@ public abstract class Action
     // public abstract string[] GetWarnings(ModelAPI api, Entity e);
 
     // Targeting
-    private (int x, int y) targetInternal = (0, 0);
+    [Export] public int targetInternalX;
+    [Export] public int targetInternalY;
+    public (int x, int y) targetInternal
+    {
+        get { return (targetInternalX, targetInternalY); }
+        set { targetInternalX = value.x; targetInternalY = value.y; }
+    }
+    [Export]
     private bool isRelative = true;
 
     public (int x, int y) GetTargetPos((int x, int y) origin)
@@ -60,13 +67,5 @@ public abstract class Action
         dict["isRelative"] = isRelative;
 
         return dict;
-    }
-
-    public Action() { }
-
-    public Action(Godot.Collections.Dictionary dict)
-    {
-        this.targetInternal = ((int)dict["targetInternalX"], (int)dict["targetInternalY"]);
-        this.isRelative = (bool)dict["isRelative"];
     }
 }
