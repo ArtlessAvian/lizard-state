@@ -5,6 +5,7 @@ using System.Collections.Generic;
 /// <summary>
 /// The command pattern. Create action objects, use, then throw away.
 /// The action can also be "unreasonable."
+/// Actions should be serializable.
 /// </summary>
 public abstract class Action
 {
@@ -50,4 +51,22 @@ public abstract class Action
 
     /// For AI and UI use. Range is inclusive.
     public virtual (int min, int max) Range => (0, 0);
+
+    public Godot.Collections.Dictionary SaveToDictionary()
+    {
+        Godot.Collections.Dictionary dict = new Godot.Collections.Dictionary();
+        dict["targetInternalX"] = targetInternal.x;
+        dict["targetInternalY"] = targetInternal.y;
+        dict["isRelative"] = isRelative;
+
+        return dict;
+    }
+
+    public Action() { }
+
+    public Action(Godot.Collections.Dictionary dict)
+    {
+        this.targetInternal = ((int)dict["targetInternalX"], (int)dict["targetInternalY"]);
+        this.isRelative = (bool)dict["isRelative"];
+    }
 }

@@ -41,7 +41,7 @@ public class Entity : Resource
     public bool providesVision;
     public bool dirtyVision; // hehe
 
-    public Entity() {}
+    public Entity() { }
 
     public void SetSpecies(Species species)
     {
@@ -75,7 +75,7 @@ public class Entity : Resource
     // public void TakeDamage(AttackResult result)
     // {
     //     this.health -= result.damage;
-        
+
     //     if (this.health <= 0)
     //     {
     //         this.downed = true;
@@ -102,8 +102,8 @@ public class Entity : Resource
 
         if (queuedAction != null)
         {
+            dict["queuedActionDictionary"] = queuedAction.SaveToDictionary();
             dict["queuedAction"] = queuedAction?.GetType().ToString();
-            dict["queuedActionTarget"] = queuedAction.GetTargetPos(position);
         }
 
         dict["health"] = health;
@@ -126,8 +126,11 @@ public class Entity : Resource
 
         if (dict.Contains("queuedAction"))
         {
-            this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]));
-            this.queuedAction.SetTarget(((int x, int y))dict["queuedActionTarget"]);
+            GD.Print(dict["queuedActionDictionary"]);
+            Dictionary actionDict = dict["queuedActionDictionary"] as Dictionary;
+            GD.Print(actionDict.GetType().ToString());
+            // TODO: make sure everything that extends action serializes what it needs to save.
+            this.queuedAction = (Action)Activator.CreateInstance(Type.GetType((string)dict["queuedAction"]), actionDict);
         }
 
         this.health = (int)dict["health"];

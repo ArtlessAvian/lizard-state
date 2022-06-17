@@ -51,6 +51,11 @@ public class ReachAttackAction : Action
             this.data = data;
         }
 
+        public ReachAttackActive(Godot.Collections.Dictionary dict) : base(dict)
+        {
+
+        }
+
         public override bool Do(Model model, Entity e)
         {
             (int x, int y) targetPos = GetTargetPos(e.position);
@@ -74,7 +79,7 @@ public class ReachAttackAction : Action
                 {
                     // clean hit!
                     OnHit(model, e, targeted);
-                    
+
                     // TODO: This can put people inside walls. Or, inside each other.
                     // (If they intersect a wall, they should "wallsplat" or something.)
                     // (If they end up on a person, they should pop to a random nearby tile.)
@@ -149,10 +154,10 @@ public class ReachAttackAction : Action
                 {
                     return previousPosition;
                 }
-                
+
                 previousPosition = position;
             }
-            
+
             return (0, 0); // this will never happen
         }
 
