@@ -1,7 +1,9 @@
-public class InventoryItem
+using Godot;
+
+public class InventoryItem : Resource
 {
-    public ItemData data;
-    public int uses = -1;
+    [Export] public ItemData data;
+    [Export] public int uses = -1;
 
     public InventoryItem(ItemData data)
     {
@@ -9,5 +11,5 @@ public class InventoryItem
         uses = data.maxUses;
     }
 
-    public InventoryItem() : this(new ItemData()) {}
+    public InventoryItem() : this(new ItemData()) { }
 }

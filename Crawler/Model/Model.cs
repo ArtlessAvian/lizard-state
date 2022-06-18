@@ -17,12 +17,11 @@ public partial class Model : Node
         get { return GetNode<CrawlerMap>("Map"); }
     }
 
-    [Export]
-    private List<Entity> Entities = new List<Entity>();
-    private List<FloorItem> FloorItems = new List<FloorItem>();
+    [Export] private List<Entity> Entities = new List<Entity>();
+    [Export] private List<FloorItem> FloorItems = new List<FloorItem>();
 
     // given to model by generator
-    public Dictionary generatorData;
+    [Export] public Dictionary generatorData;
 
     [Signal]
     public delegate void NewEvent(Dictionary ev);

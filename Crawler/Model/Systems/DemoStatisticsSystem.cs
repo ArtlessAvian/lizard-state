@@ -4,16 +4,16 @@ using Godot.Collections;
 
 public class DemoStatisticsSystem : Node, CrawlerSystem
 {
-    public int kills = 0;
-    public int playerDamage = 0;
-    public int partnerDamage = 0;
-    public bool partnerDead = false;
-    public bool gotMoss = false;
-    
-    public bool usedMouse = false;
-    public bool usedArrow = false;
-    public bool usedNumpad = false;
-    public bool usedViKeys = false;
+    [Export] public int kills = 0;
+    [Export] public int playerDamage = 0;
+    [Export] public int partnerDamage = 0;
+    [Export] public bool partnerDead = false;
+    [Export] public bool gotMoss = false;
+
+    [Export] public bool usedMouse = false;
+    [Export] public bool usedArrow = false;
+    [Export] public bool usedNumpad = false;
+    [Export] public bool usedViKeys = false;
 
     public void ProcessEvent(Model model, Dictionary ev)
     {
@@ -58,9 +58,9 @@ public class DemoStatisticsSystem : Node, CrawlerSystem
     }
 
     // These are probably all in numerical order or something.
-    List<KeyList> arrows = new List<KeyList>(){KeyList.Left, KeyList.Right, KeyList.Up, KeyList.Down};
-    List<KeyList> numpad = new List<KeyList>(){KeyList.Kp1, KeyList.Kp2, KeyList.Kp3, KeyList.Kp4, KeyList.Kp5, KeyList.Kp6, KeyList.Kp7, KeyList.Kp8, KeyList.Kp9};
-    List<KeyList> viKeys = new List<KeyList>(){KeyList.H, KeyList.J, KeyList.K, KeyList.L, KeyList.B, KeyList.N, KeyList.Y, KeyList.U, KeyList.Period};
+    List<KeyList> arrows = new List<KeyList>() { KeyList.Left, KeyList.Right, KeyList.Up, KeyList.Down };
+    List<KeyList> numpad = new List<KeyList>() { KeyList.Kp1, KeyList.Kp2, KeyList.Kp3, KeyList.Kp4, KeyList.Kp5, KeyList.Kp6, KeyList.Kp7, KeyList.Kp8, KeyList.Kp9 };
+    List<KeyList> viKeys = new List<KeyList>() { KeyList.H, KeyList.J, KeyList.K, KeyList.L, KeyList.B, KeyList.N, KeyList.Y, KeyList.U, KeyList.Period };
 
     // systems aren't supposed to do this, but,
     public override void _Input(InputEvent ev)

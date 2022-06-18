@@ -11,9 +11,9 @@ public class VisionSystem : TileMap, CrawlerSystem
     [Export] NodePath mapPath;
     CrawlerMap map = null;
 
-    public Dictionary<int, int> canSee = new Dictionary<int, int>();
+    [Export] public Dictionary<int, int> canSee = new Dictionary<int, int>();
 
-    public VisibilityTrie trie = new VisibilityTrie();
+    // public VisibilityTrie trie = new VisibilityTrie();
 
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
@@ -44,7 +44,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     }
 
     public void UpdateVision(Model model, Entity e)
-    {        
+    {
         // See the map
         int[,] tiles = this.GetVisibleTiles(e.position, 8);
 
@@ -54,14 +54,14 @@ public class VisionSystem : TileMap, CrawlerSystem
             {"center", new Vector2(e.position.x, e.position.y)},
             {"tiles", (tiles)}
         });
-        
+
         // Update entities seen.
         // See things you don't already see.
         foreach (Entity other in model.GetEntitiesInRadius(e.position, 10))
         {
             bool seeing = GetCell(other.position.x, other.position.y) == 1;
             if (seeing)
-            {   
+            {
                 if (!canSee.ContainsKey(other.id))
                 {
                     canSee[other.id] = 0;
@@ -75,7 +75,7 @@ public class VisionSystem : TileMap, CrawlerSystem
                 canSee[other.id] |= 1 << e.id;
             }
         }
-        
+
         // Unsee things you already see.
         foreach (Entity other in model.GetEntities())
         {
@@ -110,12 +110,12 @@ public class VisionSystem : TileMap, CrawlerSystem
         {
             for (int dx = -radius; dx <= radius; dx++)
             {
-                tiles[dx + radius, dy + radius] = 
+                tiles[dx + radius, dy + radius] =
                     this.GetCell(pos.x + dx, pos.y + dy) == VISIBLE ?
                     map.GetCell(pos.x + dx, pos.y + dy) : -2;
-                    // -2 and not -1, in case theres a hole in the ground or something
-                    
-                    // map.GetCell(pos.x + dx, pos.y + dy);
+                // -2 and not -1, in case theres a hole in the ground or something
+
+                // map.GetCell(pos.x + dx, pos.y + dy);
             }
         }
         return tiles;
@@ -133,16 +133,16 @@ public class VisionSystem : TileMap, CrawlerSystem
     public void UpdateVisibility((int x, int y) pos, int radius)
     {
         // trie.ExtendRadius(radius);
-        
+
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));
 
         foreach ((int x, int y) relative in VisibilityTrie.FieldOfView(isBlocked, radius))
         {
             this.SetCell(pos.x + relative.x, pos.y + relative.y, VISIBLE);
         }
-        
+
         // Traverse the trie 8 times. Could be done in one pass.
-        
+
         // for (int octant = 0; octant < 8; octant++)
         // {
         //     FollowTrie(pos, trie.origin, octant, radius);
@@ -157,7 +157,7 @@ public class VisionSystem : TileMap, CrawlerSystem
     //     {
     //         return;
     //     }
-        
+
     //     (int dx, int dy) = GridHelper.DeOctantify(node.x, node.y, octant);
 
     //     this.SetCell(origin.x + dx, origin.y + dy, VISIBLE);

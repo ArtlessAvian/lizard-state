@@ -4,9 +4,9 @@ using Godot.Collections;
 
 public class DemoTutorialSystem : Node, CrawlerSystem
 {
-    bool movePrompt = false;
-    bool abilitiesPrompt = false;
-    int kills = 0;
+    [Export] bool movePrompt = false;
+    [Export] bool abilitiesPrompt = false;
+    [Export] int kills = 0;
 
     public void ProcessEvent(Model model, Dictionary ev)
     {
