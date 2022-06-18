@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Crawler/Model/CrawlerMap.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Model.cs" type="Script" id=2]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=3]
-[ext_resource path="res://Crawler/View/Assets/Tiles/Visibility.tres" type="TileSet" id=4]
 [ext_resource path="res://Crawler/Model/Systems/VisionSystem.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/Model/Systems/DemoTutorialSystem.cs" type="Script" id=6]
 [ext_resource path="res://Crawler/Model/Systems/DemoStatisticsSystem.cs" type="Script" id=7]
@@ -24,9 +23,10 @@ script = ExtResource( 1 )
 
 [node name="Vision" type="TileMap" parent="Systems"]
 visible = false
-position = Vector2( -16, -12 )
-tile_set = ExtResource( 4 )
-cell_size = Vector2( 32, 24 )
+self_modulate = Color( 0.392157, 0.392157, 0.392157, 1 )
+position = Vector2( -12, -8 )
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 16 )
 format = 1
 script = ExtResource( 5 )
 mapPath = NodePath("../../Map")

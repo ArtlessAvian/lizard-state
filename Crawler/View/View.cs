@@ -39,7 +39,7 @@ public partial class View : Node2D
 
         // Create all entities.
         // TODO: Rework things. This is silly.        
-        Resource createEvent = GD.Load<GDScript>($"res://Crawler/View/Events/CreateEvent.gd").New() as Resource;
+        Resource createEvent = GetEventHandlerOrNull("Create");
         foreach (Entity e in model.GetEntities())
         {
             Dictionary fakeEvent = new Dictionary() { { "args", e } };
@@ -47,6 +47,24 @@ public partial class View : Node2D
             createEvent.Call("setup"); // done in a subclass        
             createEvent.Call("run");
         }
+
+        VisionSystem vision = model.GetNode<VisionSystem>("Systems/Vision");
+
+        // TODO: Add map knowledge. Maybe move logic from view to model.
+        // foreach (Vector2 vec in vision.GetUsedCells())
+        // {
+        //     map
+        // }
+
+        foreach (Entity e in model.GetEntities())
+        {
+            if (e.providesVision)
+            {
+                vision.UpdateVision(model, e);
+            }
+        }
+
+        viewTime = model.time;
 
         ModelSync();
     }
