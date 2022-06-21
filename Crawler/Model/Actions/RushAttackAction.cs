@@ -8,9 +8,9 @@ public class RushAttackAction : Action
 
     public float MissChance
     {
-        // E[Geom(p) * n] = n (1-p)/p
-        // set { expectedDamage = damagePerHit * (1-value)/value; }
-        get { return damagePerHit / (expectedDamage + damagePerHit); }
+        // E[Geom(p) * n] = n * 1/p. solve for p
+        get { return damagePerHit / expectedDamage; }
+        // E[Geom(p) * n] = n (1-p)/p // if first hit not guaranteed
     }
 
     public float Variance
@@ -30,7 +30,7 @@ public class RushAttackAction : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
-        while (GD.Randf() >= MissChance && !targeted.downed)
+        do
         {
             // TODO: Move into entity?
 
@@ -55,7 +55,7 @@ public class RushAttackAction : Action
             {
                 model.CoolerApiEvent(targeted.id, "Downed");
             }
-        }
+        } while (GD.Randf() >= MissChance && !targeted.downed);
 
         e.nextMove += 1;
 

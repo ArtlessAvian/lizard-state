@@ -58,14 +58,40 @@ public abstract class Action : Resource
 
     /// For AI and UI use. Range is inclusive.
     public virtual (int min, int max) Range => (0, 0);
+    public virtual TargetingType.Type targetingType => new TargetingType.Smite(0);
+}
 
-    public Godot.Collections.Dictionary SaveToDictionary()
+public static class TargetingType
+{
+    public interface Type { }
+
+    // TODO: add more params.
+    public struct Cone : Type
     {
-        Godot.Collections.Dictionary dict = new Godot.Collections.Dictionary();
-        dict["targetInternalX"] = targetInternal.x;
-        dict["targetInternalY"] = targetInternal.y;
-        dict["isRelative"] = isRelative;
+        public float sectorDegrees;
+        public Cone(float sectorDegrees)
+        {
+            this.sectorDegrees = sectorDegrees;
+        }
+    }
 
-        return dict;
+    public struct Smite : Type
+    {
+        public float radius;
+        public Smite(float radius)
+        {
+            this.radius = radius;
+        }
+    }
+
+    public struct Ray : Type
+    {
+        public bool pierces;
+        public bool stopAtTarget;
+        public Ray(bool pierces, bool stopAtTarget)
+        {
+            this.pierces = pierces;
+            this.stopAtTarget = stopAtTarget;
+        }
     }
 }

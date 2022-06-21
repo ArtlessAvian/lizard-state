@@ -4,7 +4,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 
-public class CameraFlashAction : Action
+public class FlashbangAction : Action
 {
     public override bool Do(Model model, Entity e)
     {
@@ -14,15 +14,13 @@ public class CameraFlashAction : Action
         model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
         model.CoolerApiEvent(e.id, "CameraFlash");
 
-        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.ConeOfView(((int x, int y) pos) => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
+        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfView(((int x, int y) pos) => false, 1));
         foreach ((int dx, int dy) in set)
         {
-            if (dx == 0 && dy == 0) { continue; }
-
-            if (model.GetEntityAt((e.position.x + dx, e.position.y + dy)) is Entity targeted)
+            if (model.GetEntityAt((targetPos.x + dx, targetPos.y + dy)) is Entity targeted)
             {
                 // think of it as "lose {stun} turns." (VVVVVVVVV) The term here ensures that lower id's lose their turn.
-                int stunUntil = model.time + 1 + (targeted.id < e.id ? 1 : 0);
+                int stunUntil = model.time + 2 + (targeted.id < e.id ? 1 : 0);
                 targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
                 targeted.stunned = true;
 
@@ -44,9 +42,11 @@ public class CameraFlashAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
         return true;
     }
 
     public override (int min, int max) Range => (1, 5);
-    public override TargetingType.Type targetingType => new TargetingType.Cone(45);
+    public override TargetingType.Type targetingType => new TargetingType.Smite(1);
 }

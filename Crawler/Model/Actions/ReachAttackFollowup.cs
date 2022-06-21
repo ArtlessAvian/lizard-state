@@ -63,6 +63,8 @@ public class ReachAttackFollowup : Action
 
     public override bool IsValid(Model model, Entity e)
     {
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
         return true;
     }
 

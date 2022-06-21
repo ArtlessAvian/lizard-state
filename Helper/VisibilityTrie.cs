@@ -41,7 +41,7 @@ public class VisibilityTrie
     {
         if (currentRadius >= radius) { return; }
         currentRadius = radius;
-        
+
         // For each unique ray in the octant passing through a cell,
         foreach ((int rise, int run) in GridHelper.ListRationals((int)radius + 1))
         {
@@ -49,7 +49,7 @@ public class VisibilityTrie
             TrieNode current = origin;
             foreach ((int x, int y) in GridHelper.RayThrough((0, 0), (run, rise)))
             {
-                if (x == 0) {continue;} // skip the first one.
+                if (x == 0) { continue; } // skip the first one.
                 if (x > radius) { break; } // finish up
                 if (y == current.y)
                 {
@@ -88,7 +88,7 @@ public class VisibilityTrie
     {
         for (int octant = 0; octant < 8; octant++)
         {
-            List<TrieNode> stack = new List<TrieNode>{origin};
+            List<TrieNode> stack = new List<TrieNode> { origin };
             while (stack.Count > 0)
             {
                 TrieNode current = stack[stack.Count - 1]; // TIL the hat operator ^0
@@ -114,7 +114,7 @@ public class VisibilityTrie
     {
         for (int octant = 0; octant < 8; octant++)
         {
-            List<TrieNode> stack = new List<TrieNode>{origin};
+            List<TrieNode> stack = new List<TrieNode> { origin };
             while (stack.Count > 0)
             {
                 TrieNode current = stack[stack.Count - 1]; // TIL the hat operator ^0
@@ -126,12 +126,11 @@ public class VisibilityTrie
                 }
 
                 (int, int) relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
-                if (!TileInCone(relativePos, direction, sectorDegrees))
+                if (TileInCone(relativePos, direction, sectorDegrees))
                 {
-                    continue;
+                    yield return relativePos;
                 }
-                
-                yield return relativePos;
+
                 if (!isBlocked(relativePos))
                 {
                     stack.Add(current.straight);
@@ -151,16 +150,16 @@ public class VisibilityTrie
         // if (PointInCone((tile.x, tile.y), direction, sectorDegrees)) {return true;}
 
         // check the four edges.
-        if (PointInCone((tile.x + 0.5f, tile.y), direction, sectorDegrees)) {return true;}
-        if (PointInCone((tile.x - 0.5f, tile.y), direction, sectorDegrees)) {return true;}
-        if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
-        if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        // if (PointInCone((tile.x + 0.5f, tile.y), direction, sectorDegrees)) { return true; }
+        // if (PointInCone((tile.x - 0.5f, tile.y), direction, sectorDegrees)) { return true; }
+        // if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
+        // if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
 
         // check the four corners.
-        // if (PointInCone((tile.x + 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
-        // if (PointInCone((tile.x - 0.5f, tile.y + 0.5f), direction, sectorDegrees)) {return true;}
-        // if (PointInCone((tile.x + 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
-        // if (PointInCone((tile.x - 0.5f, tile.y - 0.5f), direction, sectorDegrees)) {return true;}
+        if (PointInCone((tile.x + 0.5f, tile.y + 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInCone((tile.x - 0.5f, tile.y + 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInCone((tile.x + 0.5f, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInCone((tile.x - 0.5f, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
 
         return false;
     }
@@ -171,7 +170,7 @@ public class VisibilityTrie
 
         double pointLenSqr = point.x * point.x + point.y * point.y;
         double dirLenSqr = direction.x * direction.x + direction.y * direction.y;
-        return Math.Acos((point.x * direction.x + point.y * direction.y) / Math.Sqrt(pointLenSqr * dirLenSqr)) <= sectorDegrees/2 * Math.PI/180 + 0.01;
+        return Math.Acos((point.x * direction.x + point.y * direction.y) / Math.Sqrt(pointLenSqr * dirLenSqr)) <= sectorDegrees / 2 * Math.PI / 180 + 0.01;
     }
 
     public static bool AnyLineOfSight((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)
