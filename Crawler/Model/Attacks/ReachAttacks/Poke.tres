@@ -12,5 +12,5 @@ recovery = 1
 stun = 1
 damage = 2
 blockChance = 0.2
-range = 7
+range = 2
 knockback = 0

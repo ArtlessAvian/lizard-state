@@ -13,7 +13,7 @@ public class EditorGenerator : LevelGenerator
     }
 
     public EditorGenerator(Dictionary dict) : this((string)dict["ScenePath"])
-    {}
+    { }
 
     public Model Generate(Model model)
     {
@@ -21,9 +21,9 @@ public class EditorGenerator : LevelGenerator
         GenerateMap(model);
         GenerateEntities(model);
 
-        // FloorItem item = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
-        // item.position = (4, 0);
-        // model.AddFloorItem(item);
+        FloorItem item = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
+        item.position = (4, 0);
+        model.AddFloorItem(item);
         FloorItem item2 = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
         item2.position = (-16, -7);
         model.AddFloorItem(item2);
@@ -86,7 +86,7 @@ public class EditorGenerator : LevelGenerator
     {
         // I forgot why I'm doing this.
         Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-        
+
         entity.SetSpecies(species);
         entity.position = position;
         entity.SetTeam(team);

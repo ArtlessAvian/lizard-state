@@ -1,13 +1,14 @@
-[gd_resource type="Resource" load_steps=3 format=2]
+[gd_resource type="Resource" load_steps=4 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Attacks/ReachAttacks/Poke.tres" type="Resource" id=2]
 [ext_resource path="res://Crawler/Model/AIs/WildAI.tres" type="Resource" id=3]
 
 [resource]
 resource_name = "Enemy2"
 script = ExtResource( 1 )
 ai = ExtResource( 3 )
-attacks = [  ]
+attacks = [ ExtResource( 2 ) ]
 abilities = [  ]
 maxHealth = 10
 displayName = "Enemy2"

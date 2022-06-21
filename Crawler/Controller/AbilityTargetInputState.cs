@@ -92,7 +92,7 @@ public class AbilityTargetInputState : InputState
             attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
         }
 
-        switch (action.targetingType)
+        switch (action.TargetingType)
         {
             case TargetingType.Cone cone: RefreshCone(cone, attackRange); break;
             case TargetingType.Smite smite: RefreshSmite(smite, attackRange); break;

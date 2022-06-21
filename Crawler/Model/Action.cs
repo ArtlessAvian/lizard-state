@@ -58,7 +58,7 @@ public abstract class Action : Resource
 
     /// For AI and UI use. Range is inclusive.
     public virtual (int min, int max) Range => (0, 0);
-    public virtual TargetingType.Type targetingType => new TargetingType.Smite(0);
+    public virtual TargetingType.Type TargetingType => new TargetingType.Smite(0);
 }
 
 public static class TargetingType

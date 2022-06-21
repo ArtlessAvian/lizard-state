@@ -1,8 +1,9 @@
 extends "../EventHandler.gd"
 
-var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
+var damage_popup_scene: PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
 var start_time
+
 
 func should_wait_before():
 	if is_same_subject():
@@ -10,6 +11,7 @@ func should_wait_before():
 		# if previous_event.action == "Rush":
 		return false
 	return view.AnyActorAnimating()
+
 
 func run():
 	start_time = now()
@@ -22,14 +24,14 @@ func run():
 	var animation = subject.get_node("AnimationPlayer")
 	animation.play("RESET")
 	animation.advance(0)
-	animation.play("Rush")	
+	animation.play("Rush")
 
 	object.health -= event["damage"]
 
 	if object.status != null:
 		object.status.set_health(object.health)
 
-	var popup = damage_popup_scene.instance();
+	var popup = damage_popup_scene.instance()
 	popup.text = "-" + str(event["damage"])
 	popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10
 	object.get_node("DamagePopups").add_child(popup)
@@ -42,6 +44,9 @@ func run():
 
 	object.get_node("HealthBar").value = object.health
 
+
 func should_wait_after():
 	# return view.AnyActorAnimating()
-	return now() - start_time < 6 * (1000/60)
+	if is_same_subject():
+		return now() - start_time < 6 * (1000 / 60)
+	return now() - start_time < 30 * (1000 / 60)

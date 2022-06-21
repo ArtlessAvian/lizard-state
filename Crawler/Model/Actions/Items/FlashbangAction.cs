@@ -48,5 +48,5 @@ public class FlashbangAction : Action
     }
 
     public override (int min, int max) Range => (1, 5);
-    public override TargetingType.Type targetingType => new TargetingType.Smite(1);
+    public override TargetingType.Type TargetingType => new TargetingType.Smite(1);
 }

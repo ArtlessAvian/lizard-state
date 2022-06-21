@@ -53,4 +53,5 @@ public class UseItemAction : Action
     }
 
     public override (int, int) Range => ProxyAction.Range;
+    public override TargetingType.Type TargetingType => ProxyAction.TargetingType;
 }

@@ -15,5 +15,7 @@ public class FloorItem : Resource
         set { positionX = value.x; positionY = value.y; }
     }
 
+    [Export] public InventoryItem inventoryItem;
+
     public FloorItem() { }
 }

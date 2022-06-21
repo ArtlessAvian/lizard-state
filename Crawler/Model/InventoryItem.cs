@@ -11,5 +11,5 @@ public class InventoryItem : Resource
         uses = data.maxUses;
     }
 
-    public InventoryItem() : this(new ItemData()) { }
+    public InventoryItem() { }
 }

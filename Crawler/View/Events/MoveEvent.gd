@@ -18,3 +18,5 @@ func run():
 	# subject.get_node("AnimationPlayer").play("RESET");
 
 	# view.get_node("Map/Floors/Footsteps").set_cellv(from, 0)
+
+	subject.get_node("ComboBar").value = 0

@@ -381,7 +381,9 @@ mouse_filter = 2
 max_value = 20.0
 step = 0.0
 value = 20.0
+texture_under = SubResource( 7 )
 texture_progress = SubResource( 7 )
+tint_under = Color( 0.431373, 0.431373, 0.431373, 1 )
 tint_progress = Color( 0, 1, 0, 1 )
 nine_patch_stretch = true
 stretch_margin_left = 2
@@ -399,13 +401,10 @@ mouse_filter = 2
 max_value = 4.0
 value = 4.0
 texture_progress = ExtResource( 3 )
-tint_progress = Color( 0.403922, 0.682353, 0.831373, 1 )
+tint_progress = Color( 0.831373, 0.403922, 0.403922, 1 )
 nine_patch_stretch = true
 stretch_margin_left = 2
 stretch_margin_right = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="DamagePopups" type="Node2D" parent="."]
 position = Vector2( 0, -30 )

@@ -18,12 +18,12 @@ public class GetAction : Action
             return true;
         }
 
-        foreach (FloorItem item in model.GetFloorItems())
+        foreach (FloorItem floorItem in model.GetFloorItems())
         {
-            if (item.positionX == e.positionX && item.positionY == e.positionY)
+            if (floorItem.positionX == e.positionX && floorItem.positionY == e.positionY)
             {
                 model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
-                e.inventory = new InventoryItem();
+                e.inventory = floorItem.inventoryItem ?? new InventoryItem(GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres"));
                 model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
                 e.nextMove += 3;
                 return true;
