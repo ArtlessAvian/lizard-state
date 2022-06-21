@@ -353,7 +353,6 @@ region = Rect2( 0, 0, 40, 2 )
 
 [node name="Actor" type="Node2D"]
 script = ExtResource( 1 )
-animationArg = Vector2( 1, 0 )
 spriteLerp = -0.1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

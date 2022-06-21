@@ -1,0 +1,261 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu/tegu.png" type="Texture" id=1]
+[ext_resource path="res://Crawler/View/Assets/Tiles/Test2.png" type="Texture" id=2]
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_texture = ExtResource( 2 )
+uv1_scale = Vector3( 0.5, 0.063, 1 )
+uv1_offset = Vector3( 0.001, 0.001, 0 )
+
+[sub_resource type="PlaneMesh" id=5]
+material = SubResource( 4 )
+size = Vector2( 1, 1 )
+center_offset = Vector3( 0, -0.5, 0 )
+
+[sub_resource type="CubeMesh" id=6]
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="MeshLibrary" id=7]
+item/0/name = ""
+item/0/mesh = SubResource( 5 )
+item/0/mesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/0/shapes = [  ]
+item/0/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/1/name = ""
+item/1/mesh = SubResource( 6 )
+item/1/mesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/1/shapes = [  ]
+item/1/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[sub_resource type="GDScript" id=32]
+script/source = "extends GridMap
+
+func _ready():
+	clear()
+	for x in range(-10, 11):
+		for z in range(-10, 11):
+			if x*x + z*z > 100:
+				pass
+#			elif x*x + z*z > 79:
+#				set_cell_item(x, 0, z, 1)
+			else:
+				set_cell_item(x, 0, z, 0)
+
+	for i in range(-2, 3):
+		set_cell_item(i, 0, -2, 1)
+		set_cell_item(i, 0, 2, 1)
+	
+"
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 16
+atlas = ExtResource( 1 )
+region = Rect2( 0, 40, 40, 40 )
+
+[sub_resource type="GDScript" id=29]
+script/source = "extends Spatial
+tool
+
+export(Texture) var texture = null
+export(float) var pixel_size = 0.01
+export(float) var y_offset = -5
+
+func _process(delta):
+	var cam = get_viewport().get_camera()
+	var euler = cam.global_transform.basis.get_euler()
+	self.rotation_degrees.y = rad2deg(euler.y)
+	
+	var quad : QuadMesh = $MeshInstance.mesh
+	quad.material.set(\"shader_param/TextureUniform\", texture)
+	quad.size.x = 40.0 * pixel_size
+	quad.size.y = 40.0 * pixel_size / abs(cos(euler.x))
+	
+	quad.center_offset.y = quad.size.y / 2.0 + y_offset * pixel_size
+"
+
+[sub_resource type="AtlasTexture" id=30]
+flags = 16
+atlas = ExtResource( 1 )
+region = Rect2( 40, 40, 40, 40 )
+
+[sub_resource type="VisualShaderNodeInput" id=26]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeVectorOp" id=27]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.25, 0.25, 0 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id=28]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0, 0.25, 0 ) ]
+
+[sub_resource type="VisualShaderNodeTextureUniform" id=31]
+uniform_name = "TextureUniform"
+texture_type = 1
+
+[sub_resource type="VisualShader" id=24]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform sampler2D TextureUniform : hint_albedo;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Input:4
+	vec3 n_out4p0 = vec3(UV, 0.0);
+
+// VectorOp:5
+	vec3 n_in5p1 = vec3(0.25000, 0.25000, 0.00000);
+	vec3 n_out5p0 = n_out4p0 * n_in5p1;
+
+// VectorOp:6
+	vec3 n_in6p1 = vec3(0.00000, 0.25000, 0.00000);
+	vec3 n_out6p0 = n_out5p0 + n_in6p1;
+
+// TextureUniform:7
+	vec3 n_out7p0;
+	float n_out7p1;
+	{
+		vec4 n_tex_read = texture(TextureUniform, n_out6p0.xy);
+		n_out7p0 = n_tex_read.rgb;
+		n_out7p1 = n_tex_read.a;
+	}
+
+// Output:0
+	ALBEDO = n_out7p0;
+	ALPHA = n_out7p1;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -227, 104 )
+nodes/fragment/0/position = Vector2( 380, 220 )
+nodes/fragment/4/node = SubResource( 26 )
+nodes/fragment/4/position = Vector2( -400, 100 )
+nodes/fragment/5/node = SubResource( 27 )
+nodes/fragment/5/position = Vector2( -220, 80 )
+nodes/fragment/6/node = SubResource( 28 )
+nodes/fragment/6/position = Vector2( -120, 220 )
+nodes/fragment/7/node = SubResource( 31 )
+nodes/fragment/7/position = Vector2( 100, 120 )
+nodes/fragment/connections = PoolIntArray( 4, 0, 5, 0, 5, 0, 6, 0, 7, 0, 0, 0, 7, 1, 0, 1, 6, 0, 7, 0 )
+nodes/light/0/position = Vector2( 460, 140 )
+
+[sub_resource type="ShaderMaterial" id=21]
+shader = SubResource( 24 )
+shader_param/TextureUniform = SubResource( 30 )
+
+[sub_resource type="QuadMesh" id=20]
+material = SubResource( 21 )
+size = Vector2( 1.68, 2.01911 )
+center_offset = Vector3( 0, 0.799553, 0 )
+
+[sub_resource type="GDScript" id=12]
+script/source = "extends Spatial
+
+
+func _ready():
+	pass  # Replace with function body.
+
+var total = 0
+func _process(delta):
+	total += delta
+	rotation_degrees.y = total * 30
+#	rotation_degrees.x = -45 - sin(total / 7 * 2 * PI) * 45
+"
+
+[sub_resource type="GDScript" id=11]
+script/source = "extends Spatial
+tool
+
+export(bool) var preview_hack = false
+
+func _process(delta):
+	var parent = get_parent()
+	if not preview_hack and Engine.is_editor_hint():
+		self.set_identity()
+	else:
+		self.transform.basis = parent.transform.basis.inverse()
+		self.transform.origin.z = 0.5
+
+	get_node(\"UnCameraspace\").transform.origin = -parent.transform.origin
+"
+
+[node name="Spatial" type="Spatial"]
+
+[node name="GridMap" type="GridMap" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, -0.5 )
+mesh_library = SubResource( 7 )
+cell_size = Vector3( 1, 1, 1 )
+data = {
+"cells": PoolIntArray( 0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 65532, 0, 0, 65533, 0, 0, 65534, 0, 0, 65535, 0, 0, 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 65531, 1, 0, 65532, 1, 0, 65533, 1, 0, 65534, 1, 0, 65535, 1, 0, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 0, 65532, 2, 0, 65533, 2, 0, 65534, 2, 1, 65535, 2, 1, 0, 3, 0, 1, 3, 0, 2, 3, 0, 3, 3, 0, 65532, 3, 0, 65533, 3, 0, 65534, 3, 0, 65535, 3, 0, 0, 4, 0, 1, 4, 0, 2, 4, 0, 3, 4, 0, 0, 5, 0, 1, 5, 0, 0, 65532, 0, 1, 65532, 0, 2, 65532, 0, 3, 65532, 0, 0, 65533, 0, 1, 65533, 0, 2, 65533, 0, 3, 65533, 0, 4, 65533, 0, 65532, 65533, 0, 65533, 65533, 0, 65534, 65533, 0, 65535, 65533, 0, 0, 65534, 1, 1, 65534, 1, 2, 65534, 1, 3, 65534, 0, 4, 65534, 0, 5, 65534, 0, 6, 65534, 0, 65532, 65534, 0, 65533, 65534, 0, 65534, 65534, 1, 65535, 65534, 1, 0, 65535, 0, 1, 65535, 0, 2, 65535, 0, 3, 65535, 0, 4, 65535, 0, 5, 65535, 0, 65531, 65535, 0, 65532, 65535, 0, 65533, 65535, 0, 65534, 65535, 0, 65535, 65535, 0 )
+}
+script = SubResource( 32 )
+__meta__ = {
+"_editor_clip_": 0
+}
+
+[node name="billboard" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1 )
+centered = false
+offset = Vector2( -20, -5 )
+pixel_size = 0.0417
+billboard = 1
+texture = SubResource( 1 )
+
+[node name="y_billboard" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1 )
+centered = false
+offset = Vector2( -20, -5 )
+pixel_size = 0.0417
+billboard = 2
+texture = SubResource( 1 )
+
+[node name="manual_billboard" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1 )
+script = SubResource( 29 )
+texture = SubResource( 30 )
+pixel_size = 0.042
+
+[node name="MeshInstance" type="MeshInstance" parent="manual_billboard"]
+mesh = SubResource( 20 )
+skeleton = NodePath("../..")
+material/0 = null
+
+[node name="CameraPivot" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.832051, 0.554699, 0, -0.554699, 0.832051, 0, 0, 0 )
+script = SubResource( 12 )
+
+[node name="Camera" type="Camera" parent="CameraPivot"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50 )
+projection = 1
+current = true
+size = 15.0
+
+[node name="DirectionalLight" type="DirectionalLight" parent="CameraPivot/Camera"]
+light_energy = 0.3
+
+[node name="UnRotate" type="Spatial" parent="CameraPivot"]
+transform = Transform( 1, 0, 0, 0, 0.832051, -0.554699, 0, 0.554699, 0.832051, 0, 0, 0.5 )
+script = SubResource( 11 )
+preview_hack = true
+
+[node name="UnCameraspace" type="Spatial" parent="CameraPivot/UnRotate"]
+
+[node name="lol" type="Sprite3D" parent="CameraPivot/UnRotate/UnCameraspace"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1 )
+centered = false
+offset = Vector2( -20, -5 )
+pixel_size = 0.0417
+billboard = 1
+texture = SubResource( 1 )
