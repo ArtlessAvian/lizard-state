@@ -3,7 +3,7 @@ using Godot;
 public class ItemData : Resource
 {
     [Export]
-    public string associatedAction = "DashAbility";
+    public Action action; // duplicate me, don't use directly
 
     [Export]
     public int maxUses = 5;

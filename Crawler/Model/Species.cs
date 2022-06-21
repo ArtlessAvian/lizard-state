@@ -8,13 +8,15 @@ public class Species : Resource
     [Export] public AI ai = null;
 
     // [Export] public AttackData bumpAttack;
-    [Export] public RushAttackData rushAttack;
-    [Export] public List<ReachAttackData> attacks;
-    [Export] public List<string> abilities;
+    [Export] public RushAttackAction rushAttack;
+    [Export] public List<Action> attacks;
+    [Export] public List<Action> abilities;
 
     // Stat Block
     [Export] public int maxHealth = 30;
-    
+
     // View stuff
     [Export] public string displayName;
+
+
 }

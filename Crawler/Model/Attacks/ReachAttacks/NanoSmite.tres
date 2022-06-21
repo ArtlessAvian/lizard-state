@@ -1,9 +1,12 @@
 [gd_resource type="Resource" load_steps=2 format=2]
 
-[ext_resource path="res://Crawler/Model/Attacks/ReachAttackData.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Model/Actions/ReachAttackAction.cs" type="Script" id=1]
 
 [resource]
 script = ExtResource( 1 )
+targetInternalX = 0
+targetInternalY = 0
+isRelative = true
 startup = 0
 recovery = 3
 stun = 1

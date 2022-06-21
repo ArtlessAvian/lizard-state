@@ -7,10 +7,10 @@ using System.Collections.Generic;
 public class ReachAttackFollowup : Action
 {
     [Export]
-    private ReachAttackData data;
+    private ReachAttackAction data;
 
     // not sure if this is the right access modifier.
-    public ReachAttackFollowup(ReachAttackData data)
+    public ReachAttackFollowup(ReachAttackAction data)
     {
         this.data = data;
     }

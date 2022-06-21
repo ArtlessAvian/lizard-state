@@ -5,26 +5,27 @@ using System.Collections.Generic;
 
 public class ReachAttackAction : Action
 {
-    ReachAttackData data;
-    public ReachAttackAction(ReachAttackData data)
-    {
-        this.data = data ?? ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/VeryPositive.tres");
-    }
+    [Export] public int startup = 0;
+    [Export] public int recovery = 3;
+    [Export] public int stun = 1;
+    [Export] public int damage = 2;
+    [Export] public float blockChance = 0.2f;
+    [Export] public int range = 7;
+    [Export] public int knockback = 0;
+
+    private ReachAttackAction() { }
 
     public override bool Do(Model model, Entity e)
     {
-        if (data is null) { data = ResourceLoader.Load<ReachAttackData>("res://Crawler/Model/Attacks/ReachAttacks/Poke.tres"); }
-        GD.Print(data.ResourceName);
-
         (int x, int y) targetPos = GetTargetPos(e.position);
-        if (data.startup > 0)
+        if (startup > 0)
         {
             model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
         }
 
-        e.nextMove += data.startup;
+        e.nextMove += startup;
         CSharpScript followup = GD.Load("res://Crawler/Model/Actions/ReachAttackFollowup.cs") as CSharpScript;
-        e.queuedAction = followup.New(data) as Action;
+        e.queuedAction = followup.New(this) as Action;
         e.queuedAction = e.queuedAction.SetTarget(targetPos);
 
         return true;
@@ -41,5 +42,5 @@ public class ReachAttackAction : Action
         return true;
     }
 
-    public override (int, int) Range => (1, data.range);
+    public override (int, int) Range => (1, range);
 }

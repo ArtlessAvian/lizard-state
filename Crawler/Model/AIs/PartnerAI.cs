@@ -9,7 +9,7 @@ public class PartnerAI : AI
     public override Action GetMove(Model model, Entity e)
     {
         List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
-        
+
         List<(int, int)> enemyPositions = new List<(int, int)>();
         List<(int, int)> allyPositions = new List<(int, int)>();
         foreach (Entity other in entities)
@@ -31,7 +31,7 @@ public class PartnerAI : AI
 
         // Attack the closest enemy.
         int closestDistance = 100;
-        foreach((int, int) pos in enemyPositions)
+        foreach ((int, int) pos in enemyPositions)
         {
             int distance = GridHelper.Distance(e.position, pos);
             if (distance <= closestDistance)
@@ -44,11 +44,11 @@ public class PartnerAI : AI
         {
             // Attack an enemy in melee range
             // TODO: randomly walk away.
-            foreach((int, int) pos in enemyPositions)
+            foreach ((int, int) pos in enemyPositions)
             {
                 if (GridHelper.Distance(e.position, pos) <= 1.5f)
                 {
-                    return new RushAttackAction().SetTarget(pos);
+                    return e.species.rushAttack.SetTarget(pos);
                 }
             }
         }
@@ -57,14 +57,14 @@ public class PartnerAI : AI
             // get reach attacks in range.
             for (int i = 0; i < e.species.attacks.Count; i++)
             {
-                ReachAttackData data = e.species.attacks[i];
-                if (closestDistance <= data.range)
+                Action attack = e.species.attacks[i];
+                if (closestDistance <= attack.Range.max)
                 {
                     foreach ((int, int) pos in enemyPositions)
                     {
                         if (GridHelper.Distance(e.position, pos) == closestDistance)
                         {
-                            return new ReachAttackAction(data).SetTarget(pos);
+                            return attack.SetTarget(pos);
                         }
                     }
                 }
@@ -108,7 +108,7 @@ public class PartnerAI : AI
 
         return new MoveAction().SetTarget(e.position);
     }
-    
+
     // public Dictionary SaveToDict()
     // {
     //     Dictionary dict = new Dictionary();

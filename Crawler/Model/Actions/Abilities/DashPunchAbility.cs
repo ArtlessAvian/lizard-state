@@ -31,12 +31,12 @@ public class DashPunchAbility : Action
 
         e.position = place;
         model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
-        
+
         if (target != null)
         {
-            Action subaction = new RushAttackAction();
-            subaction.SetTarget(target.position);
-            subaction.Do(model, e);
+            // Action subaction = new RushAttackAction();
+            // subaction.SetTarget(target.position);
+            // subaction.Do(model, e);
         }
 
         return true;

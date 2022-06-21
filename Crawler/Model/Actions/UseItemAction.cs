@@ -5,13 +5,22 @@ using Godot.Collections;
 public class UseItemAction : Action
 {
     InventoryItem item;
-    Action proxyAction;
-
-    public UseItemAction(Entity e, int id)
+    Action ProxyAction
     {
-        item = e.inventory;
-        proxyAction = (Action)Activator.CreateInstance(Type.GetType(item.data.associatedAction));
-        // proxyAction = new AttackAction(e, -1); // e.inventory.something()
+        get
+        {
+            if (_proxyAction is null)
+            {
+                _proxyAction = item.data.action.Duplicate() as Action;
+            }
+            return _proxyAction;
+        }
+    }
+    private Action _proxyAction = null;
+
+    public UseItemAction(InventoryItem item)
+    {
+        this.item = item;
     }
 
     public override bool Do(Model model, Entity e)
@@ -22,26 +31,26 @@ public class UseItemAction : Action
         }
 
         item.uses -= 1;
-        proxyAction.Do(model, e);
+        ProxyAction.Do(model, e);
 
         return true;
     }
 
     public override Action SetTarget((int x, int y) target)
     {
-        return proxyAction.SetTarget(target);
+        return ProxyAction.SetTarget(target);
     }
 
     public override Action SetTargetRelative((int x, int y) delta)
     {
-        return proxyAction.SetTargetRelative(delta);
+        return ProxyAction.SetTargetRelative(delta);
     }
 
     public override bool IsValid(Model model, Entity e)
     {
         if (item.uses <= 0) { return false; }
-        return proxyAction.IsValid(model, e);
+        return ProxyAction.IsValid(model, e);
     }
 
-    public override (int, int) Range => proxyAction.Range;
+    public override (int, int) Range => ProxyAction.Range;
 }
