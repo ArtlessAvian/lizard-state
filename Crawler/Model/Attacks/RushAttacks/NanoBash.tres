@@ -8,4 +8,4 @@ targetInternalX = 0
 targetInternalY = 0
 isRelative = true
 damagePerHit = 3
-expectedDamage = 4.0
+expectedDamage = 3.0

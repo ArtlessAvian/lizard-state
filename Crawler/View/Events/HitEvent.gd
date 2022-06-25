@@ -1,21 +1,24 @@
 extends "../EventHandler.gd"
 
-var damage_popup_scene : PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
+var damage_popup_scene: PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
 
 var delay_until
+
 
 func before_run():
 	var subject = roles[event["subject"]]
 	delay_until = now() + subject.attackAnimationStartup * 1000
 
+
 func should_wait_before():
 	return now() < delay_until
+
 
 func run():
 	var subject = roles[event["subject"]]
 	# var animation = subject.get_node("AnimationPlayer");
 	# animation.play("Attack");
-	
+
 	var object = roles[event["object"]]
 
 	object.health -= event["damage"]
@@ -24,8 +27,9 @@ func run():
 	if object.status != null:
 		object.status.set_health(object.health)
 
-	var popup = damage_popup_scene.instance();
+	var popup = damage_popup_scene.instance()
 	popup.text = "-" + str(event["damage"])
+	# TODO: Fix me.
 	popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10
 	object.get_node("DamagePopups").add_child(popup)
 
