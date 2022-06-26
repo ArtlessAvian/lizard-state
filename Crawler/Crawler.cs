@@ -3,6 +3,10 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// The game, the "engine".
+/// This handles a sequence of floors, ultimately resulting in a win or loss.
+/// </summary>
 public class Crawler : Node2D, InputStateMachine
 {
     public View View
@@ -12,7 +16,7 @@ public class Crawler : Node2D, InputStateMachine
 
     public Model Model
     {
-        get { return GetNode<Model>("Model");}
+        get { return GetNode<Model>("Model"); }
     }
 
     public InputState activeInputState;
@@ -62,9 +66,9 @@ public class Crawler : Node2D, InputStateMachine
             }
 
             // Uncomment if not lag testing (which should be always)
-            if (OS.GetTicksMsec() - start > 1000/144f)
+            if (OS.GetTicksMsec() - start > 1000 / 144f)
             {
-            //     GD.PrintErr("Timed out!");
+                //     GD.PrintErr("Timed out!");
                 break;
             }
 

@@ -9,5 +9,4 @@ public interface LevelGenerator
 {
     Model Generate(Model model);
     void GenerateMap(Model model);
-    Dictionary SaveToDict();
 }

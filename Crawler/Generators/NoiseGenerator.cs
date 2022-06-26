@@ -13,7 +13,6 @@ public class NoiseGenerator : LevelGenerator
 
     public Model Generate(Model model)
     {
-        model.generatorData = this.SaveToDict();
         GenerateMap(model);
         GenerateEntities(model);
         return model;
@@ -61,8 +60,8 @@ public class NoiseGenerator : LevelGenerator
         spawnX = 0;
         spawnY = -2;
         model.AddEntity(CreateEntity(playerTegu, (spawnX, spawnY), 0));
-        model.AddEntity(CreateEntity(partnerAxolotl, (spawnX, spawnY+1), 0));
-        
+        model.AddEntity(CreateEntity(partnerAxolotl, (spawnX, spawnY + 1), 0));
+
         // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
         // model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
 
@@ -74,7 +73,7 @@ public class NoiseGenerator : LevelGenerator
         tiles.Shuffle();
         for (int i = 0; i < 10; i++)
         {
-            Vector2 vec = (Vector2)tiles[i+5];
+            Vector2 vec = (Vector2)tiles[i + 5];
             model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
         }
     }
@@ -82,18 +81,11 @@ public class NoiseGenerator : LevelGenerator
     public static Entity CreateEntity(Species species, (int x, int y) position, int team)
     {
         Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-        
+
         entity.SetSpecies(species);
         entity.position = position;
         entity.SetTeam(team);
 
         return entity;
-    }
-
-    public Dictionary SaveToDict()
-    {
-        Dictionary dict = new Dictionary();
-        dict["Type"] = "Noise";
-        return dict;
     }
 }

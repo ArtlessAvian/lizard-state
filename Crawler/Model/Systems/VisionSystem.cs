@@ -3,8 +3,8 @@ using Godot;
 using Godot.Collections;
 
 /// <summary>
-/// Stores map and vision information.
-/// Maybe ask the 
+/// Stores fog of war and entity vision information.
+/// Maybe split these two responsibilities.
 /// </summary>
 public class VisionSystem : TileMap, CrawlerSystem
 {

@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 
 /// <summary>
-/// Represents something. [a trip somewhere and back, or a "run."]
+/// Represents one floor.
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>
@@ -19,9 +19,6 @@ public partial class Model : Node
 
     [Export] private List<Entity> Entities = new List<Entity>();
     [Export] private List<FloorItem> FloorItems = new List<FloorItem>();
-
-    // given to model by generator
-    [Export] public Dictionary generatorData;
 
     [Signal]
     public delegate void NewEvent(Dictionary ev);

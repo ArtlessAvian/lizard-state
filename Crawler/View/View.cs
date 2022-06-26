@@ -1,7 +1,11 @@
 using Godot;
 using Godot.Collections;
 
-// Holds a model and shows what's happening.
+/// <summary>
+/// Represents model (floor) information, and how it changes (events, animation).
+/// Do not instantiate directly. Load() the scene with Godot.
+/// When moving to a new floor, the old model stops being used. Use a new view.
+/// </summary>
 public partial class View : Node2D
 {
     public static Vector2 TILESIZE = new Vector2(24, 16);

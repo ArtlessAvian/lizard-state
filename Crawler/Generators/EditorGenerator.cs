@@ -17,7 +17,6 @@ public class EditorGenerator : LevelGenerator
 
     public Model Generate(Model model)
     {
-        model.generatorData = this.SaveToDict();
         GenerateMap(model);
         GenerateEntities(model);
 
@@ -92,13 +91,5 @@ public class EditorGenerator : LevelGenerator
         entity.SetTeam(team);
 
         return entity;
-    }
-
-    public Dictionary SaveToDict()
-    {
-        Dictionary dict = new Dictionary();
-        dict["Type"] = "Editor";
-        dict["ScenePath"] = scene.ResourcePath;
-        return dict;
     }
 }
