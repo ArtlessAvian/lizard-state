@@ -53,6 +53,7 @@ public partial class View : Node2D
         }
 
         VisionSystem vision = model.GetNode<VisionSystem>("Systems/Vision");
+        FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
 
         // TODO: Add map knowledge. Maybe move logic from view to model.
         // foreach (Vector2 vec in vision.GetUsedCells())
@@ -64,6 +65,7 @@ public partial class View : Node2D
         {
             if (e.providesVision)
             {
+                fog.UpdateVision(model, e);
                 vision.UpdateVision(model, e);
             }
         }
