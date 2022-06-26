@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 
 /// <summary>
-/// Represents one floor.
+/// Represents one floor. (Each floor acts independently of each other!)
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>

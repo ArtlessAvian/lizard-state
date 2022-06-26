@@ -3,13 +3,13 @@
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Crawler/View/Assets/cursor.png" type="Texture" id=3]
-[ext_resource path="res://Crawler/Controller/ItemInputState.cs" type="Script" id=4]
-[ext_resource path="res://Crawler/Controller/MainInputState.cs" type="Script" id=5]
+[ext_resource path="res://Crawler/Controller/States/ItemInputState.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/Controller/States/MainInputState.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/Model/Model.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Crawler/Controller/AbilityInputState.cs" type="Script" id=7]
-[ext_resource path="res://Crawler/Controller/AbilityTargetInputState.cs" type="Script" id=8]
+[ext_resource path="res://Crawler/Controller/States/AbilityInputState.cs" type="Script" id=7]
+[ext_resource path="res://Crawler/Controller/States/AbilityTargetInputState.cs" type="Script" id=8]
 [ext_resource path="res://Crawler/Cursor.cs" type="Script" id=9]
-[ext_resource path="res://Crawler/Controller/LookInputState.cs" type="Script" id=10]
+[ext_resource path="res://Crawler/Controller/States/LookInputState.cs" type="Script" id=10]
 
 [node name="Crawler" type="Node2D"]
 script = ExtResource( 1 )
