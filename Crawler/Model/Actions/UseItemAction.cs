@@ -4,7 +4,7 @@ using Godot.Collections;
 
 public class UseItemAction : Action
 {
-    InventoryItem item;
+    public InventoryItem item;
     Action ProxyAction
     {
         get
@@ -17,11 +17,6 @@ public class UseItemAction : Action
         }
     }
     private Action _proxyAction = null;
-
-    public UseItemAction(InventoryItem item)
-    {
-        this.item = item;
-    }
 
     public override bool Do(Model model, Entity e)
     {

@@ -9,6 +9,10 @@ using Godot.Collections;
 /// </summary>
 public partial class Model : Node
 {
+    // what generates this floor and future floors.
+    // models have no clue what a playlist is or how to use it.
+    [Export] public Playlist playlist;
+
     // Everything is saved!!
     [Export] public int time = 0;
 

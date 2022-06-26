@@ -26,7 +26,10 @@ public class ItemInputState : InputState
             string name = item.data.ResourceName;
             menu.AddItem($"{item.data.ResourceName} ({item.uses}/{item.data.maxUses})", 0);
             menu.SetItemDisabled(0, item.uses <= 0);
-            items.Add(useItemScript.New(item) as UseItemAction);
+
+            UseItemAction action = useItemScript.New() as UseItemAction;
+            action.item = item;
+            items.Add(action);
         }
         else
         {

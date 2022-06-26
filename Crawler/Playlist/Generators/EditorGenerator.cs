@@ -5,17 +5,9 @@ using System.Collections.Generic;
 
 public class EditorGenerator : LevelGenerator
 {
-    PackedScene scene;
+    [Export] PackedScene scene;
 
-    public EditorGenerator(string scenePath)
-    {
-        scene = GD.Load<PackedScene>(scenePath);
-    }
-
-    public EditorGenerator(Dictionary dict) : this((string)dict["ScenePath"])
-    { }
-
-    public Model Generate(Model model)
+    public override Model Generate(Model model)
     {
         GenerateMap(model);
         GenerateEntities(model);
@@ -30,9 +22,9 @@ public class EditorGenerator : LevelGenerator
         return model;
     }
 
-    public void GenerateMap(Model model)
+    public override void GenerateMap(Model model)
     {
-        TileMap map = (TileMap)scene.Instance();
+        TileMap map = scene.Instance<TileMap>();
 
         model.Map.Set("format", 1);
         model.Map.Set(

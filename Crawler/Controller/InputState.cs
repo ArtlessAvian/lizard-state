@@ -1,5 +1,8 @@
 using Godot;
 
+// TODO: consider replacing with yield to simulate blocking code.
+// Trading one hellscape for another.
+// in c# that would be "await ToSignal(signal)"
 public abstract class InputState : Node
 {
     protected static (string, (int, int))[] DIRECTIONS = {
@@ -28,6 +31,6 @@ public abstract class InputState : Node
     // Passing crawler is convenience.
     // (you can just traverse the tree for crawler, model, and view)
     public abstract void Enter(Crawler crawler);
-    public abstract void HandleInput(Crawler crawler, InputEvent ev);    
+    public abstract void HandleInput(Crawler crawler, InputEvent ev);
     public abstract void Exit(Crawler crawler);
 }

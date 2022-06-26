@@ -11,14 +11,14 @@ public class NoiseGenerator : LevelGenerator
     {
     }
 
-    public Model Generate(Model model)
+    public override Model Generate(Model model)
     {
         GenerateMap(model);
         GenerateEntities(model);
         return model;
     }
 
-    public void GenerateMap(Model model)
+    public override void GenerateMap(Model model)
     {
         OpenSimplexNoise noise = new OpenSimplexNoise();
         noise.Period = 6;
