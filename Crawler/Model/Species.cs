@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+// TODO: Replace with prototype pattern
 public class Species : Resource
 {
     // Game Logic

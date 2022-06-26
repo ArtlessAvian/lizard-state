@@ -57,12 +57,12 @@ public class MainInputState : InputState
             {
                 PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
                 // PackedScene modelScene = GD.Load<PackedScene>((string)temp["Filename"]);
-                Model model = (Model)modelScene.Instance();
+                Model model = modelScene.Instance<Model>();
                 model.Name = "Model";
                 crawler.AddChild(model);
 
                 PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
-                View view = (View)viewScene.Instance();
+                View view = viewScene.Instance<View>();
                 view.Name = "View";
                 crawler.AddChild(view);
 

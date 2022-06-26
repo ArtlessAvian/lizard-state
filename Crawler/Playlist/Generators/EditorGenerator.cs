@@ -32,7 +32,7 @@ public class EditorGenerator : LevelGenerator
 
     public void GenerateMap(Model model)
     {
-        TileMap map = (TileMap)scene.Instance();
+        TileMap map = scene.Instance<TileMap>();
 
         model.Map.Set("format", 1);
         model.Map.Set(
