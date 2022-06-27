@@ -6,32 +6,43 @@ using Godot.Collections;
 /// Stores fog of war and entity vision information.
 /// Maybe split these two responsibilities.
 /// </summary>
-public class VisionSystem : TileMap, CrawlerSystem
+public class VisionSystem : Node, CrawlerSystem
 {
+    [Export] public Dictionary<int, int> lastSeenAt = new Dictionary<int, int>();
     [Export] public Dictionary<int, int> canSee = new Dictionary<int, int>();
 
     public void ProcessEvent(Model model, Dictionary ev)
     {
-        if ((string)ev["action"] == "Move")
-        {
-            Entity subject = model.GetEntity((int)ev["subject"]);
-            if (subject.team == 0)
-            {
-                UpdateVision(model, subject);
-                subject.dirtyVision = false;
-            }
-        }
+        // if ((string)ev["action"] != "Move")
+        // {
+        //     return;
+        // }
+
+        // Entity subject = model.GetEntity((int)ev["subject"]);
+        // if (!subject.providesVision) { return; }
+
+        // if (lastSeenAt.ContainsKey(subject.id))
+        // {
+        //     if (HashPosition(subject.position) == lastSeenAt[subject.id]) { return; }
+        // }
+
+        // lastSeenAt.Add(subject.id, HashPosition(subject.position));
+        // UpdateVision(model, subject);
     }
 
     public void Run(Model model) // ModelAPI maybe?
     {
         foreach (Entity e in model.GetEntities())
         {
-            if (e.providesVision)
+            if (!e.providesVision) { continue; }
+
+            if (lastSeenAt.ContainsKey(e.id))
             {
-                UpdateVision(model, e);
-                e.dirtyVision = false;
+                if (HashPosition(e.position) == lastSeenAt[e.id]) { continue; }
             }
+
+            lastSeenAt[e.id] = HashPosition(e.position);
+            UpdateVision(model, e);
         }
     }
 
@@ -91,5 +102,11 @@ public class VisionSystem : TileMap, CrawlerSystem
                 }
             }
         }
+    }
+
+    // for this to return the same, thing, you have to move very specifically and weirdly.
+    private static int HashPosition((int x, int y) position)
+    {
+        return position.x * 10 + position.y * 30;
     }
 }

@@ -39,7 +39,6 @@ public class Entity : Resource
 
     [Export] public int team;
     [Export] public bool providesVision;
-    [Export] public bool dirtyVision; // hehe
 
     public Entity() { }
 

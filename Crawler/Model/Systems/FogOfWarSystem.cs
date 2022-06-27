@@ -8,31 +8,29 @@ using Godot.Collections;
 /// </summary>
 public class FogOfWarSystem : TileMap, CrawlerSystem
 {
+    [Export] public Dictionary<int, int> lastSeenAt = new Dictionary<int, int>();
+
     private const int REVEALED = 0;
     private const int VISIBLE = 1;
 
     public void ProcessEvent(Model model, Dictionary ev)
     {
-        if ((string)ev["action"] == "Move")
-        {
-            Entity subject = model.GetEntity((int)ev["subject"]);
-            if (subject.team == 0)
-            {
-                UpdateVision(model, subject);
-                subject.dirtyVision = false;
-            }
-        }
+
     }
 
     public void Run(Model model)
     {
         foreach (Entity e in model.GetEntities())
         {
-            if (e.providesVision)
+            if (!e.providesVision) { continue; }
+
+            if (lastSeenAt.ContainsKey(e.id))
             {
-                UpdateVision(model, e);
-                e.dirtyVision = false;
+                if (HashPosition(e.position) == lastSeenAt[e.id]) { continue; }
             }
+
+            lastSeenAt[e.id] = HashPosition(e.position);
+            UpdateVision(model, e);
         }
     }
 
@@ -91,5 +89,11 @@ public class FogOfWarSystem : TileMap, CrawlerSystem
         {
             this.SetCell(pos.x + relative.x, pos.y + relative.y, VISIBLE);
         }
+    }
+
+    // for this to return the same, thing, you have to move very specifically and weirdly.
+    private static int HashPosition((int x, int y) position)
+    {
+        return position.x * 10 + position.y * 30;
     }
 }

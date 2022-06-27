@@ -37,11 +37,7 @@ public partial class Model : Node
 
         this.CoolerApiEvent(-1, "Create", e, e.id);
 
-        if (e.providesVision)
-        {
-            GetNode<VisionSystem>("Systems/Vision").UpdateVision(this, e);
-            // this.NewEvent(new ModelEvent(e.id, "SeeMap", (e.position, Map.GetVisibleTiles(e.position, 5))));
-        }
+        RunSystems();
     }
 
     public void AddFloorItem(FloorItem item)
@@ -133,6 +129,7 @@ public partial class Model : Node
     /// </summary>
     private void RunSystems()
     {
+        GetNode<FogOfWarSystem>("Systems/Fog").Run(this);
         GetNode<VisionSystem>("Systems/Vision").Run(this);
     }
 
@@ -183,13 +180,14 @@ public partial class Model : Node
 
         // Send the event to the view, if the player('s team) sees it.
         this.EmitSignal("NewEvent", @event);
+        // GD.Print(@event);
 
         // For each system, react to the event.
         // (Skill procs, or something? could be fun)
-        foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
-        {
-            system.ProcessEvent(this, @event);
-        }
+        // foreach (CrawlerSystem system in GetNode("Systems").GetChildren())
+        // {
+        //     system.ProcessEvent(this, @event);
+        // }
     }
 
     public void Debug(string message)

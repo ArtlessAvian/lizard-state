@@ -31,13 +31,7 @@ cell_size = Vector2( 24, 16 )
 format = 1
 script = ExtResource( 4 )
 
-[node name="Vision" type="TileMap" parent="Systems"]
-visible = false
-self_modulate = Color( 0.392157, 0.392157, 0.392157, 1 )
-position = Vector2( -12, -8 )
-tile_set = ExtResource( 3 )
-cell_size = Vector2( 24, 16 )
-format = 1
+[node name="Vision" type="Node" parent="Systems"]
 script = ExtResource( 5 )
 
 [node name="DemoTutorial" type="Node" parent="Systems"]

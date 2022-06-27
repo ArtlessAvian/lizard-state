@@ -19,12 +19,12 @@ public class GotoAction : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         FindPathLazy(model, e.position, targetPos);
-        
+
         model.CoolerApiEvent(-1, "SmallWait");
         bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
 
         if (!success) { return false; }
-        
+
         // queue same action object
         if (!(AnyEnemiesInSight(model, e) || e.position.x == targetPos.x && e.position.y == targetPos.y))
         {
@@ -41,7 +41,7 @@ public class GotoAction : Action
             PathFinder pather = new PathFinder();
             pather.maxLength = 100000;
             pather.source = from;
-            pather.goals = new List<(int, int)>(){to};
+            pather.goals = new List<(int, int)>() { to };
             pather.walkable = Walkable(model);
             result = pather.Run();
         }
@@ -74,7 +74,7 @@ public class GotoAction : Action
 
     private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(Model model)
     {
-        VisionSystem fog = model.GetNode<VisionSystem>("Systems/Vision");
+        FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
 
         return (((int x, int y) from, (int x, int y) to) tuple) =>
                 model.CanWalkFromTo(tuple.from, tuple.to) &&

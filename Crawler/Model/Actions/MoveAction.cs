@@ -33,7 +33,7 @@ public class MoveAction : Action
                 return true;
             }
         }
-        
+
         DoMove(model, e);
         return true;
     }
@@ -51,9 +51,6 @@ public class MoveAction : Action
         e.nextMove += (int)(1 * GridHelper.Distance(e.position, targetPos));
         e.position = targetPos;
 
-        // TODO: Maybe put elsewhere.
-        e.dirtyVision |= e.providesVision;
-
         model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
@@ -64,10 +61,6 @@ public class MoveAction : Action
         teammate.position = e.position;
         e.position = targetPos;
         e.nextMove += 1;
-
-        // TODO: Maybe put elsewhere.
-        e.dirtyVision |= e.providesVision;
-        teammate.dirtyVision |= teammate.providesVision;
 
         model.CoolerApiEvent(-1, "Wait");
         // api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {teammate.species.displayName}."));

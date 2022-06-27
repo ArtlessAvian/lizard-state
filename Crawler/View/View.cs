@@ -61,13 +61,15 @@ public partial class View : Node2D
         //     map
         // }
 
+        // TODO: read the info directly.
         foreach (Entity e in model.GetEntities())
         {
             if (e.providesVision)
             {
-                fog.UpdateVision(model, e);
-                vision.UpdateVision(model, e);
+                // fog.UpdateVision(model, e);
+                // vision.UpdateVision(model, e);
             }
+            GD.Print(e.ResourcePath);
         }
 
         viewTime = model.time;
