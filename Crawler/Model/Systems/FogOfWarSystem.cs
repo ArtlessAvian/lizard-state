@@ -83,9 +83,9 @@ public class FogOfWarSystem : TileMap, CrawlerSystem
     // // Tiles marked as VISIBLE are not meant to be saved!
     public void UpdateVisibility(CrawlerMap map, (int x, int y) pos, int radius)
     {
-        Predicate<(int, int)> isBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));
+        Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));
 
-        foreach ((int x, int y) relative in VisibilityTrie.FieldOfView(isBlocked, radius))
+        foreach ((int x, int y) relative in VisibilityTrie.FieldOfView(IsBlocked, radius))
         {
             this.SetCell(pos.x + relative.x, pos.y + relative.y, VISIBLE);
         }

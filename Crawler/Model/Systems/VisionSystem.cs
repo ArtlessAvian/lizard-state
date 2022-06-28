@@ -49,7 +49,7 @@ public class VisionSystem : Node, CrawlerSystem
     public void UpdateVision(Model model, Entity e)
     {
         CrawlerMap map = model.GetMap();
-        Predicate<(int, int)> IsBlocked = ((int x, int y) pos) => CrawlerMap.TileIsWall(map.GetCell(pos.x, pos.y));
+        Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((e.position.x + rel.x, e.position.y + rel.y));
 
         UnseeSeen(model, e, IsBlocked);
         SeeUnseen(model, e, IsBlocked);
