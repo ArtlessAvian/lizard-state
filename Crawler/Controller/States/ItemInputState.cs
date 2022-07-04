@@ -81,6 +81,5 @@ public class ItemInputState : InputState
             Crawler crawler = this.GetCrawler();
             crawler.ChangeState((InputState)this.GetParent());
         }
-        // GD.Print("eeeeeeeeeeee second");
     }
 }

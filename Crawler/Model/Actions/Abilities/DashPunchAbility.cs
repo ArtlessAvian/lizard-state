@@ -5,8 +5,6 @@ public class DashPunchAbility : Action
 {
     public override bool Do(Model model, Entity e)
     {
-        GD.Print("test");
-
         if (!IsValid(model, e)) { return false; }
 
         (int x, int y) targetPos = GetTargetPos(e.position);

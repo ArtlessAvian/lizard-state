@@ -177,7 +177,6 @@ public class VisibilityTrie
     {
         // Any tiles that are duplicated across octants would be covered the same way anyways.
         (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
-        GD.Print(dx, dy, octant);
 
         if (!reverse.ContainsKey((dx, dy))) { return false; }
         foreach (TrieNode start in reverse[(dx, dy)])

@@ -45,7 +45,6 @@ public class ReachAttackFollowup : Action
                 // (If they intersect a wall, they should "wallsplat" or something.)
                 // (If they end up on a person, they should pop to a random nearby tile.)
                 (int x, int y) knockback = KnockbackPosition(model, e.position, targeted.position, data.knockback);
-                GD.Print(data.knockback);
                 targeted.position = knockback;
                 model.CoolerApiEvent(targeted.id, "Knockback", new Vector2(knockback.x, knockback.y));
             }

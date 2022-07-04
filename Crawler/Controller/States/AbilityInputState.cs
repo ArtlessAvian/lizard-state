@@ -50,7 +50,6 @@ public class AbilityInputState : InputState
     public void _on_AbilitiesMenu_id_pressed(int id)
     {
         success = true;
-        // GD.Print("eeeeeeeeeeee first");
         Crawler crawler = this.GetCrawler();
 
         Action action;
@@ -87,6 +86,5 @@ public class AbilityInputState : InputState
             Crawler crawler = this.GetCrawler();
             crawler.ChangeState((InputState)this.GetParent());
         }
-        // GD.Print("eeeeeeeeeeee second");
     }
 }

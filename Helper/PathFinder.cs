@@ -33,12 +33,12 @@ public class PathFinder
     {
         Dictionary<(int, int), int> cost = new Dictionary<(int, int), int>();
         SimplePriorityQueue<(int, int)> frontier = new SimplePriorityQueue<(int, int)>();
-        
+
         result.nextStepFor = new Dictionary<(int, int), (int, int)>();
 
         // Imagine one source connected to all these sources with 0 distance.
         // Therefore, this works.
-        foreach((int x, int y) goal in goals)
+        foreach ((int x, int y) goal in goals)
         {
             cost[goal] = 0;
             frontier.Enqueue(goal, GridHelper.Distance(goal, source));
@@ -53,10 +53,10 @@ public class PathFinder
                 result.success = true;
                 result.steps = cost[current];
                 result.nextStep = result.nextStepFor[source];
-                // Godot.GD.Print(cost.Keys.Count); // i checked, seems good.
+                // i checked cost.Keys.Count, seems good.
                 return result;
             }
-            
+
             if (cost[current] > maxLength)
             {
                 Godot.GD.Print("Path too long.");
@@ -73,7 +73,7 @@ public class PathFinder
                 {
                     cost[neighbor] = cost[current] + distance;
                     frontier.EnqueueWithoutDuplicates(neighbor, cost[neighbor] + GridHelper.Distance(neighbor, source));
-                    
+
                     // To go to a goal, go from the neighbor to the current.
                     result.nextStepFor[neighbor] = current;
                 }
@@ -86,11 +86,11 @@ public class PathFinder
 
     public static PathResult ShortestPath((int x, int y) source, (int x, int y) goal, Predicate<((int x, int y) from, (int x, int y) to)> walkable)
     {
-        return ShortestPathToMany(source, new List<(int x, int y)>(){goal}, walkable);
+        return ShortestPathToMany(source, new List<(int x, int y)>() { goal }, walkable);
     }
 
     public static PathResult ShortestPathToMany((int x, int y) source, IEnumerable<(int x, int y)> goals, Predicate<((int x, int y) from, (int x, int y) to)> walkable)
     {
-        return new PathFinder(){source = source, goals = goals, walkable = walkable}.Run();
+        return new PathFinder() { source = source, goals = goals, walkable = walkable }.Run();
     }
 }

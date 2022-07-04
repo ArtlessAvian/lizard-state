@@ -69,7 +69,7 @@ public class Crawler : Node2D, InputStateMachine
             // Uncomment if not lag testing (which should be always)
             if (OS.GetTicksMsec() - start > 1000 / 144f)
             {
-                //     GD.PrintErr("Timed out!");
+                GD.PrintErr("Timed out!");
                 break;
             }
 
@@ -78,22 +78,12 @@ public class Crawler : Node2D, InputStateMachine
             // replace model
             // clear view
         }
-        // float frameTime = OS.GetTicksMsec() - start;
-        // if (frameTime > 1000/120f)
-        // {
-        //     Print($"High frame time! ({frameTime} ms)");
-        // }
     }
 
     public override void _UnhandledInput(InputEvent ev)
     {
         if (notPlayerTurn) { return; }
         if (View.eventQueue.Count > 0) { return; }
-        // foreach (Control p in FindNode("Modals").GetChildren())
-        // {
-        //     if (p.Visible) { return; }
-        // }
-
         activeInputState.HandleInput(this, ev);
     }
 
@@ -103,16 +93,6 @@ public class Crawler : Node2D, InputStateMachine
         activeInputState = to;
         activeInputState.Enter(this);
     }
-
-    internal void ChangeState(Node node)
-    {
-        throw new NotImplementedException();
-    }
-
-    // public void ChangeState(string to)
-    // {
-    //     this.ChangeState((InputState)GetNode<InputState>("InputStates").FindNode(to));
-    // }
 
     public void ResetState()
     {

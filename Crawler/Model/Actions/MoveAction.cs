@@ -6,8 +6,6 @@ public class MoveAction : Action
 {
     public override bool Do(Model model, Entity e)
     {
-        // GD.Print("test");
-
         if (!IsValid(model, e)) { return false; }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
@@ -63,7 +61,6 @@ public class MoveAction : Action
         e.nextMove += 1;
 
         model.CoolerApiEvent(-1, "Wait");
-        // api.NewEvent(new ModelEvent(-1, "Print", $"{e.species.displayName} swaps with {teammate.species.displayName}."));
         model.CoolerApiEvent(e.id, "Swap", new Vector2(teammate.position.x, teammate.position.y), teammate.id);
         model.CoolerApiEvent(-1, "Wait");
     }

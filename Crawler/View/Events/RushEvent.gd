@@ -47,6 +47,4 @@ func run():
 
 func should_wait_after():
 	# return view.AnyActorAnimating()
-	if is_same_subject():
-		return now() - start_time < 6 * (1000 / 60)
-	return now() - start_time < 30 * (1000 / 60)
+	return now() - start_time < 6 * (1000 / 60)
