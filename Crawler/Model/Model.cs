@@ -12,6 +12,7 @@ public partial class Model : Node
     // what generates this floor and future floors.
     // models have no clue what a playlist is or how to use it.
     [Export] public Playlist playlist;
+    [Export] public bool done = false; // set to true when done.
 
     // Everything is saved!!
     [Export] public int time = 0;
@@ -73,6 +74,8 @@ public partial class Model : Node
     // 
     public bool DoStep()
     {
+        if (done) { return false; }
+
         Entity e = NextEntity();
 
         if (e.stunned)

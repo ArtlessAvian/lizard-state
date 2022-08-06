@@ -5,6 +5,6 @@
 
 [resource]
 script = ExtResource( 1 )
-generators = [ ExtResource( 2 ) ]
+generators = [ ExtResource( 2 ), ExtResource( 2 ), ExtResource( 2 ) ]
 previousModels = [  ]
 current = -1

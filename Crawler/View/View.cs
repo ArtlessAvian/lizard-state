@@ -32,8 +32,6 @@ public partial class View : Node2D
 
     private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
 
-    public override void _Ready() { }
-
     public void ConnectToModel(Model model)
     {
         // Connect to the signal.
@@ -56,7 +54,7 @@ public partial class View : Node2D
         FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
 
         // TODO: Add map knowledge. Maybe move logic from view to model.
-        // foreach (Vector2 vec in vision.GetUsedCells())
+        // foreach (Vector2 vec in fog.GetUsedCells())
         // {
         //     map
         // }
@@ -66,8 +64,8 @@ public partial class View : Node2D
         {
             if (e.providesVision)
             {
-                // fog.UpdateVision(model, e);
-                // vision.UpdateVision(model, e);
+                fog.UpdateVision(model, e);
+                vision.UpdateVision(model, e);
             }
             GD.Print(e.ResourcePath);
         }

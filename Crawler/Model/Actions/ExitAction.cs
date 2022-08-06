@@ -18,6 +18,7 @@ public class ExitAction : Action
             model.CoolerApiEvent(-1, "Print", "You leave the cave.");
             model.CoolerApiEvent(0, "Exit");
             e.nextMove = -1;
+            model.done = true;
             return true;
         }
         return false;

@@ -24,20 +24,19 @@ public class Crawler : Node2D, InputStateMachine
 
     public override void _Ready()
     {
-        // once view initialization and view's model sync is finished,
-        // can be called anytime on any model
+        // NoiseGenerator gen = new NoiseGenerator();
+        // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
+        // EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
+        Playlist playlist = GD.Load<Playlist>("res://Crawler/Playlist/Failsafe.tres");
+        playlist.FirstModel(Model);
+
         View.ConnectToModel(Model);
 
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
 
-        // NoiseGenerator gen = new NoiseGenerator();
-        // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
-        EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
-        gen.Generate(Model);
-
-        Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
-        Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
+        // Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
+        // Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
 
         // if (GetViewport().Size.x >= 960 * 2)
         // {
@@ -67,16 +66,29 @@ public class Crawler : Node2D, InputStateMachine
             }
 
             // Uncomment if not lag testing (which should be always)
-            if (OS.GetTicksMsec() - start > 1000 / 144f)
-            {
-                GD.PrintErr("Timed out!");
-                break;
-            }
+            // if (OS.GetTicksMsec() - start > 1000 / 144f)
+            // {
+            //     GD.PrintErr("Timed out!");
+            //     break;
+            // }
+        }
 
-            // if model.done
-            // generate new model
-            // replace model
-            // clear view
+        if (Model.done)
+        {
+            Model next = Model.playlist.NextModel(Model);
+            Model.ReplaceBy(next);
+
+            // TODO: Uncopypaste. Taken from MainInputState.cs
+            View old = View;
+            RemoveChild(old);
+            old.QueueFree();
+
+            PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
+            View view = viewScene.Instance<View>();
+            view.Name = "View";
+            AddChild(view);
+
+            view.ConnectToModel(next);
         }
     }
 

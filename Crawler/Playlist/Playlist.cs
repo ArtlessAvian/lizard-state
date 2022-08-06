@@ -14,7 +14,7 @@ public class Playlist : Resource
 
     // [Export] Entity[] _playerTeam; // = {GD.Load<>};
 
-    public Model FirstModel()
+    public Model FirstModel(Model first)
     {
         if (current != -1) { return null; }
         current = 0;
@@ -24,7 +24,7 @@ public class Playlist : Resource
         // maybe theres some indirection, where it loads it from the meta-game's data.
         // in that case, whatever.
 
-        return GenerateModel();
+        return GenerateModel(first);
     }
 
     public Model NextModel(Model previous)
@@ -42,10 +42,12 @@ public class Playlist : Resource
         return GenerateModel();
     }
 
-    private Model GenerateModel()
+    private Model GenerateModel(Model existing = null)
     {
-        Model model = GD.Load<PackedScene>("res://Crawler/Model/Model.tscn").Instance<Model>();
+        Model model = existing ?? GD.Load<PackedScene>("res://Crawler/Model/Model.tscn").Instance<Model>();
         model.playlist = this;
+
+        generators[current].Generate(model);
 
         return model;
     }
