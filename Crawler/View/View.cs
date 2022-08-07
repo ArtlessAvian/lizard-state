@@ -29,6 +29,7 @@ public partial class View : Node2D
     [Export] public bool impatientMode = false;
     private Resource initializedHandler = null;
     private bool handlerRan = false;
+    [Export] public bool done = false;
 
     private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
 
@@ -163,6 +164,11 @@ public partial class View : Node2D
                 GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
                 GetNode<MessageLog>("UILayer/MessageLog").MarginTop = 20;
                 GetNode<ColorRect>("UILayer/MessageLog/Background").Color = Color.FromHsv(0, 0, 0);
+
+                // Hack. I kinda want to rework the view anyways.
+                GetNode<AnimationPlayer>("CanvasLayer/AnimationPlayer").Play("FadeOut");
+                SceneTreeTimer sceneTreeTimer = GetTree().CreateTimer(1, true);
+                sceneTreeTimer.Connect("timeout", this, "set", new Array("done", true));
             }
 
             // Everything gets sent to the logs.

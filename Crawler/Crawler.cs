@@ -73,7 +73,7 @@ public class Crawler : Node2D, InputStateMachine
             }
         }
 
-        if (Model.done)
+        if (Model.done && View.done)
         {
             Model next = Model.playlist.NextModel(Model);
             RemoveChild(Model);

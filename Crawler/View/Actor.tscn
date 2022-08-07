@@ -141,21 +141,9 @@ tracks/2/keys = {
 "values": [  ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=12]
 resource_name = "Move"
 length = 0.1
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:positionLerp")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 1.0, 0.0 ]
-}
 
 [sub_resource type="Animation" id=11]
 resource_name = "Nothing"
@@ -359,7 +347,7 @@ spriteLerp = -0.1
 anims/Attack = SubResource( 1 )
 anims/Downed = SubResource( 2 )
 anims/Hurt = SubResource( 3 )
-anims/Move = SubResource( 4 )
+anims/Move = SubResource( 12 )
 anims/Nothing = SubResource( 11 )
 anims/RESET = SubResource( 5 )
 anims/Rush = SubResource( 10 )
