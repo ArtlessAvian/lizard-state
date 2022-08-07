@@ -39,7 +39,7 @@ public class MapView : Node2D
     {
         TileMap floorsVisible = GetNode<TileMap>("Floors/Visible");
         TileMap wallsVisible = GetNode<TileMap>("Walls/Visible");
-        
+
         floorsVisible.Clear();
         wallsVisible.Clear();
         // Refresh from dictionary.
@@ -62,18 +62,34 @@ public class MapView : Node2D
             for (int dy = -r; dy <= r; dy++)
             {
                 int tile = tiles1d[(dx + r) * sidelen + dy + r];
-                if (tile != -2)
-                {
-                    if (CrawlerMap.TileIsWall(tile))
-                    {
-                        walls.SetCell((int)(center.x + dx), (int)(center.y + dy), tile != -1 ? tile : 8);
-                    }
-                    else
-                    {
-                        floors.SetCell((int)(center.x + dx), (int)(center.y + dy), tile);
-                    }
-                }
+                WriteFloorOrWall((int)(center.x + dx), (int)(center.y + dy), tile, floors, walls);
             }
+        }
+    }
+
+    public void WriteFloorOrWall(int x, int y, int tile, TileMap floors, TileMap walls)
+    {
+        if (tile != -2)
+        {
+            if (CrawlerMap.TileIsWall(tile))
+            {
+                walls.SetCell(x, y, tile != -1 ? tile : 8);
+            }
+            else
+            {
+                floors.SetCell(x, y, tile);
+            }
+        }
+    }
+
+    public void SyncRevealed(CrawlerMap map, FogOfWarSystem fog)
+    {
+        TileMap floors = GetNode<TileMap>("Floors");
+        TileMap walls = GetNode<TileMap>("Walls");
+
+        foreach (Vector2 vec in fog.GetUsedCells())
+        {
+            WriteFloorOrWall((int)vec.x, (int)vec.y, map.GetCell((int)vec.x, (int)vec.y), floors, walls);
         }
     }
 }

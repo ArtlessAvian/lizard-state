@@ -37,8 +37,6 @@ public partial class View : Node2D
         // Connect to the signal.
         model.Connect("NewEvent", this, "OnModelNewEvent");
 
-        // Copy the map.
-
         // Create all entities.
         // TODO: Rework things. This is silly.        
         Resource createEvent = GetEventHandlerOrNull("Create");
@@ -53,11 +51,9 @@ public partial class View : Node2D
         VisionSystem vision = model.GetNode<VisionSystem>("Systems/Vision");
         FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
 
-        // TODO: Add map knowledge. Maybe move logic from view to model.
-        // foreach (Vector2 vec in fog.GetUsedCells())
-        // {
-        //     map
-        // }
+        // Copy map knowledge.
+        MapView mapView = GetNode<MapView>("Map");
+        mapView.SyncRevealed(model.Map, fog);
 
         // TODO: read the info directly.
         foreach (Entity e in model.GetEntities())

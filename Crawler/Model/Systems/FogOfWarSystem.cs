@@ -45,7 +45,7 @@ public class FogOfWarSystem : TileMap, CrawlerSystem
             {"subject", e.id},
             {"action", "SeeMap"},
             {"center", new Vector2(e.position.x, e.position.y)},
-            {"tiles", (tiles)}
+            {"tiles", tiles}
         });
     }
 
@@ -80,7 +80,7 @@ public class FogOfWarSystem : TileMap, CrawlerSystem
         }
     }
 
-    // // Tiles marked as VISIBLE are not meant to be saved!
+    // Tiles marked as VISIBLE are not meant to be saved!
     public void UpdateVisibility(CrawlerMap map, (int x, int y) pos, int radius)
     {
         Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));

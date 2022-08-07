@@ -33,7 +33,6 @@ public partial class Model : Node
     public void AddEntity(Entity e)
     {
         e.id = Entities.Count;
-        e.ResourceName = e.id.ToString();
         Entities.Add(e);
 
         this.CoolerApiEvent(-1, "Create", e, e.id);

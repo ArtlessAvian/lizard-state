@@ -133,7 +133,7 @@ public partial class Actor : Node2D
             1 - Mathf.Pow(1 - 0.3f, delta * 60f)
         );
 
-        GetNode<Node2D>("AnimatedSprite").Position = animationArg.Clamped(1) * View.TILESIZE * spriteLerp;
+        GetNode<Node2D>("AnimatedSprite").Position = animationArg.LimitLength(1) * View.TILESIZE * spriteLerp;
         GetNode<Node2D>("AnimatedSprite").Position += Vector2.Up * spriteZ;
 
         // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
