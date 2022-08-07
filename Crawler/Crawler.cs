@@ -27,7 +27,7 @@ public class Crawler : Node2D, InputStateMachine
         // NoiseGenerator gen = new NoiseGenerator();
         // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
         // EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
-        Playlist playlist = GD.Load<Playlist>("res://Crawler/Playlist/Failsafe.tres");
+        Playlist playlist = GD.Load("res://Crawler/Playlist/Failsafe.tres").Duplicate() as Playlist;
         playlist.FirstModel(Model);
 
         View.ConnectToModel(Model);
@@ -66,17 +66,18 @@ public class Crawler : Node2D, InputStateMachine
             }
 
             // Uncomment if not lag testing (which should be always)
-            // if (OS.GetTicksMsec() - start > 1000 / 144f)
-            // {
-            //     GD.PrintErr("Timed out!");
-            //     break;
-            // }
+            if (OS.GetTicksMsec() - start > 1000 / 144f)
+            {
+                GD.PrintErr("Timed out!");
+                break;
+            }
         }
 
         if (Model.done)
         {
             Model next = Model.playlist.NextModel(Model);
-            Model.ReplaceBy(next);
+            RemoveChild(Model);
+            AddChild(next);
 
             // TODO: Uncopypaste. Taken from MainInputState.cs
             View old = View;

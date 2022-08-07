@@ -7,10 +7,6 @@ public class NoiseGenerator : LevelGenerator
     int spawnX = 0;
     int spawnY = 0;
 
-    public NoiseGenerator()
-    {
-    }
-
     public override Model Generate(Model model)
     {
         GenerateMap(model);
@@ -60,6 +56,7 @@ public class NoiseGenerator : LevelGenerator
         spawnX = 0;
         spawnY = -2;
         model.AddEntity(CreateEntity(playerTegu, (spawnX, spawnY), 0));
+        model.GetEntity(0).isPlayer = true;
         model.AddEntity(CreateEntity(partnerAxolotl, (spawnX, spawnY + 1), 0));
 
         // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));

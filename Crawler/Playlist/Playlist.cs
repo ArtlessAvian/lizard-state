@@ -9,7 +9,7 @@ using Godot.Collections;
 public class Playlist : Resource
 {
     [Export] Array<LevelGenerator> generators;
-    [Export] Array<Model> previousModels;
+    // [Export] Array<Model> previousModels;
     [Export] int current = -1;
 
     // [Export] Entity[] _playerTeam; // = {GD.Load<>};
@@ -32,7 +32,7 @@ public class Playlist : Resource
         if (current >= generators.Count - 1) { return null; }
         if (previous is null) { return null; }
 
-        previousModels.Add(previous);
+        // previousModels.Add(previous);
         current += 1;
 
         // we still hold a reference to the players.
