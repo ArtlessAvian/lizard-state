@@ -165,10 +165,7 @@ public partial class View : Node2D
                 GetNode<MessageLog>("UILayer/MessageLog").MarginTop = 20;
                 GetNode<ColorRect>("UILayer/MessageLog/Background").Color = Color.FromHsv(0, 0, 0);
 
-                // Hack. I kinda want to rework the view anyways.
-                GetNode<AnimationPlayer>("CanvasLayer/AnimationPlayer").Play("FadeOut");
-                SceneTreeTimer sceneTreeTimer = GetTree().CreateTimer(1, true);
-                sceneTreeTimer.Connect("timeout", this, "set", new Array("done", true));
+                done = true;
             }
 
             // Everything gets sent to the logs.

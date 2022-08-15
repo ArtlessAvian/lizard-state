@@ -73,30 +73,46 @@ public class Crawler : Node2D, InputStateMachine
             }
         }
 
-        if (Model.done && View.done)
+        if (Model.done && View.done && !GetNode<AnimationPlayer>("Fader/AnimationPlayer").IsPlaying())
         {
-            Model next = Model.playlist.NextModel(Model);
-            RemoveChild(Model);
-            AddChild(next);
-
-            // TODO: Uncopypaste. Taken from MainInputState.cs
-            View old = View;
-            RemoveChild(old);
-            old.QueueFree();
-
-            PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
-            View view = viewScene.Instance<View>();
-            view.Name = "View";
-            AddChild(view);
-
-            view.ConnectToModel(next);
+            // Hack-ish.
+            GetNode<AnimationPlayer>("Fader/AnimationPlayer").Play("FadeOut");
+            SceneTreeTimer sceneTreeTimer = GetTree().CreateTimer(1, true);
+            sceneTreeTimer.Connect("timeout", this, "NextFloor");
         }
+    }
+
+    private void NextFloor()
+    {
+        GetNode<AnimationPlayer>("Fader/AnimationPlayer").Play("FadeIn");
+
+        Model next = Model.playlist.NextModel(Model);
+        RemoveChild(Model);
+        AddChild(next);
+        MoveChild(next, 0);
+
+        // TODO: Uncopypaste. Taken from MainInputState.cs
+        View old = View;
+        RemoveChild(old);
+        old.QueueFree();
+
+        PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
+        View view = viewScene.Instance<View>();
+        view.Name = "View";
+        AddChild(view);
+        MoveChild(view, 1);
+
+        view.ConnectToModel(next);
+
+        activeInputState = GetNode<InputState>("InputStates/Main");
+        activeInputState.Enter(this);
     }
 
     public override void _UnhandledInput(InputEvent ev)
     {
         if (notPlayerTurn) { return; }
         if (View.eventQueue.Count > 0) { return; }
+        if (View.done) { return; }
         activeInputState.HandleInput(this, ev);
     }
 
