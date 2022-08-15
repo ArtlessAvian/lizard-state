@@ -42,6 +42,8 @@ public class Crawler : Node2D, InputStateMachine
         // {
         //     ProjectSettings.SetSetting("display/window/stretch/shrink", (int)GetViewport().Size.x / 960);
         // }
+
+        PlanarGraph.TestMe();
     }
 
     public override void _Process(float delta)
