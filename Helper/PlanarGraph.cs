@@ -10,17 +10,19 @@ class PlanarGraph
     [Export] int nodes;
     [Export] int maxDegree; // geq to 2.
     [Export] int diameter; // loose constraint, will break to keep degree.
+    [Export] bool isTree;
     [Export] int seed;
 
     List<int>[] edges;
     List<int>[] subtreeChildren;
     private int[] subtreeDepth;
 
-    public PlanarGraph(int nodes, int maxDegree, int diameter, ulong? seed = null)
+    public PlanarGraph(int nodes, int maxDegree, int diameter, bool isTree = false, ulong? seed = null)
     {
         this.nodes = nodes;
         this.maxDegree = maxDegree;
         this.diameter = diameter;
+        this.isTree = isTree;
         rng.Seed = seed ?? 413;
 
         edges = new List<int>[nodes];
@@ -34,7 +36,7 @@ class PlanarGraph
 
         // MessWithDiameter();
         CreateTree();
-        AddCrossEdges();
+        if (!isTree) { AddCrossEdges(); }
     }
 
     private void CreateTree()
@@ -164,7 +166,49 @@ class PlanarGraph
 
     private void AddCrossEdges()
     {
+        AddCrossEdgesDFS(0, new List<int>());
+    }
 
+    private void AddCrossEdgesDFS(int node, List<int> targets)
+    {
+        // Decide to add edges from node to some targets.
+        int? maxTarget = null;
+        while ((targets.Count > 0) && (edges[node].Count < maxDegree) && (true))
+        {
+            int target = targets[rng.RandiRange(0, targets.Count - 1)];
+
+            GD.Print("Added edge ", node, "-", target, "!");
+            edges[node].Add(target);
+            edges[target].Add(node);
+
+            targets.RemoveAll(val => val <= target);
+
+            if (maxTarget == null || target > maxTarget)
+            {
+                maxTarget = target;
+            }
+        }
+        if (maxTarget is int readd)
+        {
+            targets.Add(readd);
+        }
+
+        if (subtreeChildren[node].Count == 0)
+        {
+            targets.Clear();
+        }
+        else
+        {
+            foreach (int child in subtreeChildren[node])
+            {
+                AddCrossEdgesDFS(child, targets);
+            }
+        }
+        // When rewinding, add to targets.
+        if (edges[node].Count < maxDegree)
+        {
+            targets.Add(node);
+        }
     }
 
     public void DumpGraph()
@@ -215,7 +259,7 @@ class PlanarGraph
         GD.Print("Should be 2: ", MinBranchesRoot(190, 3, 14));
 
         // totally not mh generations jurassic frontier
-        PlanarGraph graph = new PlanarGraph(12, 4, 5);
+        PlanarGraph graph = new PlanarGraph(12, 4, 5, false);
         graph.DumpGraph();
     }
 }
