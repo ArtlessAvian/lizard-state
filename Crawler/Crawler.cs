@@ -44,8 +44,8 @@ public class Crawler : Node2D, InputStateMachine
         // }
 
         // PlanarGraph.TestMe();
-        PlanarGenerator gen = new PlanarGenerator();
-        gen.GenerateEmbedding();
+        // PlanarGenerator gen = new PlanarGenerator();
+        // gen.GenerateEmbedding();
     }
 
     public override void _Process(float delta)

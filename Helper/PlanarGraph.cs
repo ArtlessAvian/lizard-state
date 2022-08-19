@@ -174,15 +174,23 @@ class PlanarGraph
         while ((targets.Count > 0) && (edges[node].Count < maxDegree) && (rng.Randf() < 0.5))
         {
             // int target = targets[targets.Count - 1];
-            int target = targets[rng.RandiRange(0, targets.Count - 1)];
-            edges[node].Add(target);
-            edges[target].Add(node);
-
-            targets.RemoveAll(val => val <= target);
-
-            if (maxTarget == null || target > maxTarget)
+            // int target = targets[rng.RandiRange(0, targets.Count - 1)];
+            // Select a node of equal depth, or one greater.
+            int equalDepth = targets.Find(index => subtreeDepth[index] == subtreeDepth[node]);
+            int inequalDepth = targets.Find(index => subtreeDepth[index] == subtreeDepth[node] + 1);
+            int target = rng.Randf() < 0.5 ? equalDepth : inequalDepth;
+            // HACK: targets.Find returns 0 if nothing matches. Nothing can link to the root anyways. I'm tired.
+            if (target != 0)
             {
-                maxTarget = target;
+                edges[node].Add(target);
+                edges[target].Add(node);
+
+                targets.RemoveAll(val => val <= target);
+
+                if (maxTarget == null || target > maxTarget)
+                {
+                    maxTarget = target;
+                }
             }
         }
         if (maxTarget is int readd)

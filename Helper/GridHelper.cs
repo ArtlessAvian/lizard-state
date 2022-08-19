@@ -39,7 +39,7 @@ static class GridHelper
     {
         (int octantX, int octantY, int octant) = Octantify(through.x - from.x, through.y - from.y);
         int localDy = 0;
-        for (int localDx = 0; localDx <= 100; localDx++)
+        for (int localDx = 0; localDx <= 500; localDx++)
         {
             (int dx, int dy) = DeOctantify(localDx, localDy, octant);
             yield return (dx + from.x, dy + from.y);
@@ -52,7 +52,7 @@ static class GridHelper
             }
         }
     }
-    
+
     public static IEnumerable<(int x, int y)> LineBetween((int x, int y) from, (int x, int y) to)
     {
         foreach ((int x, int y) p in RayThrough(from, to))
@@ -115,7 +115,7 @@ static class GridHelper
             return GCD(b, a);
         }
         if (b == 0) { return 0; } // this should never happen!!
-        if (a % b == 0) {return b;}
+        if (a % b == 0) { return b; }
         return GCD(b, a % b);
     }
 
@@ -126,7 +126,7 @@ static class GridHelper
 
         // Chebyshev
         return Math.Max(dx, dy);
-        
+
         // Approximate Approximate Euclidean
         // return Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy);
         // return (int)(Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy));
