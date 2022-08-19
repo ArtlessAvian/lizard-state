@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Collections.Generic;
 
 public class PlanarGenerator : LevelGenerator
@@ -19,46 +20,56 @@ public class PlanarGenerator : LevelGenerator
 
     public void GenerateEmbedding()
     {
-        graph = graph ?? new PlanarGraph(15, 4, 15);
+        graph = graph ?? new PlanarGraph(15, 3, 5, false);
         // embed graph in plane.
         embedding.Add(new Vector2(0, 0));
+        List<float> angle = new List<float>();
 
-        // with brute force.
-        int lastY = 0;
-        int lastDepth = 0;
+        angle.Add(3.14f / 2);
+
         // abusing the fact that this will iterate in order of depth.
         for (int current = 1; current < graph.nodes; current++)
         {
             int currentParent = graph.edges[current][0];
-            for (int _ = 0; _ < 20; _++)
+            for (int attempt = 1000; attempt > 0; attempt--)
             {
-                bool success = true;
-                if (graph.subtreeDepth[current] != lastDepth) { lastY = 0; lastDepth = graph.subtreeDepth[current]; } else { lastY++; }
-                Vector2 placement = new Vector2(graph.subtreeDepth[current] * 50, lastY * 50).Snapped(Vector2.One);
-                // for (int other = 0; other < current; other++)
-                // {
-                //     foreach (int edge in graph.edges[other])
-                //     {
-                //         if (edge >= current) { continue; }
-                //         if (Geometry.SegmentIntersectsSegment2d(embedding[other], embedding[edge], placement, embedding[currentParent]) is object)
-                //         {
-                //             success = false;
-                //             break;
-                //         }
-                //     }
-                //     if (!success) { break; }
-                // }
-
-                if (success || _ == 19)
+                Vector2 placement = new Vector2(15, 0);
+                float my_angle = angle[currentParent] + (GD.Randf() - 0.5f) * 3.14f * 2;
+                placement = placement.Rotated(my_angle);
+                placement += embedding[currentParent];
+                placement = placement.Snapped(Vector2.One);
+                if (ValidPlacement(current, placement) || attempt == 1)
                 {
-                    if (_ == 19) { GD.Print("gave up"); }
+                    if (attempt == 1) { GD.Print("gave up"); }
                     embedding.Add(placement);
+                    angle.Add(my_angle);
                     break;
                 }
             }
         }
         graph.DumpGraph();
         GD.Print(string.Join<Vector2>(" ", embedding));
+    }
+
+    private bool ValidPlacement(int current, Vector2 placement)
+    {
+        int currentParent = graph.edges[current][0];
+        for (int other = 0; other < current; other++)
+        {
+            foreach (int edge in graph.edges[other])
+            {
+                if (edge >= current) { continue; }
+                if (Geometry.SegmentIntersectsSegment2d(embedding[other], embedding[edge], placement, embedding[currentParent]) is object)
+                {
+                    return false;
+                }
+            }
+            if (placement.DistanceTo(embedding[other]) < 8)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public override void GenerateMap(Model model)
@@ -68,12 +79,31 @@ public class PlanarGenerator : LevelGenerator
         {
             foreach (int neighbor in graph.edges[node])
             {
-                if (embedding[node].x > embedding[neighbor].x) ;
-                for (int x = (int)embedding[node].x; x < embedding[neighbor].x; x++)
+                if (neighbor > node) { continue; }
+                foreach ((int x, int y) in GridHelper.LineBetween(((int)embedding[node].x, (int)embedding[node].y), ((int)embedding[neighbor].x, (int)embedding[neighbor].y)))
                 {
-                    int y = (int)(embedding[node].y + (embedding[neighbor].y - embedding[node].y) / (embedding[neighbor].x - embedding[node].x) * (x - embedding[node].x));
-                    model.Map.SetCell(x, y, graph.subtreeDepth[node]);
+                    SplatMap(model.Map, x, y, 1);
                 }
+            }
+        }
+
+        for (int node = 0; node < graph.nodes; node++)
+        {
+            SplatMap(model.Map, (int)embedding[node].x, (int)embedding[node].y, 2 + graph.subtreeDepth[node] % 2);
+        }
+    }
+
+    static OpenSimplexNoise noise = new OpenSimplexNoise();
+    public static void SplatMap(TileMap map, float x, float y, int tile)
+    {
+        x += 12 * noise.GetNoise2d(x, y);
+        y += 12 * noise.GetNoise2d(y, x);
+        float r = noise.GetNoise2d(x, y) + 1.5f;
+        for (float dx = -r; dx <= r; dx++)
+        {
+            for (float dy = -r; dy <= r; dy++)
+            {
+                map.SetCell((int)(x + dx), (int)(y + dy), tile);
             }
         }
     }

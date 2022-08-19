@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 
 // A random planar graph.
-// Distribution is, something. Not sure if it creates every graph but whatever.
+// This cannot generate every graph. Example: verticies of a cube.
+// I have decided to intentionally not do that, because that would be unfun.
 class PlanarGraph
 {
     private RandomNumberGenerator rng = new RandomNumberGenerator();
@@ -168,11 +169,12 @@ class PlanarGraph
     private void AddCrossEdgesDFS(int node, List<int> targets)
     {
         // Decide to add edges from node to some targets.
+        // TODONT: To make every planar graph possible, keep track of all nodes on the outer face.
         int? maxTarget = null;
         while ((targets.Count > 0) && (edges[node].Count < maxDegree) && (rng.Randf() < 0.5))
         {
-            int target = targets[targets.Count - 1];
-            // int target = targets[rng.RandiRange(0, targets.Count - 1)];
+            // int target = targets[targets.Count - 1];
+            int target = targets[rng.RandiRange(0, targets.Count - 1)];
             edges[node].Add(target);
             edges[target].Add(node);
 
