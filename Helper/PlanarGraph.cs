@@ -7,15 +7,15 @@ using System.Collections.Generic;
 class PlanarGraph
 {
     private RandomNumberGenerator rng = new RandomNumberGenerator();
-    [Export] int nodes;
-    [Export] int maxDegree; // geq to 2.
-    [Export] int diameter; // loose constraint, will break to keep degree.
-    [Export] bool isTree;
-    [Export] int seed;
+    [Export] public int nodes;
+    [Export] public int maxDegree; // geq to 2.
+    [Export] public int diameter; // loose constraint, will break to keep degree.
+    [Export] public bool isTree;
+    [Export] public int seed;
 
-    List<int>[] edges;
-    List<int>[] subtreeChildren;
-    private int[] subtreeDepth;
+    public List<int>[] edges;
+    public List<int>[] subtreeChildren;
+    public int[] subtreeDepth;
 
     public PlanarGraph(int nodes, int maxDegree, int diameter, bool isTree = false, ulong? seed = null)
     {
@@ -79,8 +79,8 @@ class PlanarGraph
                 minBranches = maxBranches;
             }
 
-            int branches = minBranches;
-            // int branches = rng.RandiRange(minBranches, maxBranches);
+            // int branches = minBranches;
+            int branches = rng.RandiRange(minBranches, maxBranches);
             int firstChild = maxDiscovered + 1;
             maxDiscovered += branches;
 
@@ -111,10 +111,6 @@ class PlanarGraph
             {
                 sizes.Add(divisions[i + 1] - divisions[i] + minInSubdivision);
             }
-
-            GD.Print(branches);
-            GD.Print(string.Join<int>(", ", divisions));
-            GD.Print(string.Join<int>(", ", sizes));
 
             for (int i = 0; i < branches; i++)
             {
@@ -173,11 +169,10 @@ class PlanarGraph
     {
         // Decide to add edges from node to some targets.
         int? maxTarget = null;
-        while ((targets.Count > 0) && (edges[node].Count < maxDegree) && (true))
+        while ((targets.Count > 0) && (edges[node].Count < maxDegree) && (rng.Randf() < 0.5))
         {
-            int target = targets[rng.RandiRange(0, targets.Count - 1)];
-
-            GD.Print("Added edge ", node, "-", target, "!");
+            int target = targets[targets.Count - 1];
+            // int target = targets[rng.RandiRange(0, targets.Count - 1)];
             edges[node].Add(target);
             edges[target].Add(node);
 
