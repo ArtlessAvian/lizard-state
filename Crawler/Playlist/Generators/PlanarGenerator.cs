@@ -5,9 +5,8 @@ using System.Collections.Generic;
 
 public class PlanarGenerator : LevelGenerator
 {
-    [Export]
+    [Export] OpenSimplexNoise noise;
     PlanarGraph graph;
-
     List<Vector2> embedding = new List<Vector2>();
 
     public override Model Generate(Model model)
@@ -20,7 +19,7 @@ public class PlanarGenerator : LevelGenerator
 
     public void GenerateEmbedding()
     {
-        graph = graph ?? new PlanarGraph(20, 3, 5, false);
+        graph = graph ?? new PlanarGraph(20, 3, 7, false, 530);
         // embed graph in plane.
         embedding.Add(new Vector2(0, 0));
 
@@ -51,7 +50,7 @@ public class PlanarGenerator : LevelGenerator
         for (int current = 1; current < graph.nodes; current++)
         {
             // Vector2 placement = new Vector2((float)(graph.subtreeDepth[current] * 100), layerIndex[current] * 100);
-            Vector2 placement = new Vector2((float)(graph.subtreeDepth[current] * 10), 0);
+            Vector2 placement = new Vector2(graph.subtreeDepth[current] * 10, 0);
             placement = placement.Rotated(3.14f / 4 + 3.14f / 2 * (layerIndex[current] + 0.1f) / (layerSize[current] - 1 + 0.2f));
             embedding.Add(placement);
             if (!ValidPlacement(current, placement))
@@ -157,8 +156,7 @@ public class PlanarGenerator : LevelGenerator
         }
     }
 
-    static OpenSimplexNoise noise;
-    public static (float, float) Warp(float x, float y)
+    public (float, float) Warp(float x, float y)
     {
         if (noise is null)
         {
@@ -171,7 +169,7 @@ public class PlanarGenerator : LevelGenerator
         return (x, y);
     }
 
-    public static void SplatMap(TileMap map, float x, float y, int tile)
+    public void SplatMap(TileMap map, float x, float y, int tile)
     {
         (x, y) = Warp(x, y);
         // float r = 0.5f;

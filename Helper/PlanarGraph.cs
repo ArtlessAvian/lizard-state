@@ -8,19 +8,31 @@ using System.Collections.Generic;
 // I have decided to intentionally not do that, because that would be unfun.
 class PlanarGraph
 {
+    const int NODE_LIMIT = 200; // no way there'll be a 200 node graph.
+
     private RandomNumberGenerator rng = new RandomNumberGenerator();
-    [Export] public int nodes;
-    [Export] public int maxDegree; // geq to 2.
-    [Export] public int diameter; // loose constraint, will break to keep degree.
-    [Export] public bool isTree;
-    [Export] public int seed;
+    public readonly int nodes;
+    public readonly int maxDegree; // geq to 2.
+    public readonly int diameter; // loose constraint, will break to keep degree.
+    public readonly bool isTree;
+    public readonly int seed;
 
     public List<int>[] edges;
+
+    // implementation details.
     public List<int>[] subtreeChildren;
     public int[] subtreeDepth;
 
     public PlanarGraph(int nodes, int maxDegree, int diameter, bool isTree = false, ulong? seed = null)
     {
+        // mess with diameter
+        int original = diameter;
+        while (GetMinBranches(nodes - 1, maxDegree - 1, diameter) > maxDegree - 1)
+        {
+            diameter++;
+        }
+        if (original != diameter) { GD.PrintErr($"Diameter increased from {original} to {diameter}!"); }
+
         this.nodes = nodes;
         this.maxDegree = maxDegree;
         this.diameter = diameter;
@@ -36,19 +48,8 @@ class PlanarGraph
         }
         subtreeDepth = new int[nodes];
 
-        MessWithDiameter();
         CreateTree();
         if (!isTree) { AddCrossEdges(); }
-    }
-
-    private void MessWithDiameter()
-    {
-        int original = diameter;
-        while (GetMinBranches(nodes - 1, maxDegree - 1, diameter) > maxDegree - 1)
-        {
-            diameter++;
-        }
-        if (original != diameter) { GD.PrintErr($"Diameter increased from {original} to {diameter}!"); }
     }
 
     private void CreateTree()
@@ -152,6 +153,10 @@ class PlanarGraph
         for (int h = 1; h <= height; h++)
         {
             size = 1 + branchingFactor * size;
+            if (size >= NODE_LIMIT)
+            {
+                return size;
+            }
         }
         return size;
     }
@@ -188,9 +193,10 @@ class PlanarGraph
                 }
             }
         }
-        if (maxTarget is int readd)
+        if (maxTarget is int maxTargett)
         {
-            targets.Add(readd);
+            targets.Add(maxTargett); 
+            targets.RemoveAll(val => edges[val].Count >= maxDegree);
         }
 
         if (subtreeChildren[node].Count == 0)
