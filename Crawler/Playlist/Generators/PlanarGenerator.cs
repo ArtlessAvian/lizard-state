@@ -81,13 +81,14 @@ public class PlanarGenerator : LevelGenerator
                 float len = Math.Max(Math.Abs(vec.x), Math.Abs(vec.y));
                 if (graph.edges[node].Contains(other))
                 {
-                    delta[node] += vec.LimitLength(1) * (len - 5) * (len - 5) * Math.Sign(len - 5) * 0.00005f;
+                    float springDiff = len - 5;
+                    delta[node] += vec.LimitLength(1) * springDiff * springDiff * Math.Sign(springDiff) * 0.00005f;
                 }
-                else
-                {
-                    delta[node] -= vec.LimitLength(1) / len / len * 12;
+                // else
+                // {
+                delta[node] -= vec.LimitLength(1) / len / len * 10;
                     // delta[node] += vec * 0.05f;
-                }
+                // }
             }
         }
         float scale = 1;

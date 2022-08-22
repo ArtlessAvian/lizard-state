@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 // A random planar graph.
@@ -35,19 +36,30 @@ class PlanarGraph
         }
         subtreeDepth = new int[nodes];
 
-        // MessWithDiameter();
+        MessWithDiameter();
         CreateTree();
         if (!isTree) { AddCrossEdges(); }
+    }
+
+    private void MessWithDiameter()
+    {
+        int original = diameter;
+        while (GetMinBranches(nodes - 1, maxDegree - 1, diameter) > maxDegree - 1)
+        {
+            diameter++;
+        }
+        if (original != diameter) { GD.PrintErr($"Diameter increased from {original} to {diameter}!"); }
     }
 
     private void CreateTree()
     {
         // "BFS" a tree.
         int[] numSubnodes = new int[nodes];
-        bool[] extraDepth = new bool[nodes]; // this subtree can be one tall extra.
+        int[] subtreeDiameter = new int[nodes]; // this subtree can be one tall extra.
 
         subtreeDepth[0] = 0;
         numSubnodes[0] = nodes - 1;
+        subtreeDiameter[0] = diameter;
         int maxDiscovered = 0;
 
         for (int node = 0; node < nodes; node++)
@@ -56,34 +68,16 @@ class PlanarGraph
             if (numSubnodes[node] <= 0) { continue; }
 
             // decide how many branches there are.
-            int minBranches, maxBranches;
-            if (node == 0)
-            {
-                minBranches = MinBranchesRoot(numSubnodes[node], maxDegree, diameter);
-                maxBranches = maxDegree;
-            }
-            else
-            {
-                int subTreeHeight = (diameter - 1) / 2 + (extraDepth[node] ? 1 : 0) - subtreeDepth[node];
-                minBranches = MinBranches(numSubnodes[node], maxDegree, subTreeHeight);
-                maxBranches = maxDegree - 1;
-            }
-            if (minBranches < 1)
-            {
-                GD.PrintErr("minBranches < 1. Cannot fit tree inside diameter.");
-                minBranches = 1;
-            }
+            int minBranches = GetMinBranches(numSubnodes[node], maxDegree - 1, subtreeDiameter[node]);
+            int maxBranches = maxDegree - 1;
             maxBranches = Math.Min(maxBranches, numSubnodes[node]);
-            if (minBranches > maxBranches)
-            {
-                GD.PrintErr("minBranches > maxBranches. breaking diameter constraint (keeping degree)");
-                minBranches = maxBranches;
-            }
 
             // int branches = minBranches;
             int branches = rng.RandiRange(minBranches, maxBranches);
             int firstChild = maxDiscovered + 1;
             maxDiscovered += branches;
+
+            GD.PrintS(minBranches, maxBranches, branches);
 
             // add edges
             for (int i = firstChild; i <= maxDiscovered; i++)
@@ -92,73 +86,74 @@ class PlanarGraph
                 edges[i].Add(node);
                 subtreeChildren[node].Add(i);
                 subtreeDepth[i] = subtreeDepth[node] + 1;
+
+                subtreeDiameter[i] = ((subtreeDiameter[node] - 2) / 2) * 2;
             }
+            GD.Print(subtreeDiameter[node]);
 
             // decide how to divide the subnodes.
-            // TODO: divide the trees /validly/.
-            int minInSubdivision = 0;
-            int slack = numSubnodes[node] - branches;
-            List<int> divisions = new List<int>();
-            divisions.Add(0);
-            for (int _ = 0; _ < branches - 1; _++)
-            {
-                divisions.Add(rng.RandiRange(0, slack));
-            }
-            divisions.Add(slack);
-            divisions.Sort();
-
+            int remaining = numSubnodes[node] - branches;
             List<int> sizes = new List<int>();
-            for (int i = 0; i < branches; i++)
+            for (int i = 0; i < branches - 1; i++)
             {
-                sizes.Add(divisions[i + 1] - divisions[i] + minInSubdivision);
+                int minSize = GetMinInSubdivision(remaining, maxDegree - 1, subtreeDiameter[node], branches - i);
+                int maxSize = Math.Min(remaining, GetTreeSize(maxDegree - 1, subtreeDiameter[node] / 2 - 1));
+                int size = rng.RandiRange(minSize, maxSize);
+                remaining -= size;
+                sizes.Add(size);
             }
+            sizes.Add(remaining);
 
             for (int i = 0; i < branches; i++)
             {
-                numSubnodes[firstChild + i] = divisions[i + 1] - divisions[i];
+                numSubnodes[firstChild + i] = sizes[i];
             }
-            if (extraDepth[node] || (node == 0 && diameter % 2 == 1))
+            if (node == 0 && diameter % 2 == 1)
             {
-                extraDepth[firstChild] = true;
+                int maxIndex = sizes.IndexOf(sizes.Max());
+                subtreeDiameter[firstChild + maxIndex] += 2;
             }
         }
     }
 
-    // minimum branches a subtree of height height must have to fit subnodes subnodes.
-    // one branch is allowed to be extra long with extraDepth.
-    private static int MinBranches(int subnodes, int maxDegree, int height)
+    // returns the number of branches needed to meet the two requirements.
+    private static int GetMinBranches(int subnodes, int branchingFactor, int subtreeDiameter)
     {
-        // get the max size of a tree of height (height - 1) and branching factor (maxDegree - 1).
-        int subTreeSize = 1;
-        for (int h = 1; h <= height - 1; h++)
+        int childHeight = subtreeDiameter / 2 - 1;
+        int childSize = GetTreeSize(branchingFactor, childHeight);
+        if (subtreeDiameter % 2 == 0)
         {
-            subTreeSize = 1 + (maxDegree - 1) * subTreeSize;
+            // easy case. all subtrees are same size.
+            // how many small trees?
+            return (int)Math.Ceiling((double)subnodes / childSize);
         }
-        return (int)Math.Ceiling((double)subnodes / subTreeSize);
+        int bigChildSize = 1 + branchingFactor * childSize;
+        if (subnodes <= bigChildSize) { return 1; } // everything fits in the big tree.
+        // How many branches with one big tree and n small trees?
+        return (int)Math.Ceiling((double)(subnodes - bigChildSize) / childSize) + 1;
     }
 
-    private static int MinBranchesRoot(int subnodes, int maxDegree, int diameter)
+    private int GetMinInSubdivision(int subnodes, int branchingFactor, int subtreeDiameter, int branches)
     {
-        int smallTreeSize = 1;
+        int childHeight = subtreeDiameter / 2 - 1;
+        int childSize = GetTreeSize(branchingFactor, childHeight);
+        if (subtreeDiameter % 2 == 0)
         {
-            int smallTreeHeight = diameter / 2 - 1;
-            for (int height = 1; height <= smallTreeHeight; height++)
-            {
-                smallTreeSize = 1 + (maxDegree - 1) * smallTreeSize;
-            }
+            return Math.Max(0, subnodes - (branches - 1) * childSize);
         }
-        if (diameter % 2 == 0)
+        int bigChildSize = 1 + branchingFactor * childSize;
+        // shove everything into the big child and the (branch-2) small children.
+        return (int)Math.Max(0, subnodes - bigChildSize - childSize * (branches - 2));
+    }
+
+    private static int GetTreeSize(int branchingFactor, int height)
+    {
+        int size = 1;
+        for (int h = 1; h <= height; h++)
         {
-            // How many small trees?
-            return (int)Math.Ceiling((double)subnodes / smallTreeSize);
+            size = 1 + branchingFactor * size;
         }
-        else
-        {
-            int bigTreeSize = 1 + (maxDegree - 1) * smallTreeSize;
-            if (subnodes <= bigTreeSize) { return 1; }
-            // How many branches with one big tree and n small trees?
-            return (int)Math.Ceiling((double)(subnodes - bigTreeSize) / smallTreeSize) + 1;
-        }
+        return size;
     }
 
     private void AddCrossEdges()
@@ -240,31 +235,45 @@ class PlanarGraph
     // god i wish i had a proper testing suite
     public static void TestMe()
     {
-        GD.Print("Perfect Binary Tree");
-        GD.Print("Should be 2: ", MinBranches(2, 3, 1));
-        GD.Print("Should be 3: ", MinBranches(3, 3, 1));
-        GD.Print("Should be 2: ", MinBranchesRoot(2, 3, 2));
-        GD.Print("Should be 3: ", MinBranchesRoot(3, 3, 2));
-        GD.Print("Should be 4: ", MinBranchesRoot(4, 3, 2));
-        GD.Print("Should be 2: ", MinBranches(6, 3, 2));
-        GD.Print("Should be 3: ", MinBranches(7, 3, 2));
-        GD.Print("Should be 2: ", MinBranchesRoot(6, 3, 4));
-        GD.Print("Should be 3: ", MinBranchesRoot(7, 3, 4));
-        GD.Print("Should be 2: ", MinBranches(126, 3, 6));
-        GD.Print("Should be 3: ", MinBranches(127, 3, 6));
-        GD.Print("Should be 2: ", MinBranchesRoot(126, 3, 12));
-        GD.Print("Should be 3: ", MinBranchesRoot(127, 3, 12));
+        GD.Print("Should be 2: ", GetMinBranches(4, 2, 3));
+        GD.Print("Should be 3: ", GetMinBranches(5, 2, 3));
+        GD.Print("Should be 2: ", GetMinBranches(5, 3, 3));
+        GD.Print("Should be 3: ", GetMinBranches(6, 3, 3));
+        GD.Print("Should be 2: ", GetMinBranches(6, 4, 3));
+        GD.Print("Should be 3: ", GetMinBranches(7, 4, 3));
 
-        GD.Print("Complete Binary Tree");
-        GD.Print("Should be 1: ", MinBranchesRoot(1, 3, 1));
-        GD.Print("Should be 1 (invalid): ", MinBranchesRoot(2, 3, 1));
-        GD.Print("Should be 2: ", MinBranchesRoot(4, 3, 3));
-        GD.Print("Should be 3: ", MinBranchesRoot(5, 3, 3));
-        GD.Print("Should be 2: ", MinBranchesRoot(10, 3, 6));
-        GD.Print("Should be 2: ", MinBranchesRoot(190, 3, 14));
+        GD.Print("Should be 2: ", GetMinBranches(6, 2, 4));
+        GD.Print("Should be 3: ", GetMinBranches(7, 2, 4));
+        GD.Print("Should be 2: ", GetMinBranches(8, 3, 4));
+        GD.Print("Should be 3: ", GetMinBranches(9, 3, 4));
+        GD.Print("Should be 2: ", GetMinBranches(10, 4, 4));
+        GD.Print("Should be 3: ", GetMinBranches(11, 4, 4));
 
-        // totally not mh generations jurassic frontier
-        PlanarGraph graph = new PlanarGraph(12, 4, 5, false);
-        graph.DumpGraph();
+        // GD.Print("Perfect Binary Tree");
+        // GD.Print("Should be 2: ", MinBranches(2, 3, 1));
+        // GD.Print("Should be 3: ", MinBranches(3, 3, 1));
+        // GD.Print("Should be 2: ", MinBranchesRoot(2, 3, 2));
+        // GD.Print("Should be 3: ", MinBranchesRoot(3, 3, 2));
+        // GD.Print("Should be 4: ", MinBranchesRoot(4, 3, 2));
+        // GD.Print("Should be 2: ", MinBranches(6, 3, 2));
+        // GD.Print("Should be 3: ", MinBranches(7, 3, 2));
+        // GD.Print("Should be 2: ", MinBranchesRoot(6, 3, 4));
+        // GD.Print("Should be 3: ", MinBranchesRoot(7, 3, 4));
+        // GD.Print("Should be 2: ", MinBranches(126, 3, 6));
+        // GD.Print("Should be 3: ", MinBranches(127, 3, 6));
+        // GD.Print("Should be 2: ", MinBranchesRoot(126, 3, 12));
+        // GD.Print("Should be 3: ", MinBranchesRoot(127, 3, 12));
+
+        // GD.Print("Complete Binary Tree");
+        // GD.Print("Should be 1: ", MinBranchesRoot(1, 3, 1));
+        // GD.Print("Should be 1 (invalid): ", MinBranchesRoot(2, 3, 1));
+        // GD.Print("Should be 2: ", MinBranchesRoot(4, 3, 3));
+        // GD.Print("Should be 3: ", MinBranchesRoot(5, 3, 3));
+        // GD.Print("Should be 2: ", MinBranchesRoot(10, 3, 6));
+        // GD.Print("Should be 2: ", MinBranchesRoot(190, 3, 14));
+
+        // // totally not mh generations jurassic frontier
+        // PlanarGraph graph = new PlanarGraph(12, 4, 5, false);
+        // graph.DumpGraph();
     }
 }
