@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public class PlanarGenerator : LevelGenerator
 {
-    [Export] OpenSimplexNoise noise;
+    [Export] OpenSimplexNoise distortion;
+    [Export] OpenSimplexNoise sizeVariance;
     PlanarGraph graph;
     List<Vector2> embedding = new List<Vector2>();
 
@@ -37,6 +38,7 @@ public class PlanarGenerator : LevelGenerator
         }
 
         List<int> layerSize = new List<int> { 1 };
+        int lastInWidestLayer = 0;
         for (int i = 1; i < graph.nodes; i++)
         {
             layerSize.Add(layerIndex[i] + 1);
@@ -44,14 +46,35 @@ public class PlanarGenerator : LevelGenerator
             {
                 layerSize[i - j] += 1;
             }
+            if (layerSize[i] >= layerSize[lastInWidestLayer])
+            {
+                lastInWidestLayer = i;
+            }
         }
 
+        GD.Print("aaaaaa", lastInWidestLayer);
+
         // abusing the fact that this will iterate in order of depth.
-        for (int current = 1; current < graph.nodes; current++)
+        for (int current = 1; current <= lastInWidestLayer; current++)
         {
             // Vector2 placement = new Vector2((float)(graph.subtreeDepth[current] * 100), layerIndex[current] * 100);
-            Vector2 placement = new Vector2(graph.subtreeDepth[current] * 10, 0);
+            Vector2 placement = new Vector2(graph.subtreeDepth[current] * 15, 0);
             placement = placement.Rotated(3.14f / 4 + 3.14f / 2 * (layerIndex[current] + 0.1f) / (layerSize[current] - 1 + 0.2f));
+            embedding.Add(placement);
+            if (!ValidPlacement(current, placement))
+            {
+                GD.Print("honk");
+            }
+        }
+
+        // assume perfect nary.
+        for (int current = lastInWidestLayer + 1; current < graph.nodes; current++)
+        {
+            int parent = graph.edges[current][0];
+            float parentAngle = embedding[parent].Angle();
+
+            Vector2 placement = new Vector2(graph.subtreeDepth[current] * 15, 0);
+            placement = placement.Rotated(parentAngle + graph.subtreeChildren[parent].IndexOf(current) / 9f);
             embedding.Add(placement);
             if (!ValidPlacement(current, placement))
             {
@@ -80,13 +103,13 @@ public class PlanarGenerator : LevelGenerator
                 float len = Math.Max(Math.Abs(vec.x), Math.Abs(vec.y));
                 if (graph.edges[node].Contains(other))
                 {
-                    float springDiff = len - 5;
-                    delta[node] += vec.LimitLength(1) * springDiff * springDiff * Math.Sign(springDiff) * 0.00005f;
+                    float springDiff = len - 1;
+                    delta[node] += vec.LimitLength(1) * springDiff * springDiff * Math.Sign(springDiff) * 0.0015f;
                 }
                 // else
                 // {
-                delta[node] -= vec.LimitLength(1) / len / len * 10;
-                    // delta[node] += vec * 0.05f;
+                delta[node] -= vec.LimitLength(1) / len / len * 20;
+                // delta[node] += vec * 0.05f;
                 // }
             }
         }
@@ -146,11 +169,12 @@ public class PlanarGenerator : LevelGenerator
 
         for (int node = 0; node < graph.nodes; node++)
         {
-            for (int dx = -3; dx <= 3; dx++)
+            // SplatMap(model.Map, (int)embedding[node].x, (int)embedding[node].y, 2 + graph.subtreeDepth[node] % 2);
+            for (int dx = -2; dx <= 2; dx++)
             {
-                for (int dy = -3; dy <= 3; dy++)
+                for (int dy = -2; dy <= 2; dy++)
                 {
-                    SplatMap(model.Map, (int)embedding[node].x + dx, (int)embedding[node].y + dy, 2 + graph.subtreeDepth[node] % 2);
+                    SplatMap(model.Map, (int)embedding[node].x + dx, (int)embedding[node].y + dy, 1);
                 }
             }
         }
@@ -158,27 +182,33 @@ public class PlanarGenerator : LevelGenerator
 
     public (float, float) Warp(float x, float y)
     {
-        if (noise is null)
+        if (distortion is null)
         {
-            noise = new OpenSimplexNoise();
-            noise.Period = 43.7f;
-            noise.Octaves = 8;
+            distortion = new OpenSimplexNoise();
+            distortion.Period = 43.7f;
+            distortion.Octaves = 2;
         }
-        x += 12 * noise.GetNoise2d(x, y);
-        y += 12 * noise.GetNoise2d(y, x);
+        x += 12 * distortion.GetNoise2d(x, y);
+        y += 12 * distortion.GetNoise2d(y, x);
         return (x, y);
     }
 
     public void SplatMap(TileMap map, float x, float y, int tile)
     {
-        (x, y) = Warp(x, y);
+        if (sizeVariance is null)
+        {
+            sizeVariance = new OpenSimplexNoise();
+            sizeVariance.Period = 7.3f;
+            sizeVariance.Octaves = 8;
+        }
         // float r = 0.5f;
-        float r = noise.GetNoise2d(x, y) + 1.5f;
+        float r = 2 * (sizeVariance.GetNoise2d(x, y) + 1f) + 0.5f;
         for (float dx = -r; dx <= r; dx++)
         {
             for (float dy = -r; dy <= r; dy++)
             {
-                map.SetCell((int)(x + dx), (int)(y + dy), tile);
+                (float aaax, float aaay) = Warp(x + dx, y + dy);
+                map.SetCell((int)(aaax), (int)(aaay), tile);
             }
         }
     }

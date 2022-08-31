@@ -80,6 +80,10 @@ public class MapView : Node2D
                 floors.SetCell(x, y, tile);
             }
         }
+        if (tile != -2)
+        {
+            GetNode<TileMap>("Minimap/Minimap").SetCell(x, y, tile != -1 ? tile : 8);
+        }
     }
 
     public void SyncRevealed(CrawlerMap map, FogOfWarSystem fog)
