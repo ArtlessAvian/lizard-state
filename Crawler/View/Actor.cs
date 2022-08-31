@@ -6,13 +6,15 @@ using System.Collections.Generic;
 [Tool]
 public partial class Actor : Node2D
 {
+    [Signal]
+    delegate void attack_active();
+
     public Entity role;
 
     [Export] public Vector2 targetPosition;
     [Export] public Vector2 animationArg; // In Tiles
     [Export] public float spriteLerp;
     [Export] public float spriteZ;
-    [Export] public float attackAnimationStartup;
 
     int health = 0;
     bool stunned = false;

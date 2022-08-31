@@ -6,10 +6,10 @@ var start_time
 
 
 func should_wait_before():
-	if is_same_subject():
-		# print("skipping wait")
-		# if previous_event.action == "Rush":
-		return false
+	# if is_same_subject():
+	# print("skipping wait")
+	# if previous_event.action == "Rush":
+	# return false
 	return view.AnyActorAnimating()
 
 
@@ -43,8 +43,3 @@ func run():
 	otheranimation.advance(0)
 
 	object.get_node("HealthBar").value = object.health
-
-
-func should_wait_after():
-	# return view.AnyActorAnimating()
-	return now() - start_time < 6 * (1000 / 60)

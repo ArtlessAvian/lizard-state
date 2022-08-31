@@ -140,11 +140,11 @@ public partial class View : Node2D
                     handlerRan = true;
                 }
 
-                object shouldWaitAfter = initializedHandler.Call("should_wait_after");
-                if (!impatientMode && shouldWaitAfter is bool eeee && eeee)
-                {
-                    break;
-                }
+                // object shouldWaitAfter = initializedHandler.Call("should_wait_after");
+                // if (!impatientMode && shouldWaitAfter is bool eeee && eeee)
+                // {
+                //     break;
+                // }
             }
 
             // consume the event
@@ -212,6 +212,7 @@ public partial class View : Node2D
         {
             if (a.IsAnimating())
             {
+                GD.Print(a.role.species.displayName);
                 return true;
             }
         }

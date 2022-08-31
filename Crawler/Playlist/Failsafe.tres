@@ -7,6 +7,6 @@
 
 [resource]
 script = ExtResource( 1 )
-generators = [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 4 ) ]
-; generators = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ]
+; generators = [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 4 ) ]
+generators = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ]
 current = -1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/ActorAtlas/PlayerTegu.tres" type="SpriteFrames" id=2]
@@ -9,7 +9,6 @@
 [sub_resource type="Animation" id=1]
 resource_name = "Attack"
 length = 0.400001
-step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:spriteZ")
 tracks/0/interp = 1
@@ -46,17 +45,19 @@ tracks/2/keys = {
 "update": 1,
 "values": [ 2, 0 ]
 }
-tracks/3/type = "value"
-tracks/3/path = NodePath(".:attackAnimationStartup")
+tracks/3/type = "method"
+tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0 ),
+"times": PoolRealArray( 0.1 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 0.1 ]
+"values": [ {
+"args": [ "attack_active" ],
+"method": "emit_signal"
+} ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -102,8 +103,8 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id=3]
 resource_name = "Stunned"
-length = 0.25
-step = 0.25
+length = 0.1
+step = 0.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("AnimatedSprite:self_modulate")
 tracks/0/interp = 1
@@ -139,6 +140,37 @@ tracks/2/keys = {
 "transitions": PoolRealArray(  ),
 "update": 0,
 "values": [  ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "Miss"
+length = 0.500001
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:spriteLerp")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0333333, 0.133333 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ -0.1, 0.5, 0.0 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ "attack_active" ],
+"method": "emit_signal"
+} ]
 }
 
 [sub_resource type="Animation" id=12]
@@ -237,46 +269,36 @@ tracks/6/keys = {
 "update": 0,
 "values": [ 0.0 ]
 }
-tracks/7/type = "value"
-tracks/7/path = NodePath(".:attackAnimationStartup")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 0.0 ]
-}
 
 [sub_resource type="Animation" id=10]
 resource_name = "Rush"
-length = 0.133334
+length = 0.1
 step = 0.0166667
 tracks/0/type = "value"
-tracks/0/path = NodePath("AnimatedSprite:position")
-tracks/0/interp = 2
+tracks/0/path = NodePath(".:spriteLerp")
+tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
-tracks/0/enabled = false
+tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.4 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.0333333, 0.1, 0.133333 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ), Vector2( 0, -10 ), Vector2( 0, 0 ) ]
+"values": [ -0.1, 0.5, 0.166665, 0.0 ]
 }
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:spriteLerp")
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.0333333, 0.133333 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ -0.1, 0.5, 0.0 ]
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ "attack_active" ],
+"method": "emit_signal"
+} ]
 }
 
 [sub_resource type="Animation" id=9]
@@ -341,12 +363,14 @@ region = Rect2( 0, 0, 40, 2 )
 
 [node name="Actor" type="Node2D"]
 script = ExtResource( 1 )
+animationArg = Vector2( 30, 0 )
 spriteLerp = -0.1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Attack = SubResource( 1 )
 anims/Downed = SubResource( 2 )
 anims/Hurt = SubResource( 3 )
+anims/Miss = SubResource( 13 )
 anims/Move = SubResource( 12 )
 anims/Nothing = SubResource( 11 )
 anims/RESET = SubResource( 5 )
