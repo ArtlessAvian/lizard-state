@@ -17,7 +17,9 @@ public partial class View : Node2D
     // Animation Statefulness
     public bool queueSync = false;
 
-    Dictionary<string, Resource> eventHandlers = new Dictionary<string, Resource>();
+    Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
+    private Resource handlerInstance = null;
+    private bool handlerRan = false;
 
     int viewTime;
 
@@ -26,8 +28,6 @@ public partial class View : Node2D
     // super buggy but convenient
 
     [Export] public bool impatientMode = false;
-    private Resource initializedHandler = null;
-    private bool handlerRan = false;
     [Export] public bool done = false;
 
     private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
@@ -39,11 +39,12 @@ public partial class View : Node2D
 
         // Create all entities.
         // TODO: Rework things. This is silly.        
-        Resource createEvent = GetEventHandlerOrNull("Create");
+        GDScript createScript = GetHandlerScriptOrNull("Create");
         foreach (Entity e in model.GetEntities())
         {
             Dictionary fakeEvent = new Dictionary() { { "args", e } };
-            createEvent.Call("reinit", this, fakeEvent, null); // called in EventHandler.gd
+            Resource createEvent = (Resource)createScript.New();
+            createEvent.Call("init2", this, fakeEvent, null);
             createEvent.Call("setup"); // done in a subclass        
             createEvent.Call("run");
         }
@@ -110,45 +111,37 @@ public partial class View : Node2D
             string action = ev["action"] as string;
 
             // "Initialize" the event if it hasn't been already
-            if (initializedHandler is null)
+            if (handlerInstance is null)
             {
                 // (do not compress for clarity)
                 // (also i plan to yeet this code anyways)
-                var handler = GetEventHandlerOrNull(action);
-                if (handler is object)
+                var handlerScript = GetHandlerScriptOrNull(action);
+                if (handlerScript is GDScript)
                 {
-                    handler.Call("reinit", this, ev, previousEvent); // called in EventHandler.gd
-                    handler.Call("setup"); // done in a subclass
-                    initializedHandler = handler;
+                    handlerInstance = (Resource)handlerScript.New(); // called in EventHandler.gd
+                    handlerInstance.Call("init2", this, ev, null);
+                    handlerInstance.Call("setup"); // done in a subclass
+                    handlerRan = false;
                 }
             }
 
             // todon't: merge this with previous if statement. the logic is different.
             // also todo: ugly logic.
-            if (initializedHandler is object)
+            if (handlerInstance is object && !handlerRan)
             {
-                if (!handlerRan)
+                object shouldWaitBefore = handlerInstance.Call("should_wait_before");
+                if (!impatientMode && shouldWaitBefore is bool aaaa && aaaa)
                 {
-                    object shouldWaitBefore = initializedHandler.Call("should_wait_before");
-                    if (!impatientMode && shouldWaitBefore is bool aaaa && aaaa)
-                    {
-                        break;
-                    }
-
-                    initializedHandler.Call("run");
-                    handlerRan = true;
+                    break; // out of the while
                 }
 
-                // object shouldWaitAfter = initializedHandler.Call("should_wait_after");
-                // if (!impatientMode && shouldWaitAfter is bool eeee && eeee)
-                // {
-                //     break;
-                // }
+                handlerInstance.Call("run");
+                handlerRan = true;
             }
 
             // consume the event
             eventQueue.RemoveAt(0);
-            initializedHandler = null;
+            handlerInstance = null;
             handlerRan = false;
             previousEvent = ev;
 
@@ -170,30 +163,34 @@ public partial class View : Node2D
             // Everything gets sent to the logs.
             if (GetNode<RichTextLabel>("UILayer/DebugLog").Visible)
             {
-                GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev["action"] + " " + ev);
+                GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev["action"] + " " + ev["subject"]);
+                if (ev.Contains("object"))
+                {
+                    GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode(" " + ev["object"]);
+                }
             }
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
         }
     }
 
-    private Resource GetEventHandlerOrNull(string action)
+    private GDScript GetHandlerScriptOrNull(string action)
     {
-        if (!eventHandlers.ContainsKey(action))
+        if (!handlerScripts.ContainsKey(action))
         {
             // honestly kinda dangerous. arbitrary code can run!
             if (new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gd") ||
                 new Godot.Directory().FileExists($"res://Crawler/View/Events/{action}Event.gdc")) // for when you export compiled
             {
                 GDScript script = GD.Load<GDScript>($"res://Crawler/View/Events/{action}Event.gd");
-                eventHandlers.Add(action, script.New() as Resource);
+                handlerScripts.Add(action, script);
             }
             else
             {
-                eventHandlers.Add(action, null);
+                handlerScripts.Add(action, null);
             }
         }
 
-        return eventHandlers[action];
+        return handlerScripts[action];
     }
 
     public void ModelSync()

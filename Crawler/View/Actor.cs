@@ -11,7 +11,10 @@ public partial class Actor : Node2D
     public Entity role;
 
     [Export] public Vector2 tilePosition;
+    public Vector2 lerpPosition;
     private SceneTreeTween movementTween = null;
+    public static float snappiness = 0.3f;
+    // from 0-1, fraction of the way to lerp to target per 60th of a second
 
     [Export] public Vector2 animationArg; // In Tiles
     [Export] public float spriteLerp;
@@ -38,6 +41,7 @@ public partial class Actor : Node2D
     public void ModelSync(int? viewTime = null)
     {
         tilePosition = new Vector2((int)role.position.x, (int)role.position.y);
+        lerpPosition = tilePosition;
         // Position = tilePosition * View.TILESIZE; // elementwise
 
         health = role.health;
@@ -92,10 +96,12 @@ public partial class Actor : Node2D
         movementTween = CreateTween();
         // movementTween.SetProcessMode(Tween.TweenProcessMode.Physics);
         movementTween.TweenProperty(
-                this, "tilePosition", new Vector2(tilePos),
+                this, "lerpPosition", new Vector2(tilePos),
                 GridHelper.Distance((int)(tilePos.x - oldPosition.x), (int)(tilePos.y - oldPosition.y)) / speed
             );
         movementTween.Play();
+
+        this.tilePosition = tilePos;
     }
 
     private void FaceDirection(Vector2 dir)
@@ -130,9 +136,9 @@ public partial class Actor : Node2D
     {
         // "bool?" type, so "== true" is needed.
         if (movementTween?.IsRunning() == true) { return true; }
+        if (Math.Abs(tilePosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
+        if (Math.Abs(tilePosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
 
-        // if (Math.Abs(targetPosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
-        // if (Math.Abs(targetPosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
         if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
         // if (GetNode<AnimationPlayer>("AnimationPlayer").) { return true; }
         return false;
@@ -141,8 +147,8 @@ public partial class Actor : Node2D
     public override void _Process(float delta)
     {
         Position = Position.LinearInterpolate(
-            tilePosition * View.TILESIZE,
-            1 - Mathf.Pow(1 - 0.3f, delta * 60f)
+            lerpPosition * View.TILESIZE,
+            1 - Mathf.Pow(1 - snappiness, delta * 60f)
         );
 
         GetNode<Node2D>("AnimatedSprite").Position = animationArg.LimitLength(1) * View.TILESIZE * spriteLerp;

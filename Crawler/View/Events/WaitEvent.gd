@@ -1,8 +1,7 @@
 extends "../EventHandler.gd"
 
-
-func should_wait_before():
-	return view.AnyActorAnimating()
+# func should_wait_before():
+# 	return view.AnyActorAnimating()
 
 ## This doesn't work, since the model is /far/ ahead
 ## The model only stops for user inputs, which is when

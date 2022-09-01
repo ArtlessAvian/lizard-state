@@ -1,6 +1,10 @@
 extends "../EventHandler.gd"
 
 
+func should_wait_before():
+	return view.AnyActorAnimating()
+
+
 func run():
 	var subject = roles[event["subject"]]
 

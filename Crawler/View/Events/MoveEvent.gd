@@ -3,7 +3,7 @@ extends "../EventHandler.gd"
 
 func should_wait_before():
 	var subject = roles[event["subject"]]
-	return subject.IsAnimating()
+	return subject.movementTween != null and subject.movementTween.is_running()
 
 
 func run():
