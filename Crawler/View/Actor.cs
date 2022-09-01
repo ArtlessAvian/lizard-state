@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 
 // Like a ViewModel. Also, a pile of callbacks for the View.
-[Tool]
 public partial class Actor : Node2D
 {
     [Signal]
@@ -11,7 +10,9 @@ public partial class Actor : Node2D
 
     public Entity role;
 
-    [Export] public Vector2 targetPosition;
+    [Export] public Vector2 tilePosition;
+    private SceneTreeTween movementTween = null;
+
     [Export] public Vector2 animationArg; // In Tiles
     [Export] public float spriteLerp;
     [Export] public float spriteZ;
@@ -36,12 +37,8 @@ public partial class Actor : Node2D
 
     public void ModelSync(int? viewTime = null)
     {
-        targetPosition = new Vector2((int)role.position.x, (int)role.position.y);
-        // Position = new Vector2(
-        //     targetPosition.x * View.TILESIZE.x,
-        //     targetPosition.y * View.TILESIZE.y
-        // );
-        Position = targetPosition * View.TILESIZE; // elementwise
+        tilePosition = new Vector2((int)role.position.x, (int)role.position.y);
+        // Position = tilePosition * View.TILESIZE; // elementwise
 
         health = role.health;
         status?.Call("set_health", role.health, role.species.maxHealth);
@@ -88,6 +85,19 @@ public partial class Actor : Node2D
         seen = role.visibleToPlayer;
     }
 
+    public void GoToPosition(Vector2 tilePos, float speed)
+    {
+        Vector2 oldPosition = this.tilePosition;
+
+        movementTween = CreateTween();
+        // movementTween.SetProcessMode(Tween.TweenProcessMode.Physics);
+        movementTween.TweenProperty(
+                this, "tilePosition", new Vector2(tilePos),
+                GridHelper.Distance((int)(tilePos.x - oldPosition.x), (int)(tilePos.y - oldPosition.y)) / speed
+            );
+        movementTween.Play();
+    }
+
     private void FaceDirection(Vector2 dir)
     {
         if (dir == Vector2.Zero) { return; }
@@ -113,13 +123,16 @@ public partial class Actor : Node2D
 
     public void FacePosition(Vector2 position)
     {
-        FaceDirection(position - targetPosition);
+        FaceDirection(position - tilePosition);
     }
 
     public bool IsAnimating()
     {
-        if (Math.Abs(targetPosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
-        if (Math.Abs(targetPosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
+        // "bool?" type, so "== true" is needed.
+        if (movementTween?.IsRunning() == true) { return true; }
+
+        // if (Math.Abs(targetPosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
+        // if (Math.Abs(targetPosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
         if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
         // if (GetNode<AnimationPlayer>("AnimationPlayer").) { return true; }
         return false;
@@ -128,10 +141,7 @@ public partial class Actor : Node2D
     public override void _Process(float delta)
     {
         Position = Position.LinearInterpolate(
-            new Vector2(
-                targetPosition.x * View.TILESIZE.x,
-                targetPosition.y * View.TILESIZE.y
-            ),
+            tilePosition * View.TILESIZE,
             1 - Mathf.Pow(1 - 0.3f, delta * 60f)
         );
 

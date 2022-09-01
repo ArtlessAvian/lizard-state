@@ -15,8 +15,8 @@ func run():
 
 	var object = roles[event["object"]]
 
-	subject.FacePosition(object.targetPosition)
-	subject.animationArg = object.targetPosition - subject.targetPosition
+	subject.FacePosition(object.tilePosition)
+	subject.animationArg = object.tilePosition - subject.tilePosition
 
 	var animation = subject.get_node("AnimationPlayer")
 	animation.play("RESET")

@@ -1,8 +1,7 @@
 extends "../EventHandler.gd"
 
-
-func should_wait_before():
-	return view.AnyActorAnimating()
+# func should_wait_before():
+# 	return view.AnyActorAnimating()
 
 
 func run():

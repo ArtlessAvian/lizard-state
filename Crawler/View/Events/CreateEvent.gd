@@ -14,7 +14,7 @@ func run():
 		"res://Crawler/View/Assets/ActorAtlas/" + entity.species.resource_name + ".tres"
 	)
 
-	roles.append(actor)
+	roles[entity.id] = actor
 	actor.name = str(entity.id)
 	actor.ActAs(entity)
 

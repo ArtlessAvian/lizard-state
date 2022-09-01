@@ -1,14 +1,19 @@
 extends "../EventHandler.gd"
 
 
+func should_wait_before():
+	var subject = roles[event["subject"]]
+	return subject.IsAnimating()
+
+
 func run():
 	var subject = roles[event["subject"]]
 
-	var from = subject.targetPosition
+	var from = subject.tilePosition
 	var to = event["args"]
 
 	subject.FacePosition(to)
-	subject.targetPosition = to
+	subject.GoToPosition(to, 15)
 	subject.animationArg = Vector2.ZERO
 
 	# var animation = subject.get_node("AnimationPlayer");

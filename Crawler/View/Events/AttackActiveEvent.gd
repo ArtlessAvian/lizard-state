@@ -6,8 +6,8 @@ func run():
 
 	var temp = event.args
 	subject.FacePosition(temp)
-	subject.animationArg = temp - subject.targetPosition
-	
+	subject.animationArg = temp - subject.tilePosition
+
 	var animation = subject.get_node("AnimationPlayer")
 	animation.play("RESET")
 	animation.advance(0)

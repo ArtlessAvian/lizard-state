@@ -3,4 +3,4 @@ extends "../EventHandler.gd"
 
 func run():
 	var subject = roles[event["subject"]]
-	subject.targetPosition = event["args"]
+	subject.GoToPosition(event["args"], 60)

@@ -26,13 +26,13 @@ public class MessageLog : RichTextLabel
     }
 
     // move responsibility to event handlers.
-    public void HandleModelEvent(Dictionary ev, Array<Actor> roles)
+    public void HandleModelEvent(Dictionary ev, Dictionary<int, Actor> roles)
     {
         string action = (string)ev["action"];
         if (action == "Swap")
         {
-            Actor subject = roles[(int)ev["subject"]];            
-            Actor obj = roles[(int)ev["object"]];            
+            Actor subject = roles[(int)ev["subject"]];
+            Actor obj = roles[(int)ev["object"]];
             this.AddMessage($"\n * {subject.displayName} swaps with {obj.displayName}.");
         }
         else if (action == "AttackStartup")
@@ -47,7 +47,7 @@ public class MessageLog : RichTextLabel
         }
         else if (action == "Hit")
         {
-            Actor subject = roles[(int)ev["subject"]];            
+            Actor subject = roles[(int)ev["subject"]];
             Actor obj = roles[(int)ev["object"]];
             this.AddMessage($"\n * Stuns the {obj.displayName}!!");
         }
@@ -58,19 +58,19 @@ public class MessageLog : RichTextLabel
         }
         else if (action == "Rush")
         {
-            Actor subject = roles[(int)ev["subject"]];            
+            Actor subject = roles[(int)ev["subject"]];
             Actor obj = roles[(int)ev["object"]];
             this.AddMessage($"\n [color=#ffaaaa]* {subject.displayName} hits the {obj.displayName}.[/color]");
         }
         else if (action == "Miss")
         {
-            Actor subject = roles[(int)ev["subject"]];            
-            Actor obj = roles[(int)ev["object"]];            
+            Actor subject = roles[(int)ev["subject"]];
+            Actor obj = roles[(int)ev["object"]];
             this.AddMessage($"\n * {subject.displayName} misses the {obj.displayName}.");
         }
         else if (action == "Downed")
         {
-            Actor subject = roles[(int)ev["subject"]];            
+            Actor subject = roles[(int)ev["subject"]];
             this.AddMessage($"\n * {subject.displayName} is downed!");
         }
         else if (action == "See")

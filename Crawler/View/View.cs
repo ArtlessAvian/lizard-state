@@ -12,8 +12,7 @@ public partial class View : Node2D
 
     // Possibly bad performance on dequeue. Not relevant yet.
     public Array<Dictionary> eventQueue = new Array<Dictionary>();
-    // Could be an dictionary?
-    public Array<Actor> roles = new Array<Actor>();
+    public Dictionary<int, Actor> roles = new Dictionary<int, Actor>();
 
     // Animation Statefulness
     public bool queueSync = false;
@@ -200,7 +199,7 @@ public partial class View : Node2D
     public void ModelSync()
     {
         // does not sync map.
-        foreach (Actor a in roles)
+        foreach (Actor a in roles.Values)
         {
             a.ModelSync(viewTime);
         }
@@ -208,11 +207,10 @@ public partial class View : Node2D
 
     private bool AnyActorAnimating()
     {
-        foreach (Actor a in roles)
+        foreach (Actor a in roles.Values)
         {
             if (a.IsAnimating())
             {
-                GD.Print(a.role.species.displayName);
                 return true;
             }
         }
