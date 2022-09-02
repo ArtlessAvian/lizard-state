@@ -59,14 +59,14 @@ public class RushAttackAction : Action
 
         e.nextMove += 1;
 
-        // if (!targeted.downed)
-        // {
-        //     model.CoolerApiEvent(new Dictionary(){
-        //         {"subject", e.id},
-        //         {"action", "Miss"},
-        //         {"object", targeted.id}
-        //     });
-        // }
+        if (!targeted.downed)
+        {
+            model.CoolerApiEvent(new Dictionary(){
+                {"subject", e.id},
+                {"action", "Miss"},
+                {"object", targeted.id}
+            });
+        }
 
         return true;
     }

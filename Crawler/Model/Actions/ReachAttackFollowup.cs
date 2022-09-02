@@ -24,7 +24,6 @@ public class ReachAttackFollowup : Action
 
         // e.energy -= data.energy;
 
-        model.CoolerApiEvent(-1, "Wait");
         model.CoolerApiEvent(e.id, "AttackActive", new Vector2(targetPos.x, targetPos.y));
 
         if (targeted is object)
@@ -56,7 +55,6 @@ public class ReachAttackFollowup : Action
 
         e.nextMove += data.recovery;
 
-        model.CoolerApiEvent(-1, "Wait");
         return true;
     }
 

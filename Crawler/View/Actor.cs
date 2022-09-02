@@ -19,6 +19,7 @@ public partial class Actor : Node2D
     [Export] public Vector2 animationArg; // In Tiles
     [Export] public float spriteLerp;
     [Export] public float spriteZ;
+    [Export] public bool animationInterruptible = false;
 
     int health = 0;
     bool stunned = false;
@@ -139,7 +140,7 @@ public partial class Actor : Node2D
         if (Math.Abs(tilePosition.x - Position.x / View.TILESIZE.x) > 0.01) { return true; }
         if (Math.Abs(tilePosition.y - Position.y / View.TILESIZE.y) > 0.01) { return true; }
 
-        if (GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
+        if (!animationInterruptible && GetNode<AnimationPlayer>("AnimationPlayer").IsPlaying()) { return true; }
         // if (GetNode<AnimationPlayer>("AnimationPlayer").) { return true; }
         return false;
     }
@@ -153,6 +154,7 @@ public partial class Actor : Node2D
 
         GetNode<Node2D>("AnimatedSprite").Position = animationArg.LimitLength(1) * View.TILESIZE * spriteLerp;
         GetNode<Node2D>("AnimatedSprite").Position += Vector2.Up * spriteZ;
+        // GetNode<Node2D>("AnimatedSprite").ZIndex = Math.Sign(GetNode<Node2D>("AnimatedSprite").Position.y);
 
         // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
         if (seen || Engine.EditorHint)

@@ -60,9 +60,7 @@ public class MoveAction : Action
         e.position = targetPos;
         e.nextMove += 1;
 
-        model.CoolerApiEvent(-1, "Wait");
         model.CoolerApiEvent(e.id, "Swap", new Vector2(teammate.position.x, teammate.position.y), teammate.id);
-        model.CoolerApiEvent(-1, "Wait");
     }
 
     public override bool IsValid(Model model, Entity e)

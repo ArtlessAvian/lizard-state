@@ -10,7 +10,6 @@ public class FlashbangAction : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        model.CoolerApiEvent(-1, "Wait");
         model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
         model.CoolerApiEvent(e.id, "CameraFlash");
 
@@ -34,8 +33,6 @@ public class FlashbangAction : Action
         }
 
         e.nextMove += 1;
-
-        model.CoolerApiEvent(-1, "Wait");
 
         return true;
     }

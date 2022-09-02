@@ -8,4 +8,4 @@ func should_wait_before():
 func run():
 	var subject = roles[event["subject"]]
 
-	subject.get_node("AnimationPlayer").queue("Downed")
+	subject.get_node("AnimationPlayer").play("Downed")

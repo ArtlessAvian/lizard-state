@@ -9,10 +9,7 @@ func should_wait_before():
 
 
 func run():
-	start_time = now()
 	var subject = roles[event["subject"]]
-	yield(subject, "attack_active")
-
 	var object = roles[event["object"]]
 
 	subject.FacePosition(object.tilePosition)
@@ -22,8 +19,3 @@ func run():
 	animation.play("RESET")
 	animation.advance(0)
 	animation.play("Miss")
-
-	# var popup = damage_popup_scene.instance()
-	# popup.text = "Miss"
-	# popup.rect_position.y = object.get_node("DamagePopups").get_child_count() * -10
-	# object.get_node("DamagePopups").add_child(popup)

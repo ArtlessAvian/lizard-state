@@ -73,7 +73,6 @@ public class VisionSystem : Node, CrawlerSystem
                 {
                     other.visibleToPlayer = true;
                     model.CoolerApiEvent(e.id, "See", null, other.id);
-                    model.CoolerApiEvent(-1, "Wait");
                 }
                 canSee[other.id] |= 1 << e.id;
             }
