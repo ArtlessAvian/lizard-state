@@ -5,7 +5,6 @@ var damage_popup_scene: PackedScene = preload("res://Crawler/View/DamagePopup.ts
 
 func run():
 	var subject = roles[event["subject"]]
-	yield(subject, "attack_active")
 	var object = roles[event["object"]]
 
 	var hitEffect = object.get_node("AnimatedSprite/HitEffect")
@@ -17,8 +16,9 @@ func run():
 				hitEffect.play(tag)
 				break
 
-	subject.timeStop = 10 / 60.0
-	object.timeStop = 10 / 60.0
+	yield(subject, "attack_active")
+	subject.timeStop = 0 / 60.0
+	object.timeStop = 0 / 60.0
 
 	object.health -= event["damage"]
 	object.stunned = true

@@ -24,7 +24,12 @@ public class ReachAttackFollowup : Action
 
         // e.energy -= data.energy;
 
-        model.CoolerApiEvent(e.id, "AttackActive", new Vector2(targetPos.x, targetPos.y));
+        model.CoolerApiEvent(new Dictionary(){
+                {"subject", e.id},
+                {"action", "AttackActive"},
+                {"args", new Vector2(targetPos.x, targetPos.y)},
+                {"flavorTags", data.flavorTags}
+            });
 
         if (targeted is object)
         {

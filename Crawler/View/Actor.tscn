@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=2]
+[gd_scene load_steps=62 format=2]
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/ActorAtlas/PlayerTegu.tres" type="SpriteFrames" id=2]
@@ -12,7 +12,6 @@
 
 [sub_resource type="Animation" id=1]
 resource_name = "Attack"
-length = 0.5
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:spriteZ")
@@ -65,11 +64,11 @@ tracks/3/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=14]
-resource_name = "AttackShoot"
-length = 0.25
+[sub_resource type="Animation" id=54]
+resource_name = "AttackPsychic"
+step = 0.0166667
 tracks/0/type = "value"
-tracks/0/path = NodePath("AnimatedSprite:rotation_degrees")
+tracks/0/path = NodePath("AnimatedSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -77,8 +76,8 @@ tracks/0/enabled = true
 tracks/0/keys = {
 "times": PoolRealArray( 0, 0.2 ),
 "transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 360.0 ]
+"update": 1,
+"values": [ 2, 0 ]
 }
 tracks/1/type = "method"
 tracks/1/path = NodePath(".")
@@ -93,6 +92,47 @@ tracks/1/keys = {
 "args": [ "attack_active" ],
 "method": "emit_signal"
 } ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:facingOffset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
+}
+
+[sub_resource type="Animation" id=14]
+resource_name = "AttackShoot"
+tracks/0/type = "method"
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.2 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ "attack_active" ],
+"method": "emit_signal"
+} ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:facingOffset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -314,6 +354,18 @@ tracks/8/keys = {
 "update": 0,
 "values": [ 0.0 ]
 }
+tracks/9/type = "value"
+tracks/9/path = NodePath(".:facingOffset")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
 
 [sub_resource type="Animation" id=10]
 resource_name = "Rush"
@@ -420,7 +472,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0 ),
+"times": PoolRealArray( -0.00190881 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
@@ -601,6 +653,11 @@ animations = [ {
 "name": "Stab",
 "speed": 60.0
 }, {
+"frames": [  ],
+"loop": true,
+"name": "Sweep",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 6 ), null ],
 "loop": false,
 "name": "default",
@@ -625,6 +682,7 @@ animationArg = Vector2( 30, 0 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Attack = SubResource( 1 )
+anims/AttackPsychic = SubResource( 54 )
 anims/AttackShoot = SubResource( 14 )
 anims/Downed = SubResource( 2 )
 anims/Hurt = SubResource( 3 )
@@ -643,8 +701,9 @@ speed_scale = 0.0
 offset = Vector2( 0, -10 )
 
 [node name="HitEffect" type="AnimatedSprite" parent="AnimatedSprite"]
+z_index = 2000
 frames = SubResource( 33 )
-frame = 1
+animation = "Sweep"
 playing = true
 offset = Vector2( 0, -10 )
 

@@ -13,7 +13,7 @@ public class ReachAttackAction : Action
     [Export] public int range = 7;
     [Export] public int knockback = 0;
 
-    [Export] public List<string> flavorTags;
+    [Export] public List<string> flavorTags = new List<string>();
 
     private ReachAttackAction() { }
 

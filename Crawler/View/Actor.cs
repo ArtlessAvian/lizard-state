@@ -16,6 +16,10 @@ public partial class Actor : Node2D
     public static float snappiness = 0.3f;
     // from 0-1, fraction of the way to lerp to target per 60th of a second
 
+    // Degrees: 0 is right, + is cw.
+    [Export] public float facingDir;
+    [Export] public float facingOffset;
+
     [Export] public Vector2 animationArg; // In Tiles
     [Export] public float spriteLerp;
     [Export] public float spriteZ;
@@ -109,19 +113,7 @@ public partial class Actor : Node2D
     private void FaceDirection(Vector2 dir)
     {
         if (dir == Vector2.Zero) { return; }
-
-        AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
-        int frame = sprite.Frame;
-        if (Math.Abs(dir.y / dir.x) > 1)
-        {
-            sprite.Animation = dir.y > 0 ? "South" : "North";
-        }
-        else
-        {
-            sprite.Animation = "East";
-            sprite.FlipH = dir.x < 0;
-        }
-        sprite.Frame = frame;
+        facingDir = Mathf.Rad2Deg(dir.Angle());
     }
 
     // private void FacePosition((int x, int y) position)
@@ -161,6 +153,8 @@ public partial class Actor : Node2D
 
         GetNode<AnimationPlayer>("AnimationPlayer").PlaybackSpeed = 1;
 
+        ProcessDirection();
+
         Position = Position.LinearInterpolate(
             lerpPosition * View.TILESIZE,
             1 - Mathf.Pow(1 - snappiness, delta * 60f)
@@ -170,7 +164,7 @@ public partial class Actor : Node2D
         GetNode<Node2D>("AnimatedSprite").Position += Vector2.Up * spriteZ;
         // GetNode<Node2D>("AnimatedSprite").ZIndex = Math.Sign(GetNode<Node2D>("AnimatedSprite").Position.y);
 
-        // TODO: Temporary hiding of entities. Should be model's responsibility to show/hide
+        // TODO: Temporary hiding of entities.
         if (seen || Engine.EditorHint)
         {
             this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
@@ -180,5 +174,23 @@ public partial class Actor : Node2D
             this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
         }
         // End TODO
+    }
+
+    private void ProcessDirection()
+    {
+        Vector2 dir = Vector2.Right.Rotated(Mathf.Deg2Rad(facingDir + facingOffset));
+
+        AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        int frame = sprite.Frame;
+        if (Math.Abs(dir.y / dir.x) > 1)
+        {
+            sprite.Animation = dir.y > 0 ? "South" : "North";
+        }
+        else
+        {
+            sprite.Animation = "East";
+            sprite.FlipH = dir.x < 0;
+        }
+        sprite.Frame = frame;
     }
 }
