@@ -10,7 +10,7 @@ public class FlashbangAction : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
+        model.CoolerApiEvent(e.id, "AttackActive", new Vector2(targetPos.x, targetPos.y));
         model.CoolerApiEvent(e.id, "CameraFlash");
 
         HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfView(((int x, int y) pos) => false, 1));
@@ -27,7 +27,8 @@ public class FlashbangAction : Action
                     {"subject", e.id},
                     {"action", "Hit"},
                     {"object", targeted.id},
-                    {"damage", 0}
+                    {"damage", 0},
+                    {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}}
                 });
             }
         }

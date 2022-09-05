@@ -13,7 +13,14 @@ func run():
 	subject.animationArg = temp - subject.tilePosition
 
 	var animation = subject.get_node("AnimationPlayer")
+	var animation_name = "Attack"
+	if event.has("flavorTags"):
+		for tag in event["flavorTags"]:
+			if animation.has_animation("Attack" + tag):
+				animation_name = "Attack" + tag
+				break
+
 	animation.play("RESET")
 	animation.advance(0)
-	animation.play("Attack")
+	animation.play(animation_name)
 	animation.advance(0)

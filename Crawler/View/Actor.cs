@@ -20,6 +20,7 @@ public partial class Actor : Node2D
     [Export] public float spriteLerp;
     [Export] public float spriteZ;
     [Export] public bool animationInterruptible = false;
+    public float timeStop = 0;
 
     int health = 0;
     bool stunned = false;
@@ -147,6 +148,19 @@ public partial class Actor : Node2D
 
     public override void _Process(float delta)
     {
+        if (timeStop > 0)
+        {
+            timeStop -= delta;
+            if (timeStop > 0)
+            {
+                GetNode<AnimationPlayer>("AnimationPlayer").PlaybackSpeed = 0;
+                return;
+            }
+            delta = -timeStop;
+        }
+
+        GetNode<AnimationPlayer>("AnimationPlayer").PlaybackSpeed = 1;
+
         Position = Position.LinearInterpolate(
             lerpPosition * View.TILESIZE,
             1 - Mathf.Pow(1 - snappiness, delta * 60f)

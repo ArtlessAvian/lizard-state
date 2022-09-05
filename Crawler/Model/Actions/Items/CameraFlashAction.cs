@@ -10,7 +10,13 @@ public class CameraFlashAction : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
+        // model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
+        model.CoolerApiEvent(new Dictionary(){
+                {"subject", e.id},
+                {"action", "AttackActive"},
+                {"args", new Vector2(e.position.x, e.position.y)},
+                {"flavorTags", new List<string>{"Flash", "Shoot"}}
+            });
         model.CoolerApiEvent(e.id, "CameraFlash");
 
         HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.ConeOfView(((int x, int y) pos) => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
@@ -29,7 +35,8 @@ public class CameraFlashAction : Action
                     {"subject", e.id},
                     {"action", "Hit"},
                     {"object", targeted.id},
-                    {"damage", 0}
+                    {"damage", 0},
+                    {"flavorTags", new List<string>(){"Flash", "Shoot"}}
                 });
             }
         }

@@ -13,6 +13,8 @@ public class ReachAttackAction : Action
     [Export] public int range = 7;
     [Export] public int knockback = 0;
 
+    [Export] public List<string> flavorTags;
+
     private ReachAttackAction() { }
 
     public override bool Do(Model model, Entity e)

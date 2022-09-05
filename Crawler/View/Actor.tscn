@@ -1,14 +1,19 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=61 format=2]
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/ActorAtlas/PlayerTegu.tres" type="SpriteFrames" id=2]
 [ext_resource path="res://Crawler/View/Assets/smol_dots.png" type="Texture" id=3]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Visibility.png" type="Texture" id=4]
 [ext_resource path="res://Crawler/View/DamagePopup.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Crawler/View/Assets/smol_star.png" type="Texture" id=6]
+[ext_resource path="res://Crawler/View/Assets/effects/Psychic.png" type="Texture" id=7]
+[ext_resource path="res://Crawler/View/Assets/effects/Stab.png" type="Texture" id=8]
+[ext_resource path="res://Crawler/View/Assets/effects/Slice.png" type="Texture" id=9]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Attack"
 length = 0.5
+step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:spriteZ")
 tracks/0/interp = 1
@@ -40,7 +45,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.116667 ),
+"times": PoolRealArray( -0.017, 0.283333 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 2, 0 ]
@@ -52,7 +57,37 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.1 ),
+"times": PoolRealArray( 0.2 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ "attack_active" ],
+"method": "emit_signal"
+} ]
+}
+
+[sub_resource type="Animation" id=14]
+resource_name = "AttackShoot"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.2 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [ "attack_active" ],
@@ -62,7 +97,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id=2]
 resource_name = "Downed"
-length = 0.666667
+length = 1.2
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("AnimatedSprite:visible")
@@ -71,10 +106,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.133333, 0.166667, 0.2, 0.233333, 0.266667, 0.3, 0.333333, 0.366667, 0.4, 0.433333, 0.466667, 0.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.5, 0.533333, 0.566667, 0.6, 0.633333, 0.666667, 0.7, 0.733333, 0.766667, 0.8, 0.833333, 0.866667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ true, false, true, false, true, false, true, false, true, false, true, false ]
+"values": [ true, true, false, true, false, true, false, true, false, true, false, true, false ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath(".:visible")
@@ -83,10 +118,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.133333, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0, 0.5, 0.866667 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ true, false ]
+"values": [ true, true, false ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("AnimatedSprite:frame")
@@ -95,10 +130,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0.133333 ),
-"transitions": PoolRealArray( 1 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ 1 ]
+"values": [ 1, 1 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -156,7 +191,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id=13]
 resource_name = "Miss"
-length = 0.500001
+length = 0.5
 step = 0.0166667
 
 [sub_resource type="Animation" id=12]
@@ -267,6 +302,18 @@ tracks/7/keys = {
 "update": 1,
 "values": [ false ]
 }
+tracks/8/type = "value"
+tracks/8/path = NodePath("AnimatedSprite:rotation_degrees")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
 
 [sub_resource type="Animation" id=10]
 resource_name = "Rush"
@@ -328,7 +375,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=6]
-length = 0.25
+length = 0.5
 step = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath("AnimatedSprite:self_modulate")
@@ -379,16 +426,206 @@ tracks/3/keys = {
 "values": [ true ]
 }
 
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 7 )
+region = Rect2( 40, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 7 )
+region = Rect2( 80, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 7 )
+region = Rect2( 120, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 7 )
+region = Rect2( 160, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 7 )
+region = Rect2( 40, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 7 )
+region = Rect2( 80, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=23]
+atlas = ExtResource( 7 )
+region = Rect2( 120, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 7 )
+region = Rect2( 160, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=26]
+atlas = ExtResource( 7 )
+region = Rect2( 40, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=27]
+atlas = ExtResource( 7 )
+region = Rect2( 80, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=28]
+atlas = ExtResource( 7 )
+region = Rect2( 120, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=29]
+atlas = ExtResource( 7 )
+region = Rect2( 160, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=30]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 120, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=31]
+atlas = ExtResource( 7 )
+region = Rect2( 40, 120, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=32]
+atlas = ExtResource( 7 )
+region = Rect2( 80, 120, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=35]
+atlas = ExtResource( 9 )
+region = Rect2( 0, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=36]
+atlas = ExtResource( 9 )
+region = Rect2( 40, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=37]
+atlas = ExtResource( 9 )
+region = Rect2( 80, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=38]
+atlas = ExtResource( 9 )
+region = Rect2( 120, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=39]
+atlas = ExtResource( 9 )
+region = Rect2( 0, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=40]
+atlas = ExtResource( 9 )
+region = Rect2( 40, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=41]
+atlas = ExtResource( 9 )
+region = Rect2( 80, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=42]
+atlas = ExtResource( 9 )
+region = Rect2( 120, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=43]
+atlas = ExtResource( 9 )
+region = Rect2( 0, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=44]
+atlas = ExtResource( 9 )
+region = Rect2( 40, 80, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=45]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=46]
+atlas = ExtResource( 8 )
+region = Rect2( 40, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=47]
+atlas = ExtResource( 8 )
+region = Rect2( 80, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=48]
+atlas = ExtResource( 8 )
+region = Rect2( 120, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=49]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=50]
+atlas = ExtResource( 8 )
+region = Rect2( 40, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=51]
+atlas = ExtResource( 8 )
+region = Rect2( 80, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=52]
+atlas = ExtResource( 8 )
+region = Rect2( 120, 40, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=53]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 80, 40, 40 )
+
+[sub_resource type="SpriteFrames" id=33]
+animations = [ {
+"frames": [ ExtResource( 6 ), null ],
+"loop": false,
+"name": "Bash",
+"speed": 2.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ), SubResource( 28 ), SubResource( 29 ), SubResource( 30 ), SubResource( 31 ), SubResource( 32 ) ],
+"loop": false,
+"name": "Psychic",
+"speed": 30.0
+}, {
+"frames": [ ExtResource( 6 ), null ],
+"loop": false,
+"name": "Punch",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 35 ), SubResource( 36 ), SubResource( 37 ), SubResource( 38 ), SubResource( 39 ), SubResource( 40 ), SubResource( 41 ), SubResource( 42 ), SubResource( 43 ), SubResource( 44 ), null ],
+"loop": false,
+"name": "Slice",
+"speed": 30.0
+}, {
+"frames": [ SubResource( 45 ), SubResource( 46 ), SubResource( 47 ), SubResource( 48 ), SubResource( 49 ), SubResource( 50 ), SubResource( 51 ), SubResource( 52 ), SubResource( 53 ), SubResource( 53 ), SubResource( 53 ), SubResource( 53 ), SubResource( 53 ), SubResource( 53 ), SubResource( 53 ), SubResource( 48 ), SubResource( 46 ), SubResource( 46 ), SubResource( 46 ) ],
+"loop": false,
+"name": "Stab",
+"speed": 60.0
+}, {
+"frames": [ ExtResource( 6 ), null ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="SpriteFrames" id=34]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
 [sub_resource type="AtlasTexture" id=7]
 atlas = ExtResource( 4 )
 region = Rect2( 0, 0, 40, 2 )
 
-[node name="Actor" type="Node2D"]
+[node name="Actor" type="YSort"]
 script = ExtResource( 1 )
 animationArg = Vector2( 30, 0 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Attack = SubResource( 1 )
+anims/AttackShoot = SubResource( 14 )
 anims/Downed = SubResource( 2 )
 anims/Hurt = SubResource( 3 )
 anims/Miss = SubResource( 13 )
@@ -404,6 +641,15 @@ frames = ExtResource( 2 )
 animation = "East"
 speed_scale = 0.0
 offset = Vector2( 0, -10 )
+
+[node name="HitEffect" type="AnimatedSprite" parent="AnimatedSprite"]
+frames = SubResource( 33 )
+frame = 1
+playing = true
+offset = Vector2( 0, -10 )
+
+[node name="AttackEffect" type="AnimatedSprite" parent="AnimatedSprite"]
+frames = SubResource( 34 )
 
 [node name="HealthBar" type="TextureProgress" parent="."]
 margin_left = -12.0
@@ -438,6 +684,7 @@ stretch_margin_right = 2
 
 [node name="DamagePopups" type="Node2D" parent="."]
 position = Vector2( 0, -30 )
+z_index = 50
 
 [node name="DamagePopup" parent="DamagePopups" instance=ExtResource( 5 )]
 visible = false

@@ -15,3 +15,4 @@ damage = 2
 blockChance = 0.2
 range = 7
 knockback = 10
+flavorTags = [ "Slice" ]

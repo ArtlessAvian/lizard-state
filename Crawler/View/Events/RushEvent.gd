@@ -43,3 +43,7 @@ func run():
 	otheranimation.advance(0)
 
 	object.get_node("HealthBar").value = object.health
+
+	var hitEffect = object.get_node("AnimatedSprite/HitEffect")
+	if hitEffect.frames.has_animation("Bash"):
+		hitEffect.play("Bash")

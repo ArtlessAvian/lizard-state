@@ -45,7 +45,7 @@ public class ReachAttackFollowup : Action
                 // (If they end up on a person, they should pop to a random nearby tile.)
                 (int x, int y) knockback = KnockbackPosition(model, e.position, targeted.position, data.knockback);
                 targeted.position = knockback;
-                model.CoolerApiEvent(targeted.id, "Knockback", new Vector2(knockback.x, knockback.y));
+                model.CoolerApiEvent(e.id, "Knockback", new Vector2(knockback.x, knockback.y), targeted.id);
             }
         }
         else
@@ -84,7 +84,8 @@ public class ReachAttackFollowup : Action
                 {"subject", e.id},
                 {"action", "Hit"},
                 {"object", targeted.id},
-                {"damage", data.damage}
+                {"damage", data.damage},
+                {"flavorTags", data.flavorTags}
             });
 
         if (targeted.health <= 0)
