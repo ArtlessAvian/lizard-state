@@ -38,28 +38,17 @@ public class RushAttackAction : Action
             targeted.health -= damagePerHit;
             targeted.queuedAction = null;
 
-            if (targeted.health <= 0)
-            {
-                targeted.downed = true;
-                targeted.nextMove = -1;
-            }
-
             model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
                 {"action", "Rush"},
                 {"object", targeted.id},
                 {"damage", damagePerHit}
             });
-
-            if (targeted.health <= 0)
-            {
-                model.CoolerApiEvent(targeted.id, "Downed");
-            }
-        } while (GD.Randf() >= MissChance && !targeted.downed);
+        } while (GD.Randf() >= MissChance && targeted.health > 0);
 
         e.nextMove += 1;
 
-        if (!targeted.downed)
+        if (targeted.health > 0)
         {
             model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},

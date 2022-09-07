@@ -79,12 +79,6 @@ public class ReachAttackFollowup : Action
         targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
         targeted.stunned = true;
 
-        if (targeted.health <= 0)
-        {
-            targeted.downed = true;
-            targeted.nextMove = -1;
-        }
-
         model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
                 {"action", "Hit"},
@@ -92,11 +86,6 @@ public class ReachAttackFollowup : Action
                 {"damage", data.damage},
                 {"flavorTags", data.flavorTags}
             });
-
-        if (targeted.health <= 0)
-        {
-            model.CoolerApiEvent(targeted.id, "Downed");
-        }
     }
 
     private (int, int) KnockbackPosition(Model model, (int x, int y) from, (int x, int y) to, int howMuch)

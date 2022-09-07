@@ -131,8 +131,12 @@ public partial class Model : Node
     /// </summary>
     private void RunSystems()
     {
-        GetNode<FogOfWarSystem>("Systems/Fog").Run(this);
-        GetNode<VisionSystem>("Systems/Vision").Run(this);
+        foreach (CrawlerSystem sys in GetNode("Systems").GetChildren())
+        {
+            sys.Run(this);
+        }
+        // GetNode<FogOfWarSystem>("Systems/Fog").Run(this);
+        // GetNode<VisionSystem>("Systems/Vision").Run(this);
     }
 
     private Entity NextEntity()
