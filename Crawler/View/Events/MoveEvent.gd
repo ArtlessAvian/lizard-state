@@ -14,7 +14,6 @@ func run():
 
 	subject.FacePosition(to)
 	subject.GoToPosition(to, 15)
-	subject.animationArg = Vector2.ZERO
 
 	# var animation = subject.get_node("AnimationPlayer");
 	# animation.play("Move");

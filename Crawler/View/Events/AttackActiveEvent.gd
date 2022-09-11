@@ -10,7 +10,7 @@ func run():
 
 	var temp = event.args
 	subject.FacePosition(temp)
-	subject.animationArg = temp - subject.tilePosition
+	subject.SetAnimationTarget(temp - subject.tilePosition)
 
 	var animation = subject.get_node("AnimationPlayer")
 	var animation_name = "Attack"

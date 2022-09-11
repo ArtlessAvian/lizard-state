@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=2]
+[gd_scene load_steps=64 format=2]
 
 [ext_resource path="res://Crawler/View/Actor.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/ActorAtlas/PlayerTegu.tres" type="SpriteFrames" id=2]
@@ -9,12 +9,13 @@
 [ext_resource path="res://Crawler/View/Assets/effects/Psychic.png" type="Texture" id=7]
 [ext_resource path="res://Crawler/View/Assets/effects/Stab.png" type="Texture" id=8]
 [ext_resource path="res://Crawler/View/Assets/effects/Slice.png" type="Texture" id=9]
+[ext_resource path="res://Crawler/View/CrawlerSprite.gd" type="Script" id=10]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Attack"
 step = 0.0166667
 tracks/0/type = "value"
-tracks/0/path = NodePath(".:spriteZ")
+tracks/0/path = NodePath("AnimatedSprite:sprite_z")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -26,7 +27,7 @@ tracks/0/keys = {
 "values": [ 0.0, 8.0, 8.0, 0.0, 0.0 ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath(".:spriteLerp")
+tracks/1/path = NodePath("AnimatedSprite:sprite_lerp")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -94,7 +95,7 @@ tracks/1/keys = {
 } ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath(".:facingOffset")
+tracks/2/path = NodePath("AnimatedSprite:facing_offset")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -123,7 +124,7 @@ tracks/0/keys = {
 } ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath(".:facingOffset")
+tracks/1/path = NodePath("AnimatedSprite:facing_offset")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -136,7 +137,7 @@ tracks/1/keys = {
 }
 
 [sub_resource type="Animation" id=2]
-resource_name = "Downed"
+resource_name = "Disappear"
 length = 1.2
 step = 0.0166667
 tracks/0/type = "value"
@@ -174,6 +175,21 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 1, 1 ]
+}
+
+[sub_resource type="Animation" id=55]
+resource_name = "Downed"
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 3 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -372,7 +388,7 @@ resource_name = "Rush"
 length = 0.133334
 step = 0.0166667
 tracks/0/type = "value"
-tracks/0/path = NodePath(".:spriteLerp")
+tracks/0/path = NodePath("AnimatedSprite:sprite_lerp")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -684,7 +700,8 @@ animationArg = Vector2( 30, 0 )
 anims/Attack = SubResource( 1 )
 anims/AttackPsychic = SubResource( 54 )
 anims/AttackShoot = SubResource( 14 )
-anims/Downed = SubResource( 2 )
+anims/Disappear = SubResource( 2 )
+anims/Downed = SubResource( 55 )
 anims/Hurt = SubResource( 3 )
 anims/Miss = SubResource( 13 )
 anims/Move = SubResource( 12 )
@@ -699,6 +716,8 @@ frames = ExtResource( 2 )
 animation = "East"
 speed_scale = 0.0
 offset = Vector2( 0, -10 )
+script = ExtResource( 10 )
+animation_target = Vector2( 24, 0 )
 
 [node name="HitEffect" type="AnimatedSprite" parent="AnimatedSprite"]
 z_index = 2000

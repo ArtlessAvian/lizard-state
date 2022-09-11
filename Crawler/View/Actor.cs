@@ -63,20 +63,24 @@ public partial class Actor : Node2D
             combobar.Value = role.nextMove - viewTimeeeee;
         }
 
-        // sprite stuff
-        if (health <= 0) { this.Visible = false; }
-        else
-        {
-            // AnimationPlayer aniPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-            // aniPlayer.Queue("Reset");
-        }
+        // // sprite stuff
+        // if (health <= 0) { this.Visible = false; }
+        // else
+        // {
+        //     // AnimationPlayer aniPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+        //     // aniPlayer.Queue("Reset");
+        // }
 
         status?.Call("set_energy", role.energy, 10);
 
         stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");
-        if (role.stunned)
+        if (role.downed)
+        {
+            aniSprite.Frame = 3;
+        }
+        else if (role.stunned)
         {
             aniSprite.Frame = 1;
         }
@@ -113,7 +117,8 @@ public partial class Actor : Node2D
     private void FaceDirection(Vector2 dir)
     {
         if (dir == Vector2.Zero) { return; }
-        facingDir = Mathf.Rad2Deg(dir.Angle());
+        AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        sprite.Set("facing_dir", Mathf.Rad2Deg(dir.Angle()));
     }
 
     // private void FacePosition((int x, int y) position)
@@ -124,6 +129,12 @@ public partial class Actor : Node2D
     public void FacePosition(Vector2 position)
     {
         FaceDirection(position - tilePosition);
+    }
+
+    private void SetAnimationTarget(Vector2 tileOffset)
+    {
+        AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+        sprite.Set("animation_target", tileOffset);
     }
 
     public bool IsAnimating()
@@ -153,16 +164,10 @@ public partial class Actor : Node2D
 
         GetNode<AnimationPlayer>("AnimationPlayer").PlaybackSpeed = 1;
 
-        ProcessDirection();
-
         Position = Position.LinearInterpolate(
             lerpPosition * View.TILESIZE,
             1 - Mathf.Pow(1 - snappiness, delta * 60f)
         );
-
-        GetNode<Node2D>("AnimatedSprite").Position = animationArg.LimitLength(1) * View.TILESIZE * spriteLerp;
-        GetNode<Node2D>("AnimatedSprite").Position += Vector2.Up * spriteZ;
-        // GetNode<Node2D>("AnimatedSprite").ZIndex = Math.Sign(GetNode<Node2D>("AnimatedSprite").Position.y);
 
         // TODO: Temporary hiding of entities.
         if (seen || Engine.EditorHint)
@@ -174,23 +179,5 @@ public partial class Actor : Node2D
             this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
         }
         // End TODO
-    }
-
-    private void ProcessDirection()
-    {
-        Vector2 dir = Vector2.Right.Rotated(Mathf.Deg2Rad(facingDir + facingOffset));
-
-        AnimatedSprite sprite = GetNode<AnimatedSprite>("AnimatedSprite");
-        int frame = sprite.Frame;
-        if (Math.Abs(dir.y / dir.x) > 1)
-        {
-            sprite.Animation = dir.y > 0 ? "South" : "North";
-        }
-        else
-        {
-            sprite.Animation = "East";
-            sprite.FlipH = dir.x < 0;
-        }
-        sprite.Frame = frame;
     }
 }
