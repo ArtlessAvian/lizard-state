@@ -18,3 +18,4 @@ data_*/
 dump.*
 # Krita temporary
 *.kra~
+*.png~
