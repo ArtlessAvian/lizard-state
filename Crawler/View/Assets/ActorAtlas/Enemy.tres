@@ -1,19 +1,7 @@
-[gd_resource type="SpriteFrames" load_steps=12 format=2]
+[gd_resource type="SpriteFrames" load_steps=15 format=2]
 
 [ext_resource path="res://Crawler/View/Assets/oc_donut_steel/gecko/gecgecgec.png" type="Texture" id=1]
 [ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu/tegu.png" type="Texture" id=2]
-
-[sub_resource type="AtlasTexture" id=1]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 40, 40 )
-
-[sub_resource type="AtlasTexture" id=2]
-atlas = ExtResource( 1 )
-region = Rect2( 40, 0, 40, 40 )
-
-[sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 2 )
-region = Rect2( 80, 0, 40, 40 )
 
 [sub_resource type="AtlasTexture" id=5]
 atlas = ExtResource( 1 )
@@ -27,6 +15,10 @@ region = Rect2( 40, 40, 40, 40 )
 atlas = ExtResource( 1 )
 region = Rect2( 80, 40, 40, 40 )
 
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 1 )
+region = Rect2( 40, 120, 40, 40 )
+
 [sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 80, 40, 40 )
@@ -39,20 +31,40 @@ region = Rect2( 40, 80, 40, 40 )
 atlas = ExtResource( 2 )
 region = Rect2( 80, 80, 40, 40 )
 
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 1 )
+region = Rect2( 40, 120, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 40, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 2 )
+region = Rect2( 80, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 1 )
+region = Rect2( 40, 120, 40, 40 )
+
 [resource]
 animations = [ {
-"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 9 ) ],
-"loop": true,
-"name": "South",
-"speed": 0.0
-}, {
-"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 8 ) ],
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 8 ), SubResource( 11 ) ],
 "loop": true,
 "name": "East",
 "speed": 0.0
 }, {
-"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 10 ) ],
+"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 10 ), SubResource( 12 ) ],
 "loop": true,
 "name": "North",
+"speed": 0.0
+}, {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 9 ), SubResource( 13 ) ],
+"loop": true,
+"name": "South",
 "speed": 0.0
 } ]
