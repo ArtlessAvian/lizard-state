@@ -1,6 +1,6 @@
 extends "../EventHandler.gd"
 
-var damage_popup_scene: PackedScene = preload("res://Crawler/View/DamagePopup.tscn")
+var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePopup.tscn")
 var start_time
 
 

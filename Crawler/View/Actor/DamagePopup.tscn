@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Crawler/View/DamagePopup.gd" type="Script" id=1]
+[ext_resource path="res://Crawler/View/Actor/DamagePopup.gd" type="Script" id=1]
 [ext_resource path="res://Assets/dogicapixel.otf" type="DynamicFontData" id=2]
 
 [sub_resource type="DynamicFont" id=1]

@@ -1,6 +1,6 @@
 extends "../EventHandler.gd"
 
-var actor_scene = preload("res://Crawler/View/Actor.tscn")
+var actor_scene = preload("res://Crawler/View/Actor/Actor.tscn")
 var status_scene = preload("res://Crawler/View/PartyMemberStatus.tscn")
 
 
