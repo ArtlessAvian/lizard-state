@@ -39,12 +39,15 @@ public class EditorGenerator : LevelGenerator
     {
         Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
         Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
+        Species partnerGator = GD.Load<Resource>("res://Crawler/Model/Species/PartnerGator.tres") as Species;
+
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
         Species enemy2 = GD.Load<Resource>("res://Crawler/Model/Species/Enemy2.tres") as Species;
 
         model.AddEntity(CreateEntity(playerTegu, (0, -1), 0));
         model.GetEntity(0).isPlayer = true;
         model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
+        model.AddEntity(CreateEntity(partnerGator, (0, 0), 0));
 
         // model.AddEntity(new Entity(enemy, (0, 10), 1));
         // model.AddEntity(new Entity(enemy, (1, 20), 1));

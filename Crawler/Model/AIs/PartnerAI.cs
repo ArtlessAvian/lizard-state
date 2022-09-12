@@ -2,6 +2,7 @@ using Godot;
 using Priority_Queue;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 // using static PathFinding;
 
 public class PartnerAI : AI
@@ -10,30 +11,30 @@ public class PartnerAI : AI
     {
         List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
 
-        List<(int, int)> enemyPositions = new List<(int, int)>();
-        List<(int, int)> allyPositions = new List<(int, int)>();
+        List<Entity> enemies = new List<Entity>();
+        List<Entity> allies = new List<Entity>();
         foreach (Entity other in entities)
         {
             if (other.downed) { continue; }
             if (other == e) { continue; }
             if (other.team == e.team)
             {
-                allyPositions.Add(other.position);
+                allies.Add(other);
             }
             else
             {
                 if (GridHelper.Distance(e.position, other.position) <= 4)
                 {
-                    enemyPositions.Add(other.position);
+                    enemies.Add(other);
                 }
             }
         }
 
         // Attack the closest enemy.
         int closestDistance = 100;
-        foreach ((int, int) pos in enemyPositions)
+        foreach (Entity enemy in enemies)
         {
-            int distance = GridHelper.Distance(e.position, pos);
+            int distance = GridHelper.Distance(e.position, enemy.position);
             if (distance <= closestDistance)
             {
                 closestDistance = distance;
@@ -44,11 +45,11 @@ public class PartnerAI : AI
         {
             // Attack an enemy in melee range
             // TODO: randomly walk away.
-            foreach ((int, int) pos in enemyPositions)
+            foreach (Entity enemy in enemies)
             {
-                if (GridHelper.Distance(e.position, pos) <= 1.5f)
+                if (GridHelper.Distance(e.position, enemy.position) <= 1.5f)
                 {
-                    return e.species.rushAttack.SetTarget(pos);
+                    return e.species.rushAttack.SetTarget(enemy.position);
                 }
             }
         }
@@ -60,11 +61,11 @@ public class PartnerAI : AI
                 Action attack = e.species.attacks[i];
                 if (closestDistance <= attack.Range.max)
                 {
-                    foreach ((int, int) pos in enemyPositions)
+                    foreach (Entity enemy in enemies)
                     {
-                        if (GridHelper.Distance(e.position, pos) == closestDistance)
+                        if (GridHelper.Distance(e.position, enemy.position) == closestDistance)
                         {
-                            return attack.SetTarget(pos);
+                            return attack.SetTarget(enemy.position);
                         }
                     }
                 }
@@ -88,15 +89,25 @@ public class PartnerAI : AI
 
         // Move towards enemies.
         // Pathfinding should be cheap since the paths are short and probably straight lines.
-        // PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(api));
-        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, Walkable(model, e));
+        // IEnumerable<(int, int)> nextToEnemy = enemies.Select(enemy => GridHelper.GetNeighbors(enemy.position)).SelectMany(x => x);
+        IEnumerable<(int, int)> enemyPositions = enemies.Select(enemy => enemy.position);
+        PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, WalkableIgnoreTargets(model, enemies));
         if (result.success)
         {
             return new MoveAction().SetTarget(result.nextStep);
         }
 
-        // low priority todo: big clumps of ai. 
-        result = PathFinder.ShortestPathToMany(e.position, allyPositions, WalkThroughAllies(model));
+        // Go towards lowest id ally. if no lowest, you are "leader".
+        Entity leader = e;
+        foreach (Entity ally in allies)
+        {
+            if (ally.id < leader.id)
+            {
+                leader = ally;
+            }
+        }
+
+        result = PathFinder.ShortestPath(e.position, leader.position, WalkableIgnoreTarget(model, leader));
         if (result.success)
         {
             if (result.steps > 2.5f)
@@ -105,7 +116,6 @@ public class PartnerAI : AI
             }
             return new MoveAction().SetTarget(e.position);
         }
-
         return new MoveAction().SetTarget(e.position);
     }
 
