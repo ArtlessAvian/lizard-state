@@ -21,7 +21,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.0333333, 0.0833333, 0.15, 0.4 ),
+"times": PoolRealArray( 0, 0.0333333, 0.0833333, 0.15, 0.697 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
 "values": [ 0.0, 8.0, 8.0, 0.0, 0.0 ]
@@ -33,7 +33,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2, 0.35, 0.383333 ),
+"times": PoolRealArray( 0, 0.2, 0.646, 0.68 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ 0.0, 0.5, 0.5, 0.0 ]
@@ -45,10 +45,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( -0.017, 0.283333 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.283333 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ 2, 0 ]
+"values": [ 2, 2, 0 ]
 }
 tracks/3/type = "method"
 tracks/3/path = NodePath(".")
@@ -191,6 +191,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 3 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:nudge_y_pos")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ -4 ]
+}
 
 [sub_resource type="Animation" id=3]
 resource_name = "Stunned"
@@ -323,7 +335,7 @@ tracks/4/keys = {
 "values": [ true ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath(".:spriteLerp")
+tracks/5/path = NodePath("AnimatedSprite:sprite_lerp")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
@@ -335,7 +347,7 @@ tracks/5/keys = {
 "values": [ 0.0 ]
 }
 tracks/6/type = "value"
-tracks/6/path = NodePath(".:spriteZ")
+tracks/6/path = NodePath("AnimatedSprite:sprite_z")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/imported = false
@@ -371,7 +383,7 @@ tracks/8/keys = {
 "values": [ 0.0 ]
 }
 tracks/9/type = "value"
-tracks/9/path = NodePath(".:facingOffset")
+tracks/9/path = NodePath("AnimatedSprite:facing_offset")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/imported = false
@@ -381,6 +393,18 @@ tracks/9/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ 0.0 ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("AnimatedSprite:nudge_y_pos")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ -0.01 ]
 }
 
 [sub_resource type="Animation" id=10]
@@ -694,7 +718,6 @@ region = Rect2( 0, 0, 40, 2 )
 
 [node name="Actor" type="YSort"]
 script = ExtResource( 2 )
-animationArg = Vector2( 30, 0 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Attack = SubResource( 1 )
@@ -715,9 +738,10 @@ anims/Stunned = SubResource( 6 )
 frames = ExtResource( 3 )
 animation = "East"
 speed_scale = 0.0
-offset = Vector2( 0, -10 )
+offset = Vector2( 0, -6 )
 script = ExtResource( 9 )
 animation_target = Vector2( 24, 0 )
+nudge_y_pos = -0.01
 
 [node name="HitEffect" type="AnimatedSprite" parent="AnimatedSprite"]
 z_index = 2000
@@ -730,6 +754,7 @@ offset = Vector2( 0, -10 )
 frames = SubResource( 34 )
 
 [node name="HealthBar" type="TextureProgress" parent="."]
+visible = false
 margin_left = -12.0
 margin_top = 5.0
 margin_right = 12.0
@@ -747,6 +772,7 @@ stretch_margin_left = 2
 stretch_margin_right = 2
 
 [node name="ComboBar" type="TextureProgress" parent="."]
+visible = false
 margin_left = -16.0
 margin_top = 8.0
 margin_right = 16.0

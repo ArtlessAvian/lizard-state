@@ -153,11 +153,7 @@ public partial class View : Node2D
             if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
             {
                 // Temporary!
-                GetNode<MessageLog>("UILayer/MessageLog").AnchorTop = 0;
-                GetNode<MessageLog>("UILayer/MessageLog").MarginTop = 20;
-                GetNode<ColorRect>("UILayer/MessageLog/Background").Color = Color.FromHsv(0, 0, 0);
 
-                done = true;
             }
 
             // Everything gets sent to the logs.

@@ -16,13 +16,6 @@ public partial class Actor : Node2D
     public static float snappiness = 0.3f;
     // from 0-1, fraction of the way to lerp to target per 60th of a second
 
-    // Degrees: 0 is right, + is cw.
-    [Export] public float facingDir;
-    [Export] public float facingOffset;
-
-    [Export] public Vector2 animationArg; // In Tiles
-    [Export] public float spriteLerp;
-    [Export] public float spriteZ;
     [Export] public bool animationInterruptible = false;
     public float timeStop = 0;
 

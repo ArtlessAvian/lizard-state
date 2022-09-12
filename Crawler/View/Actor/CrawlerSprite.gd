@@ -13,6 +13,8 @@ export(Vector2) var animation_target  # In Tiles
 export(float) var sprite_lerp
 export(float) var sprite_z
 
+export(int, -10, 0) var nudge_y_pos = 0.0
+
 
 func _ready():
 	if Engine.editor_hint:
@@ -33,9 +35,13 @@ func _process(_delta):
 
 	self.frame = cur_frame
 
-	var normalize = max(animation_target.x, animation_target.y)
+	var normalize = max(abs(animation_target.x), abs(animation_target.y))
 	if normalize != 0:
 		self.position = (animation_target / normalize) * Vector2(24, 16) * sprite_lerp
 	else:
 		self.position = Vector2.ZERO
-	self.position += Vector2.UP * sprite_z
+
+	self.offset = Vector2(0, -10) + Vector2.UP * sprite_z
+
+	self.offset.y -= nudge_y_pos
+	self.position.y += nudge_y_pos

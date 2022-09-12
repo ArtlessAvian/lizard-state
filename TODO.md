@@ -7,6 +7,7 @@ easier than trello since its only just me (for now?)
 * Explain attacks better (EX: Basic Throw: 50% raw, 0% combo).
 * Adjust MessageLog size.
 * Healthbar blocked by entity
+* Dying Animation Jitter
 
 ## New Features:
 * On "Goto," draw path taken, or add animation.
@@ -16,6 +17,7 @@ easier than trello since its only just me (for now?)
 * Heal between caves.
 * Items for meta-progression.
 * Incentive to explore.
+* Action Sequences.
 
 ## Low Priority
 * Limit dash with LOS check, unoccupied tile.
