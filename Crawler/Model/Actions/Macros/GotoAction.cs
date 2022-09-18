@@ -53,7 +53,7 @@ public class GotoAction : Action
     {
         foreach (Entity other in model.GetEntitiesInSight(0))
         {
-            if (other.team != 0 && !other.downed)
+            if (other.team != 0 && other.state != Entity.EntityState.UNALIVE)
             {
                 return true;
             }

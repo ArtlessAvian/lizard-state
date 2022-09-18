@@ -44,7 +44,7 @@ public partial class Model
         foreach (Entity e in GetEntities())
         {
             // rip no tuple equality
-            if (e.position.x == position.x && e.position.y == position.y && !e.downed)
+            if (e.position.x == position.x && e.position.y == position.y && e.state != Entity.EntityState.UNALIVE)
             {
                 return e;
             }
@@ -57,7 +57,7 @@ public partial class Model
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in GetEntities())
         {
-            if (Distance(position, e.position) <= radius && !e.downed)
+            if (Distance(position, e.position) <= radius && e.state != Entity.EntityState.UNALIVE)
             {
                 inRadius.Add(e);
             }
@@ -71,7 +71,7 @@ public partial class Model
 
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
 
-        for (int i = inSight.Count-1; i >= 0; i--)
+        for (int i = inSight.Count - 1; i >= 0; i--)
         {
             (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
             if (!VisibilityTrie.AnyLineOfSight(relative, isBlocked))
@@ -94,7 +94,7 @@ public partial class Model
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
         Predicate<(int, int)> isEither = ((int, int) rel) => notInCone(rel) || isBlocked(rel);
 
-        for (int i = inCone.Count-1; i >= 0; i--)
+        for (int i = inCone.Count - 1; i >= 0; i--)
         {
             (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
             if (!VisibilityTrie.AnyLineOfSight(relative, isEither))
@@ -121,7 +121,7 @@ public partial class Model
         {
             // Just find check distance and line of sight directly.
             // TODO: Write it.
-            return new List<Entity>{};
+            return new List<Entity> { };
         }
     }
 

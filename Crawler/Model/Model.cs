@@ -76,11 +76,11 @@ public partial class Model : Node
         if (done) { return false; }
 
         Entity e = NextEntity();
-
-        if (e.stunned)
+        PassTime(e.nextMove);
+        if (e.state == Entity.EntityState.STUN)
         {
+            e.state = Entity.EntityState.OK;
             this.CoolerApiEvent(e.id, "Unstun");
-            e.ResetCombo();
         }
 
         // Get the next action.
@@ -139,19 +139,23 @@ public partial class Model : Node
         // GetNode<VisionSystem>("Systems/Vision").Run(this);
     }
 
-    private Entity NextEntity()
+    public Entity NextEntity()
     {
         Entity result = GetEntity(0);
         foreach (Entity e in GetEntities())
         {
-            if (e.downed) { continue; }
             if (e.nextMove == -1) { continue; }
+            if (e.state == Entity.EntityState.UNALIVE)
+            {
+                GD.PrintErr("Forgot to set e.nextMove to -1.");
+                e.nextMove = -1;
+                continue;
+            }
             if (e.nextMove < result.nextMove)
             {
                 result = e;
             }
         }
-        PassTime(result.nextMove);
         return result;
     }
 

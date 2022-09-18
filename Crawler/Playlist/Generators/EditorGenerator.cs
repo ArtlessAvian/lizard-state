@@ -47,7 +47,7 @@ public class EditorGenerator : LevelGenerator
         model.AddEntity(CreateEntity(playerTegu, (0, -1), 0));
         model.GetEntity(0).isPlayer = true;
         model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
-        model.AddEntity(CreateEntity(partnerGator, (0, 0), 0));
+        // model.AddEntity(CreateEntity(partnerGator, (0, 0), 0));
 
         // model.AddEntity(new Entity(enemy, (0, 10), 1));
         // model.AddEntity(new Entity(enemy, (1, 20), 1));

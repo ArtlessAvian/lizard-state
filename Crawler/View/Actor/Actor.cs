@@ -20,7 +20,6 @@ public partial class Actor : Node2D
     public float timeStop = 0;
 
     int health = 0;
-    bool stunned = false;
     bool seen = false;
 
     // Other elements.
@@ -66,24 +65,37 @@ public partial class Actor : Node2D
 
         status?.Call("set_energy", role.energy, 10);
 
-        stunned = role.stunned;
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");
-        if (role.downed)
+        switch (role.state)
         {
-            aniSprite.Frame = 3;
-        }
-        else if (role.stunned)
-        {
-            aniSprite.Frame = 1;
-        }
-        else if (role.queuedAction is ReachAttackFollowup)
-        {
-            aniSprite.Frame = 2;
-        }
-        else
-        {
-            aniSprite.Frame = 0;
+            case Entity.EntityState.OK:
+                {
+                    if (role.queuedAction is ReachAttackFollowup)
+                    {
+                        aniSprite.Frame = 2;
+                    }
+                    else
+                    {
+                        aniSprite.Frame = 0;
+                    }
+                    break;
+                }
+            case Entity.EntityState.STUN:
+                {
+                    aniSprite.Frame = 1;
+                    break;
+                }
+            case Entity.EntityState.UNALIVE:
+                {
+                    aniSprite.Frame = 3;
+                    break;
+                }
+            default:
+                {
+                    GD.PrintErr("Unsupported Entity State");
+                    break;
+                }
         }
 
         // TODO: Temporary

@@ -21,7 +21,6 @@ func run():
 	object.timeStop = 0 / 60.0
 
 	object.health -= event["damage"]
-	object.stunned = true
 
 	if object.status != null:
 		object.status.set_health(object.health)

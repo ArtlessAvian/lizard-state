@@ -74,10 +74,7 @@ public class ReachAttackFollowup : Action
     {
         targeted.health -= data.damage;
 
-        // think of it as "lose {stun} turns." The term here (VVVVVVVVV) ensures that lower id's lose their turn.
-        int stunUntil = model.time + data.stun + (targeted.id < e.id ? 1 : 0);
-        targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
-        targeted.stunned = true;
+        targeted.StunForTurns(data.stun, model.time, e.id);
 
         model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},

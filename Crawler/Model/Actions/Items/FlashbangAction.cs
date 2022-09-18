@@ -23,9 +23,7 @@ public class FlashbangAction : Action
             if (model.GetEntityAt((targetPos.x + dx, targetPos.y + dy)) is Entity targeted)
             {
                 // think of it as "lose {stun} turns." (VVVVVVVVV) The term here ensures that lower id's lose their turn.
-                int stunUntil = model.time + 2 + (targeted.id < e.id ? 1 : 0);
-                targeted.nextMove = Math.Max(targeted.nextMove, stunUntil);
-                targeted.stunned = true;
+                targeted.StunForTurns(2, model.time, e.id);
 
                 model.CoolerApiEvent(new Dictionary(){
                     {"subject", e.id},

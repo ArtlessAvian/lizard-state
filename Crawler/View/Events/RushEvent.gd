@@ -39,7 +39,7 @@ func run():
 	var otheranimation = object.get_node("AnimationPlayer")
 	otheranimation.play("RESET")
 	otheranimation.advance(0)
-	otheranimation.play("Stunned" if object.stunned or object.health <= 0 else "Hurt")
+	otheranimation.play("Hurt")
 	otheranimation.advance(0)
 
 	object.get_node("HealthBar").value = object.health

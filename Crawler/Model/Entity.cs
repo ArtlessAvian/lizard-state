@@ -10,6 +10,11 @@ using System.Collections.Generic;
 // TODO: Make Entity a class of structs?
 public class Entity : Resource
 {
+    public enum EntityState
+    {
+        OK, STUN, KNOCKDOWN, UNALIVE
+    }
+
     [Export] public int id;
     [Export] public Species species;
 
@@ -30,9 +35,11 @@ public class Entity : Resource
     [Export] public Action queuedAction;
 
     [Export] public int health;
+    [Obsolete]
     [Export] public bool stunned; // TODO: Rework all this.
-    [Export] public int comboCounter; // Undizzy.
+    [Obsolete]
     [Export] public bool downed = false;
+    [Export] public EntityState state = EntityState.OK;
 
     [Export] public int energy = 10;
     public InventoryItem inventory = null;
@@ -54,10 +61,18 @@ public class Entity : Resource
         this.providesVision = team == 0;
     }
 
-    public void ResetCombo()
+    public void DelayNextMove(int nTurns, int time, int nowId)
     {
-        this.comboCounter = 0;
-        this.stunned = false;
+        // "lose {nTurns} turns." The last term ensures that lower ids lose their turn correctly.
+        int stunUntil = time + nTurns + (this.id < nowId ? 1 : 0);
+        this.nextMove = Math.Max(this.nextMove, stunUntil);
+    }
+
+    public void StunForTurns(int nTurns, int time, int nowId)
+    {
+        DelayNextMove(nTurns, time, nowId);
+        state = EntityState.STUN;
+        queuedAction = null;
     }
 
     // public void TakeDamage(int damage) // add callback param

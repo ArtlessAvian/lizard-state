@@ -15,7 +15,7 @@ public class PartnerAI : AI
         List<Entity> allies = new List<Entity>();
         foreach (Entity other in entities)
         {
-            if (other.downed) { continue; }
+            if (other.state == Entity.EntityState.UNALIVE) { continue; }
             if (other == e) { continue; }
             if (other.team == e.team)
             {
