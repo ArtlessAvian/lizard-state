@@ -86,6 +86,11 @@ public partial class Actor : Node2D
                     aniSprite.Frame = 1;
                     break;
                 }
+            case Entity.EntityState.KNOCKDOWN:
+                {
+                    aniSprite.Frame = 3;
+                    break;
+                }
             case Entity.EntityState.UNALIVE:
                 {
                     aniSprite.Frame = 3;
@@ -183,6 +188,8 @@ public partial class Actor : Node2D
         {
             this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
         }
+
+        GetNode<Node2D>("DebugTruePos").GlobalPosition = tilePosition * View.TILESIZE;
         // End TODO
     }
 }

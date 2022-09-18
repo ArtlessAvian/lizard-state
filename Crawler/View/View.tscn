@@ -211,7 +211,6 @@ margin_top = 20.0
 margin_right = 280.0
 margin_bottom = -2.0
 mouse_filter = 2
-scroll_active = false
 scroll_following = true
 __meta__ = {
 "_edit_lock_": true,

@@ -832,3 +832,6 @@ z_index = 50
 
 [node name="DamagePopup" parent="DamagePopups" instance=ExtResource( 10 )]
 visible = false
+
+[node name="DebugTruePos" type="Sprite" parent="."]
+texture = ExtResource( 6 )

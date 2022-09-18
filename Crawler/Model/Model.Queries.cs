@@ -39,14 +39,18 @@ public partial class Model
         return GetEntity(0);
     }
 
+    // There is one unique OK/STUN entity at every position.
     public Entity GetEntityAt((int x, int y) position)
     {
         foreach (Entity e in GetEntities())
         {
             // rip no tuple equality
-            if (e.position.x == position.x && e.position.y == position.y && e.state != Entity.EntityState.UNALIVE)
+            if (e.position.x == position.x && e.position.y == position.y)
             {
-                return e;
+                if (e.state == Entity.EntityState.OK || e.state == Entity.EntityState.STUN)
+                {
+                    return e;
+                }
             }
         }
         return null;
@@ -57,9 +61,12 @@ public partial class Model
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in GetEntities())
         {
-            if (Distance(position, e.position) <= radius && e.state != Entity.EntityState.UNALIVE)
+            if (Distance(position, e.position) <= radius)
             {
-                inRadius.Add(e);
+                if (e.state == Entity.EntityState.OK || e.state == Entity.EntityState.STUN)
+                {
+                    inRadius.Add(e);
+                }
             }
         }
         return inRadius;

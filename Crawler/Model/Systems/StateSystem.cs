@@ -31,12 +31,14 @@ public class StateSystem : Node, CrawlerSystem
                 // and if no enemies are around.
                 // heal to one.
                 e.health = 1;
-                e.DelayNextMove(0, model.time, 0);
+                e.state = Entity.EntityState.KNOCKDOWN;
+                // delay to far in the future.
+                e.DelayNextMove(10, model.time, 0);
             }
         }
 
         Entity next = model.NextEntity();
-        if (next.state == Entity.EntityState.UNALIVE && next.health > 0)
+        if (next.state == Entity.EntityState.KNOCKDOWN && next.health > 0)
         {
             next.state = Entity.EntityState.OK;
             model.CoolerApiEvent(next.id, "Wakeup");
