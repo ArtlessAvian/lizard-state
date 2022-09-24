@@ -35,10 +35,6 @@ public class Entity : Resource
     [Export] public Action queuedAction;
 
     [Export] public int health;
-    [Obsolete]
-    [Export] public bool stunned; // TODO: Rework all this.
-    [Obsolete]
-    [Export] public bool downed = false;
     [Export] public EntityState state = EntityState.OK;
 
     [Export] public int energy = 10;
@@ -72,6 +68,13 @@ public class Entity : Resource
     {
         DelayNextMove(nTurns, time, nowId);
         state = EntityState.STUN;
+        queuedAction = null;
+    }
+
+    public void KnockdownForTurns(int nTurns, int time, int nowId)
+    {
+        DelayNextMove(nTurns, time, nowId);
+        state = EntityState.KNOCKDOWN;
         queuedAction = null;
     }
 

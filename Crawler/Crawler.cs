@@ -60,6 +60,12 @@ public class Crawler : Node2D, InputStateMachine
         // while (true) // treat as daemon (its not designed for that yet)
         while (notPlayerTurn) // and not timed out
         {
+            if (View.eventQueue.Count > 10)
+            {
+                GD.PrintErr("Too many queued events! Model running far ahead of view?");
+                break;
+            }
+
             bool success = Model.DoStep();
             if (!success)
             {

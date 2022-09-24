@@ -77,28 +77,10 @@ public partial class Model : Node
 
         Entity e = NextEntity();
         PassTime(e.nextMove);
-        if (e.state == Entity.EntityState.STUN)
-        {
-            e.state = Entity.EntityState.OK;
-            this.CoolerApiEvent(e.id, "Unstun");
-        }
 
         // Get the next action.
-        Action action = null;
-        // Always get the queued action.
-        if (e.queuedAction != null)
-        {
-            action = e.queuedAction;
-            e.queuedAction = null;
-        }
+        Action action = GetAction(e);
 
-        // If no action, get the ai's action.
-        if (action == null && !e.isPlayer)
-        {
-            action = e.species?.ai?.GetMove(this, e);
-        }
-
-        // If no action, return
         if (action == null)
         {
             if (!e.isPlayer)
@@ -114,6 +96,7 @@ public partial class Model : Node
             }
         }
 
+        e.queuedAction = null; // null out if used.
         bool success = action.Do(this, e);
         if (!success)
         {
@@ -123,6 +106,31 @@ public partial class Model : Node
 
         RunSystems();
         return true;
+    }
+
+    private Action GetAction(Entity e)
+    {
+        switch (e.state)
+        {
+            case Entity.EntityState.OK:
+                if (e.queuedAction != null)
+                {
+                    return e.queuedAction;
+                }
+                break;
+            case Entity.EntityState.STUN:
+                return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
+            case Entity.EntityState.KNOCKDOWN:
+                return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
+            default:
+                break;
+        }
+
+        if (!e.isPlayer)
+        {
+            return e.species?.ai?.GetMove(this, e);
+        }
+        return null;
     }
 
     /// <summary>
@@ -144,13 +152,7 @@ public partial class Model : Node
         Entity result = GetEntity(0);
         foreach (Entity e in GetEntities())
         {
-            if (e.nextMove == -1) { continue; }
-            if (e.state == Entity.EntityState.UNALIVE)
-            {
-                GD.PrintErr("Forgot to set e.nextMove to -1.");
-                e.nextMove = -1;
-                continue;
-            }
+            if (e.state == Entity.EntityState.UNALIVE) { continue; }
             if (e.nextMove < result.nextMove)
             {
                 result = e;
