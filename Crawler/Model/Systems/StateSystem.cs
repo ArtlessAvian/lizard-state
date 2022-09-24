@@ -43,11 +43,17 @@ public class StateSystem : Node, CrawlerSystem
             next.state = Entity.EntityState.OK;
             model.CoolerApiEvent(next.id, "Wakeup");
             GD.Print("heya");
+
+            // replace with following logic.
             // if no one is standing on you
             //     get up
             // else if random
             //     push the entity on you somewhere
             //     get up
+            // else
+            //     fail to get up
+            //     queue another getup attempt
+            //     repeat getup on next entity?
         }
     }
 }
