@@ -17,7 +17,6 @@ public class Entity : Resource
 
     [Export] public int id;
     [Export] public Species species;
-
     [Export] public bool isPlayer = false;
 
     // Godot doesn't like serializing tuples, and I don't want to use Vector2.
@@ -32,12 +31,21 @@ public class Entity : Resource
     [Export] public bool visibleToPlayer = false;
 
     [Export] public int nextMove = 0;
+
+    [Export] public EntityState state = EntityState.OK;
     [Export] public Action queuedAction;
 
-    [Export] public int health;
-    [Export] public EntityState state = EntityState.OK;
+    // Imagine a rust enum with OK(Option<Action>), that being queuedAction?
+    // If I were a braver person I'd use this everywhere.
+    public (EntityState state, Action action) stateOrQueuedAction
+    {
+        get { return (state, queuedAction); }
+        set { state = value.state; queuedAction = value.state == EntityState.OK ? value.action : null; }
+    }
 
+    [Export] public int health;
     [Export] public int energy = 10;
+
     public InventoryItem inventory = null;
 
     [Export] public int team;
@@ -67,44 +75,12 @@ public class Entity : Resource
     public void StunForTurns(int nTurns, int time, int nowId)
     {
         DelayNextMove(nTurns, time, nowId);
-        state = EntityState.STUN;
-        queuedAction = null;
+        stateOrQueuedAction = (EntityState.STUN, null);
     }
 
     public void KnockdownForTurns(int nTurns, int time, int nowId)
     {
         DelayNextMove(nTurns, time, nowId);
-        state = EntityState.KNOCKDOWN;
-        queuedAction = null;
+        stateOrQueuedAction = (EntityState.KNOCKDOWN, null);
     }
-
-    // public void TakeDamage(int damage) // add callback param
-    // {
-    //     this.health -= damage;
-    //     this.queuedAction = null;
-
-    //     if (this.health <= 0)
-    //     {
-    //         this.downed = true;
-    //     }
-    // }
-
-    // public void TakeDamage(AttackResult result)
-    // {
-    //     this.health -= result.damage;
-
-    //     if (this.health <= 0)
-    //     {
-    //         this.downed = true;
-    //         this.nextMove = -1;
-    //     }
-    //     else if (result.stuns)
-    //     {
-    //         this.comboCounter += 1;
-
-    //         this.nextMove = Math.Max(this.nextMove, result.stunUntil - (comboCounter > 3 ? (comboCounter - 3) * 5 : 0));
-    //         this.stunned = true;
-    //         this.queuedAction = null;
-    //     }
-    // }
 }

@@ -13,7 +13,7 @@ export(Vector2) var animation_target  # In Tiles
 export(float) var sprite_lerp
 export(float) var sprite_z
 
-export(int, -10, 0) var nudge_y_pos = 0.0
+export(int, -10, 0) var nudge_y_pos = 0
 
 
 func _ready():

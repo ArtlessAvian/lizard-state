@@ -834,4 +834,5 @@ z_index = 50
 visible = false
 
 [node name="DebugTruePos" type="Sprite" parent="."]
+visible = false
 texture = ExtResource( 6 )
