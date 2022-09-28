@@ -18,17 +18,19 @@ public class UseItemAction : Action
     }
     private Action _proxyAction = null;
 
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         if (!IsValid(model, e))
         {
-            return false;
+            return null;
         }
 
-        item.uses -= 1;
-        ProxyAction.Do(model, e);
-
-        return true;
+        Dictionary result = ProxyAction.Do(model, e);
+        if (result is object)
+        {
+            item.uses -= 1;
+        }
+        return result;
     }
 
     public override Action SetTarget((int x, int y) target)

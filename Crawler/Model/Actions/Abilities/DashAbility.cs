@@ -1,28 +1,23 @@
 using Godot;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class DashAbility : Action
 {
-    public DashAbility() 
+    public DashAbility()
     {
 
     }
 
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
-        if (!IsValid(model, e))
-        {
-            return false;
-        }
+        if (!IsValid(model, e)) { return null; }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         e.position = targetPos;
         e.nextMove += 2;
 
-        model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
-
-        return true;
+        return CreateModelEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
     public override bool IsValid(Model model, Entity e)

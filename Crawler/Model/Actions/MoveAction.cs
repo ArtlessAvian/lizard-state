@@ -1,19 +1,17 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class MoveAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
-        if (!IsValid(model, e)) { return false; }
+        if (!IsValid(model, e)) { return null; }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         if (targetPos.x == e.position.x && targetPos.y == e.position.y)
         {
-            DoNothing(model, e);
-            return true;
+            return DoNothing(model, e);
         }
 
         Entity entityAt = model.GetEntityAt(targetPos);
@@ -21,38 +19,35 @@ public class MoveAction : Action
         {
             if (entityAt.team != e.team)
             {
-                GD.Print($"{e.species.displayName} bumps into {entityAt.species.displayName}");
                 e.nextMove += 1;
-                return false;
+                return CreateModelEvent(e.id, "Bump", entityAt.id);
             }
             else
             {
-                DoSwap(model, e, entityAt);
-                return true;
+                return DoSwap(model, e, entityAt);
             }
         }
 
-        DoMove(model, e);
-        return true;
+        return DoMove(model, e);
     }
 
-    private void DoNothing(Model model, Entity e)
+    private Dictionary DoNothing(Model model, Entity e)
     {
         e.nextMove += 1;
-        // model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+        return CreateModelEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
-    private void DoMove(Model model, Entity e)
+    private Dictionary DoMove(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         e.nextMove += (int)(1 * GridHelper.Distance(e.position, targetPos));
         e.position = targetPos;
 
-        model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+        return CreateModelEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 
-    private void DoSwap(Model model, Entity e, Entity teammate)
+    private Dictionary DoSwap(Model model, Entity e, Entity teammate)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
@@ -60,7 +55,7 @@ public class MoveAction : Action
         e.position = targetPos;
         e.nextMove += 1;
 
-        model.CoolerApiEvent(e.id, "Swap", new Vector2(teammate.position.x, teammate.position.y), teammate.id);
+        return CreateModelEvent(e.id, "Swap", new Vector2(teammate.position.x, teammate.position.y), teammate.id);
     }
 
     public override bool IsValid(Model model, Entity e)

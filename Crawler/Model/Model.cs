@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
@@ -97,12 +98,13 @@ public partial class Model : Node
         }
 
         e.queuedAction = null; // null out if used.
-        bool success = action.Do(this, e);
-        if (!success)
+        Dictionary result = action.Do(this, e);
+        if (result is null)
         {
             GD.Print($"{e.species.displayName} tried {action.GetType().ToString()} and failed!");
             e.nextMove += 1;
         }
+        DecorateAndEmitEvent(result);
 
         RunSystems();
         return true;
@@ -168,7 +170,7 @@ public partial class Model : Node
     }
 
     // todo: rename this lmao
-    // [Obsolete]
+    [Obsolete]
     public void CoolerApiEvent(int subject, string action, object args = null, int @object = -1)
     {
         CoolerApiEvent(new Godot.Collections.Dictionary()
@@ -180,7 +182,10 @@ public partial class Model : Node
         });
     }
 
-    public void CoolerApiEvent(Godot.Collections.Dictionary @event)
+    [Obsolete]
+    public void CoolerApiEvent(Godot.Collections.Dictionary @event) { DecorateAndEmitEvent(@event); }
+
+    private void DecorateAndEmitEvent(Godot.Collections.Dictionary @event)
     {
         @event.Add("timestamp", time);
 
@@ -200,10 +205,5 @@ public partial class Model : Node
         // {
         //     system.ProcessEvent(this, @event);
         // }
-    }
-
-    public void Debug(string message)
-    {
-        CoolerApiEvent(-1, "Debug", message);
     }
 }

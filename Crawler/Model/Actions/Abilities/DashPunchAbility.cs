@@ -1,17 +1,17 @@
 using Godot;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class DashPunchAbility : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
-        if (!IsValid(model, e)) { return false; }
+        if (!IsValid(model, e)) { return null; }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         if (targetPos.x == e.position.x && targetPos.y == e.position.y)
         {
-            return true;
+            return null;
         }
 
         (int x, int y) place = e.position;
@@ -28,7 +28,7 @@ public class DashPunchAbility : Action
         }
 
         e.position = place;
-        model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+        Dictionary modelEvent = CreateModelEvent(e.id, "DashPunch", new Vector2(e.position.x, e.position.y));
 
         if (target != null)
         {
@@ -37,7 +37,7 @@ public class DashPunchAbility : Action
             // subaction.Do(model, e);
         }
 
-        return true;
+        return modelEvent;
     }
 
     public override bool IsValid(Model model, Entity e)

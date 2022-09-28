@@ -17,20 +17,16 @@ public class ReachAttackAction : Action
 
     private ReachAttackAction() { }
 
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
-        if (startup > 0)
-        {
-            model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
-        }
 
         e.nextMove += startup;
         CSharpScript followup = GD.Load("res://Crawler/Model/Actions/ReachAttackFollowup.cs") as CSharpScript;
         e.queuedAction = followup.New(this) as Action;
         e.queuedAction = e.queuedAction.SetTarget(targetPos);
 
-        return true;
+        return CreateModelEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
     }
 
     public override bool IsValid(Model model, Entity e)

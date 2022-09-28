@@ -1,27 +1,24 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class ExitAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         if (!IsValid(model, e))
         {
-            return false;
+            return null;
         }
 
         (int x, int y) = GetTargetPos(e.position);
 
         if (model.GetMap().GetCell(x, y) == 5)
         {
-            model.CoolerApiEvent(-1, "Print", "You leave the cave.");
-            model.CoolerApiEvent(0, "Exit");
             e.nextMove = -1;
             model.done = true;
-            return true;
+            return CreateModelEvent(0, "Exit");
         }
-        return false;
+        return null;
     }
 
     public override bool IsValid(Model model, Entity e)

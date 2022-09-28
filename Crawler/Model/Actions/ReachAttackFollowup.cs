@@ -17,19 +17,21 @@ public class ReachAttackFollowup : Action
 
     private ReachAttackFollowup() { }
 
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
         // e.energy -= data.energy;
 
-        model.CoolerApiEvent(new Dictionary(){
+        Array<Dictionary> results = new Array<Dictionary>();
+        Dictionary modelEvent = new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
                 {"args", new Vector2(targetPos.x, targetPos.y)},
-                {"flavorTags", data.flavorTags}
-            });
+                {"flavorTags", data.flavorTags},
+                {"results", results}
+            };
 
         if (targeted is object)
         {
@@ -37,20 +39,19 @@ public class ReachAttackFollowup : Action
 
             if (GD.Randf() < data.blockChance)
             {
-                // block!
-                model.Debug($"{e.species.displayName} missed!");
+                results.Add(CreateModelEvent(e.id, "Block", targeted.id));
             }
             else
             {
                 // clean hit!
-                OnHit(model, e, targeted);
+                results.Add(OnHit(model, e, targeted));
 
                 // TODO: This can put people inside walls. Or, inside each other.
                 // (If they intersect a wall, they should "wallsplat" or something.)
                 // (If they end up on a person, they should pop to a random nearby tile.)
                 (int x, int y) knockback = KnockbackPosition(model, e.position, targeted.position, data.knockback);
                 targeted.position = knockback;
-                model.CoolerApiEvent(e.id, "Knockback", new Vector2(knockback.x, knockback.y), targeted.id);
+                results.Add(CreateModelEvent(e.id, "Knockback", new Vector2(knockback.x, knockback.y), targeted.id));
             }
         }
         else
@@ -60,7 +61,7 @@ public class ReachAttackFollowup : Action
 
         e.nextMove += data.recovery;
 
-        return true;
+        return modelEvent;
     }
 
     public override bool IsValid(Model model, Entity e)
@@ -70,19 +71,19 @@ public class ReachAttackFollowup : Action
         return true;
     }
 
-    private void OnHit(Model model, Entity e, Entity targeted)
+    private Dictionary OnHit(Model model, Entity e, Entity targeted)
     {
         targeted.health -= data.damage;
 
         targeted.StunForTurns(data.stun, model.time, e.id);
 
-        model.CoolerApiEvent(new Dictionary(){
+        return new Dictionary(){
                 {"subject", e.id},
                 {"action", "Hit"},
                 {"object", targeted.id},
                 {"damage", data.damage},
                 {"flavorTags", data.flavorTags}
-            });
+            };
     }
 
     private (int, int) KnockbackPosition(Model model, (int x, int y) from, (int x, int y) to, int howMuch)

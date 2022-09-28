@@ -1,12 +1,13 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
 public class GotoAction : Action
 {
-    PathFinder.PathResult result;
+    PathFinder.PathResult pathResult = null;
 
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         // bool enemiesBeforeMove = AnyEnemiesInSight(model, e);
         // if (AnyEnemiesInSight(model, e))
@@ -20,10 +21,9 @@ public class GotoAction : Action
 
         FindPathLazy(model, e.position, targetPos);
 
-        model.CoolerApiEvent(-1, "SmallWait");
-        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
+        Dictionary result = new MoveAction().SetTarget(pathResult.nextStepFor[e.position]).Do(model, e);
 
-        if (!success) { return false; }
+        if (result is null) { return null; }
 
         // queue same action object
         if (!(AnyEnemiesInSight(model, e) || e.position.x == targetPos.x && e.position.y == targetPos.y))
@@ -31,21 +31,21 @@ public class GotoAction : Action
             e.queuedAction = this;
         }
 
-        return success;
+        return result;
     }
 
     private bool FindPathLazy(Model model, (int, int) from, (int, int) to)
     {
-        if (result == null)
+        if (pathResult == null)
         {
             PathFinder pather = new PathFinder();
             pather.maxLength = 100000;
             pather.source = from;
             pather.goals = new List<(int, int)>() { to };
             pather.walkable = Walkable(model);
-            result = pather.Run();
+            pathResult = pather.Run();
         }
-        return result.success;
+        return pathResult.success;
     }
 
     // shared by RunAction.

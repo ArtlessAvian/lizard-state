@@ -1,10 +1,9 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class MoveOrAttackAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         return GetMacroedAction(model, e).Do(model, e);
     }

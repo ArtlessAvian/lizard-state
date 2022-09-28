@@ -1,14 +1,13 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class KnockdownWakeupAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         if (!IsValid(model, e))
         {
-            return false;
+            return null;
         }
 
         // replace with following logic.
@@ -22,9 +21,8 @@ public class KnockdownWakeupAction : Action
         //     queue another getup attempt
         //     repeat getup on next entity?
 
-        model.CoolerApiEvent(e.id, "Wakeup");
         e.state = Entity.EntityState.OK;
-        return true;
+        return CreateModelEvent(e.id, "Wakeup");
     }
 
     public override bool IsValid(Model model, Entity e)

@@ -6,38 +6,44 @@ using System.Collections.Generic;
 
 public class FlashbangAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        model.CoolerApiEvent(new Dictionary(){
+        Array<Dictionary> results = new Array<Dictionary>();
+        Dictionary modelEvent = new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
                 {"args", new Vector2(targetPos.x, targetPos.y)},
-                {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}}
-            });
+                {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}},
+                {"results", results},
+            };
 
         HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfView(((int x, int y) pos) => false, 1));
         foreach ((int dx, int dy) in set)
         {
             if (model.GetEntityAt((targetPos.x + dx, targetPos.y + dy)) is Entity targeted)
             {
-                // think of it as "lose {stun} turns." (VVVVVVVVV) The term here ensures that lower id's lose their turn.
-                targeted.StunForTurns(2, model.time, e.id);
-
-                model.CoolerApiEvent(new Dictionary(){
-                    {"subject", e.id},
-                    {"action", "Hit"},
-                    {"object", targeted.id},
-                    {"damage", 0},
-                    {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}}
-                });
+                results.Add(OnHit(model, e, targeted));
             }
         }
 
         e.nextMove += 1;
 
-        return true;
+        return modelEvent;
+    }
+
+    private Dictionary OnHit(Model model, Entity e, Entity targeted)
+    {
+        targeted.StunForTurns(2, model.time, e.id);
+
+        return new Dictionary(){
+                {"subject", e.id},
+                {"action", "Hit"},
+                {"object", targeted.id},
+                {"damage", 0},
+                {"flavorTags", new Array<string>(){"Flash", "Shoot"}}
+            };
     }
 
     public override bool IsValid(Model model, Entity e)

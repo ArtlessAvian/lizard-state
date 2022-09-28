@@ -20,16 +20,14 @@ public class RushAttackAction : Action
 
     private RushAttackAction() { }
 
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
-        if (!IsValid(model, e))
-        {
-            return false;
-        }
+        if (!IsValid(model, e)) { return null; }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
+        Array<Dictionary> results = new Array<Dictionary>();
         do
         {
             // TODO: Move into entity?
@@ -38,9 +36,9 @@ public class RushAttackAction : Action
             targeted.health -= damagePerHit;
             targeted.queuedAction = null;
 
-            model.CoolerApiEvent(new Dictionary(){
+            results.Add(new Dictionary(){
                 {"subject", e.id},
-                {"action", "Rush"},
+                {"action", "Hit"},
                 {"object", targeted.id},
                 {"damage", damagePerHit}
             });
@@ -50,14 +48,17 @@ public class RushAttackAction : Action
 
         if (targeted.health > 0)
         {
-            model.CoolerApiEvent(new Dictionary(){
-                {"subject", e.id},
-                {"action", "Miss"},
-                {"object", targeted.id}
-            });
+            // model.CoolerApiEvent(new Dictionary(){
+            //     {"subject", e.id},
+            //     {"action", "Miss"},
+            //     {"object", targeted.id}
+            // });
         }
 
-        return true;
+        Dictionary modelEvent = CreateModelEvent(e.id, "Rush", targeted.id);
+        modelEvent.Add("results", results);
+
+        return modelEvent;
     }
 
     public override bool IsValid(Model model, Entity e)

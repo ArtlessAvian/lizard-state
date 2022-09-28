@@ -148,14 +148,6 @@ public partial class View : Node2D
             viewTime = (int)ev["timestamp"];
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
 
-            // TODO: ASAP for cleanliness!!!!!! eughuegheu.
-            // TODO: also move below into handling scripts.
-            if ((string)ev["action"] == "Exit" || ((string)ev["action"] == "Downed" && (int)ev["subject"] == 0))
-            {
-                // Temporary!
-
-            }
-
             // Everything gets sent to the logs.
             if (GetNode<RichTextLabel>("UILayer/DebugLog").Visible)
             {

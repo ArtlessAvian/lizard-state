@@ -1,20 +1,17 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class StunRecoveryAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         if (!IsValid(model, e))
         {
-            return false;
+            return null;
         }
 
-        model.CoolerApiEvent(e.id, "Unstun");
         e.state = Entity.EntityState.OK;
-        model.Debug("Unstunned!!!!!!!!!!!!!!!!!!!!!!");
-        return true;
+        return CreateModelEvent(e.id, "Unstun");
     }
 
     public override bool IsValid(Model model, Entity e)

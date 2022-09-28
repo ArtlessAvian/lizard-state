@@ -1,36 +1,32 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 public class GetAction : Action
 {
-    public override bool Do(Model model, Entity e)
+    public override Dictionary Do(Model model, Entity e)
     {
         if (!IsValid(model, e))
         {
-            return false;
+            return null;
         }
 
         if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
         {
-            model.CoolerApiEvent(-1, "Print", "Got the moss.");
             e.nextMove += 3;
-            return true;
+            return CreateModelEvent(e.id, "Debug", "Got the moss!");
         }
 
         foreach (FloorItem floorItem in model.GetFloorItems())
         {
             if (floorItem.positionX == e.positionX && floorItem.positionY == e.positionY)
             {
-                model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
                 e.inventory = floorItem.inventoryItem ?? new InventoryItem(GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres"));
-                model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
                 e.nextMove += 3;
-                return true;
+                return CreateModelEvent(e.id, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
             }
         }
 
-        return false;
+        return null;
     }
 
     public override bool IsValid(Model model, Entity e)

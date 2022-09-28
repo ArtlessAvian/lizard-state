@@ -1,6 +1,5 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+using Godot.Collections;
 
 /// <summary>
 /// The command pattern. Create action objects, use, then throw away.
@@ -9,12 +8,14 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Action : Resource
 {
-    // If !IsValid, wastes some time and sends error event.
-    // Otherwise, tries to do the thing, even if unreasonable. 
-    public abstract bool Do(Model model, Entity e);
+    // Does the Action, even if unreasonable.
+    // Returns null if !IsValid, else a ModelEvent Dictionary. 
+    public abstract Dictionary Do(Model model, Entity e);
 
-    // Checks if the action is valid.
+    // Checks if the action is valid, leaving the model in a valid state.
+    // Imagine this is a dry run, less expensive version of Do.
     // This is used by the UI and the AI.
+    // TODO: Create abstraction to hide Model details from UI and AI.
     public abstract bool IsValid(Model model, Entity e);
 
     // Gives a list of reasons this may be a bad move.
@@ -59,6 +60,11 @@ public abstract class Action : Resource
     /// For AI and UI use. Range is inclusive.
     public virtual (int min, int max) Range => (0, 0);
     public virtual TargetingType.Type TargetingType => new TargetingType.Smite(0);
+
+    protected Dictionary CreateModelEvent(int subject, string action) => new Dictionary { { "subject", subject }, { "action", action } };
+    protected Dictionary CreateModelEvent(int subject, string action, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "object", obj } };
+    protected Dictionary CreateModelEvent(int subject, string action, object args) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args } };
+    protected Dictionary CreateModelEvent(int subject, string action, object args, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args }, { "obj", obj } };
 }
 
 public static class TargetingType
