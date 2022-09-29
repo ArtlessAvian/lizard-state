@@ -10,6 +10,8 @@ public partial class View : Node2D
 {
     public static Vector2 TILESIZE = new Vector2(24, 16);
 
+    public Model model;
+
     // Possibly bad performance on dequeue. Not relevant yet.
     public Array<Dictionary> eventQueue = new Array<Dictionary>();
     public Dictionary<int, Actor> roles = new Dictionary<int, Actor>();
@@ -29,11 +31,14 @@ public partial class View : Node2D
 
     [Export] public bool impatientMode = false;
     [Export] public bool done = false;
+    [Export] public bool skipAllAnimation = true;
 
     private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
 
     public void ConnectToModel(Model model)
     {
+        this.model = model;
+
         // Connect to the signal.
         model.Connect("NewEvent", this, "OnModelNewEvent");
 
@@ -54,15 +59,15 @@ public partial class View : Node2D
 
         // Copy map knowledge.
         MapView mapView = GetNode<MapView>("Map");
-        mapView.SyncRevealed(model.Map, fog);
+        mapView.ModelSync(model.Map, fog);
 
         // TODO: read the info directly.
         foreach (Entity e in model.GetEntities())
         {
             if (e.providesVision)
             {
-                fog.UpdateVision(model, e);
-                vision.UpdateVision(model, e);
+                fog.RefreshVision(model, e);
+                vision.RefreshVision(model, e);
             }
             GD.Print(e.ResourcePath);
         }
@@ -103,6 +108,12 @@ public partial class View : Node2D
 
     public void ClearQueue()
     {
+        if (skipAllAnimation)
+        {
+            eventQueue.Clear();
+            return;
+        }
+
         while (!IsQueueClear())
         {
             FindNode("WaitPrompt").Set("visible", true);
@@ -183,11 +194,14 @@ public partial class View : Node2D
 
     public void ModelSync()
     {
-        // does not sync map.
         foreach (Actor a in roles.Values)
         {
             a.ModelSync(viewTime);
         }
+
+        FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
+        MapView mapView = GetNode<MapView>("Map");
+        mapView.ModelSync(model.Map, fog);
     }
 
     private bool AnyActorAnimating()
