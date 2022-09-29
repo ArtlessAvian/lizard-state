@@ -8,7 +8,7 @@ using Godot.Collections;
 /// </summary>
 public class VisionSystem : Node, CrawlerSystem
 {
-    [Export] public Dictionary<int, int> lastSeenAt = new Dictionary<int, int>();
+    [Export] public Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
     [Export] public Dictionary<int, int> canSee = new Dictionary<int, int>();
 
     public void ProcessEvent(Model model, Dictionary ev)
@@ -38,16 +38,17 @@ public class VisionSystem : Node, CrawlerSystem
 
             if (lastSeenAt.ContainsKey(e.id))
             {
-                if (HashPosition(e.position) == lastSeenAt[e.id]) { continue; }
+                if (new Vector2(e.position.x, e.position.y) == lastSeenAt[e.id]) { continue; }
             }
 
-            lastSeenAt[e.id] = HashPosition(e.position);
-            UpdateVision(model, e);
+            RefreshVision(model, e);
         }
     }
 
-    public void UpdateVision(Model model, Entity e)
+    public void RefreshVision(Model model, Entity e)
     {
+        lastSeenAt[e.id] = new Vector2(e.position.x, e.position.y);
+
         CrawlerMap map = model.GetMap();
         Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((e.position.x + rel.x, e.position.y + rel.y));
 
@@ -101,11 +102,5 @@ public class VisionSystem : Node, CrawlerSystem
                 }
             }
         }
-    }
-
-    // for this to return the same, thing, you have to move very specifically and weirdly.
-    private static int HashPosition((int x, int y) position)
-    {
-        return position.x * 10 + position.y * 30;
     }
 }

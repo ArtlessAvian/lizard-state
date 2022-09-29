@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class MapView : Node2D
 {
-    Dictionary<int, Vector2> entityVisions = new Dictionary<int, Vector2>();
-    Dictionary<int, int[]> entityVisions2 = new Dictionary<int, int[]>();
+    Dictionary<int, Vector3[]> entityVisions = new Dictionary<int, Vector3[]>();
 
     bool dirty = true;
     public override void _Process(float delta)
@@ -19,19 +18,18 @@ public class MapView : Node2D
 
     public void AddVision(Godot.Collections.Dictionary ev)
     {
-        AddVision((int)ev["subject"], (Vector2)ev["center"], (int[])ev["tiles"]);
+        AddVision((int)ev["subject"], (Vector3[])ev["tiles"]);
     }
 
-    public void AddVision(int seeer, Vector2 center, int[] tiles1d)
+    public void AddVision(int seeer, Vector3[] tiles)
     {
         TileMap floors = GetNode<TileMap>("Floors");
         TileMap walls = GetNode<TileMap>("Walls");
 
-        WriteVision(center, tiles1d, floors, walls);
+        WriteVision(tiles, floors, walls);
 
         // For updating current.
-        entityVisions[seeer] = center;
-        entityVisions2[seeer] = tiles1d;
+        entityVisions[seeer] = tiles;
         dirty = true;
     }
 
@@ -45,25 +43,16 @@ public class MapView : Node2D
         // Refresh from dictionary.
         foreach (int seeer in entityVisions.Keys)
         {
-            Vector2 center = entityVisions[seeer];
-            int[] tiles1d = entityVisions2[seeer];
-
-            WriteVision(center, tiles1d, floorsVisible, wallsVisible);
+            Vector3[] tiles = entityVisions[seeer];
+            WriteVision(tiles, floorsVisible, wallsVisible);
         }
     }
 
-    public void WriteVision(Vector2 center, int[] tiles1d, TileMap floors, TileMap walls)
+    public void WriteVision(Vector3[] tiles, TileMap floors, TileMap walls)
     {
-        int sidelen = (int)Math.Sqrt(tiles1d.Length);
-        int r = sidelen / 2; // floored
-
-        for (int dx = -r; dx <= r; dx++)
+        foreach (Vector3 tile in tiles)
         {
-            for (int dy = -r; dy <= r; dy++)
-            {
-                int tile = tiles1d[(dx + r) * sidelen + dy + r];
-                WriteFloorOrWall((int)(center.x + dx), (int)(center.y + dy), tile, floors, walls);
-            }
+            WriteFloorOrWall((int)(tile.x), (int)(tile.y), (int)tile.z, floors, walls);
         }
     }
 
@@ -86,7 +75,7 @@ public class MapView : Node2D
         }
     }
 
-    public void SyncRevealed(CrawlerMap map, FogOfWarSystem fog)
+    public void ModelSync(CrawlerMap map, FogOfWarSystem fog)
     {
         TileMap floors = GetNode<TileMap>("Floors");
         TileMap walls = GetNode<TileMap>("Walls");
@@ -94,6 +83,11 @@ public class MapView : Node2D
         foreach (Vector2 vec in fog.GetUsedCells())
         {
             WriteFloorOrWall((int)vec.x, (int)vec.y, map.GetCell((int)vec.x, (int)vec.y), floors, walls);
+        }
+
+        foreach (int seer in fog.lastVision.Keys)
+        {
+            AddVision(seer, fog.lastVision[seer]);
         }
     }
 }
