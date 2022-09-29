@@ -21,7 +21,7 @@ public partial class View : Node2D
 
     Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
     private Resource handlerInstance = null;
-    private bool handlerRan = false;
+    Array<Resource> runningHandlers = new Array<Resource>();
 
     int viewTime;
 
@@ -31,7 +31,7 @@ public partial class View : Node2D
 
     [Export] public bool impatientMode = false;
     [Export] public bool done = false;
-    [Export] public bool skipAllAnimation = true;
+    [Export] public bool skipAllAnimation = false;
 
     private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
 
@@ -80,10 +80,27 @@ public partial class View : Node2D
     public void OnModelNewEvent(Dictionary @event)
     {
         eventQueue.Add(@event);
+
+        if (GetNode<RichTextLabel>("UILayer/DebugLog").Visible)
+        {
+            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + @event["action"] + " " + @event["subject"]);
+            if (@event.Contains("object"))
+            {
+                GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode(" " + @event["object"]);
+            }
+        }
     }
 
     public override void _Process(float delta)
     {
+        for (int i = runningHandlers.Count - 1; i >= 0; i--)
+        {
+            if (runningHandlers[i].Call("is_done") as bool? == true)
+            {
+                runningHandlers.RemoveAt(i);
+            }
+        }
+
         if (!IsQueueClear())
         {
             this.ClearQueue();
@@ -121,53 +138,45 @@ public partial class View : Node2D
             Dictionary ev = eventQueue[0];
             string action = ev["action"] as string;
 
-            // "Initialize" the event if it hasn't been already
+            // Try to create the handler, if not already created
             if (handlerInstance is null)
             {
-                // (do not compress for clarity)
-                // (also i plan to yeet this code anyways)
                 var handlerScript = GetHandlerScriptOrNull(action);
                 if (handlerScript is GDScript)
                 {
-                    handlerInstance = (Resource)handlerScript.New(); // called in EventHandler.gd
+                    handlerInstance = (Resource)handlerScript.New();
                     handlerInstance.Call("init2", this, ev, null);
-                    handlerInstance.Call("setup"); // done in a subclass
-                    handlerRan = false;
                 }
             }
 
             // todon't: merge this with previous if statement. the logic is different.
-            // also todo: ugly logic.
-            if (handlerInstance is object && !handlerRan)
+            if (handlerInstance is object)
             {
-                object shouldWaitBefore = handlerInstance.Call("should_wait_before");
-                if (!impatientMode && shouldWaitBefore is bool aaaa && aaaa)
+                if (runningHandlers.Count > 0)
                 {
-                    break; // out of the while
+                    GD.Print("trying concurrency");
+                    bool? canRunConcurrentlyWith = handlerInstance.Call("can_run_concurrently_with", runningHandlers) as bool?;
+                    if (!impatientMode && canRunConcurrentlyWith == false)
+                    {
+                        break; // out of the while. try again next frame.
+                    }
                 }
-
+                // running alone, or can run concurrently!
                 handlerInstance.Call("run");
-                handlerRan = true;
+                if (handlerInstance.Call("is_done") as bool? == false)
+                {
+                    runningHandlers.Add(handlerInstance);
+                }
             }
 
             // consume the event
             eventQueue.RemoveAt(0);
             handlerInstance = null;
-            handlerRan = false;
             previousEvent = ev;
 
             viewTime = (int)ev["timestamp"];
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
 
-            // Everything gets sent to the logs.
-            if (GetNode<RichTextLabel>("UILayer/DebugLog").Visible)
-            {
-                GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + ev["action"] + " " + ev["subject"]);
-                if (ev.Contains("object"))
-                {
-                    GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode(" " + ev["object"]);
-                }
-            }
             GetNode<MessageLog>("UILayer/MessageLog").HandleModelEvent(ev, roles);
         }
     }

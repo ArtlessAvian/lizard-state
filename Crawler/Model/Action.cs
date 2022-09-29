@@ -65,7 +65,7 @@ public abstract class Action : Resource
     protected Dictionary CreateModelEvent(int subject, string action) => new Dictionary { { "subject", subject }, { "action", action } };
     protected Dictionary CreateModelEvent(int subject, string action, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "object", obj } };
     protected Dictionary CreateModelEvent(int subject, string action, object args) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args } };
-    protected Dictionary CreateModelEvent(int subject, string action, object args, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args }, { "obj", obj } };
+    protected Dictionary CreateModelEvent(int subject, string action, object args, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args }, { "object", obj } };
 
     protected void AddSubevent(Dictionary parent, Dictionary subevent)
     {
