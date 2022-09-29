@@ -24,13 +24,11 @@ public class ReachAttackFollowup : Action
 
         // e.energy -= data.energy;
 
-        Array<Dictionary> results = new Array<Dictionary>();
         Dictionary modelEvent = new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
                 {"args", new Vector2(targetPos.x, targetPos.y)},
                 {"flavorTags", data.flavorTags},
-                {"results", results}
             };
 
         if (targeted is object)
@@ -39,19 +37,19 @@ public class ReachAttackFollowup : Action
 
             if (GD.Randf() < data.blockChance)
             {
-                results.Add(CreateModelEvent(e.id, "Block", targeted.id));
+                AddSubevent(modelEvent, CreateModelEvent(e.id, "Block", targeted.id));
             }
             else
             {
                 // clean hit!
-                results.Add(OnHit(model, e, targeted));
+                AddSubevent(modelEvent, OnHit(model, e, targeted));
 
                 // TODO: This can put people inside walls. Or, inside each other.
                 // (If they intersect a wall, they should "wallsplat" or something.)
                 // (If they end up on a person, they should pop to a random nearby tile.)
                 (int x, int y) knockback = KnockbackPosition(model, e.position, targeted.position, data.knockback);
                 targeted.position = knockback;
-                results.Add(CreateModelEvent(e.id, "Knockback", new Vector2(knockback.x, knockback.y), targeted.id));
+                AddSubevent(modelEvent, CreateModelEvent(e.id, "Knockback", new Vector2(knockback.x, knockback.y), targeted.id));
             }
         }
         else

@@ -10,13 +10,11 @@ public class FlashbangAction : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
 
-        Array<Dictionary> results = new Array<Dictionary>();
         Dictionary modelEvent = new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
                 {"args", new Vector2(targetPos.x, targetPos.y)},
                 {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}},
-                {"results", results},
             };
 
         HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfView(((int x, int y) pos) => false, 1));
@@ -24,7 +22,7 @@ public class FlashbangAction : Action
         {
             if (model.GetEntityAt((targetPos.x + dx, targetPos.y + dy)) is Entity targeted)
             {
-                results.Add(OnHit(model, e, targeted));
+                AddSubevent(modelEvent, OnHit(model, e, targeted));
             }
         }
 

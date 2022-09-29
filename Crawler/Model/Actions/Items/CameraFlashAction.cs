@@ -11,13 +11,11 @@ public class CameraFlashAction : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         // model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
-        Array<Dictionary> results = new Array<Dictionary>();
         Dictionary modelEvent = new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
                 {"args", new Vector2(e.position.x, e.position.y)},
                 {"flavorTags", new List<string>{"Flash", "Shoot"}},
-                {"results", results},
             };
 
         HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.ConeOfView(((int x, int y) pos) => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
@@ -27,7 +25,7 @@ public class CameraFlashAction : Action
 
             if (model.GetEntityAt((e.position.x + dx, e.position.y + dy)) is Entity targeted)
             {
-                results.Add(OnHit(model, e, targeted));
+                AddSubevent(modelEvent, OnHit(model, e, targeted));
             }
         }
 

@@ -61,10 +61,17 @@ public abstract class Action : Resource
     public virtual (int min, int max) Range => (0, 0);
     public virtual TargetingType.Type TargetingType => new TargetingType.Smite(0);
 
+    // TODO: Consider making a builder?
     protected Dictionary CreateModelEvent(int subject, string action) => new Dictionary { { "subject", subject }, { "action", action } };
     protected Dictionary CreateModelEvent(int subject, string action, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "object", obj } };
     protected Dictionary CreateModelEvent(int subject, string action, object args) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args } };
     protected Dictionary CreateModelEvent(int subject, string action, object args, int obj) => new Dictionary { { "subject", subject }, { "action", action }, { "args", args }, { "obj", obj } };
+
+    protected void AddSubevent(Dictionary parent, Dictionary subevent)
+    {
+        if (!parent.Contains("subevents")) { parent.Add("subevents", new Array()); }
+        (parent["subevents"] as Array).Add(subevent);
+    }
 }
 
 public static class TargetingType

@@ -27,7 +27,8 @@ public class RushAttackAction : Action
         (int x, int y) targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
-        Array<Dictionary> results = new Array<Dictionary>();
+        Dictionary modelEvent = CreateModelEvent(e.id, "Rush", targeted.id);
+
         do
         {
             // TODO: Move into entity?
@@ -36,7 +37,7 @@ public class RushAttackAction : Action
             targeted.health -= damagePerHit;
             targeted.queuedAction = null;
 
-            results.Add(new Dictionary(){
+            AddSubevent(modelEvent, new Dictionary(){
                 {"subject", e.id},
                 {"action", "Hit"},
                 {"object", targeted.id},
@@ -54,9 +55,6 @@ public class RushAttackAction : Action
             //     {"object", targeted.id}
             // });
         }
-
-        Dictionary modelEvent = CreateModelEvent(e.id, "Rush", targeted.id);
-        modelEvent.Add("results", results);
 
         return modelEvent;
     }
