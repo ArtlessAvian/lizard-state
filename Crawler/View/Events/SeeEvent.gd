@@ -2,8 +2,12 @@ extends "../EventHandler.gd"
 
 var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePopup.tscn")
 
+var start_time
+
 
 func run():
+	start_time = now()
+
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
 	object.seen = true
@@ -18,3 +22,7 @@ func run():
 	subject.get_node("DamagePopups").add_child(popup)
 
 	# subject.get_node("AnimationPlayer").play("RESET");
+
+
+func is_done():
+	return now() >= start_time + 1000 * 0.5

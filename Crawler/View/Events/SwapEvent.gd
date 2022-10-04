@@ -1,11 +1,6 @@
 extends "../EventHandler.gd"
 
 
-func should_wait_before():
-	var subject = roles[event["subject"]]
-	return subject.movementTween != null and subject.movementTween.is_running()
-
-
 func run():
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
@@ -15,3 +10,12 @@ func run():
 	subject.GoToPosition(object.tilePosition, 5)
 	object.FacePosition(temp)
 	object.GoToPosition(temp, 5)
+
+
+func is_done():
+	var subject = roles[event["subject"]]
+	var object = roles[event["object"]]
+	return (
+		(subject.movementTween == null or not subject.movementTween.is_running())
+		and (object.movementTween == null or not object.movementTween.is_running())
+	)

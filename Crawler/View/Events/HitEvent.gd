@@ -1,5 +1,7 @@
 extends "../EventHandler.gd"
 
+# TOOD: Merge with attack active
+
 var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePopup.tscn")
 
 

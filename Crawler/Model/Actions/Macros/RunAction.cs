@@ -41,7 +41,7 @@ public class RunAction : Action
             e.queuedAction = this;
         }
 
-        model.CoolerApiEvent(-1, "SmallWait");
+        // model.CoolerApiEvent(-1, "SmallWait");
         // target would be the new one lol
         bool success = new MoveAction().SetTarget(oldTarget).Do(model, e);
         // api.ApiEvent(new ModelEvent(-1, "Wait")); // painfully slow. see GotoAction.

@@ -5,30 +5,31 @@ using System.Collections.Generic;
 public class GotoAction : Action
 {
     PathFinder.PathResult result;
+    bool stepped = false;
 
     public override bool Do(Model model, Entity e)
     {
-        // bool enemiesBeforeMove = AnyEnemiesInSight(model, e);
-        // if (AnyEnemiesInSight(model, e))
-        // {
-        //     // No op! On view, print stuff.
-        //     model.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
-        //     return true;
-        // }
+        if (stepped && AnyEnemiesInSight(model, e))
+        {
+            // No op! On view, print stuff.
+            model.CoolerApiEvent(-1, "Print", "Cancelling Move. (Saw Enemy!)");
+            return true;
+        }
 
         (int x, int y) targetPos = GetTargetPos(e.position);
 
         FindPathLazy(model, e.position, targetPos);
 
-        model.CoolerApiEvent(-1, "SmallWait");
+        // model.CoolerApiEvent(-1, "SmallWait");
         bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
 
         if (!success) { return false; }
 
         // queue same action object
-        if (!(AnyEnemiesInSight(model, e) || e.position.x == targetPos.x && e.position.y == targetPos.y))
+        if (!(e.position.x == targetPos.x && e.position.y == targetPos.y))
         {
             e.queuedAction = this;
+            stepped = true;
         }
 
         return success;

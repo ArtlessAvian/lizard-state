@@ -1,9 +1,13 @@
 extends "../EventHandler.gd"
 
 
-func should_wait_before():
-	var subject = roles[event["subject"]]
-	return subject.movementTween != null and subject.movementTween.is_running()
+func can_run_concurrently_with(handlers):
+	for handler in handlers:
+		if handler.get_script() != self.get_script():
+			return false
+		elif handler.event["subject"] == self.event["subject"]:
+			return false
+	return true
 
 
 func run():
@@ -24,3 +28,8 @@ func run():
 	# view.get_node("Map/Floors/Footsteps").set_cellv(from, 0)
 
 	subject.get_node("ComboBar").value = 0
+
+
+func is_done():
+	var subject = roles[event["subject"]]
+	return subject.movementTween == null or not subject.movementTween.is_running()
