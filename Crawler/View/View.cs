@@ -20,8 +20,8 @@ public partial class View : Node2D
     public bool queueSync = false;
 
     Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
-    private Resource handlerInstance = null;
-    Array<Resource> runningHandlers = new Array<Resource>();
+    private Reference handlerInstance = null;
+    Array<Reference> runningHandlers = new Array<Reference>();
 
     int viewTime;
 
@@ -48,7 +48,7 @@ public partial class View : Node2D
         foreach (Entity e in model.GetEntities())
         {
             Dictionary fakeEvent = new Dictionary() { { "args", e } };
-            Resource createEvent = (Resource)createScript.New();
+            Reference createEvent = (Reference)createScript.New();
             createEvent.Call("init2", this, fakeEvent, null);
             createEvent.Call("setup"); // done in a subclass        
             createEvent.Call("run");
@@ -96,7 +96,7 @@ public partial class View : Node2D
     {
         RichTextLabel runningLabel = GetNode<RichTextLabel>("UILayer/RunningHandlers");
         runningLabel.Clear();
-        foreach (Resource handler in runningHandlers)
+        foreach (Reference handler in runningHandlers)
         {
             runningLabel.AppendBbcode((handler.GetScript() as Resource).ResourcePath + "\n");
         }
@@ -152,7 +152,7 @@ public partial class View : Node2D
                 var handlerScript = GetHandlerScriptOrNull(action);
                 if (handlerScript is GDScript)
                 {
-                    handlerInstance = (Resource)handlerScript.New();
+                    handlerInstance = (Reference)handlerScript.New();
                     handlerInstance.Call("init2", this, ev, null);
                 }
             }

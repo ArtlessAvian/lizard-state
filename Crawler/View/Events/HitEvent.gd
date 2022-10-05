@@ -5,6 +5,13 @@ extends "../EventHandler.gd"
 var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePopup.tscn")
 
 
+func can_run_concurrently_with(handlers):
+	for handler in handlers:
+		if handler.get_script() != self.get_script():
+			return false
+	return true
+
+
 func run():
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]
@@ -18,7 +25,6 @@ func run():
 				hitEffect.play(tag)
 				break
 
-	yield(subject, "attack_active")
 	subject.timeStop = 0 / 60.0
 	object.timeStop = 0 / 60.0
 

@@ -4,13 +4,16 @@ var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePo
 
 var start_time
 
+# func should_wait_before():
+# 	# if is_same_subject():
+# 	# print("skipping wait")
+# 	# if previous_event.action == "Rush":
+# 	# return false
+# 	return view.AnyActorAnimating()
 
-func should_wait_before():
-	# if is_same_subject():
-	# print("skipping wait")
-	# if previous_event.action == "Rush":
-	# return false
-	return view.AnyActorAnimating()
+
+func can_run_concurrently_with(handlers):
+	return view.AnyActorAnimating() and len(handlers) == 0
 
 
 func run():

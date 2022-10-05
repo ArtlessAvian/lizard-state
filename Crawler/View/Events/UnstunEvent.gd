@@ -9,3 +9,7 @@ func run():
 	aniPlayer.play("RESET")
 
 	subject.get_node("ComboBar").value = 0
+
+
+func is_done():
+	return true

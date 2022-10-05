@@ -25,4 +25,4 @@ func run():
 
 
 func is_done():
-	return now() >= start_time + 1000 * 0.5
+	return now() >= start_time + 1000 * 0.2

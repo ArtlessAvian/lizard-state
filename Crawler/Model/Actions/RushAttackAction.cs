@@ -1,6 +1,8 @@
 using Godot;
 using Godot.Collections;
 
+// TODO: Deprecate.
+
 public class RushAttackAction : Action
 {
     [Export] public int damagePerHit = 1;

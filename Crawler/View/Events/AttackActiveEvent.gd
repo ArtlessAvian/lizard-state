@@ -1,8 +1,6 @@
 extends "../EventHandler.gd"
 
-
-func should_wait_before():
-	return view.AnyActorAnimating()
+var done = false
 
 
 func run():
@@ -24,3 +22,17 @@ func run():
 	animation.advance(0)
 	animation.play(animation_name)
 	animation.advance(0)
+
+	# wait for subject event to finish.
+	subject.connect("attack_active", self, "on_subject_attack_active_signal")
+	# in parallel, wait a second as a failsafe.
+	yield(subject.get_tree().create_timer(1), "timeout")
+	done = true
+
+
+func on_subject_attack_active_signal():
+	done = true
+
+
+func is_done():
+	return done
