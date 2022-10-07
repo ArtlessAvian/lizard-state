@@ -42,10 +42,19 @@ public class RushAttackAction : Action
 
             model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
-                {"action", "Rush"},
-                {"object", targeted.id},
-                {"damage", damagePerHit}
+                {"action", "AttackActive"},
+                {"args", new Vector2(targetPos.x, targetPos.y)},
+                {"flavorTags", new Array{"Bump"}}
             });
+
+            model.CoolerApiEvent(new Dictionary(){
+                {"subject", e.id},
+                {"action", "Hit"},
+                {"object", targeted.id},
+                {"damage", damagePerHit},
+                {"flavorTags", new Array{"Bump"}}
+            });
+
         } while (GD.Randf() >= MissChance && targeted.health > 0);
 
         e.nextMove += 1;
@@ -54,8 +63,9 @@ public class RushAttackAction : Action
         {
             model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
-                {"action", "Miss"},
-                {"object", targeted.id}
+                {"action", "Whiff"},
+                {"args", new Vector2(targetPos.x, targetPos.y)},
+                {"flavorTags", new Array{"Bump"}}
             });
         }
 

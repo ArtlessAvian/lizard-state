@@ -1,6 +1,6 @@
 extends "../EventHandler.gd"
 
-# TOOD: Merge with attack active
+# TODON'T: Merge with AttackActive.
 
 var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePopup.tscn")
 
@@ -37,7 +37,7 @@ func run():
 	otheranimation.play("Stunned")
 	otheranimation.advance(0)
 
-	yield(object.get_tree().create_timer(0.3), "timeout")
+	# yield(object.get_tree().create_timer(0.3), "timeout")
 
 	var popup = damage_popup_scene.instance()
 	popup.text = "-" + str(event["damage"])
@@ -46,3 +46,5 @@ func run():
 	object.get_node("DamagePopups").add_child(popup)
 
 	object.get_node("HealthBar").value = object.health
+
+	message_log.AddMessage("Hits the " + str(object.displayName) + "!!")

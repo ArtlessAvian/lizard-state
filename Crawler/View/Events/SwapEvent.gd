@@ -11,6 +11,8 @@ func run():
 	object.FacePosition(temp)
 	object.GoToPosition(temp, 5)
 
+	message_log.AddMessage(str(subject.displayName) + " swaps with " + str(object.displayName))
+
 
 func is_done():
 	var subject = roles[event["subject"]]

@@ -55,7 +55,7 @@ public class ReachAttackFollowup : Action
         }
         else
         {
-            // whiff!
+            model.CoolerApiEvent(e.id, "Whiff");
         }
 
         e.nextMove += data.recovery;

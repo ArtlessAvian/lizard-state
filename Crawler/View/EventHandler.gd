@@ -12,7 +12,7 @@ func init2(vieww, eventt, previous_eventt):
 	self.event = eventt
 	self.previous_event = previous_eventt
 	roles = view.roles
-	message_log = null
+	message_log = view.get_node("%MessageLog")
 
 
 # Returns whether this handler can run with all passed handlers

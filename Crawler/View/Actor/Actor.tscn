@@ -65,6 +65,49 @@ tracks/3/keys = {
 } ]
 }
 
+[sub_resource type="Animation" id=10]
+resource_name = "AttackBump"
+length = 0.133334
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:sprite_lerp")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0333333, 0.1, 0.133333 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ -0.1, 0.5, 0.166665, 0.0 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.0333333 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ "attack_active" ],
+"method": "emit_signal"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:animationInterruptible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, false ]
+}
+
 [sub_resource type="Animation" id=54]
 resource_name = "AttackPsychic"
 step = 0.0166667
@@ -407,49 +450,6 @@ tracks/10/keys = {
 "values": [ -0.01 ]
 }
 
-[sub_resource type="Animation" id=10]
-resource_name = "Rush"
-length = 0.133334
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/path = NodePath("AnimatedSprite:sprite_lerp")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.0333333, 0.1, 0.133333 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 0,
-"values": [ -0.1, 0.5, 0.166665, 0.0 ]
-}
-tracks/1/type = "method"
-tracks/1/path = NodePath(".")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"values": [ {
-"args": [ "attack_active" ],
-"method": "emit_signal"
-} ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath(".:animationInterruptible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0.1 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ true ]
-}
-
 [sub_resource type="Animation" id=9]
 resource_name = "Startup"
 length = 0.3
@@ -512,7 +512,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( -0.00190881 ),
+"times": PoolRealArray( 0.5 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
@@ -760,6 +760,7 @@ script = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Attack = SubResource( 1 )
+anims/AttackBump = SubResource( 10 )
 anims/AttackPsychic = SubResource( 54 )
 anims/AttackShoot = SubResource( 14 )
 anims/Disappear = SubResource( 2 )
@@ -769,7 +770,6 @@ anims/Miss = SubResource( 13 )
 anims/Move = SubResource( 12 )
 anims/Nothing = SubResource( 11 )
 anims/RESET = SubResource( 5 )
-anims/Rush = SubResource( 10 )
 anims/Startup = SubResource( 9 )
 anims/Stunned = SubResource( 6 )
 anims/Wakeup = SubResource( 56 )

@@ -23,6 +23,8 @@ func run():
 
 	# subject.get_node("AnimationPlayer").play("RESET");
 
+	message_log.AddMessage(str(subject.displayName) + " spots a " + str(object.displayName) + "!")
+
 
 func is_done():
 	return now() >= start_time + 1000 * 0.2

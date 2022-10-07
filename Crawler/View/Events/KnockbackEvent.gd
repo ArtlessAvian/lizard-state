@@ -1,10 +1,11 @@
 extends "../EventHandler.gd"
 
+# TODON'T: Merge with AttackActive.
+
 const ATTACK_ACTIVE_EVENT = preload("res://Crawler/View/Events/AttackActiveEvent.gd")
 const HIT_EVENT = preload("res://Crawler/View/Events/HitEvent.gd")
 
 
-# TODO: Merge into AttackActive
 func can_run_concurrently_with(handlers):
 	for handler in handlers:
 		if (

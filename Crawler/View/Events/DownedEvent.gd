@@ -21,3 +21,5 @@ func run():
 		view.get_node("UILayer/MessageLog/Background").color = Color.black
 
 		view.done = true
+
+	message_log.AddMessage(str(subject.displayName) + " is downed!")
