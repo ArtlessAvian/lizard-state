@@ -145,7 +145,7 @@ show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 0.25098 )
+color = Color( 0, 0, 0, 0.768627 )
 
 [node name="WaitPrompt" type="Label" parent="UILayer"]
 anchor_left = 0.5
@@ -202,6 +202,7 @@ __meta__ = {
 }
 
 [node name="RunningHandlers" type="RichTextLabel" parent="UILayer"]
+visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
@@ -222,7 +223,7 @@ show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 0.25098 )
+color = Color( 0, 0, 0, 0.752941 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

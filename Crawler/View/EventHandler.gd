@@ -1,18 +1,18 @@
 extends Reference
 
 var view
-var event
-var previous_event
-var roles
+var roles: Dictionary
 var message_log
 
+var event: Dictionary
 
-func init2(vieww, eventt, previous_eventt):
+
+func init2(vieww, eventt):
 	self.view = vieww
-	self.event = eventt
-	self.previous_event = previous_eventt
 	roles = view.roles
 	message_log = view.get_node("%MessageLog")
+
+	self.event = eventt
 
 
 # Returns whether this handler can run with all passed handlers
@@ -41,8 +41,26 @@ func get_importance():
 
 
 ## Helpers
-func is_same_subject():
-	return event.subject == previous_event.subject
+
+
+func add_message(string, color = null):
+	message_log.AddMessage(format_message(string, color))
+
+
+func format_message(string, color = null):
+	var out = string.format(get_formatting())
+	if color is String:
+		out = "[color=" + color + "]" + out + "[/color]"
+	return out
+
+
+func get_formatting() -> Dictionary:
+	var out = Dictionary()
+	if event.has("subject") and roles.has(event["subject"]):
+		out["subject"] = roles[event["subject"]].displayName
+	if event.has("object") and roles.has(event["object"]):
+		out["object"] = roles[event["object"]].displayName
+	return out
 
 
 func now():

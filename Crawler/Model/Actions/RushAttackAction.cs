@@ -59,15 +59,15 @@ public class RushAttackAction : Action
 
         e.nextMove += 1;
 
-        if (targeted.health > 0)
-        {
-            model.CoolerApiEvent(new Dictionary(){
-                {"subject", e.id},
-                {"action", "Whiff"},
-                {"args", new Vector2(targetPos.x, targetPos.y)},
-                {"flavorTags", new Array{"Bump"}}
-            });
-        }
+        // if (targeted.health > 0)
+        // {
+        //     model.CoolerApiEvent(new Dictionary(){
+        //         {"subject", e.id},
+        //         {"action", "Whiff"},
+        //         {"args", new Vector2(targetPos.x, targetPos.y)},
+        //         {"flavorTags", new Array{"Bump"}}
+        //     });
+        // }
 
         return true;
     }

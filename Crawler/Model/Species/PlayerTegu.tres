@@ -15,4 +15,4 @@ rushAttack = ExtResource( 4 )
 attacks = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 6 ) ]
 abilities = [  ]
 maxHealth = 30
-displayName = "[color=#AF5050]You[/color]"
+displayName = "[color=#AF5050]Max[/color]"

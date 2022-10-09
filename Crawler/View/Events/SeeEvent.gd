@@ -23,7 +23,7 @@ func run():
 
 	# subject.get_node("AnimationPlayer").play("RESET");
 
-	message_log.AddMessage(str(subject.displayName) + " spots a " + str(object.displayName) + "!")
+	add_message("{subject} spots a {object}!", "#ffa")
 
 
 func is_done():

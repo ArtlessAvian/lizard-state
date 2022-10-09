@@ -11,7 +11,7 @@ func run():
 	object.FacePosition(temp)
 	object.GoToPosition(temp, 5)
 
-	message_log.AddMessage(str(subject.displayName) + " swaps with " + str(object.displayName))
+	add_message("{subject} swaps with {object}.", "#ffa")
 
 
 func is_done():

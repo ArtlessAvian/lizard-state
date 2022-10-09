@@ -47,4 +47,4 @@ func run():
 
 	object.get_node("HealthBar").value = object.health
 
-	message_log.AddMessage("Hits the " + str(object.displayName) + "!!")
+	add_message("Hits the {object}!!", "#f44")

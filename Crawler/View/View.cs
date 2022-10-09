@@ -33,8 +33,6 @@ public partial class View : Node2D
     [Export] public bool done = false;
     [Export] public bool skipAllAnimation = false;
 
-    private Dictionary previousEvent = new Dictionary() { { "subject", -1 }, { "action", "null" } };
-
     public void ConnectToModel(Model model)
     {
         this.model = model;
@@ -49,8 +47,7 @@ public partial class View : Node2D
         {
             Dictionary fakeEvent = new Dictionary() { { "args", e } };
             Reference createEvent = (Reference)createScript.New();
-            createEvent.Call("init2", this, fakeEvent, null);
-            createEvent.Call("setup"); // done in a subclass        
+            createEvent.Call("init2", this, fakeEvent);
             createEvent.Call("run");
         }
 
@@ -153,7 +150,7 @@ public partial class View : Node2D
                 if (handlerScript is GDScript)
                 {
                     handlerInstance = (Reference)handlerScript.New();
-                    handlerInstance.Call("init2", this, ev, null);
+                    handlerInstance.Call("init2", this, ev);
                 }
             }
 
@@ -179,7 +176,6 @@ public partial class View : Node2D
             // consume the event
             eventQueue.RemoveAt(0);
             handlerInstance = null;
-            previousEvent = ev;
 
             viewTime = (int)ev["timestamp"];
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();

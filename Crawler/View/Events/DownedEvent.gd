@@ -22,4 +22,4 @@ func run():
 
 		view.done = true
 
-	message_log.AddMessage(str(subject.displayName) + " is downed!")
+	add_message("{subject} is downed!", "#f00")

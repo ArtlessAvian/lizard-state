@@ -2,4 +2,5 @@ extends "../EventHandler.gd"
 
 
 func run():
-	message_log.AddMessage("[color=#00ffff]" + event.args + "[/color]")
+	# very notable color intentionally.
+	message_log.AddMessage("[color=#7fff00]" + event.args + "[/color]")

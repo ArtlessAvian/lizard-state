@@ -23,7 +23,7 @@ func run():
 	animation.play(animation_name)
 	animation.advance(0)
 
-	message_log.AddMessage(str(subject.displayName) + " attacks!")
+	add_message("{subject} attacks!")
 
 	# wait for subject event to finish.
 	subject.connect("attack_active", self, "on_subject_attack_active_signal")

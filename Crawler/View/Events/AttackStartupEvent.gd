@@ -17,6 +17,4 @@ func run():
 	animation.play("Startup")
 	animation.advance(0)
 
-	message_log.AddMessage(
-		"[color=#aaaaaa]" + str(subject.displayName) + " prepares to attack.[/color]"
-	)
+	add_message("{subject} prepares to attack.")

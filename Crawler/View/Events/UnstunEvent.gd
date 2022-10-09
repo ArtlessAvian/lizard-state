@@ -10,7 +10,8 @@ func run():
 
 	subject.get_node("ComboBar").value = 0
 
-	message_log.AddMessage(str(subject.displayName) + " recovers")
+	add_message("{subject} recovers.")
+
 
 func is_done():
 	return true

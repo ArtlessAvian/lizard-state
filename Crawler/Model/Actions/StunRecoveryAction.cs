@@ -13,7 +13,6 @@ public class StunRecoveryAction : Action
 
         model.CoolerApiEvent(e.id, "Unstun");
         e.state = Entity.EntityState.OK;
-        model.Debug("Unstunned!!!!!!!!!!!!!!!!!!!!!!");
         return true;
     }
 

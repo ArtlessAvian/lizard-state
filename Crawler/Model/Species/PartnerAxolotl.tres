@@ -13,4 +13,4 @@ rushAttack = ExtResource( 5 )
 attacks = [ ExtResource( 3 ) ]
 abilities = null
 maxHealth = 30
-displayName = "[color=#E38FD5]Partner[/color]"
+displayName = "[color=#E38FD5]Nano[/color]"
