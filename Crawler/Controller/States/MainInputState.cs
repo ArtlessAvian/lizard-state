@@ -30,10 +30,9 @@ public class MainInputState : InputState
 
     public bool DebugInput(Crawler crawler, InputEvent ev)
     {
+        // Only saves the model. Not intended as a long term solution.
         if (ev.IsActionPressed("quicksave", false))
         {
-            // temp = crawler.Model.SaveToDictionary();
-
             PackedScene packed = new PackedScene();
             packed.Pack(crawler.Model);
             ResourceSaver.Save("res://dump.tscn", packed);
@@ -56,7 +55,6 @@ public class MainInputState : InputState
             // Add the new stuff.
             {
                 PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
-                // PackedScene modelScene = GD.Load<PackedScene>((string)temp["Filename"]);
                 Model model = modelScene.Instance<Model>();
                 model.Name = "Model";
                 crawler.AddChild(model);
@@ -67,9 +65,6 @@ public class MainInputState : InputState
                 crawler.AddChild(view);
 
                 view.ConnectToModel(model);
-
-                // LoadedGenerator gen = new LoadedGenerator(temp);
-                // gen.Generate(crawler.Model);
             }
 
             return true;

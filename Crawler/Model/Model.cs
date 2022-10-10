@@ -7,8 +7,10 @@ using Godot.Collections;
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>
+// TODO: Subclass Resource instead of Node!
 public partial class Model : Node
 {
+    // TODO: Move playlist responsibility out to some parent.
     // what generates this floor and future floors.
     // models have no clue what a playlist is or how to use it.
     [Export] public Playlist playlist;
