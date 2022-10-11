@@ -41,31 +41,9 @@ public class MainInputState : InputState
 
         if (ev.IsActionPressed("quickload", false))
         {
-            // Delete the old stuff.
-            {
-                View old = crawler.GetNode<View>("View");
-                crawler.RemoveChild(old);
-                old.QueueFree();
-
-                Model oldd = crawler.Model;
-                crawler.RemoveChild(oldd);
-                oldd.QueueFree();
-            }
-
-            // Add the new stuff.
-            {
-                PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
-                Model model = modelScene.Instance<Model>();
-                model.Name = "Model";
-                crawler.AddChild(model);
-
-                PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
-                View view = viewScene.Instance<View>();
-                view.Name = "View";
-                crawler.AddChild(view);
-
-                view.ConnectToModel(model);
-            }
+            PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
+            Model model = modelScene.Instance<Model>();
+            crawler.Model = model;
 
             return true;
         }

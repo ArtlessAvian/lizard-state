@@ -10,24 +10,27 @@ public class Playlist : Resource
 {
     [Export] Array<LevelGenerator> generators;
     // [Export] Array<Model> previousModels;
-    [Export] int current = -1;
+    [Export] int current = 0;
+    [Export] Model currentModel = null;
 
     // [Export] Entity[] _playerTeam; // = {GD.Load<>};
 
-    public Model FirstModel(Model first)
+    public Model GetCurrentModel()
     {
-        if (current != -1) { return null; }
-        current = 0;
+        if (currentModel == null)
+        {
+            currentModel = GenerateModel(0);
+        }
 
         // generate the players
         // or just load them in. they're resources.
         // maybe theres some indirection, where it loads it from the meta-game's data.
         // in that case, whatever.
 
-        return GenerateModel(first);
+        return currentModel;
     }
 
-    public Model NextModel(Model previous)
+    public Model CreateNextModel(Model previous)
     {
         if (current >= generators.Count - 1) { return null; }
         if (previous is null) { return null; }
@@ -36,18 +39,18 @@ public class Playlist : Resource
         current += 1;
 
         // we still hold a reference to the players.
-        // if we decide thats kind of wack, we can just yoink them from the previous model we just got.
+        // if we decide thats kind of wack, we can just yoink or duplicate them from the previous model we just got.
         // also heal them, have them "eat", etc.
 
-        return GenerateModel();
+        return GenerateModel(current);
     }
 
-    private Model GenerateModel(Model existing = null)
+    private Model GenerateModel(int index)
     {
-        Model model = existing ?? GD.Load<PackedScene>("res://Crawler/Model/Model.tscn").Instance<Model>();
+        Model model = GD.Load<PackedScene>("res://Crawler/Model/Model.tscn").Instance<Model>();
         model.playlist = this;
 
-        generators[current].Generate(model);
+        generators[index].Generate(model);
 
         return model;
     }

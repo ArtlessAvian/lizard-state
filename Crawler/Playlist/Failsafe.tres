@@ -1,12 +1,22 @@
-[gd_resource type="Resource" load_steps=5 format=2]
+[gd_resource type="Resource" load_steps=9 format=2]
 
 [ext_resource path="res://Crawler/Playlist/Playlist.cs" type="Script" id=1]
-[ext_resource path="res://Crawler/Playlist/Generator.tres" type="Resource" id=2]
-[ext_resource path="res://Crawler/Playlist/NoiseGenerator.tres" type="Resource" id=3]
-[ext_resource path="res://Crawler/Playlist/PlanarGenerator.tres" type="Resource" id=4]
+[ext_resource path="res://Crawler/Playlist/Generators/Maps/MVP-Scaled.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Crawler/Playlist/Generators/PlanarGenerator.cs" type="Script" id=3]
+[ext_resource path="res://Crawler/Playlist/Generators/EditorGenerator.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/Playlist/Generators/NoiseGenerator.cs" type="Script" id=5]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 4 )
+scene = ExtResource( 2 )
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 5 )
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 3 )
 
 [resource]
 script = ExtResource( 1 )
-; generators = [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 4 ) ]
-generators = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ]
-current = -1
+generators = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ) ]
+current = 0

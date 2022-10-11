@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// The game, the "engine".
+/// The model, view, and controller.
+/// Swapping out the model cleanly swaps out the view.
 /// This handles a sequence of floors, ultimately resulting in a win or loss.
 /// </summary>
 public class Crawler : Node2D, InputStateMachine
@@ -16,11 +17,42 @@ public class Crawler : Node2D, InputStateMachine
 
     public Model Model
     {
-        get { return GetNode<Model>("Model"); }
+        get { return GetNodeOrNull<Model>("Model"); }
+        set { InitializeForReal(value); GD.PrintErr("Prefer calling InitializeForReal instead."); }
     }
 
     public InputState activeInputState;
     public bool notPlayerTurn = true;
+
+    public void InitializeForReal(Model model)
+    {
+        // Swap out the model.
+        {
+            Model old = Model;
+            RemoveChild(old);
+            old.QueueFree();
+
+            model.Name = "Model";
+            AddChild(model);
+            MoveChild(model, 0);
+        }
+        // Swap out the view too.
+        {
+            View old = GetNode<View>("View");
+            RemoveChild(old);
+            old.QueueFree();
+
+            PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
+            View view = viewScene.Instance<View>();
+            view.Name = "View";
+            AddChild(view);
+            MoveChild(view, 1);
+
+            view.ConnectToModel(Model);
+        }
+        activeInputState = GetNode<InputState>("InputStates/Main");
+        activeInputState.Enter(this);
+    }
 
     public override void _Ready()
     {
@@ -28,12 +60,7 @@ public class Crawler : Node2D, InputStateMachine
         // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
         // EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
         Playlist playlist = GD.Load("res://Crawler/Playlist/Failsafe.tres").Duplicate() as Playlist;
-        playlist.FirstModel(Model);
-
-        View.ConnectToModel(Model);
-
-        activeInputState = GetNode<InputState>("InputStates/Main");
-        activeInputState.Enter(this);
+        InitializeForReal(playlist.GetCurrentModel());
 
         // Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
         // Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
@@ -95,26 +122,8 @@ public class Crawler : Node2D, InputStateMachine
     {
         GetNode<AnimationPlayer>("Fader/AnimationPlayer").Play("FadeIn");
 
-        Model next = Model.playlist.NextModel(Model);
-        RemoveChild(Model);
-        AddChild(next);
-        MoveChild(next, 0);
-
-        // TODO: Uncopypaste. Taken from MainInputState.cs
-        View old = View;
-        RemoveChild(old);
-        old.QueueFree();
-
-        PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
-        View view = viewScene.Instance<View>();
-        view.Name = "View";
-        AddChild(view);
-        MoveChild(view, 1);
-
-        view.ConnectToModel(next);
-
-        activeInputState = GetNode<InputState>("InputStates/Main");
-        activeInputState.Enter(this);
+        Model next = Model.playlist.CreateNextModel(Model);
+        if (next != null) { InitializeForReal(next); }
     }
 
     public override void _UnhandledInput(InputEvent ev)
