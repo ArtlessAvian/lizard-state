@@ -1,16 +1,11 @@
 extends Resource
 
+export(Resource) var playlist = null  # nullable.
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+# party members = [nano, max, vi]
+# guest stars = [levin, cook, ]
+# unlocked items = [camera]
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+# science points = 0
+# quests = []
+# phase = 1

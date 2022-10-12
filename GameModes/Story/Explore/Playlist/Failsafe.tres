@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Crawler/Generators/PlanarGenerator.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Generators/EditorGenerator.cs" type="Script" id=2]
-[ext_resource path="res://GameModes/Story/Playlist/Playlist.cs" type="Script" id=3]
+[ext_resource path="res://GameModes/Story/Explore/Playlist/ExplorePlaylist.cs" type="Script" id=3]
 [ext_resource path="res://Crawler/Generators/NoiseGenerator.cs" type="Script" id=4]
 [ext_resource path="res://Crawler/Generators/Maps/MVP-Scaled.tscn" type="PackedScene" id=5]
 

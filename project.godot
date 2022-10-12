@@ -15,7 +15,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Lizard State"
-run/main_scene="res://Crawler/Crawler.tscn"
+run/main_scene="res://GameModes/Story/Story.tscn"
 config/icon="res://icon.png"
 
 [debug]

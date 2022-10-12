@@ -6,7 +6,7 @@ using Godot.Collections;
 /// References to old and current models are saved here too.
 /// Generators can then access them.
 /// </summary>
-public class Playlist : Resource
+public class ExplorePlaylist : Resource
 {
     [Export] Array<LevelGenerator> generators;
     // [Export] Array<Model> previousModels;
@@ -48,10 +48,7 @@ public class Playlist : Resource
     private Model GenerateModel(int index)
     {
         Model model = GD.Load<PackedScene>("res://Crawler/Model/Model.tscn").Instance<Model>();
-        model.playlist = this;
-
         generators[index].Generate(model);
-
         return model;
     }
 }
