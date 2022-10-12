@@ -79,10 +79,16 @@ public class MapView : Node2D
     {
         TileMap floors = GetNode<TileMap>("Floors");
         TileMap walls = GetNode<TileMap>("Walls");
+        TileMap mini = GetNode<TileMap>("Minimap/Minimap");
+
+        floors.Clear();
+        walls.Clear();
+        mini.Clear();
 
         foreach (Vector2 vec in fog.GetUsedCells())
         {
             WriteFloorOrWall((int)vec.x, (int)vec.y, map.GetCell((int)vec.x, (int)vec.y), floors, walls);
+            WriteFloorOrWall((int)vec.x, (int)vec.y, map.GetCell((int)vec.x, (int)vec.y), mini, mini);
         }
 
         foreach (int seer in fog.lastVision.Keys)

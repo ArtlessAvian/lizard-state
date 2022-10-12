@@ -10,10 +10,6 @@ using Godot.Collections;
 // TODO: Subclass Resource instead of Node!
 public partial class Model : Node
 {
-    // TODO: Move playlist responsibility out to some parent.
-    // what generates this floor and future floors.
-    // models have no clue what a playlist is or how to use it.
-    [Export] public Playlist playlist;
     [Export] public bool done = false; // set to true when done.
 
     // Everything is saved!!

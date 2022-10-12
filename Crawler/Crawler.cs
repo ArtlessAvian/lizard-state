@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// The model, view, and controller.
-/// Swapping out the model cleanly swaps out the view.
-/// This handles a sequence of floors, ultimately resulting in a win or loss.
+/// The model, view, and controller, composed in Godot.
+/// Swapping out the model cleanly swaps out the view and resets the controller.
 /// </summary>
 public class Crawler : Node2D, InputStateMachine
 {
+    [Signal]
+    public delegate void Done();
+
     public View View
     {
         get { return GetNode<View>("View"); }
@@ -22,7 +24,7 @@ public class Crawler : Node2D, InputStateMachine
     }
 
     public InputState activeInputState;
-    public bool notPlayerTurn = true;
+    public bool notPlayerTurn = false;
 
     public void InitializeForReal(Model model)
     {
@@ -52,16 +54,21 @@ public class Crawler : Node2D, InputStateMachine
         }
         activeInputState = GetNode<InputState>("InputStates/Main");
         activeInputState.Enter(this);
+        notPlayerTurn = true;
     }
 
     public override void _Ready()
     {
+        // View.ConnectToModel(Model);
+        activeInputState = GetNode<InputState>("InputStates/Main");
+        activeInputState.Enter(this);
+
         // move this to parent.
         // NoiseGenerator gen = new NoiseGenerator();
         // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
         // EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
-        Playlist playlist = GD.Load("res://GameModes/Story/Playlist/Failsafe.tres").Duplicate() as Playlist;
-        InitializeForReal(playlist.GetCurrentModel());
+        // ExplorePlaylist playlist = GD.Load("res://GameModes/Story/Explore/Playlist/Failsafe.tres").Duplicate() as ExplorePlaylist;
+        // InitializeForReal(playlist.GetCurrentModel());
 
         // Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
         // Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
@@ -122,9 +129,7 @@ public class Crawler : Node2D, InputStateMachine
     private void NextFloor()
     {
         GetNode<AnimationPlayer>("Fader/AnimationPlayer").Play("FadeIn");
-
-        Model next = Model.playlist.CreateNextModel(Model);
-        if (next != null) { InitializeForReal(next); }
+        EmitSignal("Done");
     }
 
     public override void _UnhandledInput(InputEvent ev)
