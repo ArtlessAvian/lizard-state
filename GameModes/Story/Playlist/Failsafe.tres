@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=9 format=2]
+
+[ext_resource path="res://Crawler/Generators/PlanarGenerator.cs" type="Script" id=1]
+[ext_resource path="res://Crawler/Generators/EditorGenerator.cs" type="Script" id=2]
+[ext_resource path="res://GameModes/Story/Playlist/Playlist.cs" type="Script" id=3]
+[ext_resource path="res://Crawler/Generators/NoiseGenerator.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/Generators/Maps/MVP-Scaled.tscn" type="PackedScene" id=5]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 2 )
+scene = ExtResource( 5 )
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 4 )
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 1 )
+
+[resource]
+script = ExtResource( 3 )
+generators = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ) ]
+current = 0

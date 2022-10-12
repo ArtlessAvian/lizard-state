@@ -56,10 +56,11 @@ public class Crawler : Node2D, InputStateMachine
 
     public override void _Ready()
     {
+        // move this to parent.
         // NoiseGenerator gen = new NoiseGenerator();
         // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
         // EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
-        Playlist playlist = GD.Load("res://Crawler/Playlist/Failsafe.tres").Duplicate() as Playlist;
+        Playlist playlist = GD.Load("res://GameModes/Story/Playlist/Failsafe.tres").Duplicate() as Playlist;
         InitializeForReal(playlist.GetCurrentModel());
 
         // Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");

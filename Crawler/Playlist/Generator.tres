@@ -1,8 +1,0 @@
-[gd_resource type="Resource" load_steps=3 format=2]
-
-[ext_resource path="res://Crawler/Playlist/Generators/EditorGenerator.cs" type="Script" id=1]
-[ext_resource path="res://Crawler/Playlist/Generators/Maps/MVP-Scaled.tscn" type="PackedScene" id=2]
-
-[resource]
-script = ExtResource( 1 )
-scene = ExtResource( 2 )
