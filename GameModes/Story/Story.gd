@@ -7,10 +7,20 @@ export(Resource) var story_state = load("res://GameModes/Story/StoryState.gd").n
 
 
 func _ready():
-	$Explore.start_playlist(load("res://GameModes/Story/Explore/Playlist/Failsafe.tres"))
+	if story_state.playlist == null:
+		story_state.playlist = load("res://GameModes/Story/Explore/Playlist/Failsafe.tres").duplicate()
+	$Explore.start_playlist(story_state.playlist)
 
 
 func _process(delta):
 	pass
 	# $Walkabout.visible = story_state.playlist == null
 	# $Explore.visible = story_state.playlist != null
+
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_home"):
+		ResourceSaver.save("res://save_state_story.tres", story_state)  #, ResourceSaver.FLAG_BUNDLE_RESOURCES
+# 	elif event.is_action_pressed("ui_page_down"):
+# 		story_state = load("save_state_story.tres")
+# 		_ready()  # this wont work.

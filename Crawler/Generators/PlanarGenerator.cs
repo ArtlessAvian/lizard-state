@@ -193,7 +193,7 @@ public class PlanarGenerator : LevelGenerator
         return (x, y);
     }
 
-    public void SplatMap(TileMap map, float x, float y, int tile)
+    public void SplatMap(SparseMatrix map, float x, float y, int tile)
     {
         if (sizeVariance is null)
         {

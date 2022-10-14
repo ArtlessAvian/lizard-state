@@ -1,0 +1,97 @@
+[gd_resource type="Resource" load_steps=11 format=2]
+
+[ext_resource path="res://Crawler/Generators/Maps/MVP-Scaled.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Crawler/Generators/NoiseGenerator.cs" type="Script" id=2]
+[ext_resource path="res://Crawler/Generators/EditorGenerator.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/Generators/PlanarGenerator.cs" type="Script" id=5]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 4 )
+scene = ExtResource( 1 )
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 2 )
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 5 )
+
+[sub_resource type="CSharpScript" id=11]
+script/source = "using Godot;
+using Godot.Collections;
+
+/// <summary>
+/// A sequence of floors. Defined by a sequence of generators.
+/// References to old and current models are saved here too.
+/// Generators can then access them.
+/// </summary>
+public class ExplorePlaylist : Resource
+{
+    [Export] Array<LevelGenerator> generators;
+    // [Export] Array<Model> previousModels;
+    [Export] int current = 0;
+    [Export] Model currentModel = null;
+
+    // [Export] Entity[] _playerTeam; // = {GD.Load<>};
+
+    public Model GetCurrentModel()
+    {
+        if (currentModel == null)
+        {
+            currentModel = GenerateModel(0);
+        }
+
+        // generate the players
+        // or just load them in. they're resources.
+        // maybe theres some indirection, where it loads it from the meta-game's data.
+        // in that case, whatever.
+
+        return currentModel;
+    }
+
+    public Model CreateNextModel(Model previous)
+    {
+        if (current >= generators.Count - 1) { return null; }
+        if (previous is null) { return null; }
+
+        // previousModels.Add(previous);
+        current += 1;
+
+        // we still hold a reference to the players.
+        // if we decide thats kind of wack, we can just yoink or duplicate them from the previous model we just got.
+        // also heal them, have them \"eat\", etc.
+
+        return GenerateModel(current);
+    }
+
+    private Model GenerateModel(int index)
+    {
+        Model model = GD.Load<PackedScene>(\"res://Crawler/Model/Model.tscn\").Instance<Model>();
+        generators[index].Generate(model);
+        return model;
+    }
+}"
+
+[sub_resource type="Resource" id=12]
+script = SubResource( 11 )
+generators = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ) ]
+current = 0
+currentModel = Object(Node2D,"_import_path":NodePath(""),"pause_mode":0,"physics_interpolation_mode":0,"unique_name_in_owner":false,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":false,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"script":Resource( "res://Crawler/Model/Model.cs" ),"done":false,"time":0,"Map":null,"Entities":[ null, null, null, null, null, null, null, null, null, null, null, null ],"FloorItems":[ null, null ])
+
+
+[sub_resource type="GDScript" id=13]
+script/source = "extends Resource
+
+export(Resource) var playlist = null  # nullable.
+
+# party members = [nano, max, vi]
+# guest stars = [levin, cook, ]
+# unlocked items = [camera]
+
+# science points = 0
+# quests = []
+# phase = 1
+"
+
+[resource]
+script = SubResource( 13 )
+playlist = SubResource( 12 )

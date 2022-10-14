@@ -15,10 +15,7 @@ public partial class Model : Node
     // Everything is saved!!
     [Export] public int time = 0;
 
-    public CrawlerMap Map
-    {
-        get { return GetNode<CrawlerMap>("Map"); }
-    }
+    [Export] public CrawlerMap Map = null;
 
     [Export] private List<Entity> Entities = new List<Entity>();
     [Export] private List<FloorItem> FloorItems = new List<FloorItem>();
@@ -26,7 +23,10 @@ public partial class Model : Node
     [Signal]
     public delegate void NewEvent(Dictionary ev);
 
-    // public Model() {}
+    public Model()
+    {
+        Map = (CrawlerMap)GD.Load<CSharpScript>("res://Crawler/Model/CrawlerMap.cs").New();
+    }
 
     public void AddEntity(Entity e)
     {
