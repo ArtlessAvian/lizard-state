@@ -115,8 +115,7 @@ public partial class View : Node2D
         {
             queueSync = false;
 
-            Model debugggModel = GetNode<Model>("../Model");
-            viewTime = debugggModel.time;
+            viewTime = model.time;
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime + " (sync!)";
 
             this.ModelSync();

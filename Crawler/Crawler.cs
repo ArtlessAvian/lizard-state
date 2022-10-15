@@ -17,27 +17,19 @@ public class Crawler : Node2D, InputStateMachine
         get { return GetNode<View>("View"); }
     }
 
-    public Model Model
-    {
-        get { return GetNodeOrNull<Model>("Model"); }
-        set { InitializeForReal(value); GD.PrintErr("Prefer calling InitializeForReal instead."); }
-    }
+    public Model Model;
 
     public InputState activeInputState;
     public bool notPlayerTurn = false;
 
+    public Crawler()
+    {
+        Model = (Model)GD.Load("res://Crawler/Model/Model.tres");
+    }
+
     public void InitializeForReal(Model model)
     {
-        // Swap out the model.
-        {
-            Model old = Model;
-            RemoveChild(old);
-            old.QueueFree();
-
-            model.Name = "Model";
-            AddChild(model);
-            MoveChild(model, 0);
-        }
+        Model = model;
         // Swap out the view too.
         {
             View old = GetNode<View>("View");

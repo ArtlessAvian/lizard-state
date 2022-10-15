@@ -7,8 +7,7 @@ using Godot.Collections;
 /// Stores the game state and handles turn taking.
 /// Remember to keep view information in the view counterpart!
 /// </summary>
-// TODO: Subclass Resource instead of Node!
-public partial class Model : Node
+public partial class Model : Resource
 {
     [Export] public bool done = false; // set to true when done.
 

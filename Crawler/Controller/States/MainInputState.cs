@@ -33,16 +33,13 @@ public class MainInputState : InputState
         // Only saves the model. Not intended as a long term solution.
         if (ev.IsActionPressed("quicksave", false))
         {
-            PackedScene packed = new PackedScene();
-            packed.Pack(crawler.Model);
-            ResourceSaver.Save("res://dump.tscn", packed);
+            ResourceSaver.Save("res://dump.tres", crawler.Model);
             return true;
         }
 
         if (ev.IsActionPressed("quickload", false))
         {
-            PackedScene modelScene = GD.Load<PackedScene>("res://dump.tscn");
-            Model model = modelScene.Instance<Model>();
+            Model model = GD.Load<Model>("res://dump.tscn");
             crawler.Model = model;
 
             return true;
@@ -56,13 +53,6 @@ public class MainInputState : InputState
                 string thing = (crawler.View.impatientMode ? "on" : "off");
 
                 crawler.View.GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode($"\n * Impatient mode {thing}!");
-                return true;
-            }
-
-            if (eventKey.Scancode == (int)KeyList.F9)
-            {
-                Node2D map = (Node2D)crawler.Model.FindNode("Map");
-                map.Visible = !map.Visible;
                 return true;
             }
 
