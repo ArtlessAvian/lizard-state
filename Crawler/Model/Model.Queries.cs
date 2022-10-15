@@ -12,7 +12,7 @@ public partial class Model
     // Really, really slow.
     public T GetSystem<T>() where T : CrawlerSystem
     {
-        foreach (CrawlerSystem sys in systems)
+        foreach (Resource sys in systems)
         {
             if (sys is T systemCast) { return systemCast; }
         }

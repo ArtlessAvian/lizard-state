@@ -138,12 +138,13 @@ public partial class Model : Node
     /// </summary>
     private void RunSystems()
     {
-        foreach (CrawlerSystem sys in systems)
+        foreach (Resource resource in systems)
         {
-            sys.Run(this);
+            if (resource is CrawlerSystem sys)
+            {
+                sys.Run(this);
+            }
         }
-        // GetNode<FogOfWarSystem>("Systems/Fog").Run(this);
-        // GetNode<VisionSystem>("Systems/Vision").Run(this);
     }
 
     public Entity NextEntity()
