@@ -47,7 +47,7 @@ public class ExplorePlaylist : Resource
 
     private Model GenerateModel(int index)
     {
-        Model model = GD.Load<Model>("res://Crawler/Model/Model.tres");
+        Model model = (Model)GD.Load("res://Crawler/Model/Model.tres").Duplicate();
         generators[index].Generate(model);
         return model;
     }

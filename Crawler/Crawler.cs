@@ -17,6 +17,7 @@ public class Crawler : Node2D, InputStateMachine
         get { return GetNode<View>("View"); }
     }
 
+    [Export]
     public Model Model;
 
     public InputState activeInputState;
@@ -24,7 +25,7 @@ public class Crawler : Node2D, InputStateMachine
 
     public Crawler()
     {
-        Model = (Model)GD.Load("res://Crawler/Model/Model.tres");
+        Model = (Model)GD.Load("res://Crawler/Model/Model.tres").Duplicate();
     }
 
     public void InitializeForReal(Model model)

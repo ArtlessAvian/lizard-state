@@ -39,7 +39,7 @@ public class MainInputState : InputState
 
         if (ev.IsActionPressed("quickload", false))
         {
-            Model model = GD.Load<Model>("res://dump.tscn");
+            Model model = (Model)GD.Load("res://dump.tres").Duplicate();
             crawler.Model = model;
 
             return true;
