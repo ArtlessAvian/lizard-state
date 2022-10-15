@@ -6,7 +6,7 @@ using Godot.Collections;
 /// Stores fog of war and entity vision information.
 /// Maybe split these two responsibilities.
 /// </summary>
-public class VisionSystem : Node, CrawlerSystem
+public class VisionSystem : Resource, CrawlerSystem
 {
     [Export] public Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
     [Export] public Dictionary<int, int> canSee = new Dictionary<int, int>();

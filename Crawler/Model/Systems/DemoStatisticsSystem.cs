@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
 
-public class DemoStatisticsSystem : Node, CrawlerSystem
+public class DemoStatisticsSystem : Resource, CrawlerSystem
 {
     [Export] public int kills = 0;
     [Export] public int playerDamage = 0;
@@ -63,27 +63,27 @@ public class DemoStatisticsSystem : Node, CrawlerSystem
     List<KeyList> viKeys = new List<KeyList>() { KeyList.H, KeyList.J, KeyList.K, KeyList.L, KeyList.B, KeyList.N, KeyList.Y, KeyList.U, KeyList.Period };
 
     // systems aren't supposed to do this, but,
-    public override void _Input(InputEvent ev)
-    {
-        if (ev is InputEventMouseButton)
-        {
-            usedMouse = true;
-        }
-        if (ev is InputEventKey evKey)
-        {
-            if (arrows.Contains((KeyList)evKey.Scancode))
-            {
-                usedArrow = true;
-            }
-            else if (numpad.Contains((KeyList)evKey.Scancode))
-            {
-                usedNumpad = true;
-            }
-            else if (viKeys.Contains((KeyList)evKey.Scancode))
-            {
-                // wow gamer
-                usedViKeys = true;
-            }
-        }
-    }
+    // public override void _Input(InputEvent ev)
+    // {
+    //     if (ev is InputEventMouseButton)
+    //     {
+    //         usedMouse = true;
+    //     }
+    //     if (ev is InputEventKey evKey)
+    //     {
+    //         if (arrows.Contains((KeyList)evKey.Scancode))
+    //         {
+    //             usedArrow = true;
+    //         }
+    //         else if (numpad.Contains((KeyList)evKey.Scancode))
+    //         {
+    //             usedNumpad = true;
+    //         }
+    //         else if (viKeys.Contains((KeyList)evKey.Scancode))
+    //         {
+    //             // wow gamer
+    //             usedViKeys = true;
+    //         }
+    //     }
+    // }
 }

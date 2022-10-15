@@ -51,8 +51,8 @@ public partial class View : Node2D
             createEvent.Call("run");
         }
 
-        VisionSystem vision = model.GetNode<VisionSystem>("Systems/Vision");
-        FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
+        VisionSystem vision = model.GetSystem<VisionSystem>();
+        FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();
 
         // Copy map knowledge.
         MapView mapView = GetNode<MapView>("Map");
@@ -209,7 +209,7 @@ public partial class View : Node2D
             a.ModelSync(viewTime);
         }
 
-        FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
+        FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();
         MapView mapView = GetNode<MapView>("Map");
         mapView.ModelSync(model.Map, fog);
     }

@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 
 // Handles knockdown (health > 0), and "down" down (health <= 0).
-public class StateSystem : Node, CrawlerSystem
+public class StateSystem : Resource, CrawlerSystem
 {
     public void ProcessEvent(Model model, Dictionary ev) { }
 

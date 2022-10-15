@@ -2,7 +2,7 @@ using System;
 using Godot;
 using Godot.Collections;
 
-public class DemoTutorialSystem : Node, CrawlerSystem
+public class DemoTutorialSystem : Resource, CrawlerSystem
 {
     [Export] bool movePrompt = false;
     [Export] bool abilitiesPrompt = false;
@@ -37,7 +37,7 @@ public class DemoTutorialSystem : Node, CrawlerSystem
 
     private void DumpStats(Model model)
     {
-        DemoStatisticsSystem stats = GetNode<DemoStatisticsSystem>("../DemoStatistics");
+        DemoStatisticsSystem stats = model.GetSystem<DemoStatisticsSystem>();
         model.CoolerApiEvent(-1, "Print", "");
         if (stats.gotMoss)
         {

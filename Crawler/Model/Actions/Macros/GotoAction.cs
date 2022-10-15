@@ -75,7 +75,7 @@ public class GotoAction : Action
 
     private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(Model model)
     {
-        FogOfWarSystem fog = model.GetNode<FogOfWarSystem>("Systems/Fog");
+        FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();
 
         return (((int x, int y) from, (int x, int y) to) tuple) =>
                 model.CanWalkFromTo(tuple.from, tuple.to) &&

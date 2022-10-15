@@ -72,12 +72,39 @@ public class SparseMatrix : Resource
         chunks[chunkId] = copy;
     }
 
+    public void SetCellv(Vector2 vec, int tile)
+    {
+        SetCell((int)vec.x, (int)vec.y, tile);
+    }
+
     public int GetCell(int x, int y)
     {
         // TODO: Check if negative bitshift is bad.
         (Vector2 chunkId, int index) = CellToChunkAndIndex(x, y);
         if (!chunks.ContainsKey(chunkId)) { return -1; }
         return chunks[chunkId][index];
+    }
+
+    public int GetCellv(Vector2 vec)
+    {
+        return GetCell((int)vec.x, (int)vec.y);
+    }
+
+    public Array GetUsedCells()
+    {
+        Array usedCells = new Array();
+        foreach (Vector2 chunkId in chunks.Keys)
+        {
+            for (int i = 0; i < CELL_AREA; i++)
+            {
+                if (chunks[chunkId][i] != -1)
+                {
+                    Vector2 cell = ChunkAndIndexToCell(chunkId, i);
+                    usedCells.Add(cell);
+                }
+            }
+        }
+        return usedCells;
     }
 
     public Array GetUsedCellsById(int id)

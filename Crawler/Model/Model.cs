@@ -16,6 +16,7 @@ public partial class Model : Node
     [Export] public int time = 0;
 
     [Export] public CrawlerMap Map = null;
+    [Export] public List<Resource> systems = new List<Resource>();
 
     [Export] private List<Entity> Entities = new List<Entity>();
     [Export] private List<FloorItem> FloorItems = new List<FloorItem>();
@@ -137,7 +138,7 @@ public partial class Model : Node
     /// </summary>
     private void RunSystems()
     {
-        foreach (CrawlerSystem sys in GetNode("Systems").GetChildren())
+        foreach (CrawlerSystem sys in systems)
         {
             sys.Run(this);
         }

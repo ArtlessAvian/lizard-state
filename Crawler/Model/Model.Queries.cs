@@ -12,7 +12,7 @@ public partial class Model
     // Really, really slow.
     public T GetSystem<T>() where T : CrawlerSystem
     {
-        foreach (object sys in GetNode("Systems").GetChildren())
+        foreach (CrawlerSystem sys in systems)
         {
             if (sys is T systemCast) { return systemCast; }
         }
@@ -92,7 +92,7 @@ public partial class Model
     public List<Entity> GetEntitiesInCone((int x, int y) position, float radius, (int x, int y) direction, float sectorDegrees)
     {
         // Not good code reuse. Copy-pasted from LOS.
-        VisionSystem vision = GetNode<VisionSystem>("Systems/Vision");
+        VisionSystem vision = GetSystem<VisionSystem>();
         // vision.trie.ExtendRadius(radius);
 
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
@@ -116,7 +116,7 @@ public partial class Model
     {
         if (team == 0)
         {
-            VisionSystem visionSystem = GetNode<VisionSystem>("Systems/Vision");
+            VisionSystem visionSystem = GetSystem<VisionSystem>();
             List<Entity> entities = new List<Entity>();
             foreach (int i in visionSystem.canSee.Keys)
             {
