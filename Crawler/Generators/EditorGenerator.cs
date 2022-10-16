@@ -10,6 +10,7 @@ public class EditorGenerator : LevelGenerator
     public override Model Generate(Model model)
     {
         GenerateMap(model);
+        AddSystems(model);
         GenerateEntities(model);
 
         FloorItem item = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
@@ -80,5 +81,12 @@ public class EditorGenerator : LevelGenerator
         entity.SetTeam(team);
 
         return entity;
+    }
+
+    public override void AddSystems(Model model)
+    {
+        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/VisionSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/StateSystem.cs").New() as Resource);
     }
 }

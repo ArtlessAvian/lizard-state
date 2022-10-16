@@ -9,4 +9,5 @@ public abstract class LevelGenerator : Resource
 {
     public abstract Model Generate(Model model);
     public abstract void GenerateMap(Model model);
+    public abstract void AddSystems(Model model);
 }

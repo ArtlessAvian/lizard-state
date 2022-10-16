@@ -39,7 +39,9 @@ public class MainInputState : InputState
 
         if (ev.IsActionPressed("quickload", false))
         {
-            Model model = (Model)GD.Load("res://dump.tres").Duplicate();
+            GD.PrintErr("This is not a duplicate! Be careful!");
+            GD.PrintErr("This can be replaced with a deep copy when scripts are not deepcopied.");
+            Model model = (Model)GD.Load("res://dump.tres");
             crawler.Model = model;
 
             return true;

@@ -10,6 +10,7 @@ public class NoiseGenerator : LevelGenerator
     public override Model Generate(Model model)
     {
         GenerateMap(model);
+        AddSystems(model);
         GenerateEntities(model);
         return model;
     }
@@ -84,5 +85,12 @@ public class NoiseGenerator : LevelGenerator
         entity.SetTeam(team);
 
         return entity;
+    }
+
+    public override void AddSystems(Model model)
+    {
+        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/VisionSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/StateSystem.cs").New() as Resource);
     }
 }

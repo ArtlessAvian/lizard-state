@@ -18,36 +18,39 @@ public class Crawler : Node2D, InputStateMachine
     }
 
     [Export]
-    public Model Model;
+    private Model model;
+    public Model Model
+    {
+        get { return model; }
+        set
+        {
+            model = value;
+            // Swap out the view too.
+            {
+                View old = GetNode<View>("View");
+                RemoveChild(old);
+                old.QueueFree();
+
+                PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
+                View view = viewScene.Instance<View>();
+                view.Name = "View";
+                AddChild(view);
+                MoveChild(view, 1);
+
+                view.ConnectToModel(Model);
+            }
+            activeInputState = GetNode<InputState>("InputStates/Main");
+            activeInputState.Enter(this);
+            notPlayerTurn = true;
+        }
+    }
 
     public InputState activeInputState;
     public bool notPlayerTurn = false;
 
     public Crawler()
     {
-        Model = (Model)GD.Load("res://Crawler/Model/Model.tres").Duplicate();
-    }
-
-    public void InitializeForReal(Model model)
-    {
-        Model = model;
-        // Swap out the view too.
-        {
-            View old = GetNode<View>("View");
-            RemoveChild(old);
-            old.QueueFree();
-
-            PackedScene viewScene = GD.Load<PackedScene>("res://Crawler/View/View.tscn");
-            View view = viewScene.Instance<View>();
-            view.Name = "View";
-            AddChild(view);
-            MoveChild(view, 1);
-
-            view.ConnectToModel(Model);
-        }
-        activeInputState = GetNode<InputState>("InputStates/Main");
-        activeInputState.Enter(this);
-        notPlayerTurn = true;
+        // model = GD.Load<CSharpScript>("res://Crawler/Model/Model.cs").New() as Model;
     }
 
     public override void _Ready()

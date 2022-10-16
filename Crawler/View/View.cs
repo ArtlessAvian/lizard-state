@@ -66,7 +66,6 @@ public partial class View : Node2D
                 fog.RefreshVision(model, e);
                 vision.RefreshVision(model, e);
             }
-            GD.Print(e.ResourcePath);
         }
 
         viewTime = model.time;

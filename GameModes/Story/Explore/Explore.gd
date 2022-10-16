@@ -13,11 +13,11 @@ func start_playlist(the_playlist):
 	var crawler = CRAWLER_SCENE.instance()
 	add_child(crawler)
 
-	crawler.InitializeForReal(playlist.GetCurrentModel())
+	crawler.Model = playlist.GetCurrentModel()
 
 	yield(crawler, "Done")
 
-	crawler.InitializeForReal(playlist.CreateNextModel(crawler.Model))
+	crawler.Model = playlist.CreateNextModel(crawler.Model)
 
 	yield(crawler, "Done")
 
