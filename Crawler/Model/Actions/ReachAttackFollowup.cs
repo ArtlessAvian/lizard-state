@@ -102,7 +102,7 @@ public class ReachAttackFollowup : Action
             }
             howMuch--;
 
-            if (model.Map.TileIsWall(position))
+            if (model.map.TileIsWall(position))
             {
                 return previousPosition;
             }

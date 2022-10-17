@@ -163,7 +163,7 @@ public class PlanarGenerator : LevelGenerator
                 if (neighbor > node) { continue; }
                 foreach ((int x, int y) in GridHelper.LineBetween(((int)embedding[node].x, (int)embedding[node].y), ((int)embedding[neighbor].x, (int)embedding[neighbor].y)))
                 {
-                    SplatMap(model.Map, x, y, 1);
+                    SplatMap(model.map, x, y, 1);
                 }
             }
         }
@@ -175,7 +175,7 @@ public class PlanarGenerator : LevelGenerator
             {
                 for (int dy = -2; dy <= 2; dy++)
                 {
-                    SplatMap(model.Map, (int)embedding[node].x + dx, (int)embedding[node].y + dy, 1);
+                    SplatMap(model.map, (int)embedding[node].x + dx, (int)embedding[node].y + dy, 1);
                 }
             }
         }

@@ -56,7 +56,7 @@ public partial class View : Node2D
 
         // Copy map knowledge.
         MapView mapView = GetNode<MapView>("Map");
-        mapView.ModelSync(model.Map, fog);
+        mapView.ModelSync(model.map, fog);
 
         // TODO: read the info directly.
         foreach (Entity e in model.GetEntities())
@@ -209,7 +209,7 @@ public partial class View : Node2D
 
         FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();
         MapView mapView = GetNode<MapView>("Map");
-        mapView.ModelSync(model.Map, fog);
+        mapView.ModelSync(model.map, fog);
     }
 
     private bool AnyActorAnimating()

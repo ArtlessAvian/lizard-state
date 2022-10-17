@@ -26,7 +26,7 @@ public class EditorGenerator : LevelGenerator
     public override void GenerateMap(Model model)
     {
         TileMap map = scene.Instance<TileMap>();
-        model.Map.ReadFromTilemap(map);
+        model.map.ReadFromTilemap(map);
         map.QueueFree();
     }
 

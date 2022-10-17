@@ -14,24 +14,24 @@ public partial class Model : Resource
     // Everything is saved!!
     [Export] public int time = 0;
 
-    [Export] public CrawlerMap Map = null;
+    [Export] public CrawlerMap map = null;
     [Export] public List<Resource> systems = new List<Resource>();
 
-    [Export] private List<Entity> Entities = new List<Entity>();
-    [Export] private List<FloorItem> FloorItems = new List<FloorItem>();
+    [Export] private List<Entity> entities = new List<Entity>();
+    [Export] private List<FloorItem> floorItems = new List<FloorItem>();
 
     [Signal]
     public delegate void NewEvent(Dictionary ev);
 
     public Model()
     {
-        Map = (CrawlerMap)GD.Load<CSharpScript>("res://Crawler/Model/CrawlerMap.cs").New();
+        map = (CrawlerMap)GD.Load<CSharpScript>("res://Crawler/Model/CrawlerMap.cs").New();
     }
 
     public void AddEntity(Entity e)
     {
-        e.id = Entities.Count;
-        Entities.Add(e);
+        e.id = entities.Count;
+        entities.Add(e);
 
         this.CoolerApiEvent(-1, "Create", e, e.id);
 
@@ -40,8 +40,8 @@ public partial class Model : Resource
 
     public void AddFloorItem(FloorItem item)
     {
-        item.id = FloorItems.Count;
-        FloorItems.Add(item);
+        item.id = floorItems.Count;
+        floorItems.Add(item);
 
         this.CoolerApiEvent(-1, "CreateItem", item, item.id);
     }

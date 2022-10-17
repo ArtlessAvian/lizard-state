@@ -6,7 +6,7 @@ public partial class Model
 {
     public CrawlerMap GetMap()
     {
-        return this.Map;
+        return this.map;
     }
 
     // Really, really slow.
@@ -21,17 +21,17 @@ public partial class Model
 
     public List<Entity> GetEntities()
     {
-        return Entities;
+        return entities;
     }
 
     public List<FloorItem> GetFloorItems()
     {
-        return FloorItems;
+        return floorItems;
     }
 
     public Entity GetEntity(int id)
     {
-        return Entities[id];
+        return entities[id];
     }
 
     public Entity GetPlayer()
@@ -136,8 +136,8 @@ public partial class Model
     // Should be symmetric. f(x, y) = f(y, x).
     public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
     {
-        return !Map.TileIsWall((position2.x, position2.y)) &&
-                !Map.TileIsWall((position.x, position.y));
+        return !map.TileIsWall((position2.x, position2.y)) &&
+                !map.TileIsWall((position.x, position.y));
     }
 
     public float Distance((int x, int y) pos, (int x, int y) pos2)
