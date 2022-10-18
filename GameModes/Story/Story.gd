@@ -7,15 +7,15 @@ export(Resource) var story_state = load("res://GameModes/Story/StoryState.gd").n
 
 
 func _ready():
-	if story_state.playlist == null:
-		story_state.playlist = load("res://GameModes/Story/Explore/Playlist/Failsafe.tres").duplicate()
-	$Explore.start_playlist(story_state.playlist)
+	if story_state.playlist != null:
+		$Explore.start_playlist(story_state.playlist)
 
 
 func _process(delta):
-	pass
-	# $Walkabout.visible = story_state.playlist == null
-	# $Explore.visible = story_state.playlist != null
+	$Walkabout.visible = story_state.playlist == null
+	# TODO: this doesn't work properly because of nested viewports.
+	# I suppose its fine, I just cleanup the crawler each time.
+	$Explore.visible = story_state.playlist != null
 
 
 func _unhandled_input(event):
@@ -24,3 +24,7 @@ func _unhandled_input(event):
 	elif event.is_action_pressed("ui_end"):
 		story_state = load("save_state_story.tres")
 		_ready()  # this wont work.
+
+
+func _on_Explore_win():
+	story_state.playlist = null

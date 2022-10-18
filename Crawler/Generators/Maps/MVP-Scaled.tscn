@@ -10,8 +10,3 @@ tile_data = PoolIntArray( -2162677, 1, 0, -2162676, 1, 0, -2162675, 1, 0, -21626
 __meta__ = {
 "_edit_lock_": true
 }
-
-[node name="Camera2D" type="Camera2D" parent="."]
-visible = false
-scale = Vector2( 1.333, 1.5 )
-current = true

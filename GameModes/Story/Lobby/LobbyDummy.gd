@@ -4,5 +4,16 @@ extends Node
 # Aware of the story and story state. (get_parent() is ok.)
 
 
-func _on_StartTestPlaylist_button_up():
-	get_parent().story_state.playlist = load("res://GameModes/Story/Explore/Playlist/Failsafe.tres")
+func _on_StartTutorial_button_up():
+	get_parent().story_state.playlist = load("res://GameModes/Story/Explore/Playlist/Tutorial.tres")
+	get_node("../Explore").start_playlist(get_parent().story_state.playlist)
+
+
+func _on_StartEarlygame_button_up():
+	get_parent().story_state.playlist = load("res://GameModes/Story/Explore/Playlist/Tutorial.tres")
+	get_node("../Explore").start_playlist(get_parent().story_state.playlist)
+
+
+func _on_StartMidgame_button_up():
+	get_parent().story_state.playlist = load("res://GameModes/Story/Explore/Playlist/Tutorial.tres")
+	get_node("../Explore").start_playlist(get_parent().story_state.playlist)

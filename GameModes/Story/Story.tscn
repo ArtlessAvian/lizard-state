@@ -11,4 +11,5 @@ script = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="Walkabout" parent="." instance=ExtResource( 3 )]
-visible = false
+
+[connection signal="win" from="Explore" to="." method="_on_Explore_win"]

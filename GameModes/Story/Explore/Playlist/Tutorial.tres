@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=5 format=2]
+[gd_resource type="Resource" load_steps=7 format=2]
 
 [ext_resource path="res://Crawler/Generators/EditorGenerator.cs" type="Script" id=2]
 [ext_resource path="res://GameModes/Story/Explore/Playlist/ExplorePlaylist.cs" type="Script" id=3]
@@ -8,7 +8,15 @@
 script = ExtResource( 2 )
 scene = ExtResource( 5 )
 
+[sub_resource type="Resource" id=2]
+script = ExtResource( 2 )
+scene = ExtResource( 5 )
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 2 )
+scene = ExtResource( 5 )
+
 [resource]
 script = ExtResource( 3 )
-generators = [ SubResource( 1 ), SubResource( 1 ), SubResource( 1 ) ]
+generators = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ) ]
 current = 0

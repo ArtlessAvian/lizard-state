@@ -1,15 +1,115 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://GameModes/Story/Lobby/LobbyDummy.gd" type="Script" id=1]
+[ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu/tegu.png" type="Texture" id=2]
+[ext_resource path="res://Crawler/View/Assets/oc_donut_steel/gator/gator.png" type="Texture" id=3]
+[ext_resource path="res://Crawler/View/Assets/oc_donut_steel/axolotl/nano.png" type="Texture" id=4]
 
-[node name="Lobby" type="Node2D"]
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 40, 40 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 40, 40 )
+
+[node name="Lobby" type="CanvasLayer"]
 script = ExtResource( 1 )
 
-[node name="StartTestPlaylist" type="Button" parent="."]
-margin_left = 537.702
-margin_top = 229.051
-margin_right = 715.702
-margin_bottom = 257.051
-text = "Play the game"
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
 
-[connection signal="button_up" from="StartTestPlaylist" to="." method="_on_StartTestPlaylist_button_up"]
+[node name="Label" type="RichTextLabel" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -90.4863
+margin_top = 135.676
+margin_right = 109.514
+margin_bottom = 288.676
+bbcode_enabled = true
+bbcode_text = "[center][wave]Lizard State
+Demoooooooo[/wave][/center]"
+text = "Lizard State
+Demoooooooo"
+fit_content_height = true
+
+[node name="StartTutorial" type="Button" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -113.979
+margin_top = 255.02
+margin_right = 108.021
+margin_bottom = 283.02
+text = "Play tutorial!!!!!!!!!"
+
+[node name="TextureRect" type="TextureRect" parent="Control/StartTutorial"]
+margin_left = -94.3933
+margin_top = -28.4678
+margin_right = -14.3933
+margin_bottom = 51.5322
+rect_min_size = Vector2( 80, 80 )
+texture = SubResource( 1 )
+expand = true
+
+[node name="StartEarlygame" type="Button" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -106.03
+margin_top = 303.698
+margin_right = 99.97
+margin_bottom = 331.698
+text = "Play early game!"
+
+[node name="TextureRect2" type="TextureRect" parent="Control/StartEarlygame"]
+margin_left = 210.286
+margin_top = -39.2933
+margin_right = 290.286
+margin_bottom = 40.7067
+rect_min_size = Vector2( 80, 80 )
+texture = SubResource( 2 )
+expand = true
+
+[node name="StartMidgame" type="Button" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -106.175
+margin_top = 373.326
+margin_right = 99.8252
+margin_bottom = 401.326
+text = "Play mid game!"
+flat = true
+
+[node name="TextureRect3" type="TextureRect" parent="Control/StartMidgame"]
+margin_left = -87.5845
+margin_top = -21.7219
+margin_right = -7.5845
+margin_bottom = 58.2781
+rect_min_size = Vector2( 80, 80 )
+texture = SubResource( 3 )
+expand = true
+
+[node name="Label2" type="RichTextLabel" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -238.488
+margin_top = 434.991
+margin_right = 261.512
+margin_bottom = 587.991
+rect_min_size = Vector2( 500, 0 )
+bbcode_enabled = true
+bbcode_text = "[center]
+(menu is temporary lmaooo)
+(i did try to make it a bit presentable)"
+text = "
+(menu is temporary lmaooo)
+(i did try to make it a bit presentable)"
+fit_content_height = true
+
+[connection signal="button_up" from="Control/StartTutorial" to="." method="_on_StartTutorial_button_up"]
+[connection signal="button_up" from="Control/StartEarlygame" to="." method="_on_StartEarlygame_button_up"]
+[connection signal="button_up" from="Control/StartMidgame" to="." method="_on_StartMidgame_button_up"]
