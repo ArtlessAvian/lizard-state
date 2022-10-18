@@ -10,6 +10,11 @@ var playlist
 
 func start_playlist(the_playlist):
 	playlist = the_playlist
+
+	var old_crawler = get_node_or_null("Crawler")
+	if old_crawler != null:
+		remove_child(old_crawler)
+
 	var crawler = CRAWLER_SCENE.instance()
 	add_child(crawler)
 

@@ -16,6 +16,8 @@ data_*/
 .vscode/
 
 dump.*
+save_state_story.tres
+
 # Krita temporary
 *.kra~
 *.png~

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=7 format=2]
+[gd_resource type="Resource" load_steps=11 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Attacks/Items/CameraFlash.tres" type="Resource" id=2]
@@ -6,6 +6,22 @@
 [ext_resource path="res://Crawler/Model/Attacks/RushAttacks/MaxScratch.tres" type="Resource" id=4]
 [ext_resource path="res://Crawler/Model/AIs/PartnerAI.tres" type="Resource" id=5]
 [ext_resource path="res://Crawler/Model/Attacks/ReachAttacks/HellaKnockback.tres" type="Resource" id=6]
+[ext_resource path="res://Crawler/Model/Actions/Abilities/DashPunchAbility.cs" type="Script" id=7]
+[ext_resource path="res://Crawler/Model/Actions/Abilities/DashAbility.cs" type="Script" id=8]
+
+[sub_resource type="Resource" id=1]
+resource_name = "Dash Punch"
+script = ExtResource( 7 )
+targetInternalX = 0
+targetInternalY = 0
+isRelative = true
+
+[sub_resource type="Resource" id=2]
+resource_name = "Dash"
+script = ExtResource( 8 )
+targetInternalX = 0
+targetInternalY = 0
+isRelative = true
 
 [resource]
 resource_name = "PlayerTegu"
@@ -13,6 +29,6 @@ script = ExtResource( 1 )
 ai = ExtResource( 5 )
 rushAttack = ExtResource( 4 )
 attacks = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 6 ) ]
-abilities = [  ]
+abilities = [ SubResource( 1 ), SubResource( 2 ) ]
 maxHealth = 30
 displayName = "[color=#AF5050]Max[/color]"

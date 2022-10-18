@@ -9,7 +9,6 @@ using Godot.Collections;
 public class ExplorePlaylist : Resource
 {
     [Export] Array<LevelGenerator> generators;
-    // [Export] Array<Model> previousModels;
     [Export] int current = 0;
     [Export] Model currentModel = null;
 
@@ -19,17 +18,15 @@ public class ExplorePlaylist : Resource
     {
         if (currentModel == null)
         {
+            // construct the players.
+
             currentModel = GenerateModel(0);
         }
-
-        // generate the players
-        // or just load them in. they're resources.
-        // maybe theres some indirection, where it loads it from the meta-game's data.
-        // in that case, whatever.
 
         return currentModel;
     }
 
+    // Dunno why to pass in the previous.
     public Model CreateNextModel(Model previous)
     {
         if (current >= generators.Count - 1) { return null; }
@@ -41,8 +38,9 @@ public class ExplorePlaylist : Resource
         // we still hold a reference to the players.
         // if we decide thats kind of wack, we can just yoink or duplicate them from the previous model we just got.
         // also heal them, have them "eat", etc.
+        currentModel = GenerateModel(current);
 
-        return GenerateModel(current);
+        return currentModel;
     }
 
     private Model GenerateModel(int index)

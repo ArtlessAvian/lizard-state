@@ -3,7 +3,7 @@
 [ext_resource path="res://Crawler/Model/Actions/ReachAttackAction.cs" type="Script" id=1]
 
 [resource]
-resource_name = "Hella Knockback"
+resource_name = "Hella Knockback (test)"
 script = ExtResource( 1 )
 targetInternalX = 0
 targetInternalY = 0

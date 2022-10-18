@@ -32,9 +32,9 @@ public class DashPunchAbility : Action
 
         if (target != null)
         {
-            // Action subaction = new RushAttackAction();
-            // subaction.SetTarget(target.position);
-            // subaction.Do(model, e);
+            Action subaction = e.species.rushAttack.Duplicate() as Action;
+            subaction.SetTarget(target.position);
+            subaction.Do(model, e);
         }
 
         return true;
