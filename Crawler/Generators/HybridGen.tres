@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Crawler/Generators/HybridGenerator.cs" type="Script" id=1]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+seed = 777
+octaves = 1
+period = 10.0
+persistence = 0.1
+
+[resource]
+script = ExtResource( 1 )
+noise = SubResource( 1 )
+hallwayCutoff = 0.02
+hallTiles = 1000.0

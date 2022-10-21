@@ -7,6 +7,7 @@ using System.Collections.Generic;
 /// </summary>
 // Parasitically based on TileMap.
 // Would change, but its quite convenient.
+[Tool]
 public class CrawlerMap : SparseMatrix
 {
     public CrawlerMap()

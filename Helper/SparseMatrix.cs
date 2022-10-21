@@ -55,6 +55,19 @@ public class SparseMatrix : Resource
         }
     }
 
+    public void DumpToTilemap(TileMap map)
+    {
+        foreach (Vector2 chunkId in chunks.Keys)
+        {
+            int[] chunk = chunks[chunkId];
+            for (int i = 0; i < CELL_AREA; i++)
+            {
+                Vector2 cell = ChunkAndIndexToCell(chunkId, i);
+                map.SetCellv(cell, chunk[i]);
+            }
+        }
+    }
+
     // Acts as TileMap
 
     public void SetCell(int x, int y, int tile)

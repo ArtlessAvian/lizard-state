@@ -23,7 +23,7 @@ public class EditorGenerator : LevelGenerator
         return model;
     }
 
-    public override void GenerateMap(Model model)
+    public void GenerateMap(Model model)
     {
         TileMap map = scene.Instance<TileMap>();
         model.map.ReadFromTilemap(map);
@@ -83,7 +83,7 @@ public class EditorGenerator : LevelGenerator
         return entity;
     }
 
-    public override void AddSystems(Model model)
+    public void AddSystems(Model model)
     {
         model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);
         model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/VisionSystem.cs").New() as Resource);

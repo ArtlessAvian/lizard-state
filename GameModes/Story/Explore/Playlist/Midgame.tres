@@ -1,0 +1,33 @@
+[gd_resource type="Resource" load_steps=7 format=2]
+
+[ext_resource path="res://Crawler/Generators/HybridGenerator.cs" type="Script" id=2]
+[ext_resource path="res://GameModes/Story/Explore/Playlist/ExplorePlaylist.cs" type="Script" id=3]
+
+[sub_resource type="OpenSimplexNoise" id=3]
+seed = 777
+octaves = 1
+period = 10.0
+persistence = 0.1
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 2 )
+noise = SubResource( 3 )
+hallwayCutoff = 0.02
+hallTiles = 400.0
+
+[sub_resource type="OpenSimplexNoise" id=4]
+seed = 413
+octaves = 1
+period = 10.0
+persistence = 0.1
+
+[sub_resource type="Resource" id=5]
+script = ExtResource( 2 )
+noise = SubResource( 4 )
+hallwayCutoff = 0.02
+hallTiles = 600.0
+
+[resource]
+script = ExtResource( 3 )
+generators = [ SubResource( 2 ), SubResource( 5 ), SubResource( 2 ) ]
+current = 0

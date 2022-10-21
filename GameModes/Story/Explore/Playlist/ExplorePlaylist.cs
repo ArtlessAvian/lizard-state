@@ -12,6 +12,12 @@ public class ExplorePlaylist : Resource
     [Export] int current = 0;
     [Export] Model currentModel = null;
 
+    public void Reset()
+    {
+        current = 0;
+        currentModel = null;
+    }
+
     // [Export] Entity[] _playerTeam; // = {GD.Load<>};
 
     public Model GetCurrentModel()

@@ -15,7 +15,7 @@ public class NoiseGenerator : LevelGenerator
         return model;
     }
 
-    public override void GenerateMap(Model model)
+    public void GenerateMap(Model model)
     {
         OpenSimplexNoise noise = new OpenSimplexNoise();
         noise.Period = 6;
@@ -87,7 +87,7 @@ public class NoiseGenerator : LevelGenerator
         return entity;
     }
 
-    public override void AddSystems(Model model)
+    public void AddSystems(Model model)
     {
         model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);
         model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/VisionSystem.cs").New() as Resource);
