@@ -1,5 +1,4 @@
 using Godot;
-using Godot.Collections;
 using Priority_Queue;
 using System;
 using System.Collections.Generic;
@@ -38,7 +37,17 @@ public class HybridGenerator : LevelGenerator
 
         HashSet<(int, int)> candidates = FindCandidateHallways(start);
 
-        // locate "rooms" / points of interest. generate full graph of rooms.
+        // locate "rooms" / points of interest.
+        // generate full graph of rooms.
+        (List<Vector2> rooms, bool[,] edges) = BuildGraph(candidates, 15);
+        GD.Print("Generated ", rooms.Count, " rooms.");
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            for (int j = i + 1; j < rooms.Count; j++)
+            {
+                if (edges[i, j]) { GD.PrintS(i, rooms[i], "connected to", j, rooms[j]); }
+            }
+        }
 
         // prune for subgraph with properties.
 
@@ -55,6 +64,27 @@ public class HybridGenerator : LevelGenerator
 
         // generate moss at cave center. I don't have a good idea where else to put it lol.
 
+        // debug drawing
+        // for (int i = 0; i < rooms.Count; i++)
+        // {
+        //     (int, int) iTup = ((int)rooms[i].x, (int)rooms[i].y);
+        //     for (int j = i + 1; j < rooms.Count; j++)
+        //     {
+        //         (int, int) jTup = ((int)rooms[j].x, (int)rooms[j].y);
+        //         if (edges[i, j])
+        //         {
+        //             foreach ((int x, int y) tile in GridHelper.LineBetween(iTup, jTup))
+        //             {
+        //                 model.map.SetCell(tile.x, tile.y, 2);
+        //             }
+        //         }
+        //     }
+        // }
+
+        // foreach (Vector2 vec in rooms)
+        // {
+        //     model.map.SetCellv(vec, 4);
+        // }
     }
 
     // returns /some/ random valid place for a hallway
@@ -73,16 +103,17 @@ public class HybridGenerator : LevelGenerator
         return (0, 0);
     }
 
-    private HashSet<(int x, int y)> FindCandidateHallways((int x, int y) start)
+    private HashSet<(int, int)> FindCandidateHallways((int x, int y) start)
     {
         // This is just BFS, but if it fails to find anything, makes the hallways wider, until it can.
-        var cost = new System.Collections.Generic.Dictionary<(int, int), int>();
+        var distance = new Dictionary<(int, int), int>();
         var pq = new SimplePriorityQueue<(int, int), (float, int)>();
-        cost.Add(start, 0);
         pq.Enqueue(start, (0, 0));
         for (int i = 0; i < hallTiles; i++)
         {
+            (float _, int dist) = pq.GetPriority(pq.First);
             (int x, int y) current = pq.Dequeue();
+            distance.Add(current, dist);
 
             // diagonals omitted, since they cause a visual discontinuity that i don't like
             // (discontinuity untested).
@@ -95,15 +126,76 @@ public class HybridGenerator : LevelGenerator
                 };
             foreach ((int x, int y) neighbor in neighbors)
             {
-                if (cost.ContainsKey(neighbor)) { continue; }
+                if (distance.ContainsKey(neighbor)) { continue; }
+                if (pq.Contains(neighbor)) { continue; }
                 float sample = SampleNoise(neighbor.x, neighbor.y);
 
-                pq.Enqueue(neighbor, (Mathf.Max(0, sample - hallwayCutoff), cost[current] + 1));
-                cost.Add(neighbor, cost[current] + 1);
+                pq.Enqueue(neighbor, (Mathf.Max(0, sample - hallwayCutoff), distance[current] + 1));
             }
         }
 
-        return new HashSet<(int, int)>(cost.Keys);
+        return new HashSet<(int, int)>(distance.Keys);
+    }
+
+    // Generate at least maxRooms Rooms.
+    private (List<Vector2> rooms, bool[,] edges) BuildGraph(HashSet<(int, int)> candidates, int maxRooms)
+    {
+        List<Vector2> rooms = new List<Vector2>();
+        bool[,] edges = new bool[maxRooms, maxRooms];
+
+        var tileToRoom = new Dictionary<(int, int), int>();
+        int room = 0;
+        foreach ((int x, int y) tile in candidates)
+        {
+            if (room >= maxRooms) { break; } // room++ at the end.
+            if (tileToRoom.ContainsKey(tile)) { continue; }
+
+            // room {room} centered on tile {tile}!
+            rooms.Add(new Vector2(tile.x, tile.y));
+
+            tileToRoom.Add(tile, 1 << room);
+            // mark every room in n steps.
+            HashSet<(int, int)> seen = new HashSet<(int, int)>() { tile };
+            List<(int, int)> frontier = new List<(int, int)>() { tile };
+            for (int step = 1; step < 10; step++)
+            {
+                List<(int, int)> nextFrontier = new List<(int, int)>();
+                foreach ((int x, int y) current in frontier)
+                {
+                    var neighbors = new (int, int)[] {
+                        (current.x - 1, current.y - 1),
+                        (current.x - 1, current.y),
+                        (current.x - 1, current.y + 1),
+                        (current.x, current.y - 1),
+                        (current.x, current.y + 1),
+                        (current.x + 1, current.y - 1),
+                        (current.x + 1, current.y),
+                        (current.x + 1, current.y + 1),
+                        };
+                    foreach ((int x, int y) neighbor in neighbors)
+                    {
+                        if (seen.Contains(neighbor)) { continue; }
+                        seen.Add(neighbor);
+                        nextFrontier.Add(neighbor);
+                        if (!tileToRoom.ContainsKey(neighbor)) { tileToRoom[neighbor] = 0; }
+                        for (int other = 0; other < maxRooms; other++)
+                        {
+                            if ((tileToRoom[neighbor] & (1 << other)) != 0)
+                            {
+                                edges[room, other] = true;
+                                edges[other, room] = true;
+                            }
+                        }
+                        tileToRoom[neighbor] |= 1 << room;
+                    }
+                }
+                frontier = nextFrontier;
+            }
+
+            room++;
+        }
+
+        return (rooms, edges);
     }
 
     private void GenerateEntrance(Model model, (int x, int y) start)
