@@ -5,11 +5,11 @@
 [sub_resource type="OpenSimplexNoise" id=1]
 seed = 777
 octaves = 1
-period = 12.0
+period = 10.0
 persistence = 0.1
 
 [resource]
 script = ExtResource( 1 )
 noise = SubResource( 1 )
 hallwayCutoff = 0.05
-hallTiles = 1000.0
+hallTiles = 400.0

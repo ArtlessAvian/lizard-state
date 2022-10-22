@@ -118,9 +118,13 @@ public partial class Model
         {
             VisionSystem visionSystem = GetSystem<VisionSystem>();
             List<Entity> entities = new List<Entity>();
-            foreach (int i in visionSystem.canSee.Keys)
+            foreach (List<int> list in visionSystem.canSee.Values)
             {
-                entities.Add(GetEntity(i));
+                foreach (int id in list)
+                {
+                    Entity seen = GetEntity(id);
+                    if (!entities.Contains(seen)) { entities.Add(seen); }
+                }
             }
             return entities;
         }

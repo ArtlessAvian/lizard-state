@@ -234,7 +234,6 @@ public class HybridGenerator : LevelGenerator
                         int neighborRoom = closestTo[neighbor];
                         if (currentRoom != neighborRoom)
                         {
-                            GD.Print(currentRoom, neighborRoom, neighbor);
                             edges[currentRoom, neighborRoom] = true;
                             edges[neighborRoom, currentRoom] = true;
                             borders.Add(neighbor);
