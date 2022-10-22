@@ -10,7 +10,7 @@ using System.Collections.Generic;
 public class HybridGenerator : LevelGenerator
 {
     [Export] private OpenSimplexNoise noise;
-    [Export] float hallwayCutoff = 0.02f;
+    [Export] float hallwayCutoff = 0.05f;
     [Export] float hallTiles = 1000;
 
     public HybridGenerator()

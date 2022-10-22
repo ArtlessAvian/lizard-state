@@ -12,7 +12,7 @@ persistence = 0.1
 [sub_resource type="Resource" id=2]
 script = ExtResource( 2 )
 noise = SubResource( 3 )
-hallwayCutoff = 0.02
+hallwayCutoff = 0.05
 hallTiles = 400.0
 
 [sub_resource type="OpenSimplexNoise" id=4]
@@ -24,7 +24,7 @@ persistence = 0.1
 [sub_resource type="Resource" id=5]
 script = ExtResource( 2 )
 noise = SubResource( 4 )
-hallwayCutoff = 0.02
+hallwayCutoff = 0.05
 hallTiles = 600.0
 
 [resource]
