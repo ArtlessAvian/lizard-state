@@ -27,10 +27,10 @@ anchor_bottom = 1.0
 [node name="Label" type="RichTextLabel" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -90.4863
-margin_top = 135.676
-margin_right = 109.514
-margin_bottom = 288.676
+margin_left = -115.713
+margin_top = 26.3594
+margin_right = 84.287
+margin_bottom = 179.359
 bbcode_enabled = true
 bbcode_text = "[center][wave]Lizard State
 Demoooooooo[/wave][/center]"
@@ -41,10 +41,11 @@ fit_content_height = true
 [node name="StartTutorial" type="Button" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -113.979
-margin_top = 255.02
-margin_right = 108.021
-margin_bottom = 283.02
+margin_left = -139.206
+margin_top = 145.703
+margin_right = 82.7941
+margin_bottom = 173.703
+disabled = true
 text = "Play tutorial!!!!!!!!!"
 
 [node name="TextureRect" type="TextureRect" parent="Control/StartTutorial"]
@@ -59,10 +60,10 @@ expand = true
 [node name="StartEarlygame" type="Button" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -106.03
-margin_top = 303.698
-margin_right = 99.97
-margin_bottom = 331.698
+margin_left = -131.257
+margin_top = 194.381
+margin_right = 74.743
+margin_bottom = 222.381
 text = "Play early game!"
 
 [node name="TextureRect2" type="TextureRect" parent="Control/StartEarlygame"]
@@ -77,12 +78,12 @@ expand = true
 [node name="StartMidgame" type="Button" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -106.175
-margin_top = 373.326
-margin_right = 99.8252
-margin_bottom = 401.326
+margin_left = -131.402
+margin_top = 264.009
+margin_right = 74.5983
+margin_bottom = 292.009
+disabled = true
 text = "Play mid game!"
-flat = true
 
 [node name="TextureRect3" type="TextureRect" parent="Control/StartMidgame"]
 margin_left = -87.5845
@@ -93,13 +94,50 @@ rect_min_size = Vector2( 80, 80 )
 texture = SubResource( 3 )
 expand = true
 
+[node name="StartMidgame2" type="Button" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 23.8535
+margin_top = 368.634
+margin_right = 473.854
+margin_bottom = 396.634
+toggle_mode = true
+text = "No tutorial yet :( text instructions?"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/StartMidgame2"]
+visible = false
+margin_left = -133.745
+margin_top = 68.4804
+margin_right = 616.255
+margin_bottom = 468.48
+bbcode_enabled = true
+bbcode_text = "Keyboard + Mouse is preferred. There's diagonal movement. 
+Numpad works (and VI keys if you're cool.)
+
+A to open abilities. These cost energy.
+I to open items. These have limited uses per run. Food items go here.
+
+Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
+
+There's no penalty for dying yet. Try to leave before dying!"
+text = "Keyboard + Mouse is preferred. There's diagonal movement. 
+Numpad works (and VI keys if you're cool.)
+
+A to open abilities. These cost energy.
+I to open items. These have limited uses per run. Food items go here.
+
+Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
+
+There's no penalty for dying yet. Try to leave before dying!"
+scroll_active = false
+
 [node name="Label2" type="RichTextLabel" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -238.488
-margin_top = 434.991
-margin_right = 261.512
-margin_bottom = 587.991
+margin_left = -569.801
+margin_top = 323.993
+margin_right = -69.8011
+margin_bottom = 476.993
 rect_min_size = Vector2( 500, 0 )
 bbcode_enabled = true
 bbcode_text = "[center]
@@ -113,3 +151,4 @@ fit_content_height = true
 [connection signal="button_up" from="Control/StartTutorial" to="." method="_on_StartTutorial_button_up"]
 [connection signal="button_up" from="Control/StartEarlygame" to="." method="_on_StartEarlygame_button_up"]
 [connection signal="button_up" from="Control/StartMidgame" to="." method="_on_StartMidgame_button_up"]
+[connection signal="toggled" from="Control/StartMidgame2" to="Control/StartMidgame2/RichTextLabel" method="set_visible"]
