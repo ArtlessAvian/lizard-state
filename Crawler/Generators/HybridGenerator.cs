@@ -34,123 +34,153 @@ public class HybridGenerator : LevelGenerator
 
     public void GenerateMap(Model model)
     {
-        (int x, int y) start = (0, 0);
+        (int x, int y) start = SearchForHallway();
+
+        HashSet<(int, int)> candidates = FindCandidateHallways(start);
+
+        // locate "rooms" / points of interest. generate full graph of rooms.
+
+        // prune for subgraph with properties.
+
+        // draw subgraph into model.map. (also add dead ends)
+        // TODO: Temporary
+        foreach ((int x, int y) in candidates)
+        {
+            model.map.SetCell(x, y, 1);
+        }
+
+        // draw a river
+
+        GenerateEntrance(model, start);
+
+        // generate moss at cave center. I don't have a good idea where else to put it lol.
+
+    }
+
+    // returns /some/ random valid place for a hallway
+    private (int x, int y) SearchForHallway()
+    {
+        // search downwards.
         for (int i = 0; i < 100; i++)
         {
-            if (SampleNoise(start.x, i) < hallwayCutoff)
+            if (SampleNoise(0, i) < hallwayCutoff)
             {
-                start.y = i;
-                break;
+                return (0, i);
             }
         }
+        // ugh.
+        GD.PrintErr("HybridGenerator.SearchForHallway: Failed to find hallway");
+        return (0, 0);
+    }
 
-        // Generate all the halls.
+    private HashSet<(int x, int y)> FindCandidateHallways((int x, int y) start)
+    {
+        // This is just BFS, but if it fails to find anything, makes the hallways wider, until it can.
+        var cost = new System.Collections.Generic.Dictionary<(int, int), int>();
+        var pq = new SimplePriorityQueue<(int, int), (float, int)>();
+        cost.Add(start, 0);
+        pq.Enqueue(start, (0, 0));
+        for (int i = 0; i < hallTiles; i++)
         {
-            // This is just BFS, but if it fails to find anything, makes the hallways wider, until it can.
-            var cost = new System.Collections.Generic.Dictionary<(int, int), int>();
-            var pq = new SimplePriorityQueue<(int, int), (float, int)>();
-            cost.Add(start, 0);
-            pq.Enqueue(start, (0, 0));
-            model.map.SetCell(start.x, start.y, 1);
-            for (int i = 0; i < hallTiles; i++)
-            {
-                (int x, int y) current = pq.Dequeue();
+            (int x, int y) current = pq.Dequeue();
 
-                var neighbors = new (int, int)[] {
-                    (current.x + 1, current.y),
-                    (current.x - 1, current.y),
-                    (current.x, current.y + 1),
-                    (current.x, current.y - 1),
-                    };
-                foreach ((int x, int y) neighbor in neighbors)
-                {
-                    if (cost.ContainsKey(neighbor)) { continue; }
-                    float sample = SampleNoise(neighbor.x, neighbor.y);
-
-                    model.map.SetCell(neighbor.x, neighbor.y, 1);
-                    pq.Enqueue(neighbor, (Mathf.Max(0, sample - hallwayCutoff), cost[current] + 1));
-                    cost.Add(neighbor, cost[current] + 1);
-                }
-            }
-        }
-
-        // Generate entrance
-        {
-            // From the start, march upwards until stuck.
-            // replace tiles for cave entrance.
-            HashSet<(int, int)> tiles = new HashSet<(int, int)>();
-            List<(int, int)> frontier = new List<(int, int)>();
-            frontier.Add(start);
-            tiles.Add(start);
-            for (int i = 0; i < 100 && frontier.Count > 0; i++)
-            {
-                (int x, int y) current = frontier[frontier.Count - 1];
-                frontier.RemoveAt(frontier.Count - 1);
-
-                // attempt to march upwards.
-                var above = new (int, int)[] {
-                    (current.x, current.y - 1),
-                    (current.x + 1, current.y - 1),
-                    (current.x - 1, current.y - 1),
-                    };
-                bool broke = false;
-                foreach ((int x, int y) neighbor in above)
-                {
-                    if (model.map.GetCell(neighbor.x, neighbor.y) != -1)
-                    {
-                        frontier.Clear(); // dont care about stuff with greater y.
-                        tiles.Clear();
-                        frontier.Add(neighbor);
-                        tiles.Add(neighbor);
-
-                        broke = true;
-                        break; // for reasons
-                    }
-                }
-                if (broke)
-                {
-                    continue;
-                }
-
-                GD.Print("Going sideways");
-                // no tiles upwards. try left and right.
-                var sideways = new (int, int)[] {
-                    (current.x + 1, current.y),
-                    (current.x - 1, current.y)
+            // diagonals omitted, since they cause a visual discontinuity that i don't like
+            // (discontinuity untested).
+            // while players can move through walls diagonally (now), but noticing a thin diagonal passageway is awkward.
+            var neighbors = new (int, int)[] {
+                (current.x + 1, current.y),
+                (current.x - 1, current.y),
+                (current.x, current.y + 1),
+                (current.x, current.y - 1),
                 };
-                foreach ((int x, int y) neighbor in sideways)
+            foreach ((int x, int y) neighbor in neighbors)
+            {
+                if (cost.ContainsKey(neighbor)) { continue; }
+                float sample = SampleNoise(neighbor.x, neighbor.y);
+
+                pq.Enqueue(neighbor, (Mathf.Max(0, sample - hallwayCutoff), cost[current] + 1));
+                cost.Add(neighbor, cost[current] + 1);
+            }
+        }
+
+        return new HashSet<(int, int)>(cost.Keys);
+    }
+
+    private void GenerateEntrance(Model model, (int x, int y) start)
+    {
+        // TODO: use model.map.chunks to find uppermost tile?
+
+        // From the start, march upwards until stuck.
+        // replace tiles for cave entrance.
+        HashSet<(int, int)> tiles = new HashSet<(int, int)>();
+        List<(int, int)> frontier = new List<(int, int)>();
+        frontier.Add(start);
+        tiles.Add(start);
+        for (int i = 0; i < 100 && frontier.Count > 0; i++)
+        {
+            (int x, int y) current = frontier[frontier.Count - 1];
+            frontier.RemoveAt(frontier.Count - 1);
+
+            // attempt to march upwards.
+            var above = new (int, int)[] {
+                (current.x, current.y - 1),
+                (current.x + 1, current.y - 1),
+                (current.x - 1, current.y - 1),
+                };
+            bool broke = false;
+            foreach ((int x, int y) neighbor in above)
+            {
+                if (model.map.GetCell(neighbor.x, neighbor.y) != -1)
                 {
-                    if (!tiles.Contains(neighbor) && model.map.GetCell(neighbor.x, neighbor.y) != -1)
-                    {
-                        tiles.Add(neighbor);
-                        frontier.Add(neighbor);
-                    }
+                    frontier.Clear(); // dont care about stuff with greater y.
+                    tiles.Clear();
+                    frontier.Add(neighbor);
+                    tiles.Add(neighbor);
+
+                    broke = true;
+                    break; // for reasons
                 }
             }
-            // exiting the for means that every tile in tiles has no above neighbor.
-            // paint all of these as entrances.
+            if (broke)
+            {
+                continue;
+            }
+
+            // no tiles upwards. try left and right.
+            var sideways = new (int, int)[] {
+                (current.x + 1, current.y),
+                (current.x - 1, current.y)
+            };
+            foreach ((int x, int y) neighbor in sideways)
+            {
+                if (!tiles.Contains(neighbor) && model.map.GetCell(neighbor.x, neighbor.y) != -1)
+                {
+                    tiles.Add(neighbor);
+                    frontier.Add(neighbor);
+                }
+            }
+        }
+        // exiting the for means that every tile in tiles has no above neighbor.
+        // paint all of these as entrances.
+        foreach ((int x, int y) in tiles)
+        {
+            model.map.SetCell(x, y, 5);
+        }
+        if (tiles.Count == 1)
+        {
+            // bullshit it.
             foreach ((int x, int y) in tiles)
             {
-                model.map.SetCell(x, y, 5);
-            }
-            if (tiles.Count == 1)
-            {
-                // bullshit it.
-                foreach ((int x, int y) in tiles)
+                if (SampleNoise(x - 1, y) < SampleNoise(x + 1, y))
                 {
-                    if (SampleNoise(x - 1, y) < SampleNoise(x + 1, y))
-                    {
-                        model.map.SetCell(x - 1, y, 5);
-                    }
-                    else
-                    {
-                        model.map.SetCell(x + 1, y, 5);
-                    }
+                    model.map.SetCell(x - 1, y, 5);
+                }
+                else
+                {
+                    model.map.SetCell(x + 1, y, 5);
                 }
             }
         }
-
-        // generate moss at (0, 0). I don't have a good idea where else to put it lol.
     }
 
     public void GenerateEntities(Model model)
