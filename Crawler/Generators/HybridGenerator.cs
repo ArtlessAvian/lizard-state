@@ -38,16 +38,11 @@ public class HybridGenerator : LevelGenerator
         HashSet<(int, int)> candidates = FindCandidateHallways(start);
 
         // locate "rooms" / points of interest.
-        // generate full graph of rooms.
-        (List<Vector2> rooms, bool[,] edges) = BuildGraph(candidates, 15);
+        List<(int, int)> rooms = PlaceRooms(candidates, 15);
         GD.Print("Generated ", rooms.Count, " rooms.");
-        for (int i = 0; i < rooms.Count; i++)
-        {
-            for (int j = i + 1; j < rooms.Count; j++)
-            {
-                if (edges[i, j]) { GD.PrintS(i, rooms[i], "connected to", j, rooms[j]); }
-            }
-        }
+
+        // generate graph given rooms.
+        (bool[,] edges, List<(int, int)> borders) = BuildGraph(candidates, rooms);
 
         // prune for subgraph with properties.
 
@@ -65,15 +60,18 @@ public class HybridGenerator : LevelGenerator
         // generate moss at cave center. I don't have a good idea where else to put it lol.
 
         // debug drawing
+        // foreach ((int x, int y) in borders)
+        // {
+        //     model.map.SetCell(x, y, 3);
+        // }
+
         // for (int i = 0; i < rooms.Count; i++)
         // {
-        //     (int, int) iTup = ((int)rooms[i].x, (int)rooms[i].y);
         //     for (int j = i + 1; j < rooms.Count; j++)
         //     {
-        //         (int, int) jTup = ((int)rooms[j].x, (int)rooms[j].y);
         //         if (edges[i, j])
         //         {
-        //             foreach ((int x, int y) tile in GridHelper.LineBetween(iTup, jTup))
+        //             foreach ((int x, int y) tile in GridHelper.LineBetween(rooms[i], rooms[j]))
         //             {
         //                 model.map.SetCell(tile.x, tile.y, 2);
         //             }
@@ -81,9 +79,9 @@ public class HybridGenerator : LevelGenerator
         //     }
         // }
 
-        // foreach (Vector2 vec in rooms)
+        // foreach ((int x, int y) in rooms)
         // {
-        //     model.map.SetCellv(vec, 4);
+        //     model.map.SetCell(x, y, 4);
         // }
     }
 
@@ -138,22 +136,20 @@ public class HybridGenerator : LevelGenerator
     }
 
     // Generate at least maxRooms Rooms.
-    private (List<Vector2> rooms, bool[,] edges) BuildGraph(HashSet<(int, int)> candidates, int maxRooms)
+    private List<(int, int)> PlaceRooms(HashSet<(int, int)> candidates, int maxRooms)
     {
-        List<Vector2> rooms = new List<Vector2>();
-        bool[,] edges = new bool[maxRooms, maxRooms];
-
-        var tileToRoom = new Dictionary<(int, int), int>();
+        List<(int, int)> rooms = new List<(int, int)>();
+        var tileUsed = new HashSet<(int, int)>();
         int room = 0;
         foreach ((int x, int y) tile in candidates)
         {
             if (room >= maxRooms) { break; } // room++ at the end.
-            if (tileToRoom.ContainsKey(tile)) { continue; }
+            if (tileUsed.Contains(tile)) { continue; }
 
             // room {room} centered on tile {tile}!
-            rooms.Add(new Vector2(tile.x, tile.y));
+            rooms.Add(tile);
+            tileUsed.Add(tile);
 
-            tileToRoom.Add(tile, 1 << room);
             // mark every room in n steps.
             HashSet<(int, int)> seen = new HashSet<(int, int)>() { tile };
             List<(int, int)> frontier = new List<(int, int)>() { tile };
@@ -177,16 +173,7 @@ public class HybridGenerator : LevelGenerator
                         if (seen.Contains(neighbor)) { continue; }
                         seen.Add(neighbor);
                         nextFrontier.Add(neighbor);
-                        if (!tileToRoom.ContainsKey(neighbor)) { tileToRoom[neighbor] = 0; }
-                        for (int other = 0; other < maxRooms; other++)
-                        {
-                            if ((tileToRoom[neighbor] & (1 << other)) != 0)
-                            {
-                                edges[room, other] = true;
-                                edges[other, room] = true;
-                            }
-                        }
-                        tileToRoom[neighbor] |= 1 << room;
+                        tileUsed.Add(neighbor);
                     }
                 }
                 frontier = nextFrontier;
@@ -195,7 +182,70 @@ public class HybridGenerator : LevelGenerator
             room++;
         }
 
-        return (rooms, edges);
+        return rooms;
+    }
+
+    private (bool[,] edges, List<(int, int)> borders) BuildGraph(HashSet<(int, int)> candidates, List<(int, int)> rooms)
+    {
+        // build voronoi, then get dual. 
+        bool[,] edges = new bool[rooms.Count, rooms.Count];
+        List<(int, int)> borders = new List<(int, int)>();
+
+        // bfs from everywhere.
+        List<(int, int)> frontier = new List<(int, int)>(rooms);
+        Dictionary<(int, int), int> closestTo = new Dictionary<(int, int), int>();
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            closestTo.Add(rooms[i], i);
+        }
+        for (int i = 0; i < 40 && frontier.Count > 0; i++)
+        {
+            if (i == 39)
+            {
+                GD.Print("holy fuck");
+            }
+
+            List<(int, int)> nextFrontier = new List<(int, int)>();
+            foreach ((int x, int y) current in frontier)
+            {
+                int currentRoom = closestTo[current];
+
+                var neighbors = new (int, int)[] {
+                        (current.x - 1, current.y - 1),
+                        (current.x - 1, current.y),
+                        (current.x - 1, current.y + 1),
+                        (current.x, current.y - 1),
+                        (current.x, current.y + 1),
+                        (current.x + 1, current.y - 1),
+                        (current.x + 1, current.y),
+                        (current.x + 1, current.y + 1),
+                        };
+                foreach ((int x, int y) neighbor in neighbors)
+                {
+                    if (!candidates.Contains(neighbor)) { continue; }
+                    if (!closestTo.ContainsKey(neighbor))
+                    {
+                        // the usual BFS stuff.
+                        closestTo.Add(neighbor, closestTo[current]);
+                        nextFrontier.Add(neighbor);
+                    }
+                    else
+                    {
+                        int neighborRoom = closestTo[neighbor];
+                        if (currentRoom != neighborRoom)
+                        {
+                            GD.Print(currentRoom, neighborRoom, neighbor);
+                            edges[currentRoom, neighborRoom] = true;
+                            edges[neighborRoom, currentRoom] = true;
+                            borders.Add(neighbor);
+                        }
+                    }
+                }
+            }
+            frontier = nextFrontier;
+        }
+
+        return (edges, borders);
     }
 
     private void GenerateEntrance(Model model, (int x, int y) start)
