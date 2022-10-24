@@ -25,8 +25,21 @@ public class ExplorePlaylist : Resource
         if (currentModel == null)
         {
             // construct the players.
+            Species playerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
+            Species partnerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
 
-            currentModel = GenerateModel(0);
+            Entity player = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
+            Entity partner = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
+
+            player.SetSpecies(playerSpecies);
+            partner.SetSpecies(partnerSpecies);
+
+            player.SetTeam(0);
+            partner.SetTeam(0);
+
+            player.isPlayer = true;
+
+            currentModel = GenerateModel(0, new Entity[] { player, partner });
         }
 
         return currentModel;
@@ -37,22 +50,26 @@ public class ExplorePlaylist : Resource
     {
         if (current >= generators.Count - 1) { return null; }
         if (previous is null) { return null; }
-
-        // previousModels.Add(previous);
         current += 1;
 
-        // we still hold a reference to the players.
-        // if we decide thats kind of wack, we can just yoink or duplicate them from the previous model we just got.
-        // also heal them, have them "eat", etc.
-        currentModel = GenerateModel(current);
+        Entity player = (Entity)previous.GetEntity(0).Duplicate();
+        Entity partner = (Entity)previous.GetEntity(1).Duplicate();
+
+        // have players "eat", heal them, etc.
+        // eating logic here
+        // heal/buff logic here.
+        player.health = Mathf.Min(player.health + 5, player.species.maxHealth);
+        partner.health = Mathf.Min(partner.health + 5, partner.species.maxHealth);
+
+        currentModel = GenerateModel(current, new Entity[] { player, partner });
 
         return currentModel;
     }
 
-    private Model GenerateModel(int index)
+    private Model GenerateModel(int index, Entity[] playerTeam)
     {
         Model model = GD.Load<CSharpScript>("res://Crawler/Model/Model.cs").New() as Model;
-        generators[index].Generate(model);
+        generators[index].Generate(model, playerTeam);
         return model;
     }
 }

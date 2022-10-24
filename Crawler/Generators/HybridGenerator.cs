@@ -23,15 +23,16 @@ public class HybridGenerator : LevelGenerator
         }
     }
 
-    public override Model Generate(Model model)
+    public override Model Generate(Model model, Entity[] playerTeam)
     {
         AddSystems(model);
-        GenerateMap(model);
+        GenerateMap(model.map);
+        PlacePlayers(model, playerTeam);
         GenerateEntities(model);
         return model;
     }
 
-    public void GenerateMap(Model model)
+    public override void GenerateMap(CrawlerMap map)
     {
         (int x, int y) start = SearchForHallway();
 
@@ -50,12 +51,12 @@ public class HybridGenerator : LevelGenerator
         // TODO: Temporary
         foreach ((int x, int y) in candidates)
         {
-            model.map.SetCell(x, y, 1);
+            map.SetCell(x, y, 1);
         }
 
         // draw a river
 
-        GenerateEntrance(model, start);
+        GenerateEntrance(map, start);
 
         // generate moss at cave center. I don't have a good idea where else to put it lol.
 
@@ -247,7 +248,7 @@ public class HybridGenerator : LevelGenerator
         return (edges, borders);
     }
 
-    private void GenerateEntrance(Model model, (int x, int y) start)
+    private void GenerateEntrance(CrawlerMap map, (int x, int y) start)
     {
         // TODO: use model.map.chunks to find uppermost tile?
 
@@ -271,7 +272,7 @@ public class HybridGenerator : LevelGenerator
             bool broke = false;
             foreach ((int x, int y) neighbor in above)
             {
-                if (model.map.GetCell(neighbor.x, neighbor.y) != -1)
+                if (map.GetCell(neighbor.x, neighbor.y) != -1)
                 {
                     frontier.Clear(); // dont care about stuff with greater y.
                     tiles.Clear();
@@ -294,7 +295,7 @@ public class HybridGenerator : LevelGenerator
             };
             foreach ((int x, int y) neighbor in sideways)
             {
-                if (!tiles.Contains(neighbor) && model.map.GetCell(neighbor.x, neighbor.y) != -1)
+                if (!tiles.Contains(neighbor) && map.GetCell(neighbor.x, neighbor.y) != -1)
                 {
                     tiles.Add(neighbor);
                     frontier.Add(neighbor);
@@ -305,7 +306,7 @@ public class HybridGenerator : LevelGenerator
         // paint all of these as entrances.
         foreach ((int x, int y) in tiles)
         {
-            model.map.SetCell(x, y, 5);
+            map.SetCell(x, y, 5);
         }
         if (tiles.Count == 1)
         {
@@ -314,25 +315,20 @@ public class HybridGenerator : LevelGenerator
             {
                 if (SampleNoise(x - 1, y) < SampleNoise(x + 1, y))
                 {
-                    model.map.SetCell(x - 1, y, 5);
+                    map.SetCell(x - 1, y, 5);
                 }
                 else
                 {
-                    model.map.SetCell(x + 1, y, 5);
+                    map.SetCell(x + 1, y, 5);
                 }
             }
         }
     }
 
-    public void GenerateEntities(Model model)
+    private void PlacePlayers(Model model, Entity[] playerTeam)
     {
-        Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
-        Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
-        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
-
         int spawnX = 0;
         int spawnY = 0;
-
         foreach (Vector2 vec in model.map.GetUsedCellsById(5))
         {
             spawnX = (int)vec.x;
@@ -341,16 +337,16 @@ public class HybridGenerator : LevelGenerator
         }
 
         GD.PrintS(spawnX, spawnY);
-        model.AddEntity(CreateEntity(playerTegu, (spawnX, spawnY), 0));
-        model.GetEntity(0).isPlayer = true;
-        model.AddEntity(CreateEntity(partnerAxolotl, (spawnX + 1, spawnY), 0));
+        playerTeam[0].position = (spawnX, spawnY);
+        playerTeam[1].position = (spawnX + 1, spawnY);
 
-        // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
-        // model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
+        model.AddEntity(playerTeam[0]);
+        model.AddEntity(playerTeam[1]);
+    }
 
-        // // model.AddEntity(new Entity(enemy, (0, 10), 1));
-        // model.AddEntity(new Entity(enemy, (1, 20), 1));
-        // model.AddEntity(new Entity(enemy, (2, 20), 1));
+    public void GenerateEntities(Model model)
+    {
+        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
         var tiles = model.map.GetUsedCellsById(1);
         tiles.Shuffle();

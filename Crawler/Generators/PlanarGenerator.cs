@@ -10,11 +10,12 @@ public class PlanarGenerator : LevelGenerator
     PlanarGraph graph;
     List<Vector2> embedding = new List<Vector2>();
 
-    public override Model Generate(Model model)
+    public override Model Generate(Model model, Entity[] playerTeam)
     {
         GenerateEmbedding();
-        GenerateMap(model);
+        GenerateMap(model.map);
         AddSystems(model);
+        PlacePlayers(model, playerTeam);
         GenerateEntities(model);
         return model;
     }
@@ -153,7 +154,7 @@ public class PlanarGenerator : LevelGenerator
         return true;
     }
 
-    public void GenerateMap(Model model)
+    public override void GenerateMap(CrawlerMap map)
     {
         // draw all hallways
         for (int node = 0; node < graph.nodes; node++)
@@ -163,7 +164,7 @@ public class PlanarGenerator : LevelGenerator
                 if (neighbor > node) { continue; }
                 foreach ((int x, int y) in GridHelper.LineBetween(((int)embedding[node].x, (int)embedding[node].y), ((int)embedding[neighbor].x, (int)embedding[neighbor].y)))
                 {
-                    SplatMap(model.map, x, y, 1);
+                    SplatMap(map, x, y, 1);
                 }
             }
         }
@@ -175,7 +176,7 @@ public class PlanarGenerator : LevelGenerator
             {
                 for (int dy = -2; dy <= 2; dy++)
                 {
-                    SplatMap(model.map, (int)embedding[node].x + dx, (int)embedding[node].y + dy, 1);
+                    SplatMap(map, (int)embedding[node].x + dx, (int)embedding[node].y + dy, 1);
                 }
             }
         }
@@ -214,27 +215,24 @@ public class PlanarGenerator : LevelGenerator
         }
     }
 
-    public void GenerateEntities(Model model)
+    public void PlacePlayers(Model model, Entity[] playerTeam)
     {
-        Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
-        Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
-        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
-
         (float x, float y) = Warp(embedding[0].x, embedding[0].y);
         int spawnX = (int)x;
         int spawnY = (int)y;
 
         GD.PrintS(spawnX, spawnY);
-        model.AddEntity(CreateEntity(playerTegu, (spawnX, spawnY), 0));
-        model.GetEntity(0).isPlayer = true;
-        model.AddEntity(CreateEntity(partnerAxolotl, (spawnX, spawnY + 1), 0));
 
-        // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
-        // model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
+        playerTeam[0].position = (spawnX, spawnY);
+        playerTeam[1].position = (spawnX, spawnY + 1);
 
-        // // model.AddEntity(new Entity(enemy, (0, 10), 1));
-        // model.AddEntity(new Entity(enemy, (1, 20), 1));
-        // model.AddEntity(new Entity(enemy, (2, 20), 1));
+        model.AddEntity(playerTeam[0]);
+        model.AddEntity(playerTeam[1]);
+    }
+
+    public void GenerateEntities(Model model)
+    {
+        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
         // Array tiles = model.Map.GetUsedCellsById(3);
         // tiles.Shuffle();

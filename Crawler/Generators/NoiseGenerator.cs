@@ -7,15 +7,16 @@ public class NoiseGenerator : LevelGenerator
     int spawnX = 0;
     int spawnY = 0;
 
-    public override Model Generate(Model model)
+    public override Model Generate(Model model, Entity[] playerTeam)
     {
-        GenerateMap(model);
+        GenerateMap(model.map);
         AddSystems(model);
+        PlacePlayers(model, playerTeam);
         GenerateEntities(model);
         return model;
     }
 
-    public void GenerateMap(Model model)
+    public override void GenerateMap(CrawlerMap map)
     {
         OpenSimplexNoise noise = new OpenSimplexNoise();
         noise.Period = 6;
@@ -32,7 +33,7 @@ public class NoiseGenerator : LevelGenerator
                 {
                     if (sample > 0.5)
                     {
-                        model.map.SetCell(x, y, (int)(3));
+                        map.SetCell(x, y, (int)(3));
                         if (spawnX == 0 && spawnY == 0)
                         {
                             spawnX = x;
@@ -41,31 +42,27 @@ public class NoiseGenerator : LevelGenerator
                     }
                     else
                     {
-                        model.map.SetCell(x, y, (int)(sample * 1));
+                        map.SetCell(x, y, (int)(sample * 1));
                     }
                 }
             }
         }
     }
 
-    public void GenerateEntities(Model model)
+    public void PlacePlayers(Model model, Entity[] playerTeam)
     {
-        Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
-        Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
-        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
-
         spawnX = 0;
         spawnY = -2;
-        model.AddEntity(CreateEntity(playerTegu, (spawnX, spawnY), 0));
-        model.GetEntity(0).isPlayer = true;
-        model.AddEntity(CreateEntity(partnerAxolotl, (spawnX, spawnY + 1), 0));
+        playerTeam[0].position = (spawnX, spawnY);
+        playerTeam[1].position = (spawnX, spawnY + 1);
 
-        // model.AddEntity(new Entity(playerTegu, (spawnX, spawnY), 0));
-        // model.AddEntity(new Entity(partnerAxolotl, (spawnX, spawnY+1), 0));
+        model.AddEntity(playerTeam[0]);
+        model.AddEntity(playerTeam[1]);
+    }
 
-        // // model.AddEntity(new Entity(enemy, (0, 10), 1));
-        // model.AddEntity(new Entity(enemy, (1, 20), 1));
-        // model.AddEntity(new Entity(enemy, (2, 20), 1));
+    public void GenerateEntities(Model model)
+    {
+        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
         Array tiles = model.map.GetUsedCellsById(3);
         tiles.Shuffle();

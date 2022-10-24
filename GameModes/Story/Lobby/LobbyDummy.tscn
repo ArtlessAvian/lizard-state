@@ -114,7 +114,7 @@ bbcode_enabled = true
 bbcode_text = "Keyboard + Mouse is preferred. There's diagonal movement. 
 Numpad works (and VI keys if you're cool.)
 
-A to open abilities. These cost energy.
+A to open abilities. Most of these cost energy.
 I to open items. These have limited uses per run. Food items go here.
 
 Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
@@ -123,7 +123,7 @@ There's no penalty for dying yet. Try to leave before dying!"
 text = "Keyboard + Mouse is preferred. There's diagonal movement. 
 Numpad works (and VI keys if you're cool.)
 
-A to open abilities. These cost energy.
+A to open abilities. Most of these cost energy.
 I to open items. These have limited uses per run. Food items go here.
 
 Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.

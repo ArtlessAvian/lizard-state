@@ -7,5 +7,6 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class LevelGenerator : Resource
 {
-    public abstract Model Generate(Model model);
+    public abstract Model Generate(Model model, Entity[] playerTeam);
+    public abstract void GenerateMap(CrawlerMap map);
 }

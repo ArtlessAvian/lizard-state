@@ -7,10 +7,11 @@ public class EditorGenerator : LevelGenerator
 {
     [Export] PackedScene scene;
 
-    public override Model Generate(Model model)
+    public override Model Generate(Model model, Entity[] playerTeam)
     {
-        GenerateMap(model);
+        GenerateMap(model.map);
         AddSystems(model);
+        PlacePlayers(model, playerTeam);
         GenerateEntities(model);
 
         FloorItem item = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
@@ -23,31 +24,26 @@ public class EditorGenerator : LevelGenerator
         return model;
     }
 
-    public void GenerateMap(Model model)
+    public override void GenerateMap(CrawlerMap map)
     {
-        TileMap map = scene.Instance<TileMap>();
-        model.map.ReadFromTilemap(map);
-        map.QueueFree();
+        TileMap data = scene.Instance<TileMap>();
+        map.ReadFromTilemap(data);
+        data.QueueFree();
+    }
+
+    public void PlacePlayers(Model model, Entity[] playerTeam)
+    {
+        playerTeam[0].position = (0, 1);
+        playerTeam[1].position = (-1, -1);
+
+        model.AddEntity(playerTeam[0]);
+        model.AddEntity(playerTeam[1]);
     }
 
     public void GenerateEntities(Model model)
     {
-        Species playerTegu = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
-        Species partnerAxolotl = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
-        Species partnerGator = GD.Load<Resource>("res://Crawler/Model/Species/PartnerGator.tres") as Species;
-
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
         Species enemy2 = GD.Load<Resource>("res://Crawler/Model/Species/Enemy2.tres") as Species;
-
-        model.AddEntity(CreateEntity(playerTegu, (0, -1), 0));
-        model.GetEntity(0).isPlayer = true;
-        model.AddEntity(CreateEntity(partnerAxolotl, (-1, -1), 0));
-        // model.AddEntity(CreateEntity(partnerGator, (0, 0), 0));
-
-        // model.AddEntity(new Entity(enemy, (0, 10), 1));
-        // model.AddEntity(new Entity(enemy, (1, 20), 1));
-        // model.AddEntity(new Entity(enemy, (2, 20), 1));
-
 
         model.AddEntity(CreateEntity(enemy, (21, 10), 1));
         model.AddEntity(CreateEntity(enemy, (8, 34), 1));
@@ -59,15 +55,6 @@ public class EditorGenerator : LevelGenerator
         model.AddEntity(CreateEntity(enemy2, (23, -17), 1));
         model.AddEntity(CreateEntity(enemy2, (9, -25), 1));
         model.AddEntity(CreateEntity(enemy2, (16, 16), 1));
-
-        // Array tiles = model.Map.GetUsedCells();
-        // tiles.Shuffle();
-        // for (int i = 0; i < 10; i++)
-        // {
-        //     Vector2 vec = (Vector2)tiles[i+5];
-        //     model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
-        //     GD.Print((int)vec.x, " ", (int)vec.y);
-        // }
     }
 
     // TODO: duplicated code! from NoiseGenerator.
