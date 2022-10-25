@@ -20,7 +20,7 @@ func run():
 	hitEffect.play("default")
 	if event.has("flavorTags") and event["flavorTags"] != null:
 		for tag in event["flavorTags"]:
-			print("hit by a ", tag)
+			# print("hit by a ", tag)
 			if hitEffect.frames.has_animation(tag):
 				hitEffect.play(tag)
 				break

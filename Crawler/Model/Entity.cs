@@ -46,7 +46,7 @@ public class Entity : Resource
     [Export] public int health;
     [Export] public int energy = 10;
 
-    public InventoryItem inventory = null;
+    [Export] public InventoryItem inventory = null;
 
     [Export] public int team;
     [Export] public bool providesVision;

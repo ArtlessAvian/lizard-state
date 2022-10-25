@@ -70,6 +70,7 @@ public class ExplorePlaylist : Resource
     {
         Model model = GD.Load<CSharpScript>("res://Crawler/Model/Model.cs").New() as Model;
         generators[index].Generate(model, playerTeam);
+        model.ResourceName = $"{index} of {this.ResourceName}";
         return model;
     }
 }

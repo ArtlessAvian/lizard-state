@@ -23,7 +23,18 @@ public class GetAction : Action
             if (floorItem.positionX == e.positionX && floorItem.positionY == e.positionY)
             {
                 model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
-                e.inventory = floorItem.inventoryItem ?? new InventoryItem(GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres"));
+                if (floorItem.inventoryItem != null)
+                {
+                    e.inventory = floorItem.inventoryItem;
+                    floorItem.inventoryItem = null; // avoid shared reference?
+                }
+                else
+                {
+                    ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
+                    InventoryItem item = GD.Load<CSharpScript>("res://Crawler/Model/InventoryItem.tres").New(data) as InventoryItem;
+                    e.inventory = item;
+                }
+                // TODO: Delete the floor item.
                 model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
                 e.nextMove += 3;
                 return true;
