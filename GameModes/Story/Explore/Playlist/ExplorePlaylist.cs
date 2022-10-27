@@ -50,6 +50,11 @@ public class ExplorePlaylist : Resource
         Entity player = (Entity)previous.GetEntity(0).Duplicate();
         Entity partner = (Entity)previous.GetEntity(1).Duplicate();
 
+        player.nextMove = 0;
+        partner.nextMove = 0;
+        player.state = Entity.EntityState.OK;
+        partner.state = Entity.EntityState.OK;
+
         // have players "eat", heal them, etc.
         // eating logic here
         // heal/buff logic here.

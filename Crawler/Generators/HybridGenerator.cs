@@ -201,11 +201,6 @@ public class HybridGenerator : LevelGenerator
         }
         for (int i = 0; i < 40 && frontier.Count > 0; i++)
         {
-            if (i == 39)
-            {
-                GD.Print("holy fuck");
-            }
-
             List<(int, int)> nextFrontier = new List<(int, int)>();
             foreach ((int x, int y) current in frontier)
             {

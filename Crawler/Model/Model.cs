@@ -9,6 +9,7 @@ using Godot.Collections;
 /// </summary>
 public partial class Model : Resource
 {
+    // TODO: distinguish between "win" and "lose"
     [Export] public bool done = false; // set to true when done.
 
     // Everything is saved!!

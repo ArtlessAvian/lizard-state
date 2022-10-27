@@ -32,7 +32,6 @@ func load_next_model(crawler, model):
 
 	# run the game.
 	crawler.Model = model
-	print(model)
 	yield(crawler, "Done")
 
 	# recur? kinda.

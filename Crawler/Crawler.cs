@@ -103,11 +103,11 @@ public class Crawler : Node2D, InputStateMachine
             }
 
             // Uncomment if not lag testing (which should be always)
-            if (OS.GetTicksMsec() - start > 1000 / 144f)
-            {
-                GD.PrintErr("Timed out!");
-                break;
-            }
+            // if (OS.GetTicksMsec() - start > 1000 / 144f)
+            // {
+            //     GD.PrintErr("Timed out!");
+            //     break;
+            // }
         }
 
         if (Model.done && View.done && !GetNode<AnimationPlayer>("Fader/AnimationPlayer").IsPlaying())

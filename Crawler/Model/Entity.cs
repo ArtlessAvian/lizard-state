@@ -12,7 +12,7 @@ public class Entity : Resource
 {
     public enum EntityState
     {
-        OK, STUN, KNOCKDOWN, UNALIVE
+        OK, STUN, KNOCKDOWN, UNALIVE, EXITED
     }
 
     [Export] public int id;

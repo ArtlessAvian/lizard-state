@@ -95,8 +95,9 @@ public class VisionSystem : Resource, CrawlerSystem
 
     private void UnseeSeen(Model model, Entity e, Predicate<(int, int)> IsBlocked)
     {
-        // foreach (int otherId in canSee[e.id])
-        // foreach (int otherId in canSee[e.id])
+        // TODO: figure out why this happens.
+        if (!canSee.ContainsKey(e.id)) { return; }
+
         for (int i = canSee[e.id].Count - 1; i >= 0; i--)
         {
             Entity other = model.GetEntity(canSee[e.id][i]);
