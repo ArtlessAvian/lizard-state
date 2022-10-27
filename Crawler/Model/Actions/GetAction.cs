@@ -31,7 +31,7 @@ public class GetAction : Action
                 else
                 {
                     ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
-                    InventoryItem item = GD.Load<CSharpScript>("res://Crawler/Model/InventoryItem.tres").New(data) as InventoryItem;
+                    InventoryItem item = data.BuildInventoryItem();
                     e.inventory = item;
                 }
                 // TODO: Delete the floor item.

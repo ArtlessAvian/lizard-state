@@ -15,4 +15,9 @@ public class ItemData : Resource
             ResourceName = "Something";
         }
     }
+
+    public InventoryItem BuildInventoryItem()
+    {
+        return GD.Load<CSharpScript>("res://Crawler/Model/InventoryItem.cs").New(this) as InventoryItem;
+    }
 }

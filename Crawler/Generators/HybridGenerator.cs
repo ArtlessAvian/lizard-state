@@ -353,19 +353,8 @@ public class HybridGenerator : LevelGenerator
         for (int i = 0; i < 10; i++)
         {
             Vector2 vec = (Vector2)tiles[i + 5];
-            model.AddEntity(CreateEntity(enemy, ((int)vec.x, (int)vec.y), 1));
+            model.AddEntity(enemy.BuildEntity(((int)vec.x, (int)vec.y), 1));
         }
-    }
-
-    public static Entity CreateEntity(Species species, (int x, int y) position, int team)
-    {
-        Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-
-        entity.SetSpecies(species);
-        entity.position = position;
-        entity.SetTeam(team);
-
-        return entity;
     }
 
     public void AddSystems(Model model)

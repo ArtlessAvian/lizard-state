@@ -28,14 +28,9 @@ public class ExplorePlaylist : Resource
             Species playerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
             Species partnerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
 
-            Entity player = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-            Entity partner = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-
-            player.SetSpecies(playerSpecies);
-            partner.SetSpecies(partnerSpecies);
-
-            player.SetTeam(0);
-            partner.SetTeam(0);
+            // position will edited.
+            Entity player = playerSpecies.BuildEntity((-100, -100), 0);
+            Entity partner = partnerSpecies.BuildEntity((-100, -100), 0);
 
             player.isPlayer = true;
 

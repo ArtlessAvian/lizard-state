@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 public class ItemInputState : InputState
 {
-    List<UseItemAction> items;
-
-    CSharpScript useItemScript = GD.Load<CSharpScript>("res://Crawler/Model/Actions/UseItemAction.cs");
+    List<Action> items;
 
     bool success;
 
@@ -19,16 +17,15 @@ public class ItemInputState : InputState
         menu.Clear();
         menu.AddSeparator("Inventory");
 
-        items = new List<UseItemAction>();
+        items = new List<Action>();
 
         if (crawler.Model.GetPlayer().inventory is InventoryItem item)
         {
             string name = item.data.ResourceName;
             menu.AddItem($"{item.data.ResourceName} ({item.uses}/{item.data.maxUses})", 0);
-            menu.SetItemDisabled(0, item.uses <= 0);
+            menu.SetItemDisabled(1, item.uses <= 0);
 
-            UseItemAction action = useItemScript.New() as UseItemAction;
-            action.item = item;
+            Action action = item.BuildAction();
             items.Add(action);
         }
         else

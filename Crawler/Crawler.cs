@@ -48,10 +48,7 @@ public class Crawler : Node2D, InputStateMachine
     public InputState activeInputState;
     public bool notPlayerTurn = false;
 
-    public Crawler()
-    {
-        // model = GD.Load<CSharpScript>("res://Crawler/Model/Model.cs").New() as Model;
-    }
+    public Crawler() { }
 
     public override void _Ready()
     {

@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public class InventoryItem : Resource
@@ -12,4 +13,18 @@ public class InventoryItem : Resource
     }
 
     public InventoryItem() { }
+
+    public FloorItem BuildFloorItem((int x, int y) position)
+    {
+        FloorItem floor = GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New() as FloorItem;
+        floor.position = position;
+        return floor;
+    }
+
+    public Action BuildAction()
+    {
+        UseItemAction action = GD.Load<CSharpScript>("res://Crawler/Model/Actions/UseItemAction.cs").New() as UseItemAction;
+        action.item = this;
+        return action;
+    }
 }

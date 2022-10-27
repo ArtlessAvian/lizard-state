@@ -243,17 +243,6 @@ public class PlanarGenerator : LevelGenerator
         // }
     }
 
-    public static Entity CreateEntity(Species species, (int x, int y) position, int team)
-    {
-        Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-
-        entity.SetSpecies(species);
-        entity.position = position;
-        entity.SetTeam(team);
-
-        return entity;
-    }
-
     public void AddSystems(Model model)
     {
         model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);

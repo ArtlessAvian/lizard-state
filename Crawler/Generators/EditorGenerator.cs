@@ -14,11 +14,10 @@ public class EditorGenerator : LevelGenerator
         PlacePlayers(model, playerTeam);
         GenerateEntities(model);
 
-        FloorItem item = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
-        item.position = (4, 0);
+        ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
+        FloorItem item = data.BuildInventoryItem().BuildFloorItem((4, 0));
         model.AddFloorItem(item);
-        FloorItem item2 = (FloorItem)GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New();
-        item2.position = (-16, -7);
+        FloorItem item2 = data.BuildInventoryItem().BuildFloorItem((-16, -7));
         model.AddFloorItem(item2);
 
         return model;
@@ -45,29 +44,16 @@ public class EditorGenerator : LevelGenerator
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
         Species enemy2 = GD.Load<Resource>("res://Crawler/Model/Species/Enemy2.tres") as Species;
 
-        model.AddEntity(CreateEntity(enemy, (21, 10), 1));
-        model.AddEntity(CreateEntity(enemy, (8, 34), 1));
-        model.AddEntity(CreateEntity(enemy, (32, 47), 1));
-        model.AddEntity(CreateEntity(enemy, (-11, -5), 1));
-        model.AddEntity(CreateEntity(enemy, (35, 4), 1));
-        model.AddEntity(CreateEntity(enemy2, (17, -29), 1));
-        model.AddEntity(CreateEntity(enemy2, (-18, -12), 1));
-        model.AddEntity(CreateEntity(enemy2, (23, -17), 1));
-        model.AddEntity(CreateEntity(enemy2, (9, -25), 1));
-        model.AddEntity(CreateEntity(enemy2, (16, 16), 1));
-    }
-
-    // TODO: duplicated code! from NoiseGenerator.
-    public Entity CreateEntity(Species species, (int x, int y) position, int team)
-    {
-        // I forgot why I'm doing this.
-        Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
-
-        entity.SetSpecies(species);
-        entity.position = position;
-        entity.SetTeam(team);
-
-        return entity;
+        model.AddEntity(enemy.BuildEntity((21, 10), 1));
+        model.AddEntity(enemy.BuildEntity((8, 34), 1));
+        model.AddEntity(enemy.BuildEntity((32, 47), 1));
+        model.AddEntity(enemy.BuildEntity((-11, -5), 1));
+        model.AddEntity(enemy.BuildEntity((35, 4), 1));
+        model.AddEntity(enemy2.BuildEntity((17, -29), 1));
+        model.AddEntity(enemy2.BuildEntity((-18, -12), 1));
+        model.AddEntity(enemy2.BuildEntity((23, -17), 1));
+        model.AddEntity(enemy2.BuildEntity((9, -25), 1));
+        model.AddEntity(enemy2.BuildEntity((16, 16), 1));
     }
 
     public void AddSystems(Model model)
