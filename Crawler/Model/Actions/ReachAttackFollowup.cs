@@ -74,14 +74,22 @@ public class ReachAttackFollowup : Action
     {
         targeted.health -= data.damage;
 
-        targeted.StunForTurns(data.stun, model.time, e.id);
+        if (data.sweeps)
+        {
+            targeted.KnockdownForTurns(data.stun, model.time, e.id);
+        }
+        else
+        {
+            targeted.StunForTurns(data.stun, model.time, e.id);
+        }
 
         model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
                 {"action", "Hit"},
                 {"object", targeted.id},
                 {"damage", data.damage},
-                {"flavorTags", data.flavorTags}
+                {"swept", data.sweeps},
+                {"flavorTags", data.flavorTags},
             });
     }
 

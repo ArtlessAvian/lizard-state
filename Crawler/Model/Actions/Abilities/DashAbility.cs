@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class DashAbility : Action
 {
-    public DashAbility() 
+    public DashAbility()
     {
 
     }
@@ -20,7 +20,7 @@ public class DashAbility : Action
         e.position = targetPos;
         e.nextMove += 2;
 
-        model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+        model.CoolerApiEvent(e.id, "Dash", new Vector2(e.position.x, e.position.y));
 
         return true;
     }

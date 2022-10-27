@@ -28,11 +28,13 @@ public class DashPunchAbility : Action
         }
 
         e.position = place;
-        model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+        model.CoolerApiEvent(e.id, "Dash", new Vector2(e.position.x, e.position.y));
 
         if (target != null)
         {
-            Action subaction = e.species.rushAttack.Duplicate() as Action;
+            ReachAttackAction thing = GD.Load<ReachAttackAction>("res://Crawler/Model/Attacks/ReachAttacks/HellaKnockback.tres");
+            Action subaction = GD.Load<CSharpScript>("res://Crawler/Model/Actions/ReachAttackFollowup.cs").New(thing) as Action;
+            // Action subaction = e.species.rushAttack.Duplicate() as Action;
             subaction.SetTarget(target.position);
             subaction.Do(model, e);
         }

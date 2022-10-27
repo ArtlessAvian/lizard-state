@@ -12,18 +12,26 @@ public class KnockdownWakeupAction : Action
         }
 
         // replace with following logic.
-        // if no one is standing on you
-        //     get up
+        bool success = false;
+        if (model.GetEntityAt(e.position) is null)
+        {
+            success = true;
+        }
         // else if random
         //     push the entity on you somewhere
         //     get up
         // else
         //     fail to get up
-        //     queue another getup attempt
-        //     repeat getup on next entity?
 
-        model.CoolerApiEvent(e.id, "Wakeup");
-        e.state = Entity.EntityState.OK;
+        if (success)
+        {
+            model.CoolerApiEvent(e.id, "Wakeup");
+            e.state = Entity.EntityState.OK;
+        }
+        else
+        {
+            e.nextMove = model.time + 1;
+        }
         return true;
     }
 

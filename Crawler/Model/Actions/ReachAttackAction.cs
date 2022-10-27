@@ -12,6 +12,7 @@ public class ReachAttackAction : Action
     [Export] public float blockChance = 0.2f;
     [Export] public int range = 7;
     [Export] public int knockback = 0;
+    [Export] public bool sweeps = false;
 
     [Export] public List<string> flavorTags = new List<string>();
 

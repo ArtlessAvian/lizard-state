@@ -34,7 +34,10 @@ func run():
 		object.status.set_health(object.health)
 
 	var otheranimation = object.get_node("AnimationPlayer")
-	otheranimation.play("Stunned")
+	if "swept" in event and event["swept"] == true:
+		otheranimation.play("Swept")
+	else:
+		otheranimation.play("Stunned")
 	otheranimation.advance(0)
 
 	# yield(object.get_tree().create_timer(0.3), "timeout")
