@@ -94,6 +94,7 @@ public partial class Actor : Node2D
             case Entity.EntityState.UNALIVE:
                 {
                     aniSprite.Frame = 3;
+                    aniSprite.SelfModulate = Colors.DimGray;
                     break;
                 }
             default:

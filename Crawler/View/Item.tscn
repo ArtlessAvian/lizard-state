@@ -3,6 +3,5 @@
 [ext_resource path="res://Crawler/View/Assets/Items/Something.png" type="Texture" id=1]
 
 [node name="Item" type="Sprite"]
-position = Vector2( 0, -128 )
 texture = ExtResource( 1 )
 offset = Vector2( 0, 4 )
