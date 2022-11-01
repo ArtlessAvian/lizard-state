@@ -4,16 +4,16 @@ on:
     branches:
       - main
 env:
-  GODOT_VERSION: 3.4
+  GODOT_VERSION: 3.5.1
   EXPORT_NAME: lizard-state-ci
-  ITCH_IO: ${{ false }} #set to true if you want to enable automatic itch.io deploy
+  ITCH_IO: ${{ true }} #set to true if you want to enable automatic itch.io deploy
 
 jobs:
   # export-windows:
   #   name: Windows Export
   #   runs-on: ubuntu-latest
   #   container:
-  #     image: barichello/godot-ci:mono-3.4
+  #     image: barichello/godot-ci:mono-3.5.1
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v1
@@ -46,7 +46,7 @@ jobs:
   #   name: Linux Export
   #   runs-on: ubuntu-latest
   #   container:
-  #     image: barichello/godot-ci:mono-3.4
+  #     image: barichello/godot-ci:mono-3.5.1
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v1
@@ -79,7 +79,7 @@ jobs:
     name: Web Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:mono-3.4
+      image: barichello/godot-ci:mono-3.5.1
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -123,7 +123,7 @@ jobs:
   #   name: Mac Export
   #   runs-on: ubuntu-latest
   #   container:
-  #     image: barichello/godot-ci:mono-3.4
+  #     image: barichello/godot-ci:mono-3.5.1
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v1
