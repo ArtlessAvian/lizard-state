@@ -120,16 +120,4 @@ public class ReachAttackFollowup : Action
 
         return (0, 0); // this will never happen
     }
-
-    // private (int, int) KnockbackPosition((int x, int y) from, (int x, int y) to, int howMuch)
-    // {
-    //     (int dx, int dy, int octant) = GridHelper.Octantify(to.x - from.x, to.y - from.y);
-
-    //     dy = dy + (int)(dy * howMuch / (float)dx);
-    //     dx = dx + howMuch;
-
-    //     (dx, dy) = GridHelper.DeOctantify(dx, dy, octant);
-
-    //     return (from.x + dx, from.y + dy);
-    // }
 }

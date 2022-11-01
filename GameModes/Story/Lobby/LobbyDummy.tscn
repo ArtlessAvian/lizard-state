@@ -112,21 +112,21 @@ margin_right = 616.255
 margin_bottom = 468.48
 bbcode_enabled = true
 bbcode_text = "Keyboard + Mouse is preferred. There's diagonal movement. 
-Numpad works (and VI keys if you're cool.)
+Numpad is good too. (Also VI keys if you're traditional.)
 
 A to open abilities. Most of these cost energy.
-I to open items. These have limited uses per run. Food items go here.
+I to open items. These have limited uses per run. [color=gray]Food items go here. (Unimplemented.)[/color]
 
-Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
+Click pink tiles to leave. You regain health and energy [color=gray]if you ate before leaving. Food comes from enemies or green tiles. (Unimplemented.)[/color]
 
 There's no penalty for dying yet. Try to leave before dying!"
 text = "Keyboard + Mouse is preferred. There's diagonal movement. 
-Numpad works (and VI keys if you're cool.)
+Numpad is good too. (Also VI keys if you're traditional.)
 
 A to open abilities. Most of these cost energy.
-I to open items. These have limited uses per run. Food items go here.
+I to open items. These have limited uses per run. Food items go here. (Unimplemented.)
 
-Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
+Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles. (Unimplemented.)
 
 There's no penalty for dying yet. Try to leave before dying!"
 scroll_active = false
