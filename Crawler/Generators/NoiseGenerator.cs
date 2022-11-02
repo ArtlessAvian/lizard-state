@@ -65,10 +65,10 @@ public class NoiseGenerator : LevelGenerator
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
         Array tiles = model.map.GetUsedCellsById(3);
-        tiles.Shuffle();
+        // tiles.Shuffle();
         for (int i = 0; i < 10; i++)
         {
-            Vector2 vec = (Vector2)tiles[i + 5];
+            Vector2 vec = (Vector2)tiles[(int)(GD.Randi() % tiles.Count)];
             model.AddEntity(enemy.BuildEntity(((int)vec.x, (int)vec.y), 1));
         }
     }

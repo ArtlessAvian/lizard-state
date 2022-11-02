@@ -77,6 +77,7 @@ public class Crawler : Node2D, InputStateMachine
 
     public override void _Process(float delta)
     {
+        if (Model == null) { return; }
         ulong start = OS.GetTicksMsec();
         this.RunModel(start);
     }
@@ -103,11 +104,11 @@ public class Crawler : Node2D, InputStateMachine
             }
 
             // Uncomment if not lag testing (which should be always)
-            // if (OS.GetTicksMsec() - start > 1000 / 144f)
-            // {
-            //     GD.PrintErr("Timed out!");
-            //     break;
-            // }
+            if (OS.GetTicksMsec() - start > 1000 / 144f)
+            {
+                GD.PrintErr("Timed out!");
+                break;
+            }
         }
 
         if (Model.done && View.done && !GetNode<AnimationPlayer>("Fader/AnimationPlayer").IsPlaying())
