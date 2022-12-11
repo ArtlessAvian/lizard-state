@@ -19,7 +19,7 @@ public class CameraFlashAction : Action
             });
         model.CoolerApiEvent(e.id, "CameraFlash");
 
-        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.ConeOfView(((int x, int y) pos) => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
+        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.ConeOfViewRelative(((int x, int y) pos) => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
         foreach ((int dx, int dy) in set)
         {
             if (dx == 0 && dy == 0) { continue; }

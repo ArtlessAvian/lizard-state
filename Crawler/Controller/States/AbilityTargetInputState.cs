@@ -84,7 +84,7 @@ public class AbilityTargetInputState : InputState
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
 
-        foreach ((int dx, int dy) in VisibilityTrie.FieldOfView(x => false, action.Range.max))
+        foreach ((int dx, int dy) in VisibilityTrie.FieldOfViewRelative(x => false, action.Range.max))
         // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
         {
             float dist = GridHelper.Distance(dx, dy);
@@ -104,7 +104,7 @@ public class AbilityTargetInputState : InputState
 
     private void RefreshCone(TargetingType.Cone cone, TileMap attackRange)
     {
-        foreach ((int dx, int dy) in VisibilityTrie.ConeOfView(x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
+        foreach ((int dx, int dy) in VisibilityTrie.ConeOfViewRelative(x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
         {
             attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 3);
         }
@@ -112,7 +112,7 @@ public class AbilityTargetInputState : InputState
 
     private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange)
     {
-        foreach ((int dx, int dy) in VisibilityTrie.FieldOfView(x => false, smite.radius))
+        foreach ((int dx, int dy) in VisibilityTrie.FieldOfViewRelative(x => false, smite.radius))
         // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
         {
             float dist = GridHelper.Distance(dx, dy);

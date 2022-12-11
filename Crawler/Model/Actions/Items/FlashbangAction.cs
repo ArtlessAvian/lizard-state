@@ -17,7 +17,7 @@ public class FlashbangAction : Action
                 {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}}
             });
 
-        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfView(((int x, int y) pos) => false, 1));
+        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfViewRelative(((int x, int y) pos) => false, 1));
         foreach ((int dx, int dy) in set)
         {
             if (model.GetEntityAt((targetPos.x + dx, targetPos.y + dy)) is Entity targeted)

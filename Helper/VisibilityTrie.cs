@@ -83,8 +83,10 @@ public class VisibilityTrie
         reverse[pos].Add(node);
     }
 
+    // The reall stuff.
+
     /// May yield duplicates! If critical, use a set.
-    public static IEnumerable<(int relX, int relY)> FieldOfView(Predicate<(int relX, int relY)> isBlocked, float radius)
+    public static IEnumerable<(int relX, int relY)> FieldOfViewRelative(Predicate<(int relX, int relY)> isBlocked, float radius)
     {
         for (int octant = 0; octant < 8; octant++)
         {
@@ -110,7 +112,7 @@ public class VisibilityTrie
         }
     }
 
-    public static IEnumerable<(int relX, int relY)> ConeOfView(Predicate<(int relX, int relY)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
+    public static IEnumerable<(int relX, int relY)> ConeOfViewRelative(Predicate<(int relX, int relY)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
     {
         for (int octant = 0; octant < 8; octant++)
         {
@@ -126,7 +128,7 @@ public class VisibilityTrie
                 }
 
                 (int, int) relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
-                if (TileInCone(relativePos, direction, sectorDegrees))
+                if (TileInConeRelative(relativePos, direction, sectorDegrees))
                 {
                     yield return relativePos;
                 }
@@ -140,10 +142,9 @@ public class VisibilityTrie
         }
     }
 
-    // TODO. Mess with signature. Vector2?
-    public static bool TileInCone((int x, int y) tile, (int x, int y) direction, float sectorDegrees)
+    public static bool TileInConeRelative((int x, int y) relative, (int x, int y) direction, float sectorDegrees)
     {
-        if (tile.x == 0 && tile.y == 0) { return true; }
+        if (relative.x == 0 && relative.y == 0) { return true; }
 
         // TODO: Experiment with leniency
         // check the middle
@@ -156,15 +157,16 @@ public class VisibilityTrie
         // if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
 
         // check the four corners.
-        if (PointInCone((tile.x + 0.5f, tile.y + 0.5f), direction, sectorDegrees)) { return true; }
-        if (PointInCone((tile.x - 0.5f, tile.y + 0.5f), direction, sectorDegrees)) { return true; }
-        if (PointInCone((tile.x + 0.5f, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
-        if (PointInCone((tile.x - 0.5f, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInConeRelative((relative.x + 0.5f, relative.y + 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInConeRelative((relative.x - 0.5f, relative.y + 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInConeRelative((relative.x + 0.5f, relative.y - 0.5f), direction, sectorDegrees)) { return true; }
+        if (PointInConeRelative((relative.x - 0.5f, relative.y - 0.5f), direction, sectorDegrees)) { return true; }
 
         return false;
     }
 
-    private static bool PointInCone((float x, float y) point, (int x, int y) direction, float sectorDegrees)
+    // TODO: Floating point muckery. Reordering operations increases precision. Or maybe alternate expression?
+    private static bool PointInConeRelative((float x, float y) point, (int x, int y) direction, float sectorDegrees)
     {
         if (point.x == 0 && point.y == 0) { return true; }
 
@@ -173,7 +175,7 @@ public class VisibilityTrie
         return Math.Acos((point.x * direction.x + point.y * direction.y) / Math.Sqrt(pointLenSqr * dirLenSqr)) <= sectorDegrees / 2 * Math.PI / 180 + 0.01;
     }
 
-    public static bool AnyLineOfSight((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)
+    public static bool AnyLineOfSightRelative((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)
     {
         // Any tiles that are duplicated across octants would be covered the same way anyways.
         (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
@@ -197,7 +199,7 @@ public class VisibilityTrie
         return false;
     }
 
-    // debug
+    // debug. this creates an iterators for every node but idc.
     public static IEnumerable<TrieNode> DumpTree(TrieNode node)
     {
         yield return node;

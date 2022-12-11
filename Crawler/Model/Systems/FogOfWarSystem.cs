@@ -82,7 +82,7 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
     {
         Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));
 
-        foreach ((int x, int y) relative in VisibilityTrie.FieldOfView(IsBlocked, radius))
+        foreach ((int x, int y) relative in VisibilityTrie.FieldOfViewRelative(IsBlocked, radius))
         {
             this.SetCell(pos.x + relative.x, pos.y + relative.y, VISIBLE);
         }

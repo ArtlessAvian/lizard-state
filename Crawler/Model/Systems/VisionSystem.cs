@@ -73,7 +73,7 @@ public class VisionSystem : Resource, CrawlerSystem
         // every entity that /could/ be seen.
         foreach (Entity other in model.GetEntitiesInRadius(e.position, 8))
         {
-            bool seeing = VisibilityTrie.AnyLineOfSight((other.position.x - e.position.x, other.position.y - e.position.y), IsBlocked);
+            bool seeing = VisibilityTrie.AnyLineOfSightRelative((other.position.x - e.position.x, other.position.y - e.position.y), IsBlocked);
             if (seeing)
             {
                 if (!seenBy.ContainsKey(other.id))
@@ -105,7 +105,7 @@ public class VisionSystem : Resource, CrawlerSystem
             int dx = other.position.x - e.position.x;
             int dy = other.position.y - e.position.y;
             bool seeing = GridHelper.Distance(dx, dy) <= 8;
-            seeing = seeing && VisibilityTrie.AnyLineOfSight((dx, dy), IsBlocked);
+            seeing = seeing && VisibilityTrie.AnyLineOfSightRelative((dx, dy), IsBlocked);
             if (!seeing)
             {
                 seenBy[other.id].Remove(e.id);
@@ -137,7 +137,7 @@ public class VisionSystem : Resource, CrawlerSystem
 
             CrawlerMap map = model.GetMap();
             Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((player.position.x + rel.x, player.position.y + rel.y));
-            seeing = seeing && VisibilityTrie.AnyLineOfSight((dx, dy), IsBlocked);
+            seeing = seeing && VisibilityTrie.AnyLineOfSightRelative((dx, dy), IsBlocked);
 
             if (seeing)
             {
@@ -173,7 +173,7 @@ public class VisionSystem : Resource, CrawlerSystem
 
             CrawlerMap map = model.GetMap();
             Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((player.position.x + rel.x, player.position.y + rel.y));
-            seeing = seeing && VisibilityTrie.AnyLineOfSight((dx, dy), IsBlocked);
+            seeing = seeing && VisibilityTrie.AnyLineOfSightRelative((dx, dy), IsBlocked);
             if (!seeing)
             {
                 seenBy[e.id].Remove(player.id);
@@ -196,6 +196,6 @@ public class VisionSystem : Resource, CrawlerSystem
     {
         return ((Entity seer, Entity target) pair) =>
             GridHelper.Distance(pair.target.position.x - pair.seer.position.x, pair.target.position.y - pair.seer.position.y) <= 8 &&
-            VisibilityTrie.AnyLineOfSight((pair.target.position.x - pair.seer.position.x, pair.target.position.y - pair.seer.position.y), IsBlocked);
+            VisibilityTrie.AnyLineOfSightRelative((pair.target.position.x - pair.seer.position.x, pair.target.position.y - pair.seer.position.y), IsBlocked);
     }
 }

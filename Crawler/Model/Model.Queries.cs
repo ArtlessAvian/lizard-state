@@ -81,7 +81,7 @@ public partial class Model
         for (int i = inSight.Count - 1; i >= 0; i--)
         {
             (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
-            if (!VisibilityTrie.AnyLineOfSight(relative, isBlocked))
+            if (!VisibilityTrie.AnyLineOfSightRelative(relative, isBlocked))
             {
                 inSight.RemoveAt(i);
             }
@@ -97,14 +97,14 @@ public partial class Model
 
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
 
-        Predicate<(int, int)> notInCone = ((int x, int y) rel) => !VisibilityTrie.TileInCone(rel, direction, sectorDegrees);
+        Predicate<(int, int)> notInCone = ((int x, int y) rel) => !VisibilityTrie.TileInConeRelative(rel, direction, sectorDegrees);
         Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
         Predicate<(int, int)> isEither = ((int, int) rel) => notInCone(rel) || isBlocked(rel);
 
         for (int i = inCone.Count - 1; i >= 0; i--)
         {
             (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
-            if (!VisibilityTrie.AnyLineOfSight(relative, isEither))
+            if (!VisibilityTrie.AnyLineOfSightRelative(relative, isEither))
             {
                 inCone.RemoveAt(i);
             }
