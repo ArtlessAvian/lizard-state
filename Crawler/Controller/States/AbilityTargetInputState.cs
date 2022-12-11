@@ -84,12 +84,12 @@ public class AbilityTargetInputState : InputState
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
 
-        foreach ((int dx, int dy) in VisibilityTrie.FieldOfViewRelative(x => false, action.Range.max))
+        foreach ((int x, int y) in VisibilityTrie.FieldOfView(playerPos, x => false, action.Range.max))
         // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
         {
-            float dist = GridHelper.Distance(dx, dy);
+            float dist = GridHelper.Distance(x - playerPos.x, y - playerPos.y);
             if (action.Range.min > dist) { continue; }
-            attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 1);
+            attackRange.SetCell(x, y, 1);
         }
 
         switch (action.TargetingType)
@@ -104,19 +104,17 @@ public class AbilityTargetInputState : InputState
 
     private void RefreshCone(TargetingType.Cone cone, TileMap attackRange)
     {
-        foreach ((int dx, int dy) in VisibilityTrie.ConeOfViewRelative(x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
+        foreach ((int x, int y) in VisibilityTrie.ConeOfView(playerPos, x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
         {
-            attackRange.SetCell(playerPos.x + dx, playerPos.y + dy, 3);
+            attackRange.SetCell(x, y, 3);
         }
     }
 
     private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange)
     {
-        foreach ((int dx, int dy) in VisibilityTrie.FieldOfViewRelative(x => false, smite.radius))
-        // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
+        foreach ((int x, int y) in VisibilityTrie.FieldOfView(cursor.targetPosition, x => false, smite.radius))
         {
-            float dist = GridHelper.Distance(dx, dy);
-            attackRange.SetCell(cursor.targetPosition.x + dx, cursor.targetPosition.y + dy, 3);
+            attackRange.SetCell(x, y, 3);
         }
     }
 

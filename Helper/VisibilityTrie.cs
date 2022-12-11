@@ -199,6 +199,52 @@ public class VisibilityTrie
         return false;
     }
 
+    // Predicate nonsense.
+    // Malding. Be careful to pick the right one.
+    private static (int relX, int relY) GetOffset((int x, int y) from, (int x, int y) to)
+    {
+        return (to.x - from.x, to.y - from.y);
+    }
+
+    private static (int x, int y) AddOffset((int x, int y) from, (int relX, int relY) offset)
+    {
+        return (from.x + offset.relX, from.y + offset.relY);
+    }
+
+    private static Predicate<(int relX, int relY)> ToRelative((int x, int y) from, Predicate<(int x, int y)> predicate)
+    {
+        return ((int relX, int relY) offset) => predicate(AddOffset(from, offset));
+    }
+
+    // The user friendly versions.
+    public static IEnumerable<(int x, int y)> FieldOfView((int x, int y) center, Predicate<(int absX, int absY)> isBlocked, float radius)
+    {
+        foreach (var a in FieldOfViewRelative(ToRelative(center, isBlocked), radius))
+        {
+            yield return AddOffset(center, a);
+        }
+    }
+
+    // TODO: Decide if direction makes sense. Actions' targetPos is also absolute.
+    public static IEnumerable<(int x, int y)> ConeOfView((int x, int y) center, Predicate<(int x, int y)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
+    {
+        foreach (var a in ConeOfViewRelative(ToRelative(center, isBlocked), radius, direction, sectorDegrees))
+        {
+            yield return AddOffset(center, a);
+        }
+    }
+
+    // TODO: Decide if direction makes sense.
+    public static bool TileInCone((int x, int y) center, (int x, int y) target, (int, int) direction, float sectorDegrees)
+    {
+        return TileInConeRelative(GetOffset(center, target), direction, sectorDegrees);
+    }
+
+    public static bool AnyLineOfSight((int x, int y) from, (int x, int y) to, Predicate<(int x, int y)> isBlocked)
+    {
+        return AnyLineOfSightRelative(GetOffset(from, to), ToRelative(from, isBlocked));
+    }
+
     // debug. this creates an iterators for every node but idc.
     public static IEnumerable<TrieNode> DumpTree(TrieNode node)
     {

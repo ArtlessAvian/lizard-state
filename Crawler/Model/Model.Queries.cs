@@ -76,12 +76,9 @@ public partial class Model
     {
         List<Entity> inSight = GetEntitiesInRadius(position, radius);
 
-        Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
-
         for (int i = inSight.Count - 1; i >= 0; i--)
         {
-            (int x, int y) relative = (inSight[i].position.x - position.x, inSight[i].position.y - position.y);
-            if (!VisibilityTrie.AnyLineOfSightRelative(relative, isBlocked))
+            if (!VisibilityTrie.AnyLineOfSight(position, inSight[i].position, TileBlocksVision))
             {
                 inSight.RemoveAt(i);
             }
@@ -97,14 +94,13 @@ public partial class Model
 
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
 
-        Predicate<(int, int)> notInCone = ((int x, int y) rel) => !VisibilityTrie.TileInConeRelative(rel, direction, sectorDegrees);
-        Predicate<(int, int)> isBlocked = ((int x, int y) rel) => GetMap().TileIsWall((position.x + rel.x, position.y + rel.y));
-        Predicate<(int, int)> isEither = ((int, int) rel) => notInCone(rel) || isBlocked(rel);
+        Predicate<(int, int)> notInCone = ((int x, int y) target) => !VisibilityTrie.TileInCone(position, target, direction, sectorDegrees);
+        Predicate<(int, int)> isBlocked = TileBlocksVision;
+        Predicate<(int, int)> isEither = ((int, int) target) => notInCone(target) || isBlocked(target);
 
         for (int i = inCone.Count - 1; i >= 0; i--)
         {
-            (int x, int y) relative = (inCone[i].position.x - position.x, inCone[i].position.y - position.y);
-            if (!VisibilityTrie.AnyLineOfSightRelative(relative, isEither))
+            if (!VisibilityTrie.AnyLineOfSight(position, inCone[i].position, isEither))
             {
                 inCone.RemoveAt(i);
             }
@@ -142,6 +138,11 @@ public partial class Model
     {
         return !map.TileIsWall((position2.x, position2.y)) &&
                 !map.TileIsWall((position.x, position.y));
+    }
+
+    public bool TileBlocksVision((int x, int y) position)
+    {
+        return map.TileIsWall(position);
     }
 
     public float Distance((int x, int y) pos, (int x, int y) pos2)

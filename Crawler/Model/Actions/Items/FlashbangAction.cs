@@ -17,10 +17,10 @@ public class FlashbangAction : Action
                 {"flavorTags", new Godot.Collections.Array(){"Flash", "Shoot"}}
             });
 
-        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfViewRelative(((int x, int y) pos) => false, 1));
-        foreach ((int dx, int dy) in set)
+        HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.FieldOfView(targetPos, ((int x, int y) pos) => false, 1));
+        foreach ((int x, int y) splashedPos in set)
         {
-            if (model.GetEntityAt((targetPos.x + dx, targetPos.y + dy)) is Entity targeted)
+            if (model.GetEntityAt(splashedPos) is Entity targeted)
             {
                 // think of it as "lose {stun} turns." (VVVVVVVVV) The term here ensures that lower id's lose their turn.
                 targeted.StunForTurns(2, model.time, e.id);

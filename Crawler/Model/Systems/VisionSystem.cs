@@ -61,19 +61,18 @@ public class VisionSystem : Resource, CrawlerSystem
     public void RefreshVision(Model model, Entity e)
     {
         CrawlerMap map = model.GetMap();
-        Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((e.position.x + rel.x, e.position.y + rel.y));
 
         // do this first to prevent thrashing the player unsees someone, but the partner sees them after.
-        SeeUnseen(model, e, IsBlocked);
-        UnseeSeen(model, e, IsBlocked);
+        SeeUnseen(model, e);
+        UnseeSeen(model, e);
     }
 
-    private void SeeUnseen(Model model, Entity e, Predicate<(int, int)> IsBlocked)
+    private void SeeUnseen(Model model, Entity e)
     {
         // every entity that /could/ be seen.
         foreach (Entity other in model.GetEntitiesInRadius(e.position, 8))
         {
-            bool seeing = VisibilityTrie.AnyLineOfSightRelative((other.position.x - e.position.x, other.position.y - e.position.y), IsBlocked);
+            bool seeing = VisibilityTrie.AnyLineOfSight(e.position, other.position, model.TileBlocksVision);
             if (seeing)
             {
                 if (!seenBy.ContainsKey(other.id))
@@ -93,7 +92,7 @@ public class VisionSystem : Resource, CrawlerSystem
         }
     }
 
-    private void UnseeSeen(Model model, Entity e, Predicate<(int, int)> IsBlocked)
+    private void UnseeSeen(Model model, Entity e)
     {
         // TODO: figure out why this happens.
         if (!canSee.ContainsKey(e.id)) { return; }
@@ -102,10 +101,9 @@ public class VisionSystem : Resource, CrawlerSystem
         {
             Entity other = model.GetEntity(canSee[e.id][i]);
 
-            int dx = other.position.x - e.position.x;
-            int dy = other.position.y - e.position.y;
-            bool seeing = GridHelper.Distance(dx, dy) <= 8;
-            seeing = seeing && VisibilityTrie.AnyLineOfSightRelative((dx, dy), IsBlocked);
+            bool seeing = GridHelper.Distance(other.position.x - e.position.x, other.position.y - e.position.y) <= 8;
+            seeing = seeing && VisibilityTrie.AnyLineOfSight(e.position, other.position, model.TileBlocksVision);
+
             if (!seeing)
             {
                 seenBy[other.id].Remove(e.id);
@@ -131,13 +129,8 @@ public class VisionSystem : Resource, CrawlerSystem
         {
             Entity player = model.GetEntity(playerId);
 
-            int dx = e.position.x - player.position.x;
-            int dy = e.position.y - player.position.y;
-            bool seeing = GridHelper.Distance(dx, dy) <= 8;
-
-            CrawlerMap map = model.GetMap();
-            Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((player.position.x + rel.x, player.position.y + rel.y));
-            seeing = seeing && VisibilityTrie.AnyLineOfSightRelative((dx, dy), IsBlocked);
+            bool seeing = GridHelper.Distance(e.position.x - player.position.x, e.position.y - player.position.y) <= 8;
+            seeing = seeing && VisibilityTrie.AnyLineOfSight(player.position, e.position, model.TileBlocksVision);
 
             if (seeing)
             {
@@ -167,13 +160,9 @@ public class VisionSystem : Resource, CrawlerSystem
         {
             Entity player = model.GetEntity(seenBy[e.id][i]);
 
-            int dx = e.position.x - player.position.x;
-            int dy = e.position.y - player.position.y;
-            bool seeing = GridHelper.Distance(dx, dy) <= 8;
+            bool seeing = GridHelper.Distance(e.position.x - player.position.x, e.position.y - player.position.y) <= 8;
+            seeing = seeing && VisibilityTrie.AnyLineOfSight(player.position, e.position, model.TileBlocksVision);
 
-            CrawlerMap map = model.GetMap();
-            Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((player.position.x + rel.x, player.position.y + rel.y));
-            seeing = seeing && VisibilityTrie.AnyLineOfSightRelative((dx, dy), IsBlocked);
             if (!seeing)
             {
                 seenBy[e.id].Remove(player.id);
@@ -185,17 +174,5 @@ public class VisionSystem : Resource, CrawlerSystem
                 }
             }
         }
-    }
-
-    private Predicate<(int, int)> GetIsBlockedPredicate(CrawlerMap map, Entity e)
-    {
-        return ((int x, int y) rel) => map.TileIsWall((e.position.x + rel.x, e.position.y + rel.y));
-    }
-
-    private Predicate<(Entity seer, Entity target)> GetCanSeePredicate(Predicate<(int, int)> IsBlocked)
-    {
-        return ((Entity seer, Entity target) pair) =>
-            GridHelper.Distance(pair.target.position.x - pair.seer.position.x, pair.target.position.y - pair.seer.position.y) <= 8 &&
-            VisibilityTrie.AnyLineOfSightRelative((pair.target.position.x - pair.seer.position.x, pair.target.position.y - pair.seer.position.y), IsBlocked);
     }
 }

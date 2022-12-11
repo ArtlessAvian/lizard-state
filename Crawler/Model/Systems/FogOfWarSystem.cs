@@ -80,11 +80,9 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
     // Tiles marked as VISIBLE are not meant to be saved!
     private void UpdateVisibility(CrawlerMap map, (int x, int y) pos, int radius)
     {
-        Predicate<(int, int)> IsBlocked = ((int x, int y) rel) => map.TileIsWall((pos.x + rel.x, pos.y + rel.y));
-
-        foreach ((int x, int y) relative in VisibilityTrie.FieldOfViewRelative(IsBlocked, radius))
+        foreach ((int x, int y) tile in VisibilityTrie.FieldOfView(pos, map.TileIsWall, radius))
         {
-            this.SetCell(pos.x + relative.x, pos.y + relative.y, VISIBLE);
+            this.SetCell(tile.x, tile.y, VISIBLE);
         }
     }
 }
