@@ -52,45 +52,37 @@ public class Crawler : Node2D, InputStateMachine
 
     public override void _Ready()
     {
-        // View.ConnectToModel(Model);
-        activeInputState = GetNode<InputState>("InputStates/Main");
-        activeInputState.Enter(this);
-
-        // move this to parent.
-        // NoiseGenerator gen = new NoiseGenerator();
-        // EditorGenerator gen = new EditorGenerator("res://Crawler/Generators/Maps/MVP-Scaled.tscn");
-        // EditorGenerator gen = GD.Load<EditorGenerator>("res://Crawler/Playlist/Generator.tres");
-        // ExplorePlaylist playlist = GD.Load("res://GameModes/Story/Explore/Playlist/Failsafe.tres").Duplicate() as ExplorePlaylist;
-        // InitializeForReal(playlist.GetCurrentModel());
-
-        // Model.CoolerApiEvent(-1, "Print", "[G]et the moss (green tiles) with the G key.");
-        // Model.CoolerApiEvent(-1, "Print", "Then leave the cave (by stepping on a purple tile).");
-
         // if (GetViewport().Size.x >= 960 * 2)
         // {
         //     ProjectSettings.SetSetting("display/window/stretch/shrink", (int)GetViewport().Size.x / 960);
         // }
 
-        // PlanarGenerator gen = new PlanarGenerator();
-        // gen.GenerateEmbedding();
+        activeInputState = GetNode<InputState>("InputStates/Main");
+        activeInputState.Enter(this);
     }
 
     public override void _Process(float delta)
     {
         if (Model == null) { return; }
-        ulong start = OS.GetTicksMsec();
-        this.RunModel(start);
+
+        this.RunModel();
     }
 
-    // Treat as daemon.
-    private void RunModel(ulong start)
+    private void RunModel()
     {
-        // while (true) // treat as daemon (its not designed for that yet)
+        ulong start = OS.GetTicksMsec();
+        int startModel = model.time;
+
+        // Do nothing to prevent error spam.
+        // (thrashing between model production, view consumption.)
+        if (View.eventQueue.Count > 20) { return; }
+
         while (notPlayerTurn) // and not timed out
         {
             if (View.eventQueue.Count > 40)
             {
-                GD.PrintErr("Too many queued events! Model running far ahead of view?");
+                // This reminds me of the minecraft message.
+                GD.PrintErr("Too many queued events! (Model running far ahead of view?) Processing stopped to catch up.");
                 break;
             }
 
@@ -102,13 +94,12 @@ public class Crawler : Node2D, InputStateMachine
                 View.queueSync = true;
                 break;
             }
+        }
 
-            // Uncomment if not lag testing (which should be always)
-            if (OS.GetTicksMsec() - start > 1000 / 144f)
-            {
-                GD.PrintErr("Timed out!");
-                break;
-            }
+        // Uncomment if not lag testing (which should be always)
+        if (OS.GetTicksMsec() - start > 1000 / 144f)
+        {
+            GD.Print($"Turns {startModel}-{model.time} did not complete within frame.");
         }
 
         if (Model.done && View.done && !GetNode<AnimationPlayer>("Fader/AnimationPlayer").IsPlaying())

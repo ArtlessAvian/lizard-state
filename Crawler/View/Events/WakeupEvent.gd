@@ -11,5 +11,4 @@ func run():
 	subject.get_node("AnimationPlayer").play("RESET")
 	subject.get_node("AnimationPlayer").advance(0)
 	subject.get_node("AnimationPlayer").play("Wakeup")
-	print("ligma")
 	print(subject.get_node("AnimationPlayer").current_animation)

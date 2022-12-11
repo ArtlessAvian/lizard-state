@@ -84,8 +84,7 @@ public partial class Model : Resource
         {
             if (!e.isPlayer)
             {
-                GD.PrintErr($"{e.species.displayName} has no ai or ai returned null!");
-                GD.PrintErr("waiting instead..");
+                GD.PrintErr($"{e.species.displayName} could not make move. Has no ai or ai returned null! Waiting instead...");
                 action = new MoveAction().SetTargetRelative((0, 0));
             }
             else
@@ -99,7 +98,7 @@ public partial class Model : Resource
         bool success = action.Do(this, e);
         if (!success)
         {
-            GD.Print($"{e.species.displayName} tried {action.GetType().ToString()} and failed!");
+            GD.PrintErr($"{e.species.displayName} tried invalid action {action.GetType().ToString()}!");
             e.nextMove += 1;
         }
 

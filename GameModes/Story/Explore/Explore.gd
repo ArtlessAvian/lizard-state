@@ -40,7 +40,7 @@ func load_next_model(crawler, model):
 
 
 func end_playlist():
-	print("you win!")
+	print("You win!")
 
 	var old_crawler = get_node_or_null("Crawler")
 	if old_crawler != null:
