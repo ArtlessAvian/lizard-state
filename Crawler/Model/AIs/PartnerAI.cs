@@ -107,16 +107,23 @@ public class PartnerAI : AI
             }
         }
 
-        result = PathFinder.ShortestPath(e.position, leader.position, WalkableIgnoreTarget(model, leader));
-        if (result.success)
+        if (leader != e)
         {
-            if (result.steps > 2.5f)
+            result = PathFinder.ShortestPath(e.position, leader.position, WalkableIgnoreTarget(model, leader));
+            if (result.success)
             {
-                return new MoveAction().SetTarget(result.nextStep);
+                if (result.steps > 2.5f)
+                {
+                    return new MoveAction().SetTarget(result.nextStep);
+                }
+                return new MoveAction().SetTarget(e.position);
             }
             return new MoveAction().SetTarget(e.position);
         }
-        return new MoveAction().SetTarget(e.position);
+        else
+        {
+            return new MoveAction().SetTarget((e.position.x + (int)GD.Randi() % 3 - 1, e.position.y + (int)GD.Randi() % 3 - 1));
+        }
     }
 
     // public Dictionary SaveToDict()

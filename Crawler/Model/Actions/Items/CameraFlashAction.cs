@@ -20,11 +20,11 @@ public class CameraFlashAction : Action
         model.CoolerApiEvent(e.id, "CameraFlash");
 
         HashSet<(int, int)> set = new HashSet<(int, int)>(VisibilityTrie.ConeOfView(e.position, ((int x, int y) pos) => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
-        foreach ((int dx, int dy) in set)
+        foreach ((int x, int y) in set)
         {
-            if (dx == 0 && dy == 0) { continue; }
+            if (x == e.position.x && y == e.position.y) { continue; }
 
-            if (model.GetEntityAt((e.position.x + dx, e.position.y + dy)) is Entity targeted)
+            if (model.GetEntityAt((x, y)) is Entity targeted)
             {
                 targeted.StunForTurns(1, model.time, e.id);
 
