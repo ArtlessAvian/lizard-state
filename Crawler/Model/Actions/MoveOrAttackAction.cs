@@ -31,7 +31,7 @@ public class MoveOrAttackAction : Action
         Entity targeted = model.GetEntityAt(targetPos);
         if (!(targeted is null) && targeted.team != e.team)
         {
-            return e.species.rushAttack.SetTarget(targetPos);
+            return e.species.bumpAttack.SetTarget(targetPos);
         }
         return new MoveAction().SetTarget(targetPos);
     }

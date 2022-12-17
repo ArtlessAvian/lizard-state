@@ -8,8 +8,7 @@ public class Species : Resource
     // Game Logic
     [Export] public AI ai = null;
 
-    // [Export] public AttackData bumpAttack;
-    [Export] public RushAttackAction rushAttack;
+    [Export] public Action bumpAttack;
     [Export] public List<Action> attacks;
     [Export] public List<Action> abilities;
 

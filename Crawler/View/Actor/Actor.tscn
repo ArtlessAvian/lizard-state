@@ -894,7 +894,6 @@ anims/Swept = SubResource( 57 )
 anims/Wakeup = SubResource( 56 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-position = Vector2( 0, -0.01 )
 frames = ExtResource( 3 )
 animation = "East"
 speed_scale = 0.0

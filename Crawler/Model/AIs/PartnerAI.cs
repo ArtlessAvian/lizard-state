@@ -41,7 +41,7 @@ public class PartnerAI : AI
             }
         }
 
-        if (closestDistance <= 1 && e.species.rushAttack != null)
+        if (closestDistance <= 1 && e.species.bumpAttack != null)
         {
             // Attack an enemy in melee range
             // TODO: randomly walk away.
@@ -49,7 +49,7 @@ public class PartnerAI : AI
             {
                 if (GridHelper.Distance(e.position, enemy.position) <= 1.5f)
                 {
-                    return e.species.rushAttack.SetTarget(enemy.position);
+                    return e.species.bumpAttack.SetTarget(enemy.position);
                 }
             }
         }

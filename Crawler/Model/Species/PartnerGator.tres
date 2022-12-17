@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=5 format=2]
 
 [ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
-[ext_resource path="res://Crawler/Model/Attacks/RushAttacks/NanoBash.tres" type="Resource" id=2]
+[ext_resource path="res://Crawler/Model/Attacks/ReachAttacks/NanoBash.tres" type="Resource" id=2]
 [ext_resource path="res://Crawler/Model/AIs/PartnerAI.tres" type="Resource" id=3]
 [ext_resource path="res://Crawler/Model/Attacks/ReachAttacks/NanoSmite.tres" type="Resource" id=4]
 
@@ -9,7 +9,7 @@
 resource_name = "PartnerGator"
 script = ExtResource( 1 )
 ai = ExtResource( 3 )
-rushAttack = ExtResource( 2 )
+bumpAttack = ExtResource( 2 )
 attacks = [ ExtResource( 4 ) ]
 abilities = null
 maxHealth = 30

@@ -98,22 +98,23 @@ public class ReachAttackFollowup : Action
         // reflect "from" around "to", then ray from "to" to "reflected."
         (int x, int y) reflected = ((to.x - from.x) + to.x, (to.y - from.y) + to.y);
         IEnumerable<(int x, int y)> enumerable = GridHelper.RayThrough(to, reflected);
-
         // haha yeaa
-        // BUG: I was able to punch someone into a corner. Very weird. 
+
         (int, int) previousPosition = to; // the enemy's current position is always valid.
         foreach ((int, int) position in enumerable)
         {
-            if (howMuch <= 0)
-            {
-                return position;
-            }
-            howMuch--;
+            // if theres an entity at position, knock them down.
 
             if (model.map.TileIsWall(position))
             {
                 return previousPosition;
             }
+
+            if (howMuch <= 0)
+            {
+                return position;
+            }
+            howMuch--;
 
             previousPosition = position;
         }

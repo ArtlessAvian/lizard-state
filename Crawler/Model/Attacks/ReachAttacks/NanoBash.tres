@@ -3,16 +3,17 @@
 [ext_resource path="res://Crawler/Model/Actions/ReachAttackAction.cs" type="Script" id=1]
 
 [resource]
+resource_name = "Nano Bash"
 script = ExtResource( 1 )
 targetInternalX = 0
 targetInternalY = 0
 isRelative = true
 startup = 0
-recovery = 3
+recovery = 2
 stun = 1
-damage = 2
-blockChance = 0.2
-range = 7
-knockback = 0
+damage = 3
+blockChance = 0.0
+range = 1
+knockback = 1
 sweeps = false
-flavorTags = [ "Psychic" ]
+flavorTags = [ "Bump" ]
