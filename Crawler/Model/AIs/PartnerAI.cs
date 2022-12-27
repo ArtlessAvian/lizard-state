@@ -9,6 +9,7 @@ public class PartnerAI : AI
 {
     public override Action GetMove(Model model, Entity e)
     {
+        // TODO: GetEntitiesInLOS (but also entities in team).
         List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
 
         List<Entity> enemies = new List<Entity>();

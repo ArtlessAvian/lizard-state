@@ -20,7 +20,9 @@ func _process(delta):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_home"):
-		ResourceSaver.save("res://save_state_story.tres", story_state)  #, ResourceSaver.FLAG_BUNDLE_RESOURCES
+		var error = ResourceSaver.save("res://save_state_story.tres", story_state)  #, ResourceSaver.FLAG_BUNDLE_RESOURCES
+		if error != OK:
+			printerr("failed to save??")
 	elif event.is_action_pressed("ui_end"):
 		story_state = load("save_state_story.tres")
 		_ready()  # this wont work.

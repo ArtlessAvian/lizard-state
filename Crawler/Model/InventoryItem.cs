@@ -18,6 +18,7 @@ public class InventoryItem : Resource
     {
         FloorItem floor = GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New() as FloorItem;
         floor.position = position;
+        floor.inventoryItem = this;
         return floor;
     }
 

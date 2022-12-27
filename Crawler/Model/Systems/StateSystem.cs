@@ -25,7 +25,7 @@ public class StateSystem : Resource, CrawlerSystem
                     model.done = true;
                 }
 
-                ItemData data = (ItemData)GD.Load("res://Crawler/Model/ItemData/Something.tres");
+                ItemData data = (ItemData)GD.Load("res://Crawler/Model/ItemData/Food.tres");
                 InventoryItem item = (InventoryItem)data.BuildInventoryItem();
                 FloorItem floorItem = (FloorItem)item.BuildFloorItem(e.position);
                 model.AddFloorItem(floorItem);
