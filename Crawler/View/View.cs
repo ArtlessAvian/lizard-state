@@ -15,6 +15,7 @@ public partial class View : Node2D
     // Possibly bad performance on dequeue. Not relevant yet.
     public Array<Dictionary> eventQueue = new Array<Dictionary>();
     public Dictionary<int, Actor> roles = new Dictionary<int, Actor>();
+    public Dictionary<int, Node2D> items = new Dictionary<int, Node2D>();
 
     // Animation Statefulness
     public bool queueSync = false;
@@ -49,6 +50,15 @@ public partial class View : Node2D
             Reference createEvent = (Reference)createScript.New();
             createEvent.Call("init2", this, fakeEvent);
             createEvent.Call("run");
+        }
+
+        GDScript createItemScript = GetHandlerScriptOrNull("CreateItem");
+        foreach (FloorItem item in model.GetFloorItems())
+        {
+            Dictionary fakeEvent = new Dictionary() { { "args", item } };
+            Reference createItemEvent = (Reference)createItemScript.New();
+            createItemEvent.Call("init2", this, fakeEvent);
+            createItemEvent.Call("run");
         }
 
         VisionSystem vision = model.GetSystem<VisionSystem>();

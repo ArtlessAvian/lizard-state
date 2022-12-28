@@ -10,3 +10,4 @@ func run():
 	item.position = view.TILESIZE * Vector2(entity.positionX, entity.positionY)
 
 	view.find_node("Items").add_child(item)
+	view.items[entity.id] = item

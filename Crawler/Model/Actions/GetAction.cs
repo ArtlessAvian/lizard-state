@@ -18,27 +18,35 @@ public class GetAction : Action
             return true;
         }
 
-        foreach (FloorItem floorItem in model.GetFloorItems())
+        FloorItem floorItem = null;
+        foreach (FloorItem item in model.GetFloorItems())
         {
-            if (floorItem.positionX == e.positionX && floorItem.positionY == e.positionY)
+            if (item.positionX == e.positionX && item.positionY == e.positionY)
             {
-                model.CoolerApiEvent(-1, "Debug", "Got the thingy.");
-                if (floorItem.inventoryItem != null)
-                {
-                    e.inventory = floorItem.inventoryItem;
-                    floorItem.inventoryItem = null; // avoid shared reference?
-                }
-                else
-                {
-                    ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
-                    InventoryItem item = data.BuildInventoryItem();
-                    e.inventory = item;
-                }
-                // TODO: Delete the floor item.
-                model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} now holds the {e.inventory.data.ResourceName}.");
-                e.nextMove += 3;
-                return true;
+                floorItem = item;
+                break;
             }
+        }
+
+        if (floorItem != null)
+        {
+            if (floorItem.inventoryItem != null)
+            {
+                e.inventory = floorItem.inventoryItem;
+                floorItem.inventoryItem = null; // avoid shared reference?
+            }
+            else
+            {
+                ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
+                InventoryItem item = data.BuildInventoryItem();
+                e.inventory = item;
+            }
+            // TODO: Delete the floor item.
+            model.CoolerApiEvent(e.id, "GetItem", floorItem.id);
+
+            // model.CoolerApiEvent(-1, "Debug", $"{e.species.displayName} got the {e.inventory.data.ResourceName}.");
+            e.nextMove += 3;
+            return true;
         }
 
         return false;

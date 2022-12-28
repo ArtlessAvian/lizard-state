@@ -33,7 +33,19 @@ public partial class Actor : Node2D
         this.role = role;
         TextureProgress healthbar = GetNode<TextureProgress>("HealthBar");
         healthbar.MaxValue = role.species.maxHealth;
+
+        if (role.visibleToPlayer)
+        {
+            this.Modulate = Colors.White;
+        }
+        else
+        {
+            this.Modulate = Colors.Transparent;
+        }
+
         ModelSync();
+
+        Position = lerpPosition * View.TILESIZE;
     }
 
     public void ModelSync(int? viewTime = null)
