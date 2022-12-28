@@ -20,25 +20,12 @@ public class VisionSystem : Resource, CrawlerSystem
 
     public void ProcessEvent(Model model, GodotDict ev)
     {
-        // if ((string)ev["action"] != "Move")
-        // {
-        //     return;
-        // }
 
-        // Entity subject = model.GetEntity((int)ev["subject"]);
-        // if (!subject.providesVision) { return; }
-
-        // if (lastSeenAt.ContainsKey(subject.id))
-        // {
-        //     if (HashPosition(subject.position) == lastSeenAt[subject.id]) { return; }
-        // }
-
-        // lastSeenAt.Add(subject.id, HashPosition(subject.position));
-        // UpdateVision(model, subject);
     }
 
     public void Run(Model model) // ModelAPI maybe?
     {
+        List<Entity> dirty = new List<Entity>();
         foreach (Entity e in model.GetEntities())
         {
             if (lastSeenAt.ContainsKey(e.id))
@@ -46,25 +33,47 @@ public class VisionSystem : Resource, CrawlerSystem
                 if (new Vector2(e.position.x, e.position.y) == lastSeenAt[e.id]) { continue; }
             }
             lastSeenAt[e.id] = new Vector2(e.position.x, e.position.y);
+            dirty.Add(e);
+        }
 
+        // batch all sees first to avoid thrashing when swapping
+        foreach (Entity e in dirty)
+        {
             if (e.providesVision)
             {
-                RefreshVision(model, e);
+                SeeUnseen(model, e);
             }
             else
             {
-                RefreshOtherVision(model, e);
+                GetSeen(model, e);
+            }
+
+        }
+        foreach (Entity e in dirty)
+        {
+            if (e.providesVision)
+            {
+                UnseeSeen(model, e);
+            }
+            else
+            {
+                GetUnseen(model, e);
             }
         }
     }
 
     public void RefreshVision(Model model, Entity e)
     {
-        CrawlerMap map = model.GetMap();
-
-        // do this first to prevent thrashing the player unsees someone, but the partner sees them after.
-        SeeUnseen(model, e);
-        UnseeSeen(model, e);
+        if (e.providesVision)
+        {
+            SeeUnseen(model, e);
+            UnseeSeen(model, e);
+        }
+        else
+        {
+            GetSeen(model, e);
+            GetUnseen(model, e);
+        }
     }
 
     private void SeeUnseen(Model model, Entity e)
@@ -115,12 +124,6 @@ public class VisionSystem : Resource, CrawlerSystem
                 }
             }
         }
-    }
-
-    private void RefreshOtherVision(Model model, Entity e)
-    {
-        GetSeen(model, e);
-        GetUnseen(model, e);
     }
 
     private void GetSeen(Model model, Entity e)

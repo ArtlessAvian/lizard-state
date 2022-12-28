@@ -5,6 +5,13 @@ var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePo
 var start_time
 
 
+func can_run_concurrently_with(handlers):
+	for handler in handlers:
+		if handler.get_script() != self.get_script():
+			return false
+	return true
+
+
 func run():
 	start_time = now()
 
