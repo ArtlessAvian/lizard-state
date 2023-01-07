@@ -81,10 +81,13 @@ public class AbilityTargetInputState : InputState
 
     private void RangeRefresh(Crawler crawler)
     {
+        TileMap walls = crawler.GetNode("View").FindNode("Walls") as TileMap;
+        Predicate<(int x, int y)> blocksAttack = x => walls.GetCell(x.x, x.y) >= 0;
+
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
 
-        foreach ((int x, int y) in VisibilityTrie.FieldOfView(playerPos, x => false, action.Range.max))
+        foreach ((int x, int y) in VisibilityTrie.FieldOfView(playerPos, blocksAttack, action.Range.max))
         // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
         {
             float dist = GridHelper.Distance(x - playerPos.x, y - playerPos.y);
@@ -94,36 +97,37 @@ public class AbilityTargetInputState : InputState
 
         switch (action.TargetingType)
         {
-            case TargetingType.Cone cone: RefreshCone(cone, attackRange); break;
-            case TargetingType.Smite smite: RefreshSmite(smite, attackRange); break;
-            case TargetingType.Ray shot: RefreshShot(shot, attackRange); break;
+            case TargetingType.Cone cone: RefreshCone(cone, attackRange, blocksAttack); break;
+            case TargetingType.Smite smite: RefreshSmite(smite, attackRange, blocksAttack); break;
+            case TargetingType.Ray shot: RefreshShot(shot, attackRange, blocksAttack); break;
             default:
                 break;
         }
     }
 
-    private void RefreshCone(TargetingType.Cone cone, TileMap attackRange)
+    private void RefreshCone(TargetingType.Cone cone, TileMap attackRange, Predicate<(int, int)> blocksAttack)
     {
-        foreach ((int x, int y) in VisibilityTrie.ConeOfView(playerPos, x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
+        foreach ((int x, int y) in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
         {
             attackRange.SetCell(x, y, 3);
         }
     }
 
-    private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange)
+    private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange, Predicate<(int, int)> blocksAttack)
     {
-        foreach ((int x, int y) in VisibilityTrie.FieldOfView(cursor.targetPosition, x => false, smite.radius))
+        foreach ((int x, int y) in VisibilityTrie.FieldOfView(cursor.targetPosition, blocksAttack, smite.radius))
         {
             attackRange.SetCell(x, y, 3);
         }
     }
 
-    private void RefreshShot(TargetingType.Ray ray, TileMap attackRange)
+    private void RefreshShot(TargetingType.Ray ray, TileMap attackRange, Predicate<(int, int)> blocksAttack)
     {
         foreach ((int x, int y) in GridHelper.RayThrough(playerPos, cursor.targetPosition))
         {
             float dist = GridHelper.Distance(x - playerPos.x, y - playerPos.y);
             if (dist > action.Range.max) { break; }
+            if (blocksAttack((x, y))) { break; }
             attackRange.SetCell(x, y, 3);
             if (ray.stopAtTarget && x == cursor.targetPosition.x && y == cursor.targetPosition.y) { break; }
         }
