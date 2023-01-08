@@ -79,7 +79,7 @@ public class Crawler : Node2D, InputStateMachine
 
         while (notPlayerTurn) // and not timed out
         {
-            if (View.eventQueue.Count > 40)
+            if (View.eventQueue.Count > 40 && !Input.IsKeyPressed((int)KeyList.F10))
             {
                 // This reminds me of the minecraft message.
                 GD.PrintErr("Too many queued events! (Model running far ahead of view?) Processing stopped to catch up.");

@@ -20,13 +20,14 @@ public partial class Actor : Node2D
     public float timeStop = 0;
 
     int health = 0;
-    bool seen = false;
+    public bool seen = false;
 
     // Other elements.
     Node status = null;
 
     // TODO: Temporary
     public string displayName;
+    public bool impatientMode = false;
 
     public void ActAs(Entity role)
     {
@@ -52,8 +53,6 @@ public partial class Actor : Node2D
     {
         tilePosition = new Vector2((int)role.position.x, (int)role.position.y);
         lerpPosition = tilePosition;
-        movementTween?.Stop();
-        movementTween = null;
         // Position = tilePosition * View.TILESIZE; // elementwise
 
         health = role.health;
@@ -128,6 +127,7 @@ public partial class Actor : Node2D
     {
         Vector2 oldPosition = this.tilePosition;
 
+        movementTween?.Kill();
         movementTween = CreateTween();
         // movementTween.SetProcessMode(Tween.TweenProcessMode.Physics);
         movementTween.TweenProperty(
@@ -195,13 +195,20 @@ public partial class Actor : Node2D
         );
 
         // TODO: Temporary hiding of entities.
-        if (seen || Engine.EditorHint)
+        if (!impatientMode)
         {
-            this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
+            if (seen || Engine.EditorHint)
+            {
+                this.Modulate = this.Modulate.LinearInterpolate(Colors.White, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
+            }
+            else
+            {
+                this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
+            }
         }
         else
         {
-            this.Modulate = this.Modulate.LinearInterpolate(Colors.Transparent, 1 - Mathf.Pow(1 - 0.1f, delta * 60f));
+            this.Modulate = seen ? Colors.White : Colors.Transparent;
         }
 
         GetNode<Node2D>("DebugTruePos").GlobalPosition = tilePosition * View.TILESIZE;

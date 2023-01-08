@@ -49,12 +49,11 @@ public class MainInputState : InputState
 
         if (ev is InputEventKey eventKey && eventKey.Pressed && !eventKey.IsEcho())
         {
-            if (eventKey.Scancode == (int)KeyList.F1)
+            if (eventKey.Scancode == (int)KeyList.F10)
             {
-                crawler.View.impatientMode = !crawler.View.impatientMode;
-                string thing = (crawler.View.impatientMode ? "on" : "off");
-
-                crawler.View.GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode($"\n * Impatient mode {thing}!");
+                crawler.View.ModelSync();
+                crawler.Model.SetPlayerAction(new FallAsleepAction()); //crawler, tuple.dir);
+                crawler.notPlayerTurn = true;
                 return true;
             }
 
@@ -64,13 +63,6 @@ public class MainInputState : InputState
             //     GetTree().ChangeScene("res://Crawler/Crawler.tscn");
             //     return true;
             // }
-
-            if (eventKey.Scancode == (int)KeyList.Quoteleft)
-            {
-                Control debugLog = crawler.View.GetNode<Control>("UILayer/DebugLog");
-                debugLog.Visible = !debugLog.Visible;
-                return true;
-            }
         }
 
         return false;

@@ -88,19 +88,22 @@ public partial class View : Node2D
         eventQueue.Add(@event);
 
         // Everything gets sent to the logs.
-        if (GetNode<RichTextLabel>("UILayer/DebugLog").Visible)
+        RichTextLabel eventLog = GetNode<RichTextLabel>("UILayer/Debug/EventLog");
+        if (eventLog.Text.Contains("YourTurn"))
         {
-            GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode("\n * " + @event["action"] + " " + @event["subject"]);
-            if (@event.Contains("object"))
-            {
-                GetNode<RichTextLabel>("UILayer/DebugLog").AppendBbcode(" " + @event["object"]);
-            }
+            eventLog.Clear();
+        }
+
+        eventLog.AppendBbcode("\n * " + @event["action"] + " " + @event["subject"]);
+        if (@event.Contains("object"))
+        {
+            eventLog.AppendBbcode(" " + @event["object"]);
         }
     }
 
     public override void _Process(float delta)
     {
-        RichTextLabel runningLabel = GetNode<RichTextLabel>("UILayer/RunningHandlers");
+        RichTextLabel runningLabel = GetNode<RichTextLabel>("UILayer/Debug/RunningHandlers");
         runningLabel.Clear();
         foreach (Reference handler in runningHandlers)
         {
@@ -128,6 +131,16 @@ public partial class View : Node2D
             GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime + " (sync!)";
 
             this.ModelSync();
+        }
+
+        RichTextLabel animatingLabel = GetNode<RichTextLabel>("UILayer/Debug/AnimatingActors");
+        animatingLabel.Clear();
+        foreach (Actor a in roles.Values)
+        {
+            if (a.IsAnimating())
+            {
+                animatingLabel.AppendBbcode($"{a.Name} {a.seen} {a.tilePosition.x - Position.x / View.TILESIZE.x} {a.tilePosition.y - Position.y / View.TILESIZE.y} \n");
+            }
         }
     }
 
@@ -232,5 +245,42 @@ public partial class View : Node2D
             }
         }
         return false;
+    }
+
+    public override void _UnhandledInput(InputEvent ev)
+    {
+        if (ev is InputEventKey eventKey && eventKey.Pressed && !eventKey.IsEcho())
+        {
+            if (eventKey.Scancode == (int)KeyList.Quoteleft)
+            {
+                impatientMode = !impatientMode;
+                foreach (Actor a in roles.Values)
+                {
+                    a.impatientMode = impatientMode;
+                }
+                // Engine.TimeScale = impatientMode ? 2 : 1;
+                string thing = (impatientMode ? "on" : "off");
+
+                GetNode<RichTextLabel>("UILayer/MessageLog").AppendBbcode($"\n * Impatient mode {thing}!");
+            }
+
+            if (eventKey.Scancode == (int)KeyList.F1)
+            {
+                Control eventLog = FindNode("EventLog") as Control;
+                eventLog.Visible = !eventLog.Visible;
+            }
+
+            if (eventKey.Scancode == (int)KeyList.F2)
+            {
+                Control eventLog = FindNode("RunningHandlers") as Control;
+                eventLog.Visible = !eventLog.Visible;
+            }
+
+            if (eventKey.Scancode == (int)KeyList.F3)
+            {
+                Control eventLog = FindNode("AnimatingActors") as Control;
+                eventLog.Visible = !eventLog.Visible;
+            }
+        }
     }
 }

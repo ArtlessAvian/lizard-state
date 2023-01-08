@@ -87,10 +87,6 @@ public partial class Model : Resource
                 RunSystems();
                 return true;
             }
-            else
-            {
-                GD.PrintS("Move:", e.position, action.GetTargetPos(e.position));
-            }
         }
 
         if (e.isPlayer)

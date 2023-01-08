@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Crawler/View/MapView.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/CrawlerCamera.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Crawler/View/Assets/sepia.tres" type="Material" id=7]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Footsteps.tres" type="TileSet" id=8]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Mini.tres" type="TileSet" id=9]
+[ext_resource path="res://Assets/DogicaSmall.tres" type="DynamicFont" id=10]
 
 [node name="View" type="Node2D"]
 script = ExtResource( 5 )
@@ -174,15 +175,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DebugLog" type="RichTextLabel" parent="UILayer"]
+[node name="Debug" type="Control" parent="UILayer"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="EventLog" type="RichTextLabel" parent="UILayer/Debug"]
 visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
-margin_top = -380.0
+margin_top = 300.0
 margin_right = 620.0
-margin_bottom = -20.0
+margin_bottom = 660.0
 mouse_filter = 2
+custom_fonts/normal_font = ExtResource( 10 )
+text = "Events will be appended here."
 scroll_active = false
 scroll_following = true
 __meta__ = {
@@ -191,7 +198,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="ColorRect" parent="UILayer/DebugLog"]
+[node name="Background" type="ColorRect" parent="UILayer/Debug/EventLog"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -201,15 +208,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="RunningHandlers" type="RichTextLabel" parent="UILayer"]
+[node name="RunningHandlers" type="RichTextLabel" parent="UILayer/Debug"]
 visible = false
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
-margin_top = -380.0
+margin_top = 300.0
 margin_right = 620.0
-margin_bottom = -20.0
+margin_bottom = 660.0
 mouse_filter = 2
+custom_fonts/normal_font = ExtResource( 10 )
 scroll_active = false
 scroll_following = true
 __meta__ = {
@@ -218,7 +226,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="ColorRect" parent="UILayer/RunningHandlers"]
+[node name="Background" type="ColorRect" parent="UILayer/Debug/RunningHandlers"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -228,26 +236,30 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DebugQueue" type="RichTextLabel" parent="UILayer"]
+[node name="AnimatingActors" type="RichTextLabel" parent="UILayer/Debug"]
 visible = false
+anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
-margin_top = 20.0
-margin_right = 280.0
-margin_bottom = -2.0
+margin_top = 300.0
+margin_right = 620.0
+margin_bottom = 660.0
 mouse_filter = 2
+custom_fonts/normal_font = ExtResource( 10 )
+scroll_active = false
 scroll_following = true
 __meta__ = {
+"_edit_group_": true,
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="ColorRect" parent="UILayer/DebugQueue"]
+[node name="Background" type="ColorRect" parent="UILayer/Debug/AnimatingActors"]
 show_behind_parent = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0, 0, 0, 0.25098 )
+color = Color( 0, 0, 0, 0.752941 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
