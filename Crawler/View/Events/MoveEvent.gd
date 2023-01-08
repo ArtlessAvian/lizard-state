@@ -32,4 +32,9 @@ func run():
 
 func is_done():
 	var subject = roles[event["subject"]]
+
+	# TODO: Replace with model suppression of unseen events.
+	if not subject.seen:
+		return true
+
 	return subject.movementTween == null or not subject.movementTween.is_running()

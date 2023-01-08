@@ -52,6 +52,8 @@ public partial class Actor : Node2D
     {
         tilePosition = new Vector2((int)role.position.x, (int)role.position.y);
         lerpPosition = tilePosition;
+        movementTween?.Stop();
+        movementTween = null;
         // Position = tilePosition * View.TILESIZE; // elementwise
 
         health = role.health;
