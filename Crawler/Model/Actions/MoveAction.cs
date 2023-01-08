@@ -16,6 +16,13 @@ public class MoveAction : Action
             return true;
         }
 
+        if (!model.CanWalkFromTo(e.position, targetPos))
+        {
+            GD.Print("You bump into the wall.");
+            DoNothing(model, e);
+            return true;
+        }
+
         Entity entityAt = model.GetEntityAt(targetPos);
         if (!(entityAt is null))
         {
@@ -69,8 +76,12 @@ public class MoveAction : Action
 
         (int x, int y) targetPos = GetTargetPos(e.position);
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > 1.5f) { return false; }
-        if (!model.CanWalkFromTo(e.position, targetPos)) { return false; }
         return true;
+    }
+
+    public override IEnumerable<string> GetWarnings(Model model, Entity e)
+    {
+        if (!model.CanWalkFromTo(e.position, GetTargetPos(e.position))) { yield return "You can't walk there."; }
     }
 
     public override (int, int) Range => (1, 1);

@@ -9,20 +9,20 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Action : Resource
 {
-    // If !IsValid, no-ops. Caller should waste some model time
-    // to avoid AI getting stuck infinte looping.
+    // If !IsValid, no-ops. Caller should call MoveAction(0, 0)
+    // to avoid getting stuck infinte looping.
     // If IsValid, tries to do the thing, even if unreasonable.
     // Returns IsValid. 
     public abstract bool Do(Model model, Entity e);
 
-    // Checks if the action is valid, leaving the model in a valid state.
+    // Checks if the action is leaves the model in a valid state.
     // Imagine this is a dry run, less expensive version of Do.
-    // This is used by the UI and the AI.
     // TODO: Create abstraction to hide Model details from UI and AI.
     public abstract bool IsValid(Model model, Entity e);
 
     // Gives a list of reasons this may be a bad move.
-    // public abstract string[] GetWarnings(ModelAPI api, Entity e);
+    // This is used by the UI and the AI.
+    public virtual IEnumerable<string> GetWarnings(Model model, Entity e) { yield break; }
 
     // Targeting
     [Export] public int targetInternalX;

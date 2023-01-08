@@ -123,7 +123,7 @@ public class PartnerAI : AI
         }
         else
         {
-            return new MoveAction().SetTarget((e.position.x + (int)GD.Randi() % 3 - 1, e.position.y + (int)GD.Randi() % 3 - 1));
+            return new MoveAction().SetTarget((e.position.x + (int)(GD.Randi() % 3) - 1, e.position.y + (int)(GD.Randi() % 3) - 1));
         }
     }
 

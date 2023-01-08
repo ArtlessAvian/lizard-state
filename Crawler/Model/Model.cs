@@ -77,58 +77,61 @@ public partial class Model : Resource
         Entity e = NextEntity();
         PassTime(e.nextMove);
 
-        // Get the next action.
-        Action action = GetAction(e);
-
-        if (action == null)
+        foreach (Action action in GetActions(e))
         {
-            if (!e.isPlayer)
+            e.queuedAction = null; // null out if used.
+            bool success = action.Do(this, e);
+            if (success)
             {
-                GD.PrintErr($"{e.species.displayName} could not make move. Has no ai or ai returned null! Waiting instead...");
-                action = new MoveAction().SetTargetRelative((0, 0));
+                RunSystems();
+                return true;
             }
             else
             {
-                CoolerApiEvent(e.id, "YourTurn");
-                return false;
+                GD.PrintS("Move:", e.position, action.GetTargetPos(e.position));
             }
         }
 
-        e.queuedAction = null; // null out if used.
-        bool success = action.Do(this, e);
-        if (!success)
+        if (e.isPlayer)
         {
-            GD.PrintErr($"{e.species.displayName} tried invalid action {action.GetType().ToString()}!");
-            e.nextMove += 1;
+            CoolerApiEvent(e.id, "YourTurn");
+            return false;
         }
-
-        RunSystems();
-        return true;
+        else
+        {
+            GD.PrintErr($"{e.species.displayName} could not make move. Has no ai or ai returned null! Waiting instead...");
+            new MoveAction().SetTargetRelative((0, 0)).Do(this, e);
+            RunSystems();
+            return true;
+        }
     }
 
-    private Action GetAction(Entity e)
+    private IEnumerable<Action> GetActions(Entity e)
     {
         switch (e.state)
         {
             case Entity.EntityState.OK:
                 if (e.queuedAction != null)
                 {
-                    return e.queuedAction;
+                    yield return e.queuedAction;
+                    yield break;
                 }
                 break;
             case Entity.EntityState.STUN:
-                return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
+                yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
+                yield break;
             case Entity.EntityState.KNOCKDOWN:
-                return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
+                yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
+                yield break;
             default:
                 break;
         }
 
         if (!e.isPlayer)
         {
-            return e.species?.ai?.GetMove(this, e);
+            Action ai = e.species?.ai?.GetMove(this, e);
+            if (ai is Action) { yield return ai; }
         }
-        return null;
     }
 
     /// <summary>
