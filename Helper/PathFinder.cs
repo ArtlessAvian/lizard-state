@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Priority_Queue;
 
+// Use an object initializer, then call run().
+// There's also convenience functions.
 public class PathFinder
 {
     // Parameters before a run.
@@ -10,8 +12,14 @@ public class PathFinder
     public Predicate<((int x, int y) from, (int x, int y) to)> walkable;
 
     // Optional.
-    public int maxLength = 18;
-    // worst case default is <1000 tiles per goal searched. 2\sqrt{2} r^2
+    public int maxLength = 22;
+    // Not a lot, but also, kind of a lot. (vision radius is ~8)
+    // In practice, searches ~100 tiles when triggered. Verify with cost.Count.
+
+    // Factoring heuristic early exit, in the worst case (empty field) searches ~500 tiles?
+    // Assume source and destination are the same.
+    // 11 steps away from the source, estimated path cost is 22. One more step and it terminates.
+    // The entire square searched should be 23 tiles across.
 
     // Results, ofc.
     public class PathResult
@@ -53,13 +61,14 @@ public class PathFinder
                 result.success = true;
                 result.steps = cost[current];
                 result.nextStep = result.nextStepFor[source];
-                // i checked cost.Keys.Count, seems good.
                 return result;
             }
 
-            if (cost[current] > maxLength)
+            if (cost[current] + GridHelper.Distance(current, source) > maxLength)
             {
-                Godot.GD.PrintErr($"Shortest path length > {maxLength}. Aborting search.");
+                // Assume the heuristic (raw distance) is admissible (always underestimates).
+                // Everything in the frontier will not lead to a path, so we can stop.
+                // Godot.GD.PrintErr("Search length hit! ", cost.Count);
                 return result;
             }
 
@@ -80,7 +89,7 @@ public class PathFinder
             }
         }
 
-        // Fail!        
+        // Fail!
         return result;
     }
 
