@@ -1,17 +1,16 @@
-
+using System.Collections.Generic;
 using Godot;
 
 public class WanderAI : AI
 {
-    public override Action GetMove(Model model, Entity e)
+    public override IEnumerable<(Action, bool)> GetMoves(Model model, Entity e)
     {
         // TODO: Actually make interesting.
-        Action action = new MoveAction().SetTargetRelative(((int)(GD.Randi() % 3) - 1, (int)(GD.Randi() % 3) - 1));
         for (int i = 0; i < 10; i++)
         {
-            if (action.IsValid(model, e)) {return action;}
-            action = new MoveAction().SetTargetRelative(((int)(GD.Randi() % 3) - 1, (int)(GD.Randi() % 3) - 1));
+            Action action = new MoveAction().SetTargetRelative(((int)(GD.Randi() % 3) - 1, (int)(GD.Randi() % 3) - 1));
+            yield return (action, false);
         }
-        return action;
+        yield return (new MoveAction().SetTargetRelative((0, 0)), true);
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 
 public class PartnerAI : AI
 {
-    public override Action GetMove(Model model, Entity e)
+    public override IEnumerable<(Action, bool)> GetMoves(Model model, Entity e)
     {
         // TODO: GetEntitiesInLOS (but also entities in team).
         List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
@@ -48,10 +48,7 @@ public class PartnerAI : AI
             // TODO: randomly walk away.
             foreach (Entity enemy in enemies)
             {
-                if (GridHelper.Distance(e.position, enemy.position) <= 1.5f)
-                {
-                    return e.species.bumpAttack.SetTarget(enemy.position);
-                }
+                yield return (e.species.bumpAttack.SetTarget(enemy.position), false);
             }
         }
         else
@@ -60,30 +57,11 @@ public class PartnerAI : AI
             for (int i = 0; i < e.species.attacks.Count; i++)
             {
                 Action attack = e.species.attacks[i];
-                if (closestDistance <= attack.Range.max)
+                foreach (Entity enemy in enemies)
                 {
-                    foreach (Entity enemy in enemies)
-                    {
-                        if (GridHelper.Distance(e.position, enemy.position) == closestDistance)
-                        {
-                            return attack.SetTarget(enemy.position);
-                        }
-                    }
+                    yield return (attack.SetTarget(enemy.position), false);
                 }
             }
-
-            // Select a move and try to attack an enemy in range.
-            // AttackData bestAttack = e.species.bumpAttack;
-            // float bestRangeMax = 1.5f;
-
-            // foreach ((int, int) pos in enemyPositions)
-            // {
-            //     float distance = GridHelper.Distance(e.position, pos);
-            //     if (distance <= bestRangeMax)
-            //     {
-            //         return new AttackAction().SetTarget(pos);
-            //     }
-            // }
         }
 
 
@@ -95,7 +73,7 @@ public class PartnerAI : AI
         PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, WalkableIgnoreTargets(model, enemies));
         if (result.success)
         {
-            return new MoveAction().SetTarget(result.nextStep);
+            yield return (new MoveAction().SetTarget(result.nextStep), false);
         }
 
         // Go towards lowest id ally. if no lowest, you are "leader".
@@ -111,19 +89,16 @@ public class PartnerAI : AI
         if (leader != e)
         {
             result = PathFinder.ShortestPath(e.position, leader.position, WalkableIgnoreTarget(model, leader));
-            if (result.success)
+            if (result.success && result.steps > 2.5f)
             {
-                if (result.steps > 2.5f)
-                {
-                    return new MoveAction().SetTarget(result.nextStep);
-                }
-                return new MoveAction().SetTarget(e.position);
+                yield return (new MoveAction().SetTarget(result.nextStep), false);
             }
-            return new MoveAction().SetTarget(e.position);
+            yield return (new MoveAction().SetTargetRelative((0, 0)), true);
         }
         else
         {
-            return new MoveAction().SetTarget((e.position.x + (int)(GD.Randi() % 3) - 1, e.position.y + (int)(GD.Randi() % 3) - 1));
+            yield return (new MoveAction().SetTargetRelative(((int)(GD.Randi() % 3) - 1, (int)(GD.Randi() % 3) - 1)), false);
+            yield return (new MoveAction().SetTargetRelative((0, 0)), true);
         }
     }
 

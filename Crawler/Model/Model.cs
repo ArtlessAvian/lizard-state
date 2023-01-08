@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 
@@ -99,7 +100,11 @@ public partial class Model : Resource
         }
         else
         {
-            GD.PrintErr($"{e.species.displayName} could not make move. Has no ai or ai returned null! Waiting instead...");
+            GD.PrintErr($"{e.species.displayName} yielded no acceptable move. Waiting instead...");
+            // Sort of expensive to rerun, but it shouldn't happen often.
+            var actions = e.species?.ai?.GetMoves(this, e).Select(tup => tup.Item1).ToList();
+            GD.PrintErr($"{actions.Count} ai actions: ", string.Join(", ", actions.Select(a => a.GetType().ToString())));
+
             new MoveAction().SetTargetRelative((0, 0)).Do(this, e);
             RunSystems();
             return true;
@@ -129,8 +134,13 @@ public partial class Model : Resource
 
         if (!e.isPlayer)
         {
-            Action ai = e.species?.ai?.GetMove(this, e);
-            if (ai is Action) { yield return ai; }
+            foreach ((Action a, bool ignoreWarning) in e.species?.ai?.GetMoves(this, e))
+            {
+                if (ignoreWarning || !a.GetWarnings(this, e).Any())
+                {
+                    yield return a;
+                }
+            }
         }
     }
 

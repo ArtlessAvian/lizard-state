@@ -59,7 +59,7 @@ public class PathFinder
 
             if (cost[current] > maxLength)
             {
-                Godot.GD.PrintErr($"Shortest path >{maxLength} length. Aborting search.");
+                Godot.GD.PrintErr($"Shortest path length > {maxLength}. Aborting search.");
                 return result;
             }
 

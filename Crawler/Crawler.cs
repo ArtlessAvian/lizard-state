@@ -99,7 +99,7 @@ public class Crawler : Node2D, InputStateMachine
         // Uncomment if not lag testing (which should be always)
         if (OS.GetTicksMsec() - start > 1000 / 144f)
         {
-            GD.Print($"Turns {startModel}-{model.time} did not complete within frame.");
+            GD.Print($"Turns {startModel}-{model.time} did not complete within frame. ({OS.GetTicksMsec() - start} ms)");
         }
 
         if (Model.done && View.done && !GetNode<AnimationPlayer>("Fader/AnimationPlayer").IsPlaying())
