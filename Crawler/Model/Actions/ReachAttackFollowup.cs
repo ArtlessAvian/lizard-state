@@ -33,8 +33,6 @@ public class ReachAttackFollowup : Action
 
         if (targeted is object)
         {
-            targeted.queuedAction = null;
-
             if (GD.Randf() < data.blockChance)
             {
                 // block!
@@ -42,6 +40,7 @@ public class ReachAttackFollowup : Action
             }
             else
             {
+                targeted.queuedAction = null;
                 // clean hit!
                 OnHit(model, e, targeted);
 
@@ -67,6 +66,7 @@ public class ReachAttackFollowup : Action
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
+        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) < Range.min) { return false; }
         return true;
     }
 

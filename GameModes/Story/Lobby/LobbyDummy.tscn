@@ -45,8 +45,7 @@ margin_left = -139.206
 margin_top = 145.703
 margin_right = 82.7941
 margin_bottom = 173.703
-disabled = true
-text = "Play tutorial!!!!!!!!!"
+text = "Play handmade map"
 
 [node name="TextureRect" type="TextureRect" parent="Control/StartTutorial"]
 margin_left = -94.3933
@@ -64,7 +63,7 @@ margin_left = -131.257
 margin_top = 194.381
 margin_right = 74.743
 margin_bottom = 222.381
-text = "Play early game!"
+text = "Play procgen map"
 
 [node name="TextureRect2" type="TextureRect" parent="Control/StartEarlygame"]
 margin_left = 210.286
@@ -83,7 +82,7 @@ margin_top = 264.009
 margin_right = 74.5983
 margin_bottom = 292.009
 disabled = true
-text = "Play mid game!"
+text = "Play vertical slice"
 
 [node name="TextureRect3" type="TextureRect" parent="Control/StartMidgame"]
 margin_left = -87.5845

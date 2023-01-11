@@ -20,6 +20,8 @@ public class ReachAttackAction : Action
 
     public override bool Do(Model model, Entity e)
     {
+        if (!IsValid(model, e)) { return false; }
+
         (int x, int y) targetPos = GetTargetPos(e.position);
         if (startup > 0)
         {
@@ -41,9 +43,12 @@ public class ReachAttackAction : Action
         // {
         //     return false;
         // }
-
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        GD.Print(GridHelper.Distance(e.position, GetTargetPos(e.position)), range);
+        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
+        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) < Range.min) { return false; }
         return true;
     }
 
-    public override (int, int) Range => (1, range);
+    public override (int min, int max) Range => (1, range);
 }
