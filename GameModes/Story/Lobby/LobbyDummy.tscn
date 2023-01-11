@@ -27,10 +27,10 @@ anchor_bottom = 1.0
 [node name="Label" type="RichTextLabel" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -115.713
-margin_top = 26.3594
-margin_right = 84.287
-margin_bottom = 179.359
+margin_left = -99.6768
+margin_top = 80.132
+margin_right = 100.323
+margin_bottom = 233.132
 bbcode_enabled = true
 bbcode_text = "[center][wave]Lizard State
 Demoooooooo[/wave][/center]"
@@ -41,17 +41,19 @@ fit_content_height = true
 [node name="StartTutorial" type="Button" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -139.206
-margin_top = 145.703
-margin_right = 82.7941
-margin_bottom = 173.703
+margin_left = -119.606
+margin_top = 151.852
+margin_right = 120.394
+margin_bottom = 179.852
 text = "Play handmade map"
 
 [node name="TextureRect" type="TextureRect" parent="Control/StartTutorial"]
-margin_left = -94.3933
-margin_top = -28.4678
-margin_right = -14.3933
-margin_bottom = 51.5322
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -202.747
+margin_top = -30.9876
+margin_right = -122.747
+margin_bottom = 49.0124
 rect_min_size = Vector2( 80, 80 )
 texture = SubResource( 1 )
 expand = true
@@ -59,17 +61,19 @@ expand = true
 [node name="StartEarlygame" type="Button" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -131.257
-margin_top = 194.381
-margin_right = 74.743
-margin_bottom = 222.381
+margin_left = -111.657
+margin_top = 205.875
+margin_right = 108.343
+margin_bottom = 233.875
 text = "Play procgen map"
 
 [node name="TextureRect2" type="TextureRect" parent="Control/StartEarlygame"]
-margin_left = 210.286
-margin_top = -39.2933
-margin_right = 290.286
-margin_bottom = 40.7067
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 125.193
+margin_top = -27.0334
+margin_right = 205.193
+margin_bottom = 52.9666
 rect_min_size = Vector2( 80, 80 )
 texture = SubResource( 2 )
 expand = true
@@ -77,77 +81,58 @@ expand = true
 [node name="StartMidgame" type="Button" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -131.402
-margin_top = 264.009
-margin_right = 74.5983
-margin_bottom = 292.009
+margin_left = -120.711
+margin_top = 261.031
+margin_right = 119.289
+margin_bottom = 289.031
 disabled = true
 text = "Play vertical slice"
 
 [node name="TextureRect3" type="TextureRect" parent="Control/StartMidgame"]
-margin_left = -87.5845
-margin_top = -21.7219
-margin_right = -7.5845
-margin_bottom = 58.2781
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -200.433
+margin_top = -28.7466
+margin_right = -120.433
+margin_bottom = 51.2534
 rect_min_size = Vector2( 80, 80 )
 texture = SubResource( 3 )
 expand = true
 
-[node name="StartMidgame2" type="Button" parent="Control"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = 23.8535
-margin_top = 368.634
-margin_right = 473.854
-margin_bottom = 396.634
-toggle_mode = true
-text = "No tutorial yet :( text instructions?"
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/StartMidgame2"]
-visible = false
-margin_left = -133.745
-margin_top = 68.4804
-margin_right = 616.255
-margin_bottom = 468.48
+margin_left = -374.956
+margin_top = 355.535
+margin_right = 375.044
+margin_bottom = 755.534
 bbcode_enabled = true
-bbcode_text = "Keyboard + Mouse is preferred. There's diagonal movement. 
+bbcode_text = "[color=#aaffff][center]If you are playtesting for me, ignore this.[/center][/color]
+
+Keyboard + Mouse is preferred. There's diagonal movement. 
 Numpad is good too. (Also VI keys if you're traditional.)
 
 A to open abilities. Most of these cost energy.
-I to open items. These have limited uses per run. [color=gray]Food items go here. (Unimplemented.)[/color]
+I to open items. These have limited uses per run.
+[color=gray]Food items go here. (Unimplemented.)[/color]
 
 Click pink tiles to leave. You regain health and energy [color=gray]if you ate before leaving. Food comes from enemies or green tiles. (Unimplemented.)[/color]
 
 There's no penalty for dying yet. Try to leave before dying!"
-text = "Keyboard + Mouse is preferred. There's diagonal movement. 
+text = "If you are playtesting for me, ignore this.
+
+Keyboard + Mouse is preferred. There's diagonal movement. 
 Numpad is good too. (Also VI keys if you're traditional.)
 
 A to open abilities. Most of these cost energy.
-I to open items. These have limited uses per run. Food items go here. (Unimplemented.)
+I to open items. These have limited uses per run.
+Food items go here. (Unimplemented.)
 
 Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles. (Unimplemented.)
 
 There's no penalty for dying yet. Try to leave before dying!"
 scroll_active = false
 
-[node name="Label2" type="RichTextLabel" parent="Control"]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -569.801
-margin_top = 323.993
-margin_right = -69.8011
-margin_bottom = 476.993
-rect_min_size = Vector2( 500, 0 )
-bbcode_enabled = true
-bbcode_text = "[center]
-(menu is temporary lmaooo)
-(i did try to make it a bit presentable)"
-text = "
-(menu is temporary lmaooo)
-(i did try to make it a bit presentable)"
-fit_content_height = true
-
 [connection signal="button_up" from="Control/StartTutorial" to="." method="_on_StartTutorial_button_up"]
 [connection signal="button_up" from="Control/StartEarlygame" to="." method="_on_StartEarlygame_button_up"]
 [connection signal="button_up" from="Control/StartMidgame" to="." method="_on_StartMidgame_button_up"]
-[connection signal="toggled" from="Control/StartMidgame2" to="Control/StartMidgame2/RichTextLabel" method="set_visible"]
