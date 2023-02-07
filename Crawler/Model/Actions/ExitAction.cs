@@ -33,4 +33,12 @@ public class ExitAction : Action
         }
         return false;
     }
+
+    public override IEnumerable<string> GetWarnings(Model model, Entity e)
+    {
+        if (!e.hasEaten)
+        {
+            yield return "You haven't eaten yet. Really leave now?";
+        }
+    }
 }

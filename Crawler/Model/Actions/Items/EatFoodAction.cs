@@ -12,6 +12,7 @@ public class EatFoodAction : Action
             e.energy += 1;
         }
         e.nextMove += 1;
+        e.hasEaten = true;
         return true;
     }
 

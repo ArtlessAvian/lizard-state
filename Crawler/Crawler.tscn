@@ -137,6 +137,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="PopupDialog" type="ConfirmationDialog" parent="Modals"]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -135.0
+margin_top = -37.0
+margin_right = 135.0
+margin_bottom = 37.0
+window_title = ""
+dialog_text = "Really do this thing?"
+
 [node name="InputStates" type="Node" parent="."]
 
 [node name="Main" type="Node" parent="InputStates"]

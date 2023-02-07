@@ -11,6 +11,7 @@ public class ExplorePlaylist : Resource
     [Export] Array<LevelGenerator> generators;
     [Export] int current = 0;
     [Export] Model currentModel = null;
+    [Export] bool skippedEating = false;
 
     public void Reset()
     {
@@ -56,10 +57,32 @@ public class ExplorePlaylist : Resource
         partner.state = Entity.EntityState.OK;
 
         // have players "eat", heal them, etc.
-        // eating logic here
-        // heal/buff logic here.
-        player.health = Mathf.Min(player.health + 5, player.species.maxHealth);
-        partner.health = Mathf.Min(partner.health + 5, partner.species.maxHealth);
+        // if (!player.hasEaten)
+        // {
+        //     // eating logic here
+        // }
+
+        if (player.hasEaten)
+        {
+            player.hasEaten = false;
+            skippedEating = false;
+            // heal/buff logic here.
+            player.health = Mathf.Min(player.health + 5, player.species.maxHealth);
+            partner.health = Mathf.Min(partner.health + 5, partner.species.maxHealth);
+        }
+        else if (!skippedEating)
+        {
+            skippedEating = true;
+            // player should be able to get 1 food for next cave.
+            // if they're really stuck, then, oh no.
+            player.health = 5;
+            partner.health = 5;
+        }
+        else
+        {
+            // oh no.
+            // abort mission?
+        }
 
         currentModel = GenerateModel(current, new Entity[] { player, partner });
 
