@@ -16,6 +16,11 @@ public class MoveOrAttackAction : Action
         // return true; // TODO: This one is tough. I could just make every action object and || them. (See MoveAction.cs too).
     }
 
+    public override IEnumerable<string> GetWarnings(Model model, Entity e)
+    {
+        return GetMacroedAction(model, e).GetWarnings(model, e);
+    }
+
     // only makes sense for abilities that might be aimed.
     // public override (float, float) Range => (1, 10);
 

@@ -60,8 +60,13 @@ public partial class Model : Resource
         if (!e.isPlayer) { return false; }
 
         if (!action.IsValid(this, e)) { return false; }
-        // if (!action.IsReasonable() && !force) { return false; }
+        if (!force && action.GetWarnings(this, e).Any())
+        {
+            e.needsConfirmAction = action;
+            return false;
+        }
 
+        e.needsConfirmAction = null;
         e.queuedAction = action;
         return true;
     }
@@ -80,7 +85,6 @@ public partial class Model : Resource
 
         foreach (Action action in GetActions(e))
         {
-            e.queuedAction = null; // null out if used.
             bool success = action.Do(this, e);
             if (success)
             {
@@ -109,19 +113,24 @@ public partial class Model : Resource
 
     private IEnumerable<Action> GetActions(Entity e)
     {
+        // honestly not a big fan of "states" if /all/ they do is force an automatic recovery action.
+        // something i'd like to try is if states restricted the available actions.
+        // breaks statelessness in the berlin interpretation but whatever. its already broken anyways.
         switch (e.state)
         {
             case Entity.EntityState.OK:
-                if (e.queuedAction != null)
+                if (e.queuedAction is Action temp)
                 {
-                    yield return e.queuedAction;
-                    yield break;
+                    e.queuedAction = null;
+                    yield return temp;
                 }
                 break;
             case Entity.EntityState.STUN:
+                // should always succeed.
                 yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
                 yield break;
             case Entity.EntityState.KNOCKDOWN:
+                // should always succeed.
                 yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
                 yield break;
             default:
@@ -130,6 +139,9 @@ public partial class Model : Resource
 
         if (!e.isPlayer)
         {
+            // naively confirm all actions.
+            if (e.needsConfirmAction != null) { yield return e.needsConfirmAction; }
+
             foreach ((Action a, bool ignoreWarning) in e.species?.ai?.GetMoves(this, e))
             {
                 if (ignoreWarning || !a.GetWarnings(this, e).Any())

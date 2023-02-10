@@ -136,6 +136,17 @@ public class MainInputState : InputState
             return true;
         }
 
+        // TODO: DIRTY.
+        if (ev is InputEventKey key && key.Scancode == (uint)KeyList.Enter)
+        {
+            if (crawler.Model.GetPlayer().needsConfirmAction != null)
+            {
+                crawler.Model.SetPlayerAction(crawler.Model.GetPlayer().needsConfirmAction, true);
+                crawler.notPlayerTurn = true;
+                return true;
+            }
+        }
+
         // if (ev.IsActionPressed("exit_action"))
         // {
         //     crawler.Model.SetPlayerAction(new ExitAction());

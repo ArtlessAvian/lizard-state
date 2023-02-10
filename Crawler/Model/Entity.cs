@@ -33,7 +33,9 @@ public class Entity : Resource
     [Export] public int nextMove = 0;
 
     [Export] public EntityState state = EntityState.OK;
-    [Export] public Action queuedAction;
+    [Export] public Action queuedAction; // forced!
+    // as player, client should read and resubmit with force=true.
+    [Export] public Action needsConfirmAction;
 
     // Imagine a rust enum with OK(Option<Action>), that being queuedAction?
     // If I were a braver person I'd use this everywhere.
