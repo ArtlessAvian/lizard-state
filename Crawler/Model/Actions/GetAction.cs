@@ -21,7 +21,7 @@ public class GetAction : Action
         FloorItem floorItem = null;
         foreach (FloorItem item in model.GetFloorItems())
         {
-            if (item.positionX == e.positionX && item.positionY == e.positionY)
+            if (item.positionX == e.positionX && item.positionY == e.positionY && item.inventoryItem != null)
             {
                 floorItem = item;
                 break;
@@ -32,14 +32,14 @@ public class GetAction : Action
         {
             if (floorItem.inventoryItem != null)
             {
-                e.inventory = floorItem.inventoryItem;
+                e.inventory.Add(floorItem.inventoryItem);
                 floorItem.inventoryItem = null; // avoid shared reference?
             }
             else
             {
                 ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
                 InventoryItem item = data.BuildInventoryItem();
-                e.inventory = item;
+                e.inventory.Add(item);
             }
             // TODO: Delete the floor item.
             model.CoolerApiEvent(e.id, "GetItem", floorItem.id);

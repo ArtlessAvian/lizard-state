@@ -48,7 +48,7 @@ public class Entity : Resource
     [Export] public int health;
     [Export] public int energy = 10;
 
-    [Export] public InventoryItem inventory = null;
+    [Export] public List<InventoryItem> inventory = new List<InventoryItem>();
     [Export] public bool hasEaten = false;
 
     [Export] public int team;

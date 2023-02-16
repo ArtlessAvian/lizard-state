@@ -19,16 +19,18 @@ public class ItemInputState : InputState
 
         items = new List<Action>();
 
-        if (crawler.Model.GetPlayer().inventory is InventoryItem item)
+        int i = -1;
+        foreach (InventoryItem item in crawler.Model.GetPlayer().inventory)
         {
+            i++;
             string name = item.data.ResourceName;
-            menu.AddItem($"{item.data.ResourceName} ({item.uses}/{item.data.maxUses})", 0);
+            menu.AddItem($"{item.data.ResourceName} ({item.uses}/{item.data.maxUses})", i);
             menu.SetItemDisabled(1, item.uses <= 0);
 
             Action action = item.BuildAction();
             items.Add(action);
         }
-        else
+        if (crawler.Model.GetPlayer().inventory.Count == 0)
         {
             menu.AddItem("Nothing :(", 100);
             menu.SetItemDisabled(1, true);
@@ -53,6 +55,7 @@ public class ItemInputState : InputState
         Crawler crawler = this.GetCrawler();
 
         Action action = items[id];
+        GD.Print(id);
 
         if (action.Range.max == 0)
         {
