@@ -3,10 +3,10 @@
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Crawler/View/Assets/cursor.png" type="Texture" id=3]
-[ext_resource path="res://Crawler/Controller/States/ItemInputState.cs" type="Script" id=4]
+[ext_resource path="res://Crawler/Controller/States/ItemMenuInputState.cs" type="Script" id=4]
 [ext_resource path="res://Crawler/Controller/States/MainInputState.cs" type="Script" id=5]
-[ext_resource path="res://Crawler/Controller/States/AbilityInputState.cs" type="Script" id=7]
-[ext_resource path="res://Crawler/Controller/States/AbilityTargetInputState.cs" type="Script" id=8]
+[ext_resource path="res://Crawler/Controller/States/SkillMenuInputState.cs" type="Script" id=6]
+[ext_resource path="res://Crawler/Controller/States/ActionTargetInputState.cs" type="Script" id=7]
 [ext_resource path="res://Crawler/Cursor.cs" type="Script" id=9]
 [ext_resource path="res://Crawler/Controller/States/LookInputState.cs" type="Script" id=10]
 
@@ -137,8 +137,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PopupDialog" type="ConfirmationDialog" parent="Modals"]
-visible = true
+[node name="ConfirmActionDialog" type="ConfirmationDialog" parent="Modals"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -150,22 +149,42 @@ margin_bottom = 37.0
 window_title = ""
 dialog_text = "Really do this thing?"
 
+[node name="TargetingInfo" type="Panel" parent="Modals"]
+visible = false
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = -120.0
+margin_right = 650.0
+margin_bottom = -46.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TargetingInfoLabel" type="Label" parent="Modals/TargetingInfo"]
+margin_right = 40.0
+margin_bottom = 22.0
+text = "bingus"
+
 [node name="InputStates" type="Node" parent="."]
 
 [node name="Main" type="Node" parent="InputStates"]
 script = ExtResource( 5 )
 
-[node name="Ability" type="Node" parent="InputStates/Main"]
+[node name="AttackTargeting" type="Node" parent="InputStates/Main"]
 script = ExtResource( 7 )
 
-[node name="Targeting" type="Node" parent="InputStates/Main/Ability"]
-script = ExtResource( 8 )
+[node name="Skills" type="Node" parent="InputStates/Main"]
+script = ExtResource( 6 )
+
+[node name="Targeting" type="Node" parent="InputStates/Main/Skills"]
+script = ExtResource( 7 )
 
 [node name="Item" type="Node" parent="InputStates/Main"]
 script = ExtResource( 4 )
 
 [node name="Targeting" type="Node" parent="InputStates/Main/Item"]
-script = ExtResource( 8 )
+script = ExtResource( 7 )
 
 [node name="Look" type="Node" parent="InputStates/Main"]
 script = ExtResource( 10 )
@@ -186,7 +205,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 color = Color( 0, 0, 0, 1 )
 
-[connection signal="id_pressed" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_id_pressed"]
-[connection signal="popup_hide" from="Modals/AbilitiesMenu" to="InputStates/Main/Ability" method="_on_AbilitiesMenu_popup_hide"]
+[connection signal="id_pressed" from="Modals/AbilitiesMenu" to="InputStates/Main/Skills" method="_on_AbilitiesMenu_id_pressed"]
+[connection signal="popup_hide" from="Modals/AbilitiesMenu" to="InputStates/Main/Skills" method="_on_AbilitiesMenu_popup_hide"]
 [connection signal="id_pressed" from="Modals/ItemsMenu" to="InputStates/Main/Item" method="_on_ItemsMenu_id_pressed"]
 [connection signal="popup_hide" from="Modals/ItemsMenu" to="InputStates/Main/Item" method="_on_ItemsMenu_popup_hide"]

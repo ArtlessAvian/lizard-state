@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ItemInputState : InputState
+public class ItemMenuInputState : InputState
 {
     List<Action> items;
 
@@ -66,7 +66,7 @@ public class ItemInputState : InputState
         }
         else
         {
-            AbilityTargetInputState to = this.GetNode<AbilityTargetInputState>("Targeting");
+            ActionTargetInputState to = this.GetNode<ActionTargetInputState>("Targeting");
             to.action = action;
             crawler.ChangeState(to);
             return;

@@ -70,9 +70,18 @@ public class MainInputState : InputState
 
     private bool TransitionInput(Crawler crawler, InputEvent ev)
     {
-        if (ev.IsActionPressed("menu_abilities", false))
+        if (ev.IsActionPressed("attack_action", false))
         {
-            crawler.ChangeState(this.GetNode<InputState>("Ability"));
+            Action bumpAttack = crawler.Model.GetPlayer().species.bumpAttack;
+            ActionTargetInputState attackTargeting = this.GetNode<ActionTargetInputState>("AttackTargeting"); ;
+            attackTargeting.action = bumpAttack;
+            crawler.ChangeState(attackTargeting);
+            return true;
+        }
+
+        if (ev.IsActionPressed("menu_skills", false))
+        {
+            crawler.ChangeState(this.GetNode<InputState>("Skills"));
             return true;
         }
 

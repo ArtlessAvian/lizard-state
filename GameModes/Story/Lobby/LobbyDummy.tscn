@@ -102,33 +102,43 @@ expand = true
 [node name="RichTextLabel" type="RichTextLabel" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -374.956
+margin_left = -500.0
 margin_top = 355.535
-margin_right = 375.044
+margin_right = -20.0
 margin_bottom = 755.534
 bbcode_enabled = true
-bbcode_text = "[color=#aaffff][center]If you are playtesting for me, ignore this.[/center][/color]
+bbcode_text = "Keyboard + Mouse is preferred. Click on things to move or attack.
 
-Keyboard + Mouse is preferred. There's diagonal movement. 
-Numpad is good too. (Also VI keys if you're traditional.)
+Numpad is good too, since there's diagonal input. (Also VI keys if you're traditional.)
 
-A to open abilities. Most of these cost energy.
-I to open items. These have limited uses per run.
-[color=gray]Food items go here. (Unimplemented.)[/color]
+A to attack. [color=gray]This lets you aim loosely.[/color]
+S to open skills. Most of these cost energy.
+Z to open items. These have limited uses per run.
+[color=gray]C to open food. (Unimplemented.)[/color]
+"
+text = "Keyboard + Mouse is preferred. Click on things to move or attack.
 
-Click pink tiles to leave. You regain health and energy [color=gray]if you ate before leaving. Food comes from enemies or green tiles. (Unimplemented.)[/color]
+Numpad is good too, since there's diagonal input. (Also VI keys if you're traditional.)
+
+A to attack. This lets you aim loosely.
+S to open skills. Most of these cost energy.
+Z to open items. These have limited uses per run.
+C to open food. (Unimplemented.)
+"
+scroll_active = false
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 20.0
+margin_top = 355.535
+margin_right = 500.0
+margin_bottom = 755.534
+bbcode_enabled = true
+bbcode_text = "Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
 
 There's no penalty for dying yet. Try to leave before dying!"
-text = "If you are playtesting for me, ignore this.
-
-Keyboard + Mouse is preferred. There's diagonal movement. 
-Numpad is good too. (Also VI keys if you're traditional.)
-
-A to open abilities. Most of these cost energy.
-I to open items. These have limited uses per run.
-Food items go here. (Unimplemented.)
-
-Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles. (Unimplemented.)
+text = "Click pink tiles to leave. You regain health and energy if you ate before leaving. Food comes from enemies or green tiles.
 
 There's no penalty for dying yet. Try to leave before dying!"
 scroll_active = false

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class AbilityInputState : InputState
+public class SkillMenuInputState : InputState
 {
     const int bigNumber = 100;
 
@@ -68,7 +68,7 @@ public class AbilityInputState : InputState
         }
         else
         {
-            AbilityTargetInputState to = this.GetNode<AbilityTargetInputState>("Targeting");
+            ActionTargetInputState to = this.GetNode<ActionTargetInputState>("Targeting");
             to.action = action;
             crawler.ChangeState(to);
             return;

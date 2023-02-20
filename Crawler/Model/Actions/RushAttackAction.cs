@@ -90,4 +90,6 @@ public class RushAttackAction : Action
 
         return true;
     }
+
+    public override (int, int) Range => (1, 1);
 }
