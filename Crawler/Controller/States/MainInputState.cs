@@ -70,6 +70,18 @@ public class MainInputState : InputState
 
     private bool TransitionInput(Crawler crawler, InputEvent ev)
     {
+        for (int i = 0; i < 4; i++)
+        {
+            if (ev.IsActionPressed("skill_" + i))
+            {
+                // TODO: select ex version if available and shift held
+                Action skill = (Action)crawler.Model.GetPlayer().species.attacks[i]?.Duplicate();
+                ActionTargetInputState attackTargeting = this.GetNode<ActionTargetInputState>("AttackTargeting"); ;
+                attackTargeting.action = skill;
+                crawler.ChangeState(attackTargeting);
+            }
+        }
+
         if (ev.IsActionPressed("attack_action", false))
         {
             Action bumpAttack = crawler.Model.GetPlayer().species.bumpAttack;

@@ -19,7 +19,7 @@ public class ActionTargetInputState : InputState
         RangeRefresh(crawler);
 
         (crawler.FindNode("TargetingInfo") as Control).Show();
-        (crawler.FindNode("TargetingInfoLabel") as Label).Text = action.ResourcePath;
+        (crawler.FindNode("TargetingInfoLabel") as Label).Text = GetActionName(action);
     }
 
     public override void HandleInput(Crawler crawler, InputEvent ev)
@@ -142,5 +142,22 @@ public class ActionTargetInputState : InputState
         attackRange.Clear();
 
         (crawler.FindNode("TargetingInfo") as Control).Hide();
+    }
+
+    private string GetActionName(Action action)
+    {
+        if (!action.ResourceName.Empty())
+        {
+            return action.ResourceName;
+        }
+        if (!action.ResourcePath.Empty())
+        {
+            return action.ResourcePath;
+        }
+        if (action.GetScript() is Resource script && !script.ResourcePath.Empty())
+        {
+            return script.ResourcePath;
+        }
+        return "Something";
     }
 }
