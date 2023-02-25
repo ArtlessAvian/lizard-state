@@ -75,7 +75,7 @@ public class MainInputState : InputState
             if (ev.IsActionPressed("skill_" + i))
             {
                 // TODO: select ex version if available and shift held
-                Action skill = (Action)crawler.Model.GetPlayer().species.attacks[i]?.Duplicate();
+                Action skill = (Action)crawler.Model.GetPlayer().species.abilities[i]?.Duplicate();
                 ActionTargetInputState attackTargeting = this.GetNode<ActionTargetInputState>("AttackTargeting"); ;
                 attackTargeting.action = skill;
                 crawler.ChangeState(attackTargeting);

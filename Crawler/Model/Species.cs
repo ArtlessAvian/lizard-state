@@ -9,7 +9,6 @@ public class Species : Resource
     [Export] public AI ai = null;
 
     [Export] public Action bumpAttack;
-    [Export] public List<Action> attacks;
     [Export] public List<Action> abilities;
 
     // Stat Block

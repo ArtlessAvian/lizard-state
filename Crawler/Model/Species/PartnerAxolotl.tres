@@ -10,7 +10,6 @@ resource_name = "PartnerAxolotl"
 script = ExtResource( 1 )
 ai = ExtResource( 4 )
 bumpAttack = ExtResource( 2 )
-attacks = [ ExtResource( 3 ) ]
-abilities = null
+abilities = [ ExtResource( 3 ) ]
 maxHealth = 30
 displayName = "[color=#E38FD5]Nano[/color]"

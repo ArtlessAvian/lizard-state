@@ -9,7 +9,6 @@ resource_name = "Enemy"
 script = ExtResource( 1 )
 ai = ExtResource( 3 )
 bumpAttack = ExtResource( 2 )
-attacks = null
 abilities = [  ]
 maxHealth = 10
 displayName = "Enemy"

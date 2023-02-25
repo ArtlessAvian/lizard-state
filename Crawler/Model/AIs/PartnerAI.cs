@@ -54,9 +54,10 @@ public class PartnerAI : AI
         else
         {
             // get reach attacks in range.
-            for (int i = 0; i < e.species.attacks.Count; i++)
+            for (int i = 0; i < e.species.abilities.Count; i++)
             {
-                Action attack = e.species.attacks[i];
+                Action attack = e.species.abilities[i];
+                // TODO: if ability is not attack, continue;
                 foreach (Entity enemy in enemies)
                 {
                     yield return (attack.SetTarget(enemy.position), false);

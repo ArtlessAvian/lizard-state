@@ -10,7 +10,6 @@ resource_name = "PartnerGator"
 script = ExtResource( 1 )
 ai = ExtResource( 3 )
 bumpAttack = ExtResource( 2 )
-attacks = [ ExtResource( 4 ) ]
-abilities = null
+abilities = [ ExtResource( 4 ) ]
 maxHealth = 30
 displayName = "[color=#E38FD5]Vi[/color]"
