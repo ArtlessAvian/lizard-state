@@ -33,22 +33,21 @@ static class GridHelper
         }
     }
 
+    const int RAY_LENGTH = 500;
+
     // Found a better algorithm from https://github.com/denismr/SymmetricPCVT
     // Tran Thong "A symmetric linear algorithm for line segment generation."
     public static IEnumerable<(int x, int y)> RayThrough((int x, int y) from, (int x, int y) through)
     {
         (int octantX, int octantY, int octant) = Octantify(through.x - from.x, through.y - from.y);
         int localDy = 0;
-        for (int localDx = 0; localDx <= 500; localDx++)
+        for (int localDx = 0; localDx <= RAY_LENGTH; localDx++)
         {
             (int dx, int dy) = DeOctantify(localDx, localDy, octant);
             yield return (dx + from.x, dy + from.y);
             if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
             {
                 localDy++;
-                // TODO: kinda want to do thicc lines. Magic expression above though.
-                // (dx, dy) = DeOctantify(localDx, localDy, octant);
-                // yield return (dx + from.x, dy + from.y);
             }
         }
     }
@@ -63,6 +62,31 @@ static class GridHelper
                 break;
             }
         }
+    }
+
+    public static (int x, int y) StepThrough((int x, int y) from, (int x, int y) through, int steps)
+    {
+        IEnumerable<(int x, int y)> enumerable = RayThrough(from, through);
+        int i = 0;
+        foreach ((int x, int y) p in enumerable)
+        {
+            if (i == steps || i == RAY_LENGTH) { return p; }
+            i++;
+        }
+        // this will never happen.
+        return through;
+    }
+
+    public static (int x, int y) StepTowards((int x, int y) from, (int x, int y) to, int steps)
+    {
+        IEnumerable<(int x, int y)> enumerable = LineBetween(from, to);
+        int i = 0;
+        foreach ((int x, int y) p in enumerable)
+        {
+            if (i == steps) { return p; }
+            i++;
+        }
+        return to;
     }
 
     public static (int dx, int dy, int octant) Octantify(int dx, int dy)
