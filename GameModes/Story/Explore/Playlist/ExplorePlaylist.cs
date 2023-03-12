@@ -34,6 +34,7 @@ public class ExplorePlaylist : Resource
             Entity partner = partnerSpecies.BuildEntity((-100, -100), 0);
 
             player.isPlayer = true;
+            player.inventory.Add(GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres").BuildInventoryItem());
 
             currentModel = GenerateModel(0, new Entity[] { player, partner });
         }
