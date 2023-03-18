@@ -48,6 +48,11 @@ public class Entity : Resource
     [Export] public int health;
     [Export] public int energy = 10;
 
+    /// Charge increases without moving or other specific actions.
+    /// Calculate charge with `[Model].time - chargeStart`.
+    /// Consume charge by setting this to `[Model].time`.
+    [Export] public int chargeStart = 0;
+
     [Export] public List<InventoryItem> inventory = new List<InventoryItem>();
     [Export] public bool hasEaten = false;
 

@@ -55,6 +55,7 @@ public class MoveAction : Action
 
         e.nextMove += (int)(1 * GridHelper.Distance(e.position, targetPos));
         e.position = targetPos;
+        e.chargeStart = model.time;
 
         model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }

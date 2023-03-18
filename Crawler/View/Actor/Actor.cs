@@ -65,7 +65,7 @@ public partial class Actor : Node2D
         if (viewTime is int viewTimeeeee)
         {
             TextureProgress combobar = GetNode<TextureProgress>("ComboBar");
-            combobar.Value = role.nextMove - viewTimeeeee;
+            combobar.Value = viewTimeeeee - role.chargeStart;
         }
 
         // // sprite stuff

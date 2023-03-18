@@ -27,6 +27,7 @@ public class ExplorePlaylist : Resource
         {
             // construct the players.
             Species playerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
+            // Species playerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerGator.tres") as Species;
             Species partnerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
 
             // position will edited.
