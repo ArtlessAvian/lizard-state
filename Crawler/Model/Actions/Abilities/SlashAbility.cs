@@ -43,12 +43,18 @@ public class SlashAbility : Action
                 {"flavorTags", new Array{"Bump"}}
             });
         }
+        // TODO: Sort before knockback.
+        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 2, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45))
+        {
+            if (targeted == e) { continue; }
+            ActionUtils.ApplyKnockback(model, e, targeted, 1);
+        }
 
         (int x, int y) step = GridHelper.StepTowards(e.position, targetPos, 1);
         if (model.GetEntityAt(step) is null)
         {
             e.position = step;
-            model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
+            model.CoolerApiEvent(e.id, "Move", new Vector2(step.x, step.y));
         }
 
         e.nextMove += 1;

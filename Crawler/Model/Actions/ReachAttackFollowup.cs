@@ -44,12 +44,7 @@ public class ReachAttackFollowup : Action
                 // clean hit!
                 OnHit(model, e, targeted);
 
-                // TODO: This can put people inside walls. Or, inside each other.
-                // (If they intersect a wall, they should "wallsplat" or something.)
-                // (If they end up on a person, they should pop to a random nearby tile.)
-                (int x, int y) knockback = KnockbackPosition(model, e.position, targeted.position, data.knockback);
-                targeted.position = knockback;
-                model.CoolerApiEvent(e.id, "Knockback", new Vector2(knockback.x, knockback.y), targeted.id);
+                ActionUtils.ApplyKnockback(model, e, targeted, data.knockback);
             }
         }
         else
@@ -91,34 +86,5 @@ public class ReachAttackFollowup : Action
                 {"swept", data.sweeps},
                 {"flavorTags", data.flavorTags},
             });
-    }
-
-    private (int, int) KnockbackPosition(Model model, (int x, int y) from, (int x, int y) to, int howMuch)
-    {
-        // reflect "from" around "to", then ray from "to" to "reflected."
-        (int x, int y) reflected = ((to.x - from.x) + to.x, (to.y - from.y) + to.y);
-        IEnumerable<(int x, int y)> enumerable = GridHelper.RayThrough(to, reflected);
-        // haha yeaa
-
-        (int, int) previousPosition = to; // the enemy's current position is always valid.
-        foreach ((int, int) position in enumerable)
-        {
-            // if theres an entity at position, knock them down.
-
-            if (model.map.TileIsWall(position))
-            {
-                return previousPosition;
-            }
-
-            if (howMuch <= 0)
-            {
-                return position;
-            }
-            howMuch--;
-
-            previousPosition = position;
-        }
-
-        return (0, 0); // this will never happen
     }
 }
