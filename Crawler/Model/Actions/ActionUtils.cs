@@ -16,11 +16,26 @@ public class ActionUtils
         (int x, int y) safePos = targeted.position; // the enemy's current position is always valid.
         foreach ((int, int) tentativePos in GridHelper.LineBetween(targeted.position, destination))
         {
-            // TODO: if theres an entity at position, knock them down.
+            if (tentativePos == targeted.position) { continue; }
+
             if (!model.CanWalkFromTo(safePos, tentativePos))
             {
                 break;
             }
+            // TODO: if theres an entity at position, knock them down.
+            if (model.GetEntityAt(tentativePos) is Entity occupier)
+            {
+                occupier.KnockdownForTurns(1, model.time, e.id);
+
+                model.CoolerApiEvent(new Dictionary(){
+                    {"subject", e.id},
+                    {"action", "Hit"},
+                    {"object", occupier.id},
+                    {"damage", 0},
+                    {"swept", true},
+                });
+            }
+
             safePos = tentativePos;
         }
         targeted.position = safePos;

@@ -57,6 +57,8 @@ public class RushAttackAction : Action
 
         } while (GD.Randf() >= MissChance && targeted.health > 0);
 
+        ActionUtils.ApplyKnockback(model, e, targeted, 1);
+
         e.nextMove += 1;
 
         // if (targeted.health > 0)
