@@ -14,6 +14,14 @@ public class MainInputState : InputState
     {
         cursor = crawler.GetNode<Cursor>("Cursor");
         camera = crawler.View.GetNode<Camera2D>("Camera2D");
+
+        if (crawler.Model?.GetPlayer()?.needsConfirmAction is Action confirm)
+        {
+            foreach (string warning in confirm.GetWarnings(crawler.Model, crawler.Model.GetPlayer()))
+            {
+                crawler.View.GetNode<MessageLog>("UILayer/MessageLog").AddMessage(warning);
+            }
+        }
     }
 
     public override void HandleInput(Crawler crawler, InputEvent ev)
@@ -202,6 +210,7 @@ public class MainInputState : InputState
                     crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
+                    crawler.ResetState();
                     return true;
                 }
                 else
@@ -209,6 +218,7 @@ public class MainInputState : InputState
                     crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
+                    crawler.ResetState();
                     return true;
                 }
             }
