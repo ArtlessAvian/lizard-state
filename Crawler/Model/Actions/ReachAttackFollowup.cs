@@ -3,7 +3,6 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-
 public class ReachAttackFollowup : Action
 {
     [Export]
@@ -20,10 +19,6 @@ public class ReachAttackFollowup : Action
     public override bool Do(Model model, Entity e)
     {
         (int x, int y) targetPos = GetTargetPos(e.position);
-        Entity targeted = model.GetEntityAt(targetPos);
-
-        // e.energy -= data.energy;
-
         model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
@@ -31,7 +26,7 @@ public class ReachAttackFollowup : Action
                 {"flavorTags", data.flavorTags}
             });
 
-        if (targeted is object)
+        if (GetHitEntity(model, e, targetPos) is Entity targeted)
         {
             if (GD.Randf() < data.blockChance)
             {
@@ -55,6 +50,23 @@ public class ReachAttackFollowup : Action
         e.nextMove += data.recovery;
 
         return true;
+    }
+
+    private Entity GetHitEntity(Model model, Entity e, (int, int) targetPos)
+    {
+        if (data.smiteTargeting)
+        {
+            return model.GetEntityAt(targetPos);
+        }
+
+        foreach ((int, int) hitPos in GridHelper.LineBetween(e.position, targetPos))
+        {
+            if (model.GetEntityAt(hitPos) is Entity targeted && targeted != e)
+            {
+                return targeted;
+            }
+        }
+        return null;
     }
 
     public override bool IsValid(Model model, Entity e)

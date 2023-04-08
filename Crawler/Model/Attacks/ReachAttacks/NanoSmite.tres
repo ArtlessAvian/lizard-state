@@ -15,4 +15,5 @@ blockChance = 0.2
 range = 7
 knockback = 0
 sweeps = false
+smiteTargeting = true
 flavorTags = [ "Psychic" ]
