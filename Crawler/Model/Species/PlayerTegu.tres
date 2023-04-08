@@ -7,7 +7,7 @@
 [ext_resource path="res://Crawler/Model/Actions/Abilities/RepositionAbility.cs" type="Script" id=8]
 [ext_resource path="res://Crawler/Model/Actions/Abilities/SlashAbility.cs" type="Script" id=9]
 [ext_resource path="res://Crawler/Model/Actions/Abilities/RendAbility.cs" type="Script" id=10]
-[ext_resource path="res://Crawler/Model/Actions/Abilities/TakedownAbility.cs" type="Script" id=11]
+[ext_resource path="res://Crawler/Model/Actions/Abilities/CrossupAbility.cs" type="Script" id=11]
 
 [sub_resource type="Resource" id=1]
 resource_name = "Dash Through"
@@ -38,7 +38,7 @@ targetInternalY = 0
 isRelative = true
 
 [sub_resource type="Resource" id=5]
-resource_name = "Takedown"
+resource_name = "Crossup"
 script = ExtResource( 11 )
 targetInternalX = 0
 targetInternalY = 0
@@ -49,6 +49,6 @@ resource_name = "PlayerTegu"
 script = ExtResource( 1 )
 ai = ExtResource( 5 )
 bumpAttack = ExtResource( 4 )
-abilities = [  SubResource( 4 ), SubResource( 1 ), SubResource( 3 ), SubResource( 2 ), SubResource( 5 ) ]
+abilities = [  SubResource( 5 ), SubResource( 1 ), SubResource( 3 ), SubResource( 2 ), SubResource( 5 ) ]
 maxHealth = 30
 displayName = "[color=#AF5050]Max[/color]"

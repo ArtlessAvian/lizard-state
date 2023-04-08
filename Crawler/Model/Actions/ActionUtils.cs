@@ -6,6 +6,29 @@ using System.Collections.Generic;
 // TODO: somehow limit visibility to actions?
 public class ActionUtils
 {
+    // TODO: Not currently used anywhere.
+    public static bool RollForHit(Model model, Entity e, Entity targeted, float hitChance)
+    {
+        if (targeted.state == Entity.EntityState.OK && targeted.queuedAction == null)
+        {
+            return GD.Randf() < hitChance;
+        }
+        return true;
+    }
+
+    public static void ApplyDamage(Model model, Entity e, Entity targeted, int damage)
+    {
+        targeted.health -= damage;
+        targeted.queuedAction = null;
+
+        model.CoolerApiEvent(new Dictionary(){
+            {"subject", e.id},
+            {"action", "Hit"},
+            {"object", targeted.id},
+            {"damage", damage},
+        });
+    }
+
     // If calling on multiple entities, start with the outer ones first.
     // BUG: This can put people inside walls. Or, inside each other.
     // TODO: If they hit a wall, they should "wallsplat" or something.
