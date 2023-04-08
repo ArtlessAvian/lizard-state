@@ -83,41 +83,9 @@ public class ActionTargetInputState : InputState
             attackRange.SetCell(tile.x, tile.y, 1);
         }
 
-        switch (action.TargetingType)
-        {
-            case TargetingType.Cone cone: RefreshCone(cone, attackRange, blocksAttack); break;
-            case TargetingType.Smite smite: RefreshSmite(smite, attackRange, blocksAttack); break;
-            case TargetingType.Ray shot: RefreshShot(shot, attackRange, blocksAttack); break;
-            default:
-                break;
-        }
-    }
-
-    private void RefreshCone(TargetingType.Cone cone, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
-    {
-        foreach (AbsolutePosition tile in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, cursor.targetPosition - playerPos, cone.sectorDegrees))
+        foreach (AbsolutePosition tile in action.TargetingType.GetAffectedTiles(playerPos, cursor.targetPosition, blocksAttack))
         {
             attackRange.SetCell(tile.x, tile.y, 3);
-        }
-    }
-
-    private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
-    {
-        foreach (AbsolutePosition tile in VisibilityTrie.FieldOfView(cursor.targetPosition, blocksAttack, smite.radius))
-        {
-            attackRange.SetCell(tile.x, tile.y, 3);
-        }
-    }
-
-    private void RefreshShot(TargetingType.Ray ray, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
-    {
-        foreach (AbsolutePosition tile in GridHelper.RayThrough(playerPos, cursor.targetPosition))
-        {
-            float dist = GridHelper.Distance(tile, playerPos);
-            if (dist > action.Range.max) { break; }
-            if (blocksAttack(tile)) { break; }
-            attackRange.SetCell(tile.x, tile.y, 3);
-            if (ray.stopAtTarget && tile == cursor.targetPosition) { break; }
         }
     }
 

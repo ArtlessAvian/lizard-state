@@ -49,5 +49,5 @@ public class CameraFlashAction : Action
     }
 
     public override (int min, int max) Range => (1, 5);
-    public override TargetingType.Type TargetingType => new TargetingType.Cone(45);
+    public override TargetingType.Type TargetingType => new TargetingType.Cone { radius = 5, sectorDegrees = 45 };
 }

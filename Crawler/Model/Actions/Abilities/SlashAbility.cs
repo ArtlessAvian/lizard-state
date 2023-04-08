@@ -76,5 +76,5 @@ public class SlashAbility : Action
     }
 
     public override (int, int) Range => (1, 2);
-    public override TargetingType.Type TargetingType => new TargetingType.Cone(45);
+    public override TargetingType.Type TargetingType => new TargetingType.Cone { radius = 2, sectorDegrees = 45 };
 }

@@ -8,22 +8,22 @@ public class MoveAction : Action
     {
         if (!IsValid(model, e)) { return false; }
 
-        AbsolutePosition targetPos = GetTargetPos(e.position);
+        AbsolutePosition stepPos = GridHelper.StepTowards(e.position, GetTargetPos(e.position), 1);
 
-        if (targetPos.x == e.position.x && targetPos.y == e.position.y)
+        if (stepPos.x == e.position.x && stepPos.y == e.position.y)
         {
             DoNothing(model, e);
             return true;
         }
 
-        if (!model.CanWalkFromTo(e.position, targetPos))
+        if (!model.CanWalkFromTo(e.position, stepPos))
         {
             GD.Print("You bump into the wall.");
             DoNothing(model, e);
             return true;
         }
 
-        Entity entityAt = model.GetEntityAt(targetPos);
+        Entity entityAt = model.GetEntityAt(stepPos);
         if (!(entityAt is null))
         {
             if (entityAt.team != e.team)
@@ -73,10 +73,8 @@ public class MoveAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
-
         AbsolutePosition targetPos = GetTargetPos(e.position);
-        if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > 1.5f) { return false; }
+        if (!TargetingType.CheckValid(e.position, targetPos, model.map.TileIsWall)) { return false; }
         return true;
     }
 
@@ -85,5 +83,5 @@ public class MoveAction : Action
         if (!model.CanWalkFromTo(e.position, GetTargetPos(e.position))) { yield return "You can't walk there."; }
     }
 
-    public override (int, int) Range => (1, 1);
+    public override TargetingType.Type TargetingType => new TargetingType.Ray { range = 1, stopAtTarget = false };
 }

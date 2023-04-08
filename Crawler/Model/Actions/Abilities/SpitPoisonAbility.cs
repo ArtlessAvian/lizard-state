@@ -65,5 +65,5 @@ public class SpitPoisonAbility : Action
     }
 
     public override (int, int) Range => (1, 3);
-    public override TargetingType.Type TargetingType => new TargetingType.Cone(45);
+    public override TargetingType.Type TargetingType => new TargetingType.Cone { radius = 3, sectorDegrees = 45 };
 }

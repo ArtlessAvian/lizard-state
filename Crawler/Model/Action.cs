@@ -60,41 +60,85 @@ public abstract class Action : Resource
     }
 
     /// For AI and UI use. Range is inclusive.
+    [Obsolete]
     public virtual (int min, int max) Range => (0, 0);
-    public virtual TargetingType.Type TargetingType => new TargetingType.Smite(0);
+    public virtual TargetingType.Type TargetingType => new TargetingType.Self();
 }
 
 public static class TargetingType
 {
-    public interface Type { }
+    public interface Type
+    {
+        bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
+        IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
+    }
 
-    // TODO: add more params.
+    public struct Self : Type
+    {
+        public bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            return true;
+        }
+
+        public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            yield break;
+        }
+    }
+
     public struct Cone : Type
     {
+        public int radius;
         public float sectorDegrees;
-        public Cone(float sectorDegrees)
+
+        public bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            this.sectorDegrees = sectorDegrees;
+            return true;
+        }
+
+        IEnumerable<AbsolutePosition> Type.GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            return VisibilityTrie.ConeOfView(sourcePos, blocksAction, radius, (targetPos.x - sourcePos.x, targetPos.y - sourcePos.y), sectorDegrees);
         }
     }
 
     public struct Smite : Type
     {
-        public float radius;
-        public Smite(float radius)
+        public int range;
+        public int splashRadius;
+
+        public bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            this.radius = radius;
+            if (GridHelper.Distance(sourcePos, targetPos) > range) { return false; }
+            return true;
+        }
+
+        public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            return VisibilityTrie.FieldOfView(targetPos, blocksAction, splashRadius);
         }
     }
 
     public struct Ray : Type
     {
-        public bool pierces;
+        public int range;
         public bool stopAtTarget;
-        public Ray(bool pierces, bool stopAtTarget)
+
+        public bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            this.pierces = pierces;
-            this.stopAtTarget = stopAtTarget;
+            return true;
+        }
+
+        public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            int i = 0;
+            foreach ((int, int) pos in GridHelper.LineBetween(sourcePos, targetPos))
+            {
+                yield return pos;
+                if (blocksAction(pos)) { yield break; }
+                if (i >= range) { yield break; }
+                i++;
+            }
         }
     }
 }

@@ -94,4 +94,5 @@ public class RushAttackAction : Action
     }
 
     public override (int, int) Range => (1, 1);
+    public override TargetingType.Type TargetingType => new TargetingType.Ray { range = 1 };
 }
