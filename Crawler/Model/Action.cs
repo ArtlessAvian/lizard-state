@@ -62,7 +62,7 @@ public abstract class Action : Resource
     /// For AI and UI use. Range is inclusive.
     [Obsolete]
     public virtual (int min, int max) Range => (0, 0);
-    public virtual TargetingType.Type TargetingType => new TargetingType.Self();
+    public virtual TargetingType.Type TargetingType => new TargetingType.None();
 }
 
 public static class TargetingType
@@ -71,9 +71,11 @@ public static class TargetingType
     {
         bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
         IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
+        IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction);
     }
 
-    public struct Self : Type
+    // TODO: Consider replacing with null? A "null" type is fine tbh.
+    public struct None : Type
     {
         public bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
@@ -81,6 +83,11 @@ public static class TargetingType
         }
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            yield break;
+        }
+
+        public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
         {
             yield break;
         }
@@ -100,6 +107,11 @@ public static class TargetingType
         {
             return VisibilityTrie.ConeOfView(sourcePos, blocksAction, radius, (targetPos.x - sourcePos.x, targetPos.y - sourcePos.y), sectorDegrees);
         }
+
+        public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
+        {
+            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, radius);
+        }
     }
 
     public struct Smite : Type
@@ -115,7 +127,17 @@ public static class TargetingType
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
+            if (GridHelper.Distance(sourcePos, targetPos) > range)
+            {
+                targetPos = GridHelper.StepTowards(sourcePos, targetPos, range);
+            }
             return VisibilityTrie.FieldOfView(targetPos, blocksAction, splashRadius);
+        }
+
+        public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
+        {
+            // TODO: Make correct.
+            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range + splashRadius);
         }
     }
 
@@ -139,6 +161,12 @@ public static class TargetingType
                 if (i >= range) { yield break; }
                 i++;
             }
+        }
+
+        public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
+        {
+            // TODO: Technically not true, but the function signature doesn't care for entities.
+            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range);
         }
     }
 }

@@ -75,11 +75,8 @@ public class ActionTargetInputState : InputState
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
 
-        foreach (AbsolutePosition tile in VisibilityTrie.FieldOfView(playerPos, blocksAttack, action.Range.max))
-        // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
+        foreach (AbsolutePosition tile in action.TargetingType.GetFullRange(playerPos, blocksAttack))
         {
-            float dist = GridHelper.Distance(tile - playerPos);
-            if (action.Range.min > dist) { continue; }
             attackRange.SetCell(tile.x, tile.y, 1);
         }
 

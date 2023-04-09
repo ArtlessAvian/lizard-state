@@ -40,7 +40,7 @@ public class SkillMenuInputState : InputState
 
         Action action = (Action)crawler.Model.GetPlayer().species.abilities[id].Duplicate();
 
-        if (action.Range.max == 0)
+        if (action.TargetingType is TargetingType.None)
         {
             crawler.View.ModelSync();
             crawler.Model.SetPlayerAction(action);

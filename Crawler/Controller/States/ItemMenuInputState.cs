@@ -57,7 +57,7 @@ public class ItemMenuInputState : InputState
         Action action = items[id];
         GD.Print(id);
 
-        if (action.Range.max == 0)
+        if (action.TargetingType is TargetingType.None)
         {
             crawler.View.ModelSync();
             crawler.Model.SetPlayerAction(action);
