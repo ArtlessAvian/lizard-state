@@ -67,6 +67,9 @@ public abstract class Action : Resource
 
 public static class TargetingType
 {
+    // TODO: Solidify function signatures.
+    // Maybe create interface "model-like" to query tiles, entities?
+    // Or somehow make immutable reference to the model. :P
     public interface Type
     {
         bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
@@ -153,12 +156,15 @@ public static class TargetingType
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
+            (int x, int y) adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
+
             int i = 0;
-            foreach ((int, int) pos in GridHelper.LineBetween(sourcePos, targetPos))
+            foreach ((int, int) pos in GridHelper.RayThrough(sourcePos, adjustedTarget))
             {
                 yield return pos;
                 if (blocksAction(pos)) { yield break; }
                 if (i >= range) { yield break; }
+                if (stopAtTarget && pos == targetPos) { yield break; }
                 i++;
             }
         }
@@ -167,6 +173,12 @@ public static class TargetingType
         {
             // TODO: Technically not true, but the function signature doesn't care for entities.
             return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range);
+        }
+
+        private (int x, int y) AdjustTarget((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            (int, int)? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
+            return newTarget ?? targetPos;
         }
     }
 }

@@ -12,14 +12,16 @@ public class VisibilityTrie
     {
         public int x = 0;
         public int y = 0;
+        public (int x, int y) creator;
         public TrieNode straight = null;
         public TrieNode diag = null;
         public TrieNode parent = null;
 
-        public TrieNode(int x, int y, TrieNode parent = null)
+        public TrieNode(int x, int y, (int x, int y) creator, TrieNode parent = null)
         {
             this.x = x;
             this.y = y;
+            this.creator = creator;
             this.parent = parent;
         }
     }
@@ -30,7 +32,7 @@ public class VisibilityTrie
 
     static VisibilityTrie()
     {
-        origin = new TrieNode(0, 0);
+        origin = new TrieNode(0, 0, (0, 0));
         reverse = new Dictionary<(int x, int y), HashSet<TrieNode>>();
         AddToReverse(origin);
 
@@ -56,7 +58,7 @@ public class VisibilityTrie
                 {
                     if (current.straight is null)
                     {
-                        current.straight = new TrieNode(tile.x, tile.y, current);
+                        current.straight = new TrieNode(tile.x, tile.y, (run, rise), current);
                         AddToReverse(current.straight);
                     }
                     current = current.straight;
@@ -65,7 +67,7 @@ public class VisibilityTrie
                 {
                     if (current.diag is null)
                     {
-                        current.diag = new TrieNode(tile.x, tile.y, current);
+                        current.diag = new TrieNode(tile.x, tile.y, (run, rise), current);
                         AddToReverse(current.diag);
                     }
                     current = current.diag;
@@ -178,10 +180,18 @@ public class VisibilityTrie
 
     public static bool AnyLineOfSightRelative(Vector2i relative, Predicate<Vector2i> isBlocked)
     {
-        // Any tiles that are duplicated across octants would be covered the same way anyways.
+        return SomeLineOfSightRelative(relative, isBlocked) != null;
+    }
+
+    // returns the direction of a ray passing through relative.
+    // (implementation detail: returns the "simplest" direction, with dx, dy as low as possible)
+    public static (int x, int y)? SomeLineOfSightRelative((int x, int y) relative, Predicate<Vector2i> isBlocked)
+    {
+        // No need to check when relative is represented by multiple octants.
+        // The same path is checked when shared between octants. (cardinal, diagonal)        // The same path is checked between octants if so.
         (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
 
-        if (!reverse.ContainsKey((dx, dy))) { return false; }
+        if (!reverse.ContainsKey((dx, dy))) { return null; }
         foreach (TrieNode start in reverse[(dx, dy)])
         {
             bool success = true;
@@ -195,9 +205,12 @@ public class VisibilityTrie
                 }
                 current = current.parent;
             }
-            if (success) { return true; }
+            if (success)
+            {
+                return GridHelper.DeOctantify(start.creator.x, start.creator.y, octant);
+            }
         }
-        return false;
+        return null;
     }
 
     // Predicate nonsense.
@@ -233,6 +246,13 @@ public class VisibilityTrie
     public static bool AnyLineOfSight(AbsolutePosition from, AbsolutePosition to, Predicate<AbsolutePosition> isBlocked)
     {
         return AnyLineOfSightRelative(to - from, ToRelative(from, isBlocked));
+    }
+
+    public static (int x, int y)? SomeLineOfSight(AbsolutePosition from, (int x, int y) to, Predicate<AbsolutePosition> isBlocked)
+    {
+        (int, int)? dir = SomeLineOfSightRelative(to - from, ToRelative(from, isBlocked));
+        if (dir == null) { return null; }
+        return from + dir.Value;
     }
 
     // debug. this creates an iterators for every node but idc.
