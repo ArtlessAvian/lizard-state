@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// The command pattern. Create action objects, use, then throw away.
@@ -108,7 +109,7 @@ public static class TargetingType
 
         IEnumerable<AbsolutePosition> Type.GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            return VisibilityTrie.ConeOfView(sourcePos, blocksAction, radius, (targetPos.x - sourcePos.x, targetPos.y - sourcePos.y), sectorDegrees);
+            return VisibilityTrie.ConeOfView(sourcePos, blocksAction, radius, (targetPos.x - sourcePos.x, targetPos.y - sourcePos.y), sectorDegrees).Distinct();
         }
 
         public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
@@ -125,25 +126,28 @@ public static class TargetingType
         public bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
             if (GridHelper.Distance(sourcePos, targetPos) > range) { return false; }
+            if (!VisibilityTrie.AnyLineOfSight(sourcePos, targetPos, blocksAction)) { return false; }
             return true;
         }
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            if (GridHelper.Distance(sourcePos, targetPos) > range)
-            {
-                targetPos = GridHelper.StepTowards(sourcePos, targetPos, range);
-            }
-            return VisibilityTrie.FieldOfView(targetPos, blocksAction, splashRadius);
+            // cursed return value.
+            if (GridHelper.Distance(sourcePos, targetPos) > range) { return new (int, int)[0]; }
+            if (!VisibilityTrie.AnyLineOfSight(sourcePos, targetPos, blocksAction)) { return new (int, int)[0]; }
+            return VisibilityTrie.FieldOfView(targetPos, blocksAction, splashRadius).Distinct();
         }
 
         public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
         {
-            // TODO: Make correct.
-            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range + splashRadius);
+            // Surprisingly performant(?)
+            int localSplash = splashRadius;
+            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range).Distinct().SelectMany(((int, int) pos) => VisibilityTrie.FieldOfView(pos, blocksAction, localSplash));
         }
     }
 
+    // NOTE: Avoid using for dash like moves!
+    // TODO: Reconcile both precise aiming and "stop at target".
     public struct Ray : Type
     {
         public int range;
