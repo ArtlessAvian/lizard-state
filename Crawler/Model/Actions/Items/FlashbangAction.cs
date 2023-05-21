@@ -8,7 +8,7 @@ public class FlashbangAction : Action
 {
     public override bool Do(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
@@ -18,7 +18,7 @@ public class FlashbangAction : Action
             });
 
         HashSet<AbsolutePosition> set = new HashSet<AbsolutePosition>(VisibilityTrie.FieldOfView(targetPos, pos => false, 1));
-        foreach ((int x, int y) splashedPos in set)
+        foreach (AbsolutePosition splashedPos in set)
         {
             if (model.GetEntityAt(splashedPos) is Entity targeted)
             {
@@ -42,7 +42,7 @@ public class FlashbangAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
         return true;
     }

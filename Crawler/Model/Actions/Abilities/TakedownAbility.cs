@@ -18,7 +18,7 @@ public class TakedownAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         Entity target = model.GetEntityAt(targetPos);
 
         model.CoolerApiEvent(e.id, "Dash", new Vector2(targetPos.x, targetPos.y));
@@ -50,7 +50,7 @@ public class TakedownAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         // TODO: Add raycast to target.
 
         if (GridHelper.Distance(e.position, targetPos) > 5)

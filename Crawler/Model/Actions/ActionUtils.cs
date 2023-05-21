@@ -34,10 +34,10 @@ public class ActionUtils
     // TODO: If they hit a wall, they should "wallsplat" or something.
     public static void ApplyKnockback(Model model, Entity e, Entity targeted, int knockback)
     {
-        (int, int) destination = GridHelper.StepThrough(e.position, targeted.position, knockback + GridHelper.Distance(e.position, targeted.position));
+        AbsolutePosition destination = GridHelper.StepThrough(e.position, targeted.position, knockback + GridHelper.Distance(e.position, targeted.position));
 
-        (int x, int y) safePos = targeted.position; // the enemy's current position is always valid.
-        foreach ((int, int) tentativePos in GridHelper.LineBetween(targeted.position, destination))
+        AbsolutePosition safePos = targeted.position; // the enemy's current position is always valid.
+        foreach (AbsolutePosition tentativePos in GridHelper.LineBetween(targeted.position, destination))
         {
             if (tentativePos == targeted.position) { continue; }
 

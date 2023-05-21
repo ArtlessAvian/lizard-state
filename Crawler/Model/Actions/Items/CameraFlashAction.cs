@@ -8,7 +8,7 @@ public class CameraFlashAction : Action
 {
     public override bool Do(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         // model.CoolerApiEvent(e.id, "AttackActive", new Vector2(e.position.x, e.position.y));
         model.CoolerApiEvent(new Dictionary(){
@@ -19,12 +19,12 @@ public class CameraFlashAction : Action
             });
         model.CoolerApiEvent(e.id, "CameraFlash");
 
-        HashSet<AbsolutePosition> set = new HashSet<AbsolutePosition>(VisibilityTrie.ConeOfView(e.position, pos => false, 5, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45));
-        foreach ((int x, int y) tile in set)
+        HashSet<AbsolutePosition> set = new HashSet<AbsolutePosition>(VisibilityTrie.ConeOfView(e.position, pos => false, 5, targetPos - e.position, 45));
+        foreach (AbsolutePosition tile in set)
         {
             if (tile.x == e.position.x && tile.y == e.position.y) { continue; }
 
-            if (model.GetEntityAt((tile.x, tile.y)) is Entity targeted)
+            if (model.GetEntityAt(new AbsolutePosition(tile.x, tile.y)) is Entity targeted)
             {
                 targeted.StunForTurns(1, model.time, e.id);
 

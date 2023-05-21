@@ -20,7 +20,7 @@ public class RendAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
         for (int i = 0; i < 4; i++)
@@ -52,7 +52,7 @@ public class RendAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         // TODO: Add raycast to target.
 
         if (GridHelper.Distance(e.position, targetPos) > 1.5f)

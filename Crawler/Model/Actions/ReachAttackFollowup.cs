@@ -18,7 +18,7 @@ public class ReachAttackFollowup : Action
 
     public override bool Do(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
                 {"action", "AttackActive"},
@@ -52,14 +52,14 @@ public class ReachAttackFollowup : Action
         return true;
     }
 
-    private Entity GetHitEntity(Model model, Entity e, (int, int) targetPos)
+    private Entity GetHitEntity(Model model, Entity e, AbsolutePosition targetPos)
     {
         if (data.smiteTargeting)
         {
             return model.GetEntityAt(targetPos);
         }
 
-        foreach ((int, int) hitPos in GridHelper.LineBetween(e.position, targetPos))
+        foreach (AbsolutePosition hitPos in GridHelper.LineBetween(e.position, targetPos))
         {
             if (model.GetEntityAt(hitPos) is Entity targeted && targeted != e)
             {
@@ -71,7 +71,7 @@ public class ReachAttackFollowup : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) < Range.min) { return false; }
         return true;

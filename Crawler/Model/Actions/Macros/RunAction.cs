@@ -21,18 +21,15 @@ public class RunAction : Action
             return true;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (!model.CanWalkFromTo(e.position, targetPos))
         {
             return true; // do nothing.
         }
 
-        (int x, int y) oldTarget = targetPos;
+        AbsolutePosition oldTarget = targetPos;
 
-        (int x, int y) nextTarget = (
-                (targetPos.x - e.position.x) + oldTarget.x,
-                (targetPos.y - e.position.y) + oldTarget.y
-            );
+        AbsolutePosition nextTarget = oldTarget + (targetPos - e.position);
 
         this.limit--;
         if (this.limit > 0)
@@ -50,7 +47,7 @@ public class RunAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (!model.CanWalkFromTo(e.position, targetPos))
         {
             return false;

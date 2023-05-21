@@ -17,7 +17,7 @@ public class StartleAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (model.GetEntityAt(targetPos) is Entity targeted)
         {
@@ -40,7 +40,7 @@ public class StartleAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (GridHelper.Distance(e.position, targetPos) > 5)
         {

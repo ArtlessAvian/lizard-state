@@ -18,7 +18,7 @@ public class DashThroughAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         e.nextMove += 1;
         model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
@@ -34,7 +34,7 @@ public class DashThroughAbility : Action
     {
         if (e.energy < 1) { return false; }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (GridHelper.Distance(e.position, targetPos) > Range.max)
         {

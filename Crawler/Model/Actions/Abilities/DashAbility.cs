@@ -15,7 +15,7 @@ public class DashAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         e.position = targetPos;
         e.nextMove += 2;
@@ -27,7 +27,7 @@ public class DashAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (GridHelper.Distance(e.position, targetPos) > Range.max)
         {

@@ -18,7 +18,7 @@ public class SlashAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
@@ -28,7 +28,7 @@ public class SlashAbility : Action
         });
 
         // TODO: Pain point, get entities in cone.
-        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 2, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45))
+        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 2, targetPos - e.position, 45))
         {
             if (targeted == e) { continue; }
 
@@ -44,13 +44,13 @@ public class SlashAbility : Action
             });
         }
         // TODO: Sort before knockback.
-        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 2, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45))
+        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 2, targetPos - e.position, 45))
         {
             if (targeted == e) { continue; }
             ActionUtils.ApplyKnockback(model, e, targeted, 1);
         }
 
-        (int x, int y) step = GridHelper.StepTowards(e.position, targetPos, 1);
+        AbsolutePosition step = GridHelper.StepTowards(e.position, targetPos, 1);
         if (model.GetEntityAt(step) is null)
         {
             e.position = step;
@@ -64,7 +64,7 @@ public class SlashAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         // TODO: Add raycast to target.
 
         if (GridHelper.Distance(e.position, targetPos) > 2)

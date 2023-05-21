@@ -11,7 +11,7 @@ public class ExitAction : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (model.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
         {
@@ -26,7 +26,7 @@ public class ExitAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (model.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
         {
             return true;

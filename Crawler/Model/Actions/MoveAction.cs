@@ -8,7 +8,7 @@ public class MoveAction : Action
     {
         if (!IsValid(model, e)) { return false; }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (targetPos.x == e.position.x && targetPos.y == e.position.y)
         {
@@ -51,7 +51,7 @@ public class MoveAction : Action
 
     private void DoMove(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         e.nextMove += (int)(1 * GridHelper.Distance(e.position, targetPos));
         e.position = targetPos;
@@ -62,7 +62,7 @@ public class MoveAction : Action
 
     private void DoSwap(Model model, Entity e, Entity teammate)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         teammate.position = e.position;
         e.position = targetPos;
@@ -75,7 +75,7 @@ public class MoveAction : Action
     {
         // TODO: This one is tough. Usually true. (See MoveOrAttackAction.cs too).
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > 1.5f) { return false; }
         return true;
     }

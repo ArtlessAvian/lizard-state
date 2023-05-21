@@ -17,8 +17,8 @@ public class DashThroughFollowup : Action
             return false;
         }
 
-        (int x, int y) originalPos = e.position;
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition originalPos = e.position;
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         e.position = targetPos;
 
         model.CoolerApiEvent(e.id, "Dash", new Vector2(e.position.x, e.position.y));
@@ -30,7 +30,7 @@ public class DashThroughFollowup : Action
             });
 
         bool hitAnyone = false;
-        foreach ((int x, int y) tile in GridHelper.LineBetween(originalPos, targetPos))
+        foreach (AbsolutePosition tile in GridHelper.LineBetween(originalPos, targetPos))
         {
             GD.Print(tile.x, tile.y);
             Entity hit = model.GetEntityAt(tile);

@@ -7,16 +7,16 @@ public class DashPunchAbility : Action
     {
         if (!IsValid(model, e)) { return false; }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (targetPos.x == e.position.x && targetPos.y == e.position.y)
         {
             return true;
         }
 
-        (int x, int y) place = e.position;
+        AbsolutePosition place = e.position;
         Entity target = null;
-        foreach ((int x, int y) tile in GridHelper.RayThrough(e.position, targetPos))
+        foreach (AbsolutePosition tile in GridHelper.RayThrough(e.position, targetPos))
         {
             if (tile != e.position)
             {

@@ -26,7 +26,7 @@ public class MoveOrAttackAction : Action
 
     public Action GetMacroedAction(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (model.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
         {

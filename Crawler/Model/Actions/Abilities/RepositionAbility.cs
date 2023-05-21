@@ -17,8 +17,8 @@ public class RepositionAbility : Action
             return false;
         }
 
-        (int x, int y) originalPos = e.position;
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition originalPos = e.position;
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         Entity rescuee = model.GetEntityAt(targetPos);
 
         e.position = targetPos;
@@ -26,8 +26,8 @@ public class RepositionAbility : Action
 
         if (rescuee is object)
         {
-            (int x, int y) midpoint = originalPos;
-            foreach ((int x, int y) tile in GridHelper.LineBetween(targetPos, originalPos))
+            AbsolutePosition midpoint = originalPos;
+            foreach (AbsolutePosition tile in GridHelper.LineBetween(targetPos, originalPos))
             {
                 if (GridHelper.Distance(targetPos, tile) >= 2)
                 {
@@ -67,7 +67,7 @@ public class RepositionAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (GridHelper.Distance(e.position, targetPos) > Range.max)
         {

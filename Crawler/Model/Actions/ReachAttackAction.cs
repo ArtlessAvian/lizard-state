@@ -23,7 +23,7 @@ public class ReachAttackAction : Action
     {
         if (!IsValid(model, e)) { return false; }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         if (startup > 0)
         {
             model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
@@ -44,7 +44,7 @@ public class ReachAttackAction : Action
         // {
         //     return false;
         // }
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         GD.Print(GridHelper.Distance(e.position, GetTargetPos(e.position)), range);
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) > Range.max) { return false; }
         if (GridHelper.Distance(e.position, GetTargetPos(e.position)) < Range.min) { return false; }

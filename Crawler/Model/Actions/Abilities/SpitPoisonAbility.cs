@@ -17,7 +17,7 @@ public class SpitPoisonAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         model.CoolerApiEvent(new Dictionary(){
             {"subject", e.id},
@@ -27,7 +27,7 @@ public class SpitPoisonAbility : Action
         });
 
         // TODO: Pain point, get entities in cone.
-        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 3, (targetPos.x - e.position.x, targetPos.y - e.position.y), 45))
+        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 3, targetPos - e.position, 45))
         {
             if (targeted == e) { continue; }
 
@@ -58,7 +58,7 @@ public class SpitPoisonAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
         // TODO: Add raycast to target.
 
         return true;

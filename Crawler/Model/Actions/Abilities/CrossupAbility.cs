@@ -16,7 +16,7 @@ public class CrossupAbility : Action
             return false;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (model.GetEntityAt(targetPos) is Entity targeted)
         {
@@ -55,7 +55,7 @@ public class CrossupAbility : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         if (GridHelper.Distance(e.position, targetPos) > Range.max)
         {
