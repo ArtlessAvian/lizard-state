@@ -70,7 +70,7 @@ public class PartnerAI : AI
         // Move towards enemies.
         // Pathfinding should be cheap since the paths are short and probably straight lines.
         // IEnumerable<(int, int)> nextToEnemy = enemies.Select(enemy => GridHelper.GetNeighbors(enemy.position)).SelectMany(x => x);
-        IEnumerable<AbsolutePosition> enemyPositions = enemies.Select(enemy => (AbsolutePosition)enemy.position);
+        IEnumerable<AbsolutePosition> enemyPositions = enemies.Select(enemy => enemy.position);
         PathFinder.PathResult result = PathFinder.ShortestPathToMany(e.position, enemyPositions, WalkableIgnoreTargets(model, enemies));
         if (result.success)
         {

@@ -31,16 +31,6 @@ public class UseItemAction : Action
         return true;
     }
 
-    public override Action SetTarget((int x, int y) target)
-    {
-        return ProxyAction.SetTarget(target);
-    }
-
-    public override Action SetTargetRelative((int x, int y) delta)
-    {
-        return ProxyAction.SetTargetRelative(delta);
-    }
-
     public override bool IsValid(Model model, Entity e)
     {
         if (item.uses <= 0) { return false; }

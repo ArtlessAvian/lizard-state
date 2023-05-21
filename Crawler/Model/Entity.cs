@@ -23,9 +23,9 @@ public class Entity : Resource
     // So this is what we have to do.
     [Export] public int positionX;
     [Export] public int positionY;
-    public (int x, int y) position
+    public AbsolutePosition position
     {
-        get { return (positionX, positionY); }
+        get { return new AbsolutePosition(positionX, positionY); }
         set { positionX = value.x; positionY = value.y; }
     }
     [Export] public bool visibleToPlayer = false;

@@ -24,36 +24,35 @@ public abstract class Action : Resource
     // This is used by the UI and the AI.
     public virtual IEnumerable<string> GetWarnings(Model model, Entity e) { yield break; }
 
-    // Targeting
-    [Export] public int targetInternalX;
-    [Export] public int targetInternalY;
-    public (int x, int y) targetInternal
+    // Targeting. Imagine a tagged union between relative and absolute, implemented poorly.
+    [Export] private bool isRelative = true;
+    [Export] private int targetInternalX;
+    [Export] private int targetInternalY;
+    private Vector2i targetInternal
     {
-        get { return (targetInternalX, targetInternalY); }
+        get { return new Vector2i(targetInternalX, targetInternalY); }
         set { targetInternalX = value.x; targetInternalY = value.y; }
     }
-    [Export]
-    private bool isRelative = true;
 
-    public (int x, int y) GetTargetPos((int x, int y) origin)
+    public AbsolutePosition GetTargetPos(AbsolutePosition origin)
     {
         if (isRelative)
         {
-            return (targetInternal.x + origin.x, targetInternal.y + origin.y);
+            return origin + targetInternal;
         }
-        return targetInternal;
+        return new AbsolutePosition(targetInternal.x, targetInternal.y);
     }
 
     // its absolute
-    public virtual Action SetTarget((int x, int y) target)
+    public virtual Action SetTarget(AbsolutePosition target)
     {
         this.isRelative = false;
-        this.targetInternal = target;
+        this.targetInternal = new Vector2i(target.x, target.y);
         return this;
     }
 
     // hey its me ur brother
-    public virtual Action SetTargetRelative((int x, int y) delta)
+    public virtual Action SetTargetRelative(Vector2i delta)
     {
         this.isRelative = true;
         this.targetInternal = delta;
