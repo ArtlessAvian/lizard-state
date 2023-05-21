@@ -80,6 +80,11 @@ public class ActionTargetInputState : InputState
             attackRange.SetCell(tile.x, tile.y, 1);
         }
 
+        foreach (AbsolutePosition tile in action.TargetingType.GetInfoTiles(playerPos, cursor.targetPosition, blocksAttack))
+        {
+            attackRange.SetCell(tile.x, tile.y, 4);
+        }
+
         foreach (AbsolutePosition tile in action.TargetingType.GetAffectedTiles(playerPos, cursor.targetPosition, blocksAttack))
         {
             attackRange.SetCell(tile.x, tile.y, 3);

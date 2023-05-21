@@ -75,6 +75,7 @@ public static class TargetingType
     {
         bool CheckValid((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
         IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
+        IEnumerable<AbsolutePosition> GetInfoTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction);
         IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction);
     }
 
@@ -87,6 +88,11 @@ public static class TargetingType
         }
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            yield break;
+        }
+
+        public IEnumerable<AbsolutePosition> GetInfoTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
             yield break;
         }
@@ -112,6 +118,11 @@ public static class TargetingType
             return VisibilityTrie.ConeOfView(sourcePos, blocksAction, radius, (targetPos.x - sourcePos.x, targetPos.y - sourcePos.y), sectorDegrees).Distinct();
         }
 
+        public IEnumerable<AbsolutePosition> GetInfoTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            yield break;
+        }
+
         public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
         {
             return VisibilityTrie.FieldOfView(sourcePos, blocksAction, radius);
@@ -133,16 +144,37 @@ public static class TargetingType
         public IEnumerable<AbsolutePosition> GetAffectedTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
         {
             // cursed return value.
-            if (GridHelper.Distance(sourcePos, targetPos) > range) { return new (int, int)[0]; }
-            if (!VisibilityTrie.AnyLineOfSight(sourcePos, targetPos, blocksAction)) { return new (int, int)[0]; }
+            if (GridHelper.Distance(sourcePos, targetPos) > range) { return new AbsolutePosition[0]; }
+            if (!VisibilityTrie.AnyLineOfSight(sourcePos, targetPos, blocksAction)) { return new AbsolutePosition[0]; }
             return VisibilityTrie.FieldOfView(targetPos, blocksAction, splashRadius).Distinct();
+        }
+
+        public IEnumerable<AbsolutePosition> GetInfoTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            (int x, int y) adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
+
+            int i = 0;
+            foreach ((int, int) pos in GridHelper.RayThrough(sourcePos, adjustedTarget))
+            {
+                yield return pos;
+                if (blocksAction(pos)) { yield break; }
+                if (i >= range) { yield break; }
+                if (pos == targetPos) { yield break; }
+                i++;
+            }
         }
 
         public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
         {
             // Surprisingly performant(?)
             int localSplash = splashRadius;
-            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range).Distinct().SelectMany(((int, int) pos) => VisibilityTrie.FieldOfView(pos, blocksAction, localSplash));
+            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range).Distinct().SelectMany(pos => VisibilityTrie.FieldOfView(pos, blocksAction, localSplash));
+        }
+
+        private (int x, int y) AdjustTarget((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            (int, int)? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
+            return newTarget ?? targetPos;
         }
     }
 
@@ -171,6 +203,11 @@ public static class TargetingType
                 if (stopAtTarget && pos == targetPos) { yield break; }
                 i++;
             }
+        }
+
+        public IEnumerable<AbsolutePosition> GetInfoTiles((int x, int y) sourcePos, (int x, int y) targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            yield break;
         }
 
         public IEnumerable<AbsolutePosition> GetFullRange((int x, int y) sourcePos, Predicate<AbsolutePosition> blocksAction)
