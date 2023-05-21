@@ -11,9 +11,9 @@ public class ExitAction : Action
             return false;
         }
 
-        (int x, int y) = GetTargetPos(e.position);
+        (int x, int y) targetPos = GetTargetPos(e.position);
 
-        if (model.GetMap().GetCell(x, y) == 5)
+        if (model.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
         {
             model.CoolerApiEvent(-1, "Print", "You leave the cave.");
             model.CoolerApiEvent(0, "Exit");
@@ -26,8 +26,8 @@ public class ExitAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        (int x, int y) = GetTargetPos(e.position);
-        if (model.GetMap().GetCell(x, y) == 5)
+        (int x, int y) targetPos = GetTargetPos(e.position);
+        if (model.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
         {
             return true;
         }

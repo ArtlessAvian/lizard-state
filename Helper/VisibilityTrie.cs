@@ -47,15 +47,15 @@ public class VisibilityTrie
         {
             // Add the tiles the ray hits to the trie.
             TrieNode current = origin;
-            foreach ((int x, int y) in GridHelper.RayThrough((0, 0), (run, rise)))
+            foreach ((int x, int y) tile in GridHelper.RayThrough((0, 0), (run, rise)))
             {
-                if (x == 0) { continue; } // skip the first one.
-                if (x > radius) { break; } // finish up
-                if (y == current.y)
+                if (tile.x == 0) { continue; } // skip the first one.
+                if (tile.x > radius) { break; } // finish up
+                if (tile.y == current.y)
                 {
                     if (current.straight is null)
                     {
-                        current.straight = new TrieNode(x, y, current);
+                        current.straight = new TrieNode(tile.x, tile.y, current);
                         AddToReverse(current.straight);
                     }
                     current = current.straight;
@@ -64,7 +64,7 @@ public class VisibilityTrie
                 {
                     if (current.diag is null)
                     {
-                        current.diag = new TrieNode(x, y, current);
+                        current.diag = new TrieNode(tile.x, tile.y, current);
                         AddToReverse(current.diag);
                     }
                     current = current.diag;

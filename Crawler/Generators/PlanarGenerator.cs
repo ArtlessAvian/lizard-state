@@ -162,9 +162,9 @@ public class PlanarGenerator : LevelGenerator
             foreach (int neighbor in graph.edges[node])
             {
                 if (neighbor > node) { continue; }
-                foreach ((int x, int y) in GridHelper.LineBetween(((int)embedding[node].x, (int)embedding[node].y), ((int)embedding[neighbor].x, (int)embedding[neighbor].y)))
+                foreach ((int x, int y) tile in GridHelper.LineBetween(((int)embedding[node].x, (int)embedding[node].y), ((int)embedding[neighbor].x, (int)embedding[neighbor].y)))
                 {
-                    SplatMap(map, x, y, 1);
+                    SplatMap(map, tile.x, tile.y, 1);
                 }
             }
         }

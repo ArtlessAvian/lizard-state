@@ -49,9 +49,9 @@ public class HybridGenerator : LevelGenerator
 
         // draw subgraph into model.map. (also add dead ends)
         // TODO: Temporary
-        foreach ((int x, int y) in candidates)
+        foreach ((int x, int y) tile in candidates)
         {
-            map.SetCell(x, y, 1);
+            map.SetCell(tile.x, tile.y, 1);
         }
 
         // draw a river
@@ -61,7 +61,7 @@ public class HybridGenerator : LevelGenerator
         // generate moss at cave center. I don't have a good idea where else to put it lol.
 
         // debug drawing
-        // foreach ((int x, int y) in borders)
+        // foreach ((int x, int y) tile in borders)
         // {
         //     model.map.SetCell(x, y, 3);
         // }
@@ -80,7 +80,7 @@ public class HybridGenerator : LevelGenerator
         //     }
         // }
 
-        // foreach ((int x, int y) in rooms)
+        // foreach ((int x, int y) tile in rooms)
         // {
         //     model.map.SetCell(x, y, 4);
         // }
@@ -299,22 +299,22 @@ public class HybridGenerator : LevelGenerator
         }
         // exiting the for means that every tile in tiles has no above neighbor.
         // paint all of these as entrances.
-        foreach ((int x, int y) in tiles)
+        foreach ((int x, int y) tile in tiles)
         {
-            map.SetCell(x, y, 5);
+            map.SetCell(tile.x, tile.y, 5);
         }
         if (tiles.Count == 1)
         {
             // bullshit it.
-            foreach ((int x, int y) in tiles)
+            foreach ((int x, int y) tile in tiles)
             {
-                if (SampleNoise(x - 1, y) < SampleNoise(x + 1, y))
+                if (SampleNoise(tile.x - 1, tile.y) < SampleNoise(tile.x + 1, tile.y))
                 {
-                    map.SetCell(x - 1, y, 5);
+                    map.SetCell(tile.x - 1, tile.y, 5);
                 }
                 else
                 {
-                    map.SetCell(x + 1, y, 5);
+                    map.SetCell(tile.x + 1, tile.y, 5);
                 }
             }
         }
