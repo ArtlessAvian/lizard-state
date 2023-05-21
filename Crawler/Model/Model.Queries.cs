@@ -78,7 +78,7 @@ public partial class Model
 
         for (int i = inSight.Count - 1; i >= 0; i--)
         {
-            if (!VisibilityTrie.AnyLineOfSight(position, inSight[i].position, TileBlocksVision))
+            if (!VisibilityTrie.AnyLineOfSight(position, inSight[i].position, x => TileBlocksVision(x)))
             {
                 inSight.RemoveAt(i);
             }
@@ -94,9 +94,9 @@ public partial class Model
 
         List<Entity> inCone = GetEntitiesInRadius(position, radius);
 
-        Predicate<(int, int)> notInCone = ((int x, int y) target) => !VisibilityTrie.TileInCone(position, target, direction, sectorDegrees);
-        Predicate<(int, int)> isBlocked = TileBlocksVision;
-        Predicate<(int, int)> isEither = ((int, int) target) => notInCone(target) || isBlocked(target);
+        Predicate<AbsolutePosition> notInCone = target => !VisibilityTrie.TileInCone(position, target, direction, sectorDegrees);
+        Predicate<AbsolutePosition> isBlocked = x => TileBlocksVision(x);
+        Predicate<AbsolutePosition> isEither = target => notInCone(target) || isBlocked(target);
 
         for (int i = inCone.Count - 1; i >= 0; i--)
         {

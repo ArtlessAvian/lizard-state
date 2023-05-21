@@ -47,7 +47,8 @@ public class VisibilityTrie
         {
             // Add the tiles the ray hits to the trie.
             TrieNode current = origin;
-            foreach ((int x, int y) tile in GridHelper.RayThrough((0, 0), (run, rise)))
+            // TODO: Replace with Vector2i.
+            foreach ((int x, int y) tile in GridHelper.RayThrough(new AbsolutePosition(0, 0), new AbsolutePosition(run, rise)))
             {
                 if (tile.x == 0) { continue; } // skip the first one.
                 if (tile.x > radius) { break; } // finish up
@@ -86,7 +87,7 @@ public class VisibilityTrie
     // The reall stuff.
 
     /// May yield duplicates! If critical, use a set.
-    public static IEnumerable<(int relX, int relY)> FieldOfViewRelative(Predicate<(int relX, int relY)> isBlocked, float radius)
+    public static IEnumerable<Vector2i> FieldOfViewRelative(Predicate<Vector2i> isBlocked, float radius)
     {
         for (int octant = 0; octant < 8; octant++)
         {
@@ -101,7 +102,7 @@ public class VisibilityTrie
                     continue;
                 }
 
-                (int, int) relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
+                Vector2i relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
                 yield return relativePos;
                 if (!isBlocked(relativePos))
                 {
@@ -112,7 +113,7 @@ public class VisibilityTrie
         }
     }
 
-    public static IEnumerable<(int relX, int relY)> ConeOfViewRelative(Predicate<(int relX, int relY)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
+    public static IEnumerable<Vector2i> ConeOfViewRelative(Predicate<Vector2i> isBlocked, float radius, Vector2i direction, float sectorDegrees)
     {
         for (int octant = 0; octant < 8; octant++)
         {
@@ -127,7 +128,7 @@ public class VisibilityTrie
                     continue;
                 }
 
-                (int, int) relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
+                Vector2i relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
                 if (TileInConeRelative(relativePos, direction, sectorDegrees))
                 {
                     yield return relativePos;
@@ -142,7 +143,7 @@ public class VisibilityTrie
         }
     }
 
-    public static bool TileInConeRelative((int x, int y) relative, (int x, int y) direction, float sectorDegrees)
+    public static bool TileInConeRelative(Vector2i relative, Vector2i direction, float sectorDegrees)
     {
         if (relative.x == 0 && relative.y == 0) { return true; }
 
@@ -166,7 +167,7 @@ public class VisibilityTrie
     }
 
     // TODO: Floating point muckery. Reordering operations increases precision. Or maybe alternate expression?
-    private static bool PointInConeRelative((float x, float y) point, (int x, int y) direction, float sectorDegrees)
+    private static bool PointInConeRelative((float x, float y) point, Vector2i direction, float sectorDegrees)
     {
         if (point.x == 0 && point.y == 0) { return true; }
 
@@ -175,7 +176,7 @@ public class VisibilityTrie
         return Math.Acos((point.x * direction.x + point.y * direction.y) / Math.Sqrt(pointLenSqr * dirLenSqr)) <= sectorDegrees / 2 * Math.PI / 180 + 0.01;
     }
 
-    public static bool AnyLineOfSightRelative((int x, int y) relative, Predicate<(int relX, int relY)> isBlocked)
+    public static bool AnyLineOfSightRelative(Vector2i relative, Predicate<Vector2i> isBlocked)
     {
         // Any tiles that are duplicated across octants would be covered the same way anyways.
         (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
@@ -200,49 +201,38 @@ public class VisibilityTrie
     }
 
     // Predicate nonsense.
-    // Malding. Be careful to pick the right one.
-    private static (int relX, int relY) GetOffset((int x, int y) from, (int x, int y) to)
+    private static Predicate<Vector2i> ToRelative(AbsolutePosition from, Predicate<AbsolutePosition> predicate)
     {
-        return (to.x - from.x, to.y - from.y);
-    }
-
-    private static (int x, int y) AddOffset((int x, int y) from, (int relX, int relY) offset)
-    {
-        return (from.x + offset.relX, from.y + offset.relY);
-    }
-
-    private static Predicate<(int relX, int relY)> ToRelative((int x, int y) from, Predicate<(int x, int y)> predicate)
-    {
-        return ((int relX, int relY) offset) => predicate(AddOffset(from, offset));
+        return vec => predicate(from + vec);
     }
 
     // The user friendly versions.
-    public static IEnumerable<(int x, int y)> FieldOfView((int x, int y) center, Predicate<(int absX, int absY)> isBlocked, float radius)
+    public static IEnumerable<AbsolutePosition> FieldOfView(AbsolutePosition center, Predicate<AbsolutePosition> isBlocked, float radius)
     {
-        foreach (var a in FieldOfViewRelative(ToRelative(center, isBlocked), radius))
+        foreach (var tile in FieldOfViewRelative(ToRelative(center, isBlocked), radius))
         {
-            yield return AddOffset(center, a);
+            yield return center + tile;
         }
     }
 
     // TODO: Decide if direction makes sense. Actions' targetPos is also absolute.
-    public static IEnumerable<(int x, int y)> ConeOfView((int x, int y) center, Predicate<(int x, int y)> isBlocked, float radius, (int x, int y) direction, float sectorDegrees)
+    public static IEnumerable<AbsolutePosition> ConeOfView(AbsolutePosition center, Predicate<AbsolutePosition> isBlocked, float radius, Vector2i direction, float sectorDegrees)
     {
-        foreach (var a in ConeOfViewRelative(ToRelative(center, isBlocked), radius, direction, sectorDegrees))
+        foreach (var tile in ConeOfViewRelative(ToRelative(center, isBlocked), radius, direction, sectorDegrees))
         {
-            yield return AddOffset(center, a);
+            yield return center + tile;
         }
     }
 
     // TODO: Decide if direction makes sense.
-    public static bool TileInCone((int x, int y) center, (int x, int y) target, (int, int) direction, float sectorDegrees)
+    public static bool TileInCone(AbsolutePosition center, AbsolutePosition target, Vector2i direction, float sectorDegrees)
     {
-        return TileInConeRelative(GetOffset(center, target), direction, sectorDegrees);
+        return TileInConeRelative(target - center, direction, sectorDegrees);
     }
 
-    public static bool AnyLineOfSight((int x, int y) from, (int x, int y) to, Predicate<(int x, int y)> isBlocked)
+    public static bool AnyLineOfSight(AbsolutePosition from, AbsolutePosition to, Predicate<AbsolutePosition> isBlocked)
     {
-        return AnyLineOfSightRelative(GetOffset(from, to), ToRelative(from, isBlocked));
+        return AnyLineOfSightRelative(to - from, ToRelative(from, isBlocked));
     }
 
     // debug. this creates an iterators for every node but idc.

@@ -1,20 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // Algorithms and Math.
 static class GridHelper
 {
-    public static IEnumerable<(int, int)> GetNeighbors((int x, int y) a)
+    public static IEnumerable<Vector2i> GetDirections()
     {
-        // lol lazy
-        yield return (a.x - 1, a.y);
-        yield return (a.x + 1, a.y);
-        yield return (a.x, a.y - 1);
-        yield return (a.x, a.y + 1);
-        yield return (a.x - 1, a.y - 1);
-        yield return (a.x + 1, a.y - 1);
-        yield return (a.x - 1, a.y + 1);
-        yield return (a.x + 1, a.y + 1);
+        yield return Vector2i.LEFT;
+        yield return Vector2i.RIGHT;
+        yield return Vector2i.UP;
+        yield return Vector2i.DOWN;
+        yield return Vector2i.LEFT + Vector2i.UP;
+        yield return Vector2i.RIGHT + Vector2i.UP;
+        yield return Vector2i.LEFT + Vector2i.DOWN;
+        yield return Vector2i.RIGHT + Vector2i.DOWN;
+    }
+
+    public static IEnumerable<AbsolutePosition> GetNeighbors(AbsolutePosition a)
+    {
+        return GetDirections().Select(dir => a + dir);
     }
 
     public static IEnumerable<(int numerator, int denominator)> ListRationals(int maxDenominator)
@@ -37,14 +42,14 @@ static class GridHelper
 
     // Found a better algorithm from https://github.com/denismr/SymmetricPCVT
     // Tran Thong "A symmetric linear algorithm for line segment generation."
-    public static IEnumerable<(int x, int y)> RayThrough((int x, int y) from, (int x, int y) through)
+    public static IEnumerable<AbsolutePosition> RayThrough(AbsolutePosition from, AbsolutePosition through)
     {
-        (int octantX, int octantY, int octant) = Octantify(through.x - from.x, through.y - from.y);
+        (int octantX, int octantY, int octant) = Octantify(through - from);
         int localDy = 0;
         for (int localDx = 0; localDx <= RAY_LENGTH; localDx++)
         {
-            (int dx, int dy) = DeOctantify(localDx, localDy, octant);
-            yield return (dx + from.x, dy + from.y);
+            Vector2i delta = DeOctantify(localDx, localDy, octant);
+            yield return from + delta;
             if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
             {
                 localDy++;
@@ -52,9 +57,9 @@ static class GridHelper
         }
     }
 
-    public static IEnumerable<(int x, int y)> LineBetween((int x, int y) from, (int x, int y) to)
+    public static IEnumerable<AbsolutePosition> LineBetween(AbsolutePosition from, AbsolutePosition to)
     {
-        foreach ((int x, int y) p in RayThrough(from, to))
+        foreach (AbsolutePosition p in RayThrough(from, to))
         {
             yield return p;
             if (p.x == to.x && p.y == to.y)
@@ -64,11 +69,11 @@ static class GridHelper
         }
     }
 
-    public static (int x, int y) StepThrough((int x, int y) from, (int x, int y) through, int steps)
+    public static AbsolutePosition StepThrough(AbsolutePosition from, AbsolutePosition through, int steps)
     {
-        IEnumerable<(int x, int y)> enumerable = RayThrough(from, through);
+        IEnumerable<AbsolutePosition> enumerable = RayThrough(from, through);
         int i = 0;
-        foreach ((int x, int y) p in enumerable)
+        foreach (AbsolutePosition p in enumerable)
         {
             if (i == steps || i == RAY_LENGTH) { return p; }
             i++;
@@ -77,11 +82,11 @@ static class GridHelper
         return through;
     }
 
-    public static (int x, int y) StepTowards((int x, int y) from, (int x, int y) to, int steps)
+    public static AbsolutePosition StepTowards(AbsolutePosition from, AbsolutePosition to, int steps)
     {
-        IEnumerable<(int x, int y)> enumerable = LineBetween(from, to);
+        IEnumerable<AbsolutePosition> enumerable = LineBetween(from, to);
         int i = 0;
-        foreach ((int x, int y) p in enumerable)
+        foreach (AbsolutePosition p in enumerable)
         {
             if (i == steps) { return p; }
             i++;
@@ -89,8 +94,15 @@ static class GridHelper
         return to;
     }
 
+    [Obsolete]
     public static (int dx, int dy, int octant) Octantify(int dx, int dy)
     {
+        return Octantify((dx, dy));
+    }
+
+    public static (int dx, int dy, int octant) Octantify(Vector2i delta)
+    {
+        (int dx, int dy) = (delta.x, delta.y);
         int octant = 0;
         if (dy < 0)
         {
@@ -112,7 +124,7 @@ static class GridHelper
         return (dx, dy, octant);
     }
 
-    public static (int dx, int dy) DeOctantify(int dx, int dy, int octant)
+    public static Vector2i DeOctantify(int dx, int dy, int octant)
     {
         if ((octant & 0b001) > 0)
         {
@@ -126,7 +138,7 @@ static class GridHelper
         {
             (dx, dy) = (-dx, -dy); // rotate 180
         }
-        return (dx, dy);
+        return new Vector2i(dx, dy);
     }
 
     // Euclidean algorithm :P
@@ -156,8 +168,13 @@ static class GridHelper
         // return (int)(Math.Max(dx, dy) + 0.5f * Math.Min(dx, dy));
     }
 
-    public static int Distance((int x, int y) pos, (int x, int y) pos2)
+    public static int Distance(Vector2i delta)
     {
-        return Distance(pos.x - pos2.x, pos.y - pos2.y);
+        return Distance(delta.x, delta.y);
+    }
+
+    public static int Distance(AbsolutePosition pos, AbsolutePosition pos2)
+    {
+        return Distance(pos - pos2);
     }
 }

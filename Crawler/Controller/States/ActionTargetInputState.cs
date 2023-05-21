@@ -71,7 +71,7 @@ public class ActionTargetInputState : InputState
     private void RangeRefresh(Crawler crawler)
     {
         TileMap walls = crawler.GetNode("View").FindNode("Walls") as TileMap;
-        Predicate<(int x, int y)> blocksAttack = x => walls.GetCell(x.x, x.y) >= 0;
+        Predicate<AbsolutePosition> blocksAttack = x => walls.GetCell(x.x, x.y) >= 0;
 
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
@@ -94,7 +94,7 @@ public class ActionTargetInputState : InputState
         }
     }
 
-    private void RefreshCone(TargetingType.Cone cone, TileMap attackRange, Predicate<(int, int)> blocksAttack)
+    private void RefreshCone(TargetingType.Cone cone, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
         foreach ((int x, int y) tile in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
         {
@@ -102,7 +102,7 @@ public class ActionTargetInputState : InputState
         }
     }
 
-    private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange, Predicate<(int, int)> blocksAttack)
+    private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
         foreach ((int x, int y) tile in VisibilityTrie.FieldOfView(cursor.targetPosition, blocksAttack, smite.radius))
         {
@@ -110,7 +110,7 @@ public class ActionTargetInputState : InputState
         }
     }
 
-    private void RefreshShot(TargetingType.Ray ray, TileMap attackRange, Predicate<(int, int)> blocksAttack)
+    private void RefreshShot(TargetingType.Ray ray, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
         foreach ((int x, int y) tile in GridHelper.RayThrough(playerPos, cursor.targetPosition))
         {

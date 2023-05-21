@@ -81,7 +81,7 @@ public class VisionSystem : Resource, CrawlerSystem
         // every entity that /could/ be seen.
         foreach (Entity other in model.GetEntitiesInRadius(e.position, 8))
         {
-            bool seeing = VisibilityTrie.AnyLineOfSight(e.position, other.position, model.TileBlocksVision);
+            bool seeing = VisibilityTrie.AnyLineOfSight(e.position, other.position, x => model.TileBlocksVision(x));
             if (seeing)
             {
                 if (!seenBy.ContainsKey(other.id))
@@ -111,7 +111,7 @@ public class VisionSystem : Resource, CrawlerSystem
             Entity other = model.GetEntity(canSee[e.id][i]);
 
             bool seeing = GridHelper.Distance(other.position.x - e.position.x, other.position.y - e.position.y) <= 8;
-            seeing = seeing && VisibilityTrie.AnyLineOfSight(e.position, other.position, model.TileBlocksVision);
+            seeing = seeing && VisibilityTrie.AnyLineOfSight(e.position, other.position, x => model.TileBlocksVision(x));
 
             if (!seeing)
             {
@@ -133,7 +133,7 @@ public class VisionSystem : Resource, CrawlerSystem
             Entity player = model.GetEntity(playerId);
 
             bool seeing = GridHelper.Distance(e.position.x - player.position.x, e.position.y - player.position.y) <= 8;
-            seeing = seeing && VisibilityTrie.AnyLineOfSight(player.position, e.position, model.TileBlocksVision);
+            seeing = seeing && VisibilityTrie.AnyLineOfSight(player.position, e.position, x => model.TileBlocksVision(x));
 
             if (seeing)
             {
@@ -164,7 +164,7 @@ public class VisionSystem : Resource, CrawlerSystem
             Entity player = model.GetEntity(seenBy[e.id][i]);
 
             bool seeing = GridHelper.Distance(e.position.x - player.position.x, e.position.y - player.position.y) <= 8;
-            seeing = seeing && VisibilityTrie.AnyLineOfSight(player.position, e.position, model.TileBlocksVision);
+            seeing = seeing && VisibilityTrie.AnyLineOfSight(player.position, e.position, x => model.TileBlocksVision(x));
 
             if (!seeing)
             {
