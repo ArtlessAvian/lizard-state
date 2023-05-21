@@ -7,9 +7,9 @@ using Priority_Queue;
 public class PathFinder
 {
     // Parameters before a run.
-    public (int x, int y) source;
-    public IEnumerable<(int x, int y)> goals;
-    public Predicate<((int x, int y) from, (int x, int y) to)> walkable;
+    public AbsolutePosition source;
+    public IEnumerable<AbsolutePosition> goals;
+    public Predicate<(AbsolutePosition from, AbsolutePosition to)> walkable;
 
     // Optional.
     public int maxLength = 22;
@@ -26,8 +26,8 @@ public class PathFinder
     {
         public bool success = false;
         public float steps = -1;
-        public (int, int) nextStep; // Convenience. nextStepFor[source]
-        public Dictionary<(int, int), (int, int)> nextStepFor;
+        public AbsolutePosition nextStep; // Convenience. nextStepFor[source]
+        public Dictionary<AbsolutePosition, AbsolutePosition> nextStepFor;
     }
     PathResult result = new PathResult();
 
@@ -39,14 +39,14 @@ public class PathFinder
     /// Makes the heuristic easy.
     public PathResult Run()
     {
-        Dictionary<(int, int), int> cost = new Dictionary<(int, int), int>();
-        SimplePriorityQueue<(int, int)> frontier = new SimplePriorityQueue<(int, int)>();
+        Dictionary<AbsolutePosition, int> cost = new Dictionary<AbsolutePosition, int>();
+        SimplePriorityQueue<AbsolutePosition> frontier = new SimplePriorityQueue<AbsolutePosition>();
 
-        result.nextStepFor = new Dictionary<(int, int), (int, int)>();
+        result.nextStepFor = new Dictionary<AbsolutePosition, AbsolutePosition>();
 
         // Imagine one source connected to all these sources with 0 distance.
         // Therefore, this works.
-        foreach ((int x, int y) goal in goals)
+        foreach (AbsolutePosition goal in goals)
         {
             cost[goal] = 0;
             frontier.Enqueue(goal, GridHelper.Distance(goal, source));
@@ -55,7 +55,7 @@ public class PathFinder
 
         while (frontier.Count > 0)
         {
-            (int x, int y) current = frontier.Dequeue();
+            AbsolutePosition current = frontier.Dequeue();
             if (current.x == source.x && current.y == source.y)
             {
                 result.success = true;
@@ -72,7 +72,7 @@ public class PathFinder
                 return result;
             }
 
-            foreach ((int x, int y) neighbor in GridHelper.GetNeighbors(current))
+            foreach (AbsolutePosition neighbor in GridHelper.GetNeighbors(current))
             {
                 // Filter neighbors. This search goes backwards, remember.
                 if (!walkable((neighbor, current))) { continue; }
@@ -93,12 +93,12 @@ public class PathFinder
         return result;
     }
 
-    public static PathResult ShortestPath((int x, int y) source, (int x, int y) goal, Predicate<((int x, int y) from, (int x, int y) to)> walkable)
+    public static PathResult ShortestPath(AbsolutePosition source, AbsolutePosition goal, Predicate<(AbsolutePosition from, AbsolutePosition to)> walkable)
     {
-        return ShortestPathToMany(source, new List<(int x, int y)>() { goal }, walkable);
+        return ShortestPathToMany(source, new List<AbsolutePosition>() { goal }, walkable);
     }
 
-    public static PathResult ShortestPathToMany((int x, int y) source, IEnumerable<(int x, int y)> goals, Predicate<((int x, int y) from, (int x, int y) to)> walkable)
+    public static PathResult ShortestPathToMany(AbsolutePosition source, IEnumerable<AbsolutePosition> goals, Predicate<(AbsolutePosition from, AbsolutePosition to)> walkable)
     {
         return new PathFinder() { source = source, goals = goals, walkable = walkable }.Run();
     }

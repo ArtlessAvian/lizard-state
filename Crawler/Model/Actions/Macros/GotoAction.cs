@@ -16,7 +16,7 @@ public class GotoAction : Action
             return true;
         }
 
-        (int x, int y) targetPos = GetTargetPos(e.position);
+        AbsolutePosition targetPos = GetTargetPos(e.position);
 
         FindPathLazy(model, e.position, targetPos);
 
@@ -35,14 +35,14 @@ public class GotoAction : Action
         return success;
     }
 
-    private bool FindPathLazy(Model model, (int, int) from, (int, int) to)
+    private bool FindPathLazy(Model model, AbsolutePosition from, AbsolutePosition to)
     {
         if (result == null)
         {
             PathFinder pather = new PathFinder();
             pather.maxLength = 100000;
             pather.source = from;
-            pather.goals = new List<(int, int)>() { to };
+            pather.goals = new List<AbsolutePosition>() { to };
             pather.walkable = Walkable(model);
             result = pather.Run();
         }
@@ -73,11 +73,11 @@ public class GotoAction : Action
         return true;
     }
 
-    private Predicate<((int x, int y) from, (int x, int y) to)> Walkable(Model model)
+    private Predicate<(AbsolutePosition from, AbsolutePosition to)> Walkable(Model model)
     {
         FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();
 
-        return (((int x, int y) from, (int x, int y) to) tuple) =>
+        return ((AbsolutePosition from, AbsolutePosition to) tuple) =>
                 model.CanWalkFromTo(tuple.from, tuple.to) &&
                 fog.GetCell(tuple.from.x, tuple.from.y) != -1 &&
                 fog.GetCell(tuple.to.x, tuple.to.y) != -1;
