@@ -185,7 +185,7 @@ public class VisibilityTrie
 
     // returns the direction of a ray passing through relative.
     // (implementation detail: returns the "simplest" direction, with dx, dy as low as possible)
-    public static (int x, int y)? SomeLineOfSightRelative((int x, int y) relative, Predicate<Vector2i> isBlocked)
+    public static Vector2i? SomeLineOfSightRelative(Vector2i relative, Predicate<Vector2i> isBlocked)
     {
         // No need to check when relative is represented by multiple octants.
         // The same path is checked when shared between octants. (cardinal, diagonal)        // The same path is checked between octants if so.
@@ -248,11 +248,11 @@ public class VisibilityTrie
         return AnyLineOfSightRelative(to - from, ToRelative(from, isBlocked));
     }
 
-    public static (int x, int y)? SomeLineOfSight(AbsolutePosition from, (int x, int y) to, Predicate<AbsolutePosition> isBlocked)
+    public static AbsolutePosition? SomeLineOfSight(AbsolutePosition from, AbsolutePosition to, Predicate<AbsolutePosition> isBlocked)
     {
-        (int, int)? dir = SomeLineOfSightRelative(to - from, ToRelative(from, isBlocked));
-        if (dir == null) { return null; }
-        return from + dir.Value;
+        Vector2i? maybe = SomeLineOfSightRelative(to - from, ToRelative(from, isBlocked));
+        if (maybe is Vector2i vec) { return from + vec; }
+        return null;
     }
 
     // debug. this creates an iterators for every node but idc.
