@@ -50,7 +50,7 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
 
     // Return value to be sent to ViewModel.
     // Radius should be a small reasonable number, like 5.
-    private Vector3[] GetVisibleTiles(CrawlerMap map, (int x, int y) pos, int radius = 5)
+    private Vector3[] GetVisibleTiles(CrawlerMap map, AbsolutePosition pos, int radius = 5)
     {
         ClearVisibility();
         UpdateVisibility(map, pos, radius);
@@ -78,7 +78,7 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
     }
 
     // Tiles marked as VISIBLE are not meant to be saved!
-    private void UpdateVisibility(CrawlerMap map, (int x, int y) pos, int radius)
+    private void UpdateVisibility(CrawlerMap map, AbsolutePosition pos, int radius)
     {
         foreach ((int x, int y) tile in VisibilityTrie.FieldOfView(pos, x => map.TileIsWall(x), radius))
         {

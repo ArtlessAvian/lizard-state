@@ -40,7 +40,7 @@ public partial class Model
     }
 
     // There is one unique OK/STUN entity at every position.
-    public Entity GetEntityAt((int x, int y) position)
+    public Entity GetEntityAt(AbsolutePosition position)
     {
         foreach (Entity e in GetEntities())
         {
@@ -56,7 +56,7 @@ public partial class Model
         return null;
     }
 
-    public List<Entity> GetEntitiesInRadius((int x, int y) position, float radius)
+    public List<Entity> GetEntitiesInRadius(AbsolutePosition position, float radius)
     {
         List<Entity> inRadius = new List<Entity>();
         foreach (Entity e in GetEntities())
@@ -72,7 +72,7 @@ public partial class Model
         return inRadius;
     }
 
-    public List<Entity> GetEntitiesInLOS((int x, int y) position, float radius)
+    public List<Entity> GetEntitiesInLOS(AbsolutePosition position, float radius)
     {
         List<Entity> inSight = GetEntitiesInRadius(position, radius);
 
@@ -86,7 +86,7 @@ public partial class Model
         return inSight;
     }
 
-    public List<Entity> GetEntitiesInCone((int x, int y) position, float radius, (int x, int y) direction, float sectorDegrees)
+    public List<Entity> GetEntitiesInCone(AbsolutePosition position, float radius, Vector2i direction, float sectorDegrees)
     {
         // Not good code reuse. Copy-pasted from LOS.
         VisionSystem vision = GetSystem<VisionSystem>();
@@ -134,20 +134,19 @@ public partial class Model
 
     // TODO: Disallow corner cutting?
     // Should be symmetric. f(x, y) = f(y, x).
-    public bool CanWalkFromTo((int x, int y) position, (int x, int y) position2)
+    public bool CanWalkFromTo(AbsolutePosition position, AbsolutePosition position2)
     {
-        return !map.TileIsWall((position2.x, position2.y)) &&
-                !map.TileIsWall((position.x, position.y));
+        return !map.TileIsWall(position2) &&
+                !map.TileIsWall(position);
     }
 
-    public bool TileBlocksVision((int x, int y) position)
+    public bool TileBlocksVision(AbsolutePosition position)
     {
         return map.TileIsWall(position);
     }
 
-    public float Distance((int x, int y) pos, (int x, int y) pos2)
+    public float Distance(AbsolutePosition pos, AbsolutePosition pos2)
     {
         return GridHelper.Distance(pos, pos2);
-        // return Math.Max(Math.Abs(pos.x - pos2.x), Math.Abs(pos.y - pos2.y));
     }
 }

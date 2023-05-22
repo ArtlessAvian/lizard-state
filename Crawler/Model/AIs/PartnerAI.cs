@@ -94,12 +94,12 @@ public class PartnerAI : AI
             {
                 yield return (new MoveAction().SetTarget(result.nextStep), false);
             }
-            yield return (new MoveAction().SetTargetRelative((0, 0)), true);
+            yield return (new MoveAction().SetTargetRelative(Vector2i.ZERO), true);
         }
         else
         {
-            yield return (new MoveAction().SetTargetRelative(((int)(GD.Randi() % 3) - 1, (int)(GD.Randi() % 3) - 1)), false);
-            yield return (new MoveAction().SetTargetRelative((0, 0)), true);
+            yield return (new MoveAction().SetTargetRelative(new Vector2i((int)(GD.Randi() % 3) - 1, (int)(GD.Randi() % 3) - 1)), false);
+            yield return (new MoveAction().SetTargetRelative(Vector2i.ZERO), true);
         }
     }
 

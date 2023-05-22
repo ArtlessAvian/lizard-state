@@ -105,7 +105,7 @@ public partial class Model : Resource
             var actions = e.species?.ai?.GetMoves(this, e).Select(tup => tup.Item1).ToList();
             GD.PrintErr($"{actions.Count} ai actions: ", string.Join(", ", actions.Select(a => a.GetType().ToString())));
 
-            new MoveAction().SetTargetRelative((0, 0)).Do(this, e);
+            new MoveAction().SetTargetRelative(Vector2i.ZERO).Do(this, e);
             RunSystems();
             return true;
         }

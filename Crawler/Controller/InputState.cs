@@ -5,16 +5,16 @@ using Godot;
 // in c# that would be "await ToSignal(signal)"
 public abstract class InputState : Node
 {
-    protected static (string, (int, int))[] DIRECTIONS = {
-        ("move_up", (0, -1)),
-        ("move_down", (0, 1)),
-        ("move_left", (-1, 0)),
-        ("move_right", (1, 0)),
-        ("move_upleft", (-1, -1)),
-        ("move_upright", (1, -1)),
-        ("move_downleft", (-1, 1)),
-        ("move_downright", (1, 1)),
-        ("move_wait", (0, 0))
+    protected static (string, Vector2i)[] DIRECTIONS = {
+        ("move_up", new Vector2i(0, -1)),
+        ("move_down", new Vector2i(0, 1)),
+        ("move_left", new Vector2i(-1, 0)),
+        ("move_right", new Vector2i(1, 0)),
+        ("move_upleft", new Vector2i(-1, -1)),
+        ("move_upright", new Vector2i(1, -1)),
+        ("move_downleft", new Vector2i(-1, 1)),
+        ("move_downright", new Vector2i(1, 1)),
+        ("move_wait", new Vector2i(0, 0))
     };
 
     // Input States /must/ be in SceneTree. Crawler/InputStates/../[InputState]

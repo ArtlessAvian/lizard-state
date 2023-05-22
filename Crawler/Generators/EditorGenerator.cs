@@ -32,8 +32,8 @@ public class EditorGenerator : LevelGenerator
 
     public void PlacePlayers(Model model, Entity[] playerTeam)
     {
-        playerTeam[0].position = (0, 1);
-        playerTeam[1].position = (-1, -1);
+        playerTeam[0].position = new AbsolutePosition(0, 1);
+        playerTeam[1].position = new AbsolutePosition(-1, -1);
 
         model.AddEntity(playerTeam[0]);
         model.AddEntity(playerTeam[1]);
@@ -44,16 +44,16 @@ public class EditorGenerator : LevelGenerator
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
         Species enemy2 = GD.Load<Resource>("res://Crawler/Model/Species/Enemy2.tres") as Species;
 
-        model.AddEntity(enemy.BuildEntity((21, 10), 1));
-        model.AddEntity(enemy.BuildEntity((8, 34), 1));
-        model.AddEntity(enemy.BuildEntity((32, 47), 1));
-        model.AddEntity(enemy.BuildEntity((-11, -5), 1));
-        model.AddEntity(enemy.BuildEntity((35, 4), 1));
-        model.AddEntity(enemy2.BuildEntity((17, -29), 1));
-        model.AddEntity(enemy2.BuildEntity((-18, -12), 1));
-        model.AddEntity(enemy2.BuildEntity((23, -17), 1));
-        model.AddEntity(enemy2.BuildEntity((9, -25), 1));
-        model.AddEntity(enemy2.BuildEntity((16, 16), 1));
+        model.AddEntity(enemy.BuildEntity(new AbsolutePosition(21, 10), 1));
+        model.AddEntity(enemy.BuildEntity(new AbsolutePosition(8, 34), 1));
+        model.AddEntity(enemy.BuildEntity(new AbsolutePosition(32, 47), 1));
+        model.AddEntity(enemy.BuildEntity(new AbsolutePosition(-11, -5), 1));
+        model.AddEntity(enemy.BuildEntity(new AbsolutePosition(35, 4), 1));
+        model.AddEntity(enemy2.BuildEntity(new AbsolutePosition(17, -29), 1));
+        model.AddEntity(enemy2.BuildEntity(new AbsolutePosition(-18, -12), 1));
+        model.AddEntity(enemy2.BuildEntity(new AbsolutePosition(23, -17), 1));
+        model.AddEntity(enemy2.BuildEntity(new AbsolutePosition(9, -25), 1));
+        model.AddEntity(enemy2.BuildEntity(new AbsolutePosition(16, 16), 1));
     }
 
     public void AddSystems(Model model)

@@ -131,12 +131,12 @@ public class MainInputState : InputState
             camera.Zoom = Vector2.One / 2;
         }
 
-        foreach ((string name, (int x, int y) dir) tuple in DIRECTIONS)
+        foreach ((string name, Vector2i dir) tuple in DIRECTIONS)
         {
             if (ev.IsActionPressed(tuple.name, true))
             {
                 Entity player = crawler.Model.GetPlayer();
-                (int x, int y) offset = (player.position.x + tuple.dir.x, player.position.y + tuple.dir.y);
+                AbsolutePosition offset = player.position + tuple.dir;
 
                 if (Input.IsKeyPressed((int)KeyList.Control))
                 {
@@ -188,8 +188,10 @@ public class MainInputState : InputState
             // is it possible to get it from the thing instead?
             Vector2 mousePos = crawler.GetGlobalMousePosition();
             // Temporary.
-            cursor.targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
-            cursor.targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
+            cursor.targetPosition = new AbsolutePosition(
+                Mathf.RoundToInt(mousePos.x / View.TILESIZE.x),
+                Mathf.RoundToInt(mousePos.y / View.TILESIZE.y)
+            );
             cursor.Show();
 
             // Draw a path between the player and the target.
@@ -200,9 +202,10 @@ public class MainInputState : InputState
             if (evMouseButton.ButtonIndex == (int)ButtonList.Left && evMouseButton.IsPressed())
             {
                 Vector2 mousePos = crawler.GetGlobalMousePosition();
-                (int x, int y) targetPosition;
-                targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
-                targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
+                AbsolutePosition targetPosition = new AbsolutePosition(
+                    Mathf.RoundToInt(mousePos.x / View.TILESIZE.x),
+                    Mathf.RoundToInt(mousePos.y / View.TILESIZE.y)
+                );
 
                 Entity player = crawler.Model.GetPlayer();
                 if (GridHelper.Distance(player.position, targetPosition) <= 1.5f)

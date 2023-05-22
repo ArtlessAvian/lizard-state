@@ -3,6 +3,8 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
+// TODO: Revive?
+[Obsolete]
 public class PlanarGenerator : LevelGenerator
 {
     [Export] OpenSimplexNoise distortion;

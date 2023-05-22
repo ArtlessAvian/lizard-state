@@ -53,8 +53,8 @@ public class NoiseGenerator : LevelGenerator
     {
         spawnX = 0;
         spawnY = -2;
-        playerTeam[0].position = (spawnX, spawnY);
-        playerTeam[1].position = (spawnX, spawnY + 1);
+        playerTeam[0].position = new AbsolutePosition(spawnX, spawnY);
+        playerTeam[1].position = new AbsolutePosition(spawnX, spawnY + 1);
 
         model.AddEntity(playerTeam[0]);
         model.AddEntity(playerTeam[1]);
@@ -69,7 +69,7 @@ public class NoiseGenerator : LevelGenerator
         for (int i = 0; i < 10; i++)
         {
             Vector2 vec = (Vector2)tiles[(int)(GD.Randi() % tiles.Count)];
-            model.AddEntity(enemy.BuildEntity(((int)vec.x, (int)vec.y), 1));
+            model.AddEntity(enemy.BuildEntity(new AbsolutePosition((int)vec.x, (int)vec.y), 1));
         }
     }
 

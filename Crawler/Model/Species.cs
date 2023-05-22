@@ -17,7 +17,8 @@ public class Species : Resource
     // View stuff
     [Export] public string displayName;
 
-    public Entity BuildEntity((int, int) position, int team)
+    // TODO: Obsolete. Prefer initializer syntax?
+    public Entity BuildEntity(AbsolutePosition position, int team)
     {
         Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
         entity.SetSpecies(this);

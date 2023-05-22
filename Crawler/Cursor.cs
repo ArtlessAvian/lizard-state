@@ -3,7 +3,7 @@ using System;
 
 public class Cursor : Sprite
 {
-    public (int x, int y) targetPosition;
+    public AbsolutePosition targetPosition;
 
     public override void _Process(float delta)
     {

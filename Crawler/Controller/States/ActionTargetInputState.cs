@@ -3,7 +3,7 @@ using Godot;
 
 public class ActionTargetInputState : InputState
 {
-    (int x, int y) playerPos;
+    AbsolutePosition playerPos;
     Cursor cursor;
     internal Action action;
 
@@ -24,12 +24,11 @@ public class ActionTargetInputState : InputState
 
     public override void HandleInput(Crawler crawler, InputEvent ev)
     {
-        foreach ((string name, (int x, int y) dir) tuple in DIRECTIONS)
+        foreach ((string name, Vector2i dir) tuple in DIRECTIONS)
         {
             if (ev.IsActionPressed(tuple.name))
             {
-                cursor.targetPosition.x += tuple.dir.x;
-                cursor.targetPosition.y += tuple.dir.y;
+                cursor.targetPosition += tuple.dir;
                 RangeRefresh(crawler);
             }
         }
@@ -38,13 +37,13 @@ public class ActionTargetInputState : InputState
         {
             // is it possible to get it from the thing instead?
             Vector2 mousePos = crawler.GetGlobalMousePosition();
-            // Temporary.
-            int previousX = cursor.targetPosition.x;
-            int previousY = cursor.targetPosition.y;
-            cursor.targetPosition.x = Mathf.RoundToInt(mousePos.x / View.TILESIZE.x);
-            cursor.targetPosition.y = Mathf.RoundToInt(mousePos.y / View.TILESIZE.y);
-            if (previousX != cursor.targetPosition.x || previousY != cursor.targetPosition.y)
+            AbsolutePosition newPosition = new AbsolutePosition(
+                Mathf.RoundToInt(mousePos.x / View.TILESIZE.x),
+                Mathf.RoundToInt(mousePos.y / View.TILESIZE.y)
+            );
+            if (cursor.targetPosition != newPosition)
             {
+                cursor.targetPosition = newPosition;
                 RangeRefresh(crawler);
             }
         }
@@ -76,10 +75,10 @@ public class ActionTargetInputState : InputState
         TileMap attackRange = crawler.GetNode("View").FindNode("AttackRange") as TileMap;
         attackRange.Clear();
 
-        foreach ((int x, int y) tile in VisibilityTrie.FieldOfView(playerPos, blocksAttack, action.Range.max))
+        foreach (AbsolutePosition tile in VisibilityTrie.FieldOfView(playerPos, blocksAttack, action.Range.max))
         // (x => false, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), 90))
         {
-            float dist = GridHelper.Distance(tile.x - playerPos.x, tile.y - playerPos.y);
+            float dist = GridHelper.Distance(tile - playerPos);
             if (action.Range.min > dist) { continue; }
             attackRange.SetCell(tile.x, tile.y, 1);
         }
@@ -96,7 +95,7 @@ public class ActionTargetInputState : InputState
 
     private void RefreshCone(TargetingType.Cone cone, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
-        foreach ((int x, int y) tile in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, (cursor.targetPosition.x - playerPos.x, cursor.targetPosition.y - playerPos.y), cone.sectorDegrees))
+        foreach ((int x, int y) tile in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, cursor.targetPosition - playerPos, cone.sectorDegrees))
         {
             attackRange.SetCell(tile.x, tile.y, 3);
         }
@@ -112,13 +111,13 @@ public class ActionTargetInputState : InputState
 
     private void RefreshShot(TargetingType.Ray ray, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
-        foreach ((int x, int y) tile in GridHelper.RayThrough(playerPos, cursor.targetPosition))
+        foreach (AbsolutePosition tile in GridHelper.RayThrough(playerPos, cursor.targetPosition))
         {
-            float dist = GridHelper.Distance(tile.x - playerPos.x, tile.y - playerPos.y);
+            float dist = GridHelper.Distance(tile, playerPos);
             if (dist > action.Range.max) { break; }
-            if (blocksAttack((tile.x, tile.y))) { break; }
+            if (blocksAttack(tile)) { break; }
             attackRange.SetCell(tile.x, tile.y, 3);
-            if (ray.stopAtTarget && tile.x == cursor.targetPosition.x && tile.y == cursor.targetPosition.y) { break; }
+            if (ray.stopAtTarget && tile == cursor.targetPosition) { break; }
         }
     }
 

@@ -31,8 +31,8 @@ public class ExplorePlaylist : Resource
             Species partnerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
 
             // position will edited.
-            Entity player = playerSpecies.BuildEntity((-100, -100), 0);
-            Entity partner = partnerSpecies.BuildEntity((-100, -100), 0);
+            Entity player = playerSpecies.BuildEntity(new AbsolutePosition(-100, -100), 0);
+            Entity partner = partnerSpecies.BuildEntity(new AbsolutePosition(-100, -100), 0);
 
             player.isPlayer = true;
             player.inventory.Add(GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres").BuildInventoryItem());
