@@ -48,7 +48,7 @@ public class VisibilityTrie
             // Add the tiles the ray hits to the trie.
             TrieNode current = origin;
             // TODO: Replace with Vector2i.
-            foreach ((int x, int y) tile in GridHelper.RayThrough(new AbsolutePosition(0, 0), new AbsolutePosition(run, rise)))
+            foreach (AbsolutePosition tile in GridHelper.RayThrough(new AbsolutePosition(0, 0), new AbsolutePosition(run, rise)))
             {
                 if (tile.x == 0) { continue; } // skip the first one.
                 if (tile.x > radius) { break; } // finish up

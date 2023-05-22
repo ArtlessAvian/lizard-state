@@ -95,7 +95,7 @@ public class ActionTargetInputState : InputState
 
     private void RefreshCone(TargetingType.Cone cone, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
-        foreach ((int x, int y) tile in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, cursor.targetPosition - playerPos, cone.sectorDegrees))
+        foreach (AbsolutePosition tile in VisibilityTrie.ConeOfView(playerPos, blocksAttack, action.Range.max, cursor.targetPosition - playerPos, cone.sectorDegrees))
         {
             attackRange.SetCell(tile.x, tile.y, 3);
         }
@@ -103,7 +103,7 @@ public class ActionTargetInputState : InputState
 
     private void RefreshSmite(TargetingType.Smite smite, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
     {
-        foreach ((int x, int y) tile in VisibilityTrie.FieldOfView(cursor.targetPosition, blocksAttack, smite.radius))
+        foreach (AbsolutePosition tile in VisibilityTrie.FieldOfView(cursor.targetPosition, blocksAttack, smite.radius))
         {
             attackRange.SetCell(tile.x, tile.y, 3);
         }

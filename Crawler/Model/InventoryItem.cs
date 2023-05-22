@@ -14,7 +14,7 @@ public class InventoryItem : Resource
 
     public InventoryItem() { }
 
-    public FloorItem BuildFloorItem((int x, int y) position)
+    public FloorItem BuildFloorItem(AbsolutePosition position)
     {
         FloorItem floor = GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New() as FloorItem;
         floor.position = position;

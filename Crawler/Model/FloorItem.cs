@@ -9,9 +9,9 @@ public class FloorItem : Resource
 
     [Export] public int positionX;
     [Export] public int positionY;
-    public (int x, int y) position
+    public AbsolutePosition position
     {
-        get { return (positionX, positionY); }
+        get { return new AbsolutePosition(positionX, positionY); }
         set { positionX = value.x; positionY = value.y; }
     }
 

@@ -59,14 +59,14 @@ public readonly struct AbsolutePosition
         return x ^ (y << 16 | y >> 16);
     }
 
-    // Downcasting. Safe but tuples are not recommended.
+    // Upcasting. Safe but tuples are not recommended.
+    [Obsolete]
     public static implicit operator (int x, int y)(AbsolutePosition from)
     {
         return (from.x, from.y);
     }
 
-    // Upcasting! Loss of meaning.
-    // TODO: After migration, mark explicit and remove [Obsolete].
+    // Downcasting! Not all tuples are positions! You should just use the constructor.
     [Obsolete]
     public static implicit operator AbsolutePosition((int x, int y) tuple)
     {

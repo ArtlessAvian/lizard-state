@@ -19,7 +19,7 @@ public class CrawlerMap : SparseMatrix
     //     return base.GetCell(x/2, y/2);
     // }
 
-    public bool TileIsWall((int x, int y) position)
+    public bool TileIsWall(AbsolutePosition position)
     {
         return TileIsWall(this.GetCell(position.x, position.y));
     }
