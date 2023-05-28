@@ -66,5 +66,5 @@ public class CrossupAbility : Action
     }
 
     public override (int min, int max) Range => (1, 2);
-    public override TargetingType.Type TargetingType => new TargetingType.Ray { range = 2, stopAtTarget = true };
+    public override TargetingType.Type TargetingType => new TargetingType.Line { range = 2 };
 }

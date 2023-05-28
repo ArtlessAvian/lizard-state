@@ -45,5 +45,5 @@ public class DashThroughAbility : Action
     }
 
     public override (int min, int max) Range => (1, 5);
-    public override TargetingType.Type TargetingType => new TargetingType.Ray { range = 5, stopAtTarget = true };
+    public override TargetingType.Type TargetingType => new TargetingType.Line { range = 5 };
 }

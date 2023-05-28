@@ -62,5 +62,5 @@ public class TakedownAbility : Action
     }
 
     public override (int, int) Range => (1, 5);
-    public override TargetingType.Type TargetingType => new TargetingType.Ray { range = 5, stopAtTarget = true };
+    public override TargetingType.Type TargetingType => new TargetingType.Line { range = 5 };
 }

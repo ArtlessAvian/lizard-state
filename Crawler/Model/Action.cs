@@ -181,7 +181,7 @@ public static class TargetingType
         }
     }
 
-    // NOTE: Avoid using for dash like moves!
+    // NOTE: Avoid using for dash like moves! Use Line instead.
     // TODO: Reconcile both precise aiming and "stop at target".
     public struct Ray : Type
     {
@@ -225,6 +225,43 @@ public static class TargetingType
 
             AbsolutePosition? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
             return newTarget ?? targetPos;
+        }
+    }
+
+    public struct Line : Type
+    {
+        public int range;
+
+        public bool CheckValid(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            return true;
+        }
+
+        public IEnumerable<AbsolutePosition> GetAffectedTiles(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            AbsolutePosition adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
+            foreach (AbsolutePosition pos in GridHelper.LineBetween(sourcePos, adjustedTarget))
+            {
+                if (GridHelper.Distance(pos - sourcePos) > range) { yield break; }
+                yield return pos;
+                if (blocksAction(pos)) { yield break; }
+            }
+        }
+
+        public IEnumerable<AbsolutePosition> GetInfoTiles(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            yield break;
+        }
+
+        public IEnumerable<AbsolutePosition> GetFullRange(AbsolutePosition sourcePos, Predicate<AbsolutePosition> blocksAction)
+        {
+            // TODO: Need direct FOV.
+            return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range);
+        }
+
+        private AbsolutePosition AdjustTarget(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
+        {
+            return targetPos;
         }
     }
 }
