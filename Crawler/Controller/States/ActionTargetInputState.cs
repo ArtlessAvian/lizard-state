@@ -19,7 +19,7 @@ public class ActionTargetInputState : InputState
         RangeRefresh(crawler);
 
         (crawler.FindNode("TargetingInfo") as Control).Show();
-        (crawler.FindNode("TargetingInfoLabel") as Label).Text = GetActionName(action);
+        (crawler.FindNode("TargetingInfoLabel") as Label).Text = GetActionName(action) + "\n" + action.TargetingType.GetType().Name;
     }
 
     public override void HandleInput(Crawler crawler, InputEvent ev)
