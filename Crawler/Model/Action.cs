@@ -44,7 +44,7 @@ public abstract class Action : Resource
     }
 
     // its absolute
-    public virtual Action SetTarget(AbsolutePosition target)
+    public Action SetTarget(AbsolutePosition target)
     {
         this.isRelative = false;
         this.targetInternal = new Vector2i(target.x, target.y);
@@ -52,7 +52,7 @@ public abstract class Action : Resource
     }
 
     // hey its me ur brother
-    public virtual Action SetTargetRelative(Vector2i delta)
+    public Action SetTargetRelative(Vector2i delta)
     {
         this.isRelative = true;
         this.targetInternal = delta;
