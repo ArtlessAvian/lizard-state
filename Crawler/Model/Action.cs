@@ -173,6 +173,11 @@ public static class TargetingType
 
         private AbsolutePosition AdjustTarget(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
+            if (GridHelper.LineBetween(sourcePos, targetPos).All(x => !blocksAction(x)))
+            {
+                return targetPos;
+            }
+
             AbsolutePosition? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
             return newTarget ?? targetPos;
         }
@@ -218,6 +223,11 @@ public static class TargetingType
 
         private AbsolutePosition AdjustTarget(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
+            if (GridHelper.LineBetween(sourcePos, targetPos).All(x => !blocksAction(x)))
+            {
+                return targetPos;
+            }
+
             AbsolutePosition? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
             return newTarget ?? targetPos;
         }
