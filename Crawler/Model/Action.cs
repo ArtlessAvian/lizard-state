@@ -153,14 +153,12 @@ public static class TargetingType
         {
             AbsolutePosition adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
 
-            int i = 0;
             foreach (AbsolutePosition pos in GridHelper.RayThrough(sourcePos, adjustedTarget))
             {
+                if (GridHelper.Distance(pos - sourcePos) > range) { yield break; }
                 yield return pos;
                 if (blocksAction(pos)) { yield break; }
-                if (i >= range) { yield break; }
                 if (pos == targetPos) { yield break; }
-                i++;
             }
         }
 
@@ -198,15 +196,12 @@ public static class TargetingType
         public IEnumerable<AbsolutePosition> GetAffectedTiles(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
             AbsolutePosition adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
-
-            int i = 0;
             foreach (AbsolutePosition pos in GridHelper.RayThrough(sourcePos, adjustedTarget))
             {
+                if (GridHelper.Distance(pos - sourcePos) > range) { yield break; }
                 yield return pos;
                 if (blocksAction(pos)) { yield break; }
-                if (i >= range) { yield break; }
                 if (stopAtTarget && pos == targetPos) { yield break; }
-                i++;
             }
         }
 

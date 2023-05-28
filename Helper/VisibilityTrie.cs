@@ -15,6 +15,7 @@ public class VisibilityTrie
         public (int x, int y) creator;
         public TrieNode straight = null;
         public TrieNode diag = null;
+        public TrieNode up = null;
         public TrieNode parent = null;
 
         public TrieNode(int x, int y, (int x, int y) creator, TrieNode parent = null)
@@ -63,6 +64,15 @@ public class VisibilityTrie
                     }
                     current = current.straight;
                 }
+                else if (tile.x == current.x)
+                {
+                    if (current.up is null)
+                    {
+                        current.up = new TrieNode(tile.x, tile.y, (run, rise), current);
+                        AddToReverse(current.up);
+                    }
+                    current = current.up;
+                }
                 else
                 {
                     if (current.diag is null)
@@ -110,6 +120,7 @@ public class VisibilityTrie
                 {
                     stack.Add(current.straight);
                     stack.Add(current.diag);
+                    stack.Add(current.up);
                 }
             }
         }
@@ -140,6 +151,7 @@ public class VisibilityTrie
                 {
                     stack.Add(current.straight);
                     stack.Add(current.diag);
+                    stack.Add(current.up);
                 }
             }
         }
@@ -189,7 +201,7 @@ public class VisibilityTrie
     {
         // No need to check when relative is represented by multiple octants.
         // The same path is checked when shared between octants. (cardinal, diagonal)        // The same path is checked between octants if so.
-        (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
+        (int dx, int dy, int octant) = GridHelper.Octantify(relative);
 
         if (!reverse.ContainsKey((dx, dy))) { return null; }
         foreach (TrieNode start in reverse[(dx, dy)])
@@ -267,6 +279,13 @@ public class VisibilityTrie
             }
         }
         if (node.diag is object)
+        {
+            foreach (TrieNode eee in DumpTree(node.diag))
+            {
+                yield return eee;
+            }
+        }
+        if (node.up is object)
         {
             foreach (TrieNode eee in DumpTree(node.diag))
             {
