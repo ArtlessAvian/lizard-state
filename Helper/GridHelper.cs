@@ -40,8 +40,7 @@ static class GridHelper
 
     const int RAY_LENGTH = 500;
 
-    // Found a better algorithm from https://github.com/denismr/SymmetricPCVT
-    // Tran Thong "A symmetric linear algorithm for line segment generation."
+    // Not necessarily symmetric!
     public static IEnumerable<AbsolutePosition> RayThrough(AbsolutePosition from, AbsolutePosition through)
     {
         yield return from;
@@ -59,15 +58,32 @@ static class GridHelper
         }
     }
 
+    // I've understood the algorithm and modified to force symmetry, but its good to cite still I suppose.
+    // Original algorithm found in https://github.com/denismr/SymmetricPCVT
+    // Tran Thong "A symmetric linear algorithm for line segment generation."
     public static IEnumerable<AbsolutePosition> LineBetween(AbsolutePosition from, AbsolutePosition to)
     {
-        foreach (AbsolutePosition p in RayThrough(from, to))
+        yield return from;
+        if (from == to) { yield break; }
+
+        (int octantX, int octantY, int octant) = Octantify(to - from);
+        int localDy = 0;
+        for (int localDx = 1; localDx <= octantX; localDx++)
         {
-            yield return p;
-            if (p.x == to.x && p.y == to.y)
+            // force symmetry in the exact center.
+            if (octantY % 2 != 0 && localDx * 2 == octantX)
             {
-                break;
+                yield return from + DeOctantify(localDx, localDy, octant);
             }
+
+            // rotate slightly around midpoint.
+            // if ((2 * localDy - octantY + 1) <= ((float)octantY / octantX - 0.001) * (2 * localDx - octantX))
+            // we can simplify and make int only. scale, foil the right, avoid division.
+            if (octantX * (1024 * (2 * localDy - octantY + 1) + (2 * localDx - octantX)) <= 1024 * octantY * (2 * localDx - octantX))
+            {
+                localDy++;
+            }
+            yield return from + DeOctantify(localDx, localDy, octant);
         }
     }
 
