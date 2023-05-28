@@ -44,18 +44,18 @@ static class GridHelper
     // Tran Thong "A symmetric linear algorithm for line segment generation."
     public static IEnumerable<AbsolutePosition> RayThrough(AbsolutePosition from, AbsolutePosition through)
     {
-        if (from == through) { yield return through; yield break; }
+        yield return from;
+        if (from == through) { yield break; }
 
         (int octantX, int octantY, int octant) = Octantify(through - from);
         int localDy = 0;
-        for (int localDx = 0; localDx <= RAY_LENGTH; localDx++)
+        for (int localDx = 1; localDx <= RAY_LENGTH; localDx++)
         {
-            Vector2i delta = DeOctantify(localDx, localDy, octant);
-            yield return from + delta;
-            if (octantX * (localDy + 0.5f) - octantY * (localDx + 1) < 0)
+            if (octantX * (2 * localDy + 1) < 2 * octantY * localDx)
             {
                 localDy++;
             }
+            yield return from + DeOctantify(localDx, localDy, octant);
         }
     }
 
