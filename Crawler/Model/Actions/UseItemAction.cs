@@ -20,6 +20,8 @@ public class UseItemAction : Action
 
     public override bool Do(Model model, Entity e)
     {
+        ProxyAction.SetTarget(GetTargetPos(e.position));
+
         if (!IsValid(model, e))
         {
             return false;
