@@ -69,27 +69,27 @@ static class GridHelper
         }
     }
 
-    public static AbsolutePosition StepThrough(AbsolutePosition from, AbsolutePosition through, int steps)
+    public static AbsolutePosition StepThrough(AbsolutePosition from, AbsolutePosition through, int distance)
     {
         IEnumerable<AbsolutePosition> enumerable = RayThrough(from, through);
-        int i = 0;
+        AbsolutePosition previous = from;
         foreach (AbsolutePosition p in enumerable)
         {
-            if (i == steps || i == RAY_LENGTH) { return p; }
-            i++;
+            if (Distance(p - from) > distance) { return previous; }
+            previous = p;
         }
         // this will never happen.
         return through;
     }
 
-    public static AbsolutePosition StepTowards(AbsolutePosition from, AbsolutePosition to, int steps)
+    public static AbsolutePosition StepTowards(AbsolutePosition from, AbsolutePosition to, int distance)
     {
         IEnumerable<AbsolutePosition> enumerable = LineBetween(from, to);
-        int i = 0;
+        AbsolutePosition previous = from;
         foreach (AbsolutePosition p in enumerable)
         {
-            if (i == steps) { return p; }
-            i++;
+            if (Distance(p - from) > distance) { return previous; }
+            previous = p;
         }
         return to;
     }

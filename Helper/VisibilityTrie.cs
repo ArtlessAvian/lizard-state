@@ -14,6 +14,7 @@ public class VisibilityTrie
         public int y = 0;
         public TrieNode straight = null;
         public TrieNode diag = null;
+        public TrieNode up = null;
         public TrieNode parent = null;
 
         public TrieNode(int x, int y, TrieNode parent = null)
@@ -60,6 +61,15 @@ public class VisibilityTrie
                         AddToReverse(current.straight);
                     }
                     current = current.straight;
+                }
+                else if (tile.x == current.x)
+                {
+                    if (current.up is null)
+                    {
+                        current.up = new TrieNode(tile.x, tile.y, current);
+                        AddToReverse(current.up);
+                    }
+                    current = current.up;
                 }
                 else
                 {
@@ -108,6 +118,7 @@ public class VisibilityTrie
                 {
                     stack.Add(current.straight);
                     stack.Add(current.diag);
+                    stack.Add(current.up);
                 }
             }
         }
@@ -138,6 +149,7 @@ public class VisibilityTrie
                 {
                     stack.Add(current.straight);
                     stack.Add(current.diag);
+                    stack.Add(current.up);
                 }
             }
         }
@@ -179,7 +191,7 @@ public class VisibilityTrie
     public static bool AnyLineOfSightRelative(Vector2i relative, Predicate<Vector2i> isBlocked)
     {
         // Any tiles that are duplicated across octants would be covered the same way anyways.
-        (int dx, int dy, int octant) = GridHelper.Octantify(relative.x, relative.y);
+        (int dx, int dy, int octant) = GridHelper.Octantify(relative);
 
         if (!reverse.ContainsKey((dx, dy))) { return false; }
         foreach (TrieNode start in reverse[(dx, dy)])
@@ -247,6 +259,13 @@ public class VisibilityTrie
             }
         }
         if (node.diag is object)
+        {
+            foreach (TrieNode eee in DumpTree(node.diag))
+            {
+                yield return eee;
+            }
+        }
+        if (node.up is object)
         {
             foreach (TrieNode eee in DumpTree(node.diag))
             {
