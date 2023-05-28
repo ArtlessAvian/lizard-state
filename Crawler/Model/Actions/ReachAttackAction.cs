@@ -3,6 +3,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
+// TODO: Split off smite
 public class ReachAttackAction : Action
 {
     [Export] public int startup = 0;
@@ -52,4 +53,6 @@ public class ReachAttackAction : Action
     }
 
     public override (int min, int max) Range => (1, range);
+    public override TargetingType.Type TargetingType => smiteTargeting ? (TargetingType.Type)new TargetingType.Smite { range = range } : new TargetingType.Ray { range = range };
+
 }
