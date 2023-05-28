@@ -40,7 +40,9 @@ static class GridHelper
 
     const int RAY_LENGTH = 500;
 
-    // Not necessarily symmetric!
+    // I don't think its possible to have symmetric rays due to extrapolation.
+    // (There is a ray from A that passes through B but no ray from B that passes through A.)
+    // The best thing to do is extrapolate up to a known range, then draw a segment between?
     public static IEnumerable<AbsolutePosition> RayThrough(AbsolutePosition from, AbsolutePosition through)
     {
         yield return from;

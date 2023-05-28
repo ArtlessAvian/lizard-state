@@ -151,9 +151,7 @@ public static class TargetingType
 
         public IEnumerable<AbsolutePosition> GetInfoTiles(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            AbsolutePosition adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
-
-            foreach (AbsolutePosition pos in GridHelper.RayThrough(sourcePos, adjustedTarget))
+            foreach (AbsolutePosition pos in GridHelper.RayThrough(sourcePos, targetPos))
             {
                 if (GridHelper.Distance(pos - sourcePos) > range) { yield break; }
                 yield return pos;
@@ -168,17 +166,6 @@ public static class TargetingType
             int localSplash = splashRadius;
             return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range).Distinct().SelectMany(pos => VisibilityTrie.FieldOfView(pos, blocksAction, localSplash));
         }
-
-        private AbsolutePosition AdjustTarget(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
-        {
-            if (GridHelper.LineBetween(sourcePos, targetPos).All(x => !blocksAction(x)))
-            {
-                return targetPos;
-            }
-
-            AbsolutePosition? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
-            return newTarget ?? targetPos;
-        }
     }
 
     // NOTE: Avoid using for dash like moves! Use Line instead.
@@ -186,7 +173,7 @@ public static class TargetingType
     public struct Ray : Type
     {
         public int range;
-        public bool stopAtTarget;
+        public bool stopAtTarget; // TODO: set to false always?
 
         public bool CheckValid(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
@@ -195,8 +182,7 @@ public static class TargetingType
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            AbsolutePosition adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
-            foreach (AbsolutePosition pos in GridHelper.RayThrough(sourcePos, adjustedTarget))
+            foreach (AbsolutePosition pos in GridHelper.RayThrough(sourcePos, targetPos))
             {
                 if (GridHelper.Distance(pos - sourcePos) > range) { yield break; }
                 yield return pos;
@@ -213,18 +199,8 @@ public static class TargetingType
         public IEnumerable<AbsolutePosition> GetFullRange(AbsolutePosition sourcePos, Predicate<AbsolutePosition> blocksAction)
         {
             // TODO: Technically not true, but the function signature doesn't care for entities.
+            // TODO: With Direct LOS now, sometimes you can BS a ray to hit something you wouldn't normally be able to.
             return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range);
-        }
-
-        private AbsolutePosition AdjustTarget(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
-        {
-            if (GridHelper.LineBetween(sourcePos, targetPos).All(x => !blocksAction(x)))
-            {
-                return targetPos;
-            }
-
-            AbsolutePosition? newTarget = VisibilityTrie.SomeLineOfSight(sourcePos, targetPos, blocksAction);
-            return newTarget ?? targetPos;
         }
     }
 
@@ -239,8 +215,7 @@ public static class TargetingType
 
         public IEnumerable<AbsolutePosition> GetAffectedTiles(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
         {
-            AbsolutePosition adjustedTarget = AdjustTarget(sourcePos, targetPos, blocksAction);
-            foreach (AbsolutePosition pos in GridHelper.LineBetween(sourcePos, adjustedTarget))
+            foreach (AbsolutePosition pos in GridHelper.LineBetween(sourcePos, targetPos))
             {
                 if (GridHelper.Distance(pos - sourcePos) > range) { yield break; }
                 yield return pos;
@@ -255,13 +230,7 @@ public static class TargetingType
 
         public IEnumerable<AbsolutePosition> GetFullRange(AbsolutePosition sourcePos, Predicate<AbsolutePosition> blocksAction)
         {
-            // TODO: Need direct FOV.
             return VisibilityTrie.FieldOfView(sourcePos, blocksAction, range);
-        }
-
-        private AbsolutePosition AdjustTarget(AbsolutePosition sourcePos, AbsolutePosition targetPos, Predicate<AbsolutePosition> blocksAction)
-        {
-            return targetPos;
         }
     }
 }

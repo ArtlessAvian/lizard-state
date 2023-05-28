@@ -6,7 +6,7 @@ using Godot;
 // See http://www.roguebasin.com/index.php?title=Pre-Computed_Visibility_Tries
 //  Don't worry about static. Treat as big constant!
 // TODO: Revise the staticness of it
-public class VisibilityTrie
+public static class VisibilityTrie
 {
     public class TrieNode
     {
@@ -29,15 +29,26 @@ public class VisibilityTrie
 
     private static TrieNode origin;
     private static int currentRadius = 0;
-    private static Dictionary<(int x, int y), HashSet<TrieNode>> reverse;
+    private static Dictionary<(int x, int y), TrieNode> reverse;
 
     static VisibilityTrie()
     {
         origin = new TrieNode(0, 0, (0, 0));
-        reverse = new Dictionary<(int x, int y), HashSet<TrieNode>>();
-        AddToReverse(origin);
+        reverse = new Dictionary<(int x, int y), TrieNode>();
+        reverse[(0, 0)] = origin;
 
-        ExtendRadius(20);
+        ExtendRadius(50);
+    }
+
+    private static IEnumerable<(int x, int y)> ListOctant(int radius)
+    {
+        for (int x = 0; x <= radius; x++)
+        {
+            for (int y = 0; y <= x; y++)
+            {
+                yield return (x, y);
+            }
+        }
     }
 
     private static void ExtendRadius(int radius)
@@ -46,12 +57,12 @@ public class VisibilityTrie
         currentRadius = radius;
 
         // For each unique ray in the octant passing through a cell,
-        foreach ((int rise, int run) in GridHelper.ListRationals((int)radius + 1))
+        foreach ((int octantX, int octantY) in ListOctant((int)radius + 1))
         {
             // Add the tiles the ray hits to the trie.
             TrieNode current = origin;
             // TODO: Replace with Vector2i.
-            foreach (AbsolutePosition tile in GridHelper.RayThrough(new AbsolutePosition(0, 0), new AbsolutePosition(run, rise)))
+            foreach (AbsolutePosition tile in GridHelper.LineBetween(new AbsolutePosition(0, 0), new AbsolutePosition(octantX, octantY)))
             {
                 if (tile.x == 0) { continue; } // skip the first one.
                 if (tile.x > radius) { break; } // finish up
@@ -59,8 +70,7 @@ public class VisibilityTrie
                 {
                     if (current.straight is null)
                     {
-                        current.straight = new TrieNode(tile.x, tile.y, (run, rise), current);
-                        AddToReverse(current.straight);
+                        current.straight = new TrieNode(tile.x, tile.y, (octantX, octantY), current);
                     }
                     current = current.straight;
                 }
@@ -68,8 +78,7 @@ public class VisibilityTrie
                 {
                     if (current.up is null)
                     {
-                        current.up = new TrieNode(tile.x, tile.y, (run, rise), current);
-                        AddToReverse(current.up);
+                        current.up = new TrieNode(tile.x, tile.y, (octantX, octantY), current);
                     }
                     current = current.up;
                 }
@@ -77,23 +86,13 @@ public class VisibilityTrie
                 {
                     if (current.diag is null)
                     {
-                        current.diag = new TrieNode(tile.x, tile.y, (run, rise), current);
-                        AddToReverse(current.diag);
+                        current.diag = new TrieNode(tile.x, tile.y, (octantX, octantY), current);
                     }
                     current = current.diag;
                 }
             }
+            reverse[(octantX, octantY)] = current;
         }
-    }
-
-    private static void AddToReverse(TrieNode node)
-    {
-        (int x, int y) pos = (node.x, node.y);
-        if (!reverse.ContainsKey(pos))
-        {
-            reverse.Add(pos, new HashSet<TrieNode>());
-        }
-        reverse[pos].Add(node);
     }
 
     // The reall stuff.
@@ -115,7 +114,10 @@ public class VisibilityTrie
                 }
 
                 Vector2i relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
-                yield return relativePos;
+                if (current.creator.x == current.x && current.creator.y == current.y)
+                {
+                    yield return relativePos;
+                }
                 if (!isBlocked(relativePos))
                 {
                     stack.Add(current.straight);
@@ -142,7 +144,7 @@ public class VisibilityTrie
                 }
 
                 Vector2i relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
-                if (TileInConeRelative(relativePos, direction, sectorDegrees))
+                if (current.creator.x == current.x && current.creator.y == current.y && TileInConeRelative(relativePos, direction, sectorDegrees))
                 {
                     yield return relativePos;
                 }
@@ -192,37 +194,28 @@ public class VisibilityTrie
 
     public static bool AnyLineOfSightRelative(Vector2i relative, Predicate<Vector2i> isBlocked)
     {
-        return SomeLineOfSightRelative(relative, isBlocked) != null;
+        // No need to check when relative is represented by multiple octants.
+        // The same path is checked when shared between octants. (cardinal, diagonal)
+        (int dx, int dy, int octant) = GridHelper.Octantify(relative);
+        if (!reverse.ContainsKey((dx, dy))) { return false; }
+        TrieNode current = reverse[(dx, dy)];
+        while (current != origin)
+        {
+            if (isBlocked(GridHelper.DeOctantify(current.x, current.y, octant)))
+            {
+                return false;
+            }
+            current = current.parent;
+        }
+        return true;
     }
 
     // returns the direction of a ray passing through relative.
     // (implementation detail: returns the "simplest" direction, with dx, dy as low as possible)
+    [Obsolete("Prefer AnyLOS. Line of Sight is unique. The returned Vector2i will just be relative.")]
     public static Vector2i? SomeLineOfSightRelative(Vector2i relative, Predicate<Vector2i> isBlocked)
     {
-        // No need to check when relative is represented by multiple octants.
-        // The same path is checked when shared between octants. (cardinal, diagonal)        // The same path is checked between octants if so.
-        (int dx, int dy, int octant) = GridHelper.Octantify(relative);
-
-        if (!reverse.ContainsKey((dx, dy))) { return null; }
-        foreach (TrieNode start in reverse[(dx, dy)])
-        {
-            bool success = true;
-            TrieNode current = start;
-            while (current != origin)
-            {
-                if (isBlocked(GridHelper.DeOctantify(current.x, current.y, octant)))
-                {
-                    success = false;
-                    break;
-                }
-                current = current.parent;
-            }
-            if (success)
-            {
-                return GridHelper.DeOctantify(start.creator.x, start.creator.y, octant);
-            }
-        }
-        return null;
+        return AnyLineOfSightRelative(relative, isBlocked) ? relative : (Vector2i?)null;
     }
 
     // Predicate nonsense.
@@ -260,6 +253,7 @@ public class VisibilityTrie
         return AnyLineOfSightRelative(to - from, ToRelative(from, isBlocked));
     }
 
+    [Obsolete("Prefer AnyLOS. Line of Sight is unique. The returned Vector2i will just be (to - from).")]
     public static AbsolutePosition? SomeLineOfSight(AbsolutePosition from, AbsolutePosition to, Predicate<AbsolutePosition> isBlocked)
     {
         Vector2i? maybe = SomeLineOfSightRelative(to - from, ToRelative(from, isBlocked));
