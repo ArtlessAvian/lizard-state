@@ -18,6 +18,10 @@ config/name="Lizard State"
 run/main_scene="res://GameModes/Story/Story.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+DeepCopyHelper="*res://Helper/DeepCopyHelper.gd"
+
 [debug]
 
 gdscript/warnings/unused_argument=false
