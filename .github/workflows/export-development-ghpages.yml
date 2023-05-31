@@ -22,6 +22,7 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/templates
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/templates/${GODOT_VERSION}.stable.mono
+          git log -1 --format="%h %s" > ci-version.txt
       - name: Web Build
         run: |
           mkdir -v -p build/web

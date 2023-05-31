@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://GameModes/Story/Lobby/LobbyDummy.gd" type="Script" id=1]
 [ext_resource path="res://Crawler/View/Assets/oc_donut_steel/tegu/tegu.png" type="Texture" id=2]
 [ext_resource path="res://Crawler/View/Assets/oc_donut_steel/gator/gator.png" type="Texture" id=3]
 [ext_resource path="res://Crawler/View/Assets/oc_donut_steel/axolotl/nano.png" type="Texture" id=4]
+[ext_resource path="res://GameModes/Story/Lobby/CIVersion.gd" type="Script" id=5]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 4 )
@@ -142,6 +143,15 @@ text = "Click pink tiles to leave. You regain health and energy if you ate befor
 
 There's no penalty for dying yet. Try to leave before dying!"
 scroll_active = false
+
+[node name="CIVersion" type="Label" parent="."]
+modulate = Color( 0.329412, 0.403922, 0.380392, 1 )
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = -24.0
+margin_right = 40.0
+script = ExtResource( 5 )
 
 [connection signal="button_up" from="Control/StartTutorial" to="." method="_on_StartTutorial_button_up"]
 [connection signal="button_up" from="Control/StartEarlygame" to="." method="_on_StartEarlygame_button_up"]
