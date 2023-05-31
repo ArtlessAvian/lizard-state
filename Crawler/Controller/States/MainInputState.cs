@@ -38,30 +38,18 @@ public class MainInputState : InputState
 
     public bool DebugInput(Crawler crawler, InputEvent ev)
     {
-        // Only saves the model. Not intended as a long term solution.
-        if (ev.IsActionPressed("quicksave", false))
+        if (ev.IsActionPressed("dump_model", false))
         {
             Model deepcopy = (Model)DeepCopyHelper.DeepCopy(crawler.Model);
             Error err = ResourceSaver.Save("res://dump.tres", deepcopy, ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
             if (err == Error.Ok)
             {
-                GD.Print("Saved!");
+                GD.Print("Dumped!");
             }
             else
             {
-                GD.Print(err);
+                GD.PrintErr("Failed to dump model: ", err);
             }
-            return true;
-        }
-
-        if (ev.IsActionPressed("quickload", false))
-        {
-            SetProcess(false);
-            Model model = (Model)DeepCopyHelper.DeepCopy(GD.Load("res://dump.tres"));
-            crawler.Model = model;
-            GD.Print("Loaded!");
-            SetProcess(true);
-
             return true;
         }
 

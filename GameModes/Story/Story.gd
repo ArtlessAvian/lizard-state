@@ -19,15 +19,20 @@ func _process(delta):
 
 
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_home"):
+	if event.is_action_pressed("quicksave"):
 		var error = ResourceSaver.save(
-			"res://save_state_story.tres", DeepCopyHelper.deep_copy(story_state)
-		)  #, ResourceSaver.FLAG_BUNDLE_RESOURCES
+			"res://save_state_story.tres",
+			DeepCopyHelper.deep_copy(story_state),
+			ResourceSaver.FLAG_REPLACE_SUBRESOURCE_PATHS
+		)
 		if error != OK:
 			printerr("failed to save??")
-	elif event.is_action_pressed("ui_end"):
-		story_state = DeepCopyHelper.deep_copy(load("save_state_story.tres"))
-		_ready()  # this wont work.
+		else:
+			print("quicksaved!")
+	elif event.is_action_pressed("quickload"):
+		story_state = DeepCopyHelper.deep_copy(load("res://save_state_story.tres"))
+		print("quickloaded!")
+		_ready()
 
 
 func _on_Explore_win():
