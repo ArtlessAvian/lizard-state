@@ -93,10 +93,10 @@ public class VisionSystem : Resource, CrawlerSystem
                     other.visibleToPlayer = true;
                     model.CoolerApiEvent(e.id, "See", null, other.id);
                 }
-                seenBy[other.id].Add(e.id);
+                if (!seenBy[other.id].Contains(e.id)) { seenBy[other.id].Add(e.id); }
 
                 if (!canSee.ContainsKey(e.id)) { canSee[e.id] = new List<int>(); }
-                canSee[e.id].Add(other.id);
+                if (!canSee[e.id].Contains(other.id)) { canSee[e.id].Add(other.id); };
             }
         }
     }
@@ -146,11 +146,11 @@ public class VisionSystem : Resource, CrawlerSystem
                     e.visibleToPlayer = true;
                     model.CoolerApiEvent(player.id, "See", null, e.id);
                 }
-                seenBy[e.id].Add(player.id);
+                if (!seenBy[e.id].Contains(player.id)) { seenBy[e.id].Add(player.id); }
 
                 // leaving this in to be explicit. never runs.
                 if (!canSee.ContainsKey(player.id)) { canSee[player.id] = new List<int>(); }
-                canSee[player.id].Add(e.id);
+                if (!canSee[player.id].Contains(e.id)) { canSee[player.id].Add(e.id); }
             }
         }
     }
