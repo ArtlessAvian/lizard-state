@@ -97,4 +97,8 @@ public static class TargetingType
             this.stopAtTarget = stopAtTarget;
         }
     }
+
+    public struct Line : Type
+    {
+    }
 }

@@ -48,5 +48,5 @@ public class DashPunchAbility : Action
     }
 
     public override (int, int) Range => (1, 5);
-    public override TargetingType.Type TargetingType => new TargetingType.Ray(false, true);
+    public override TargetingType.Type TargetingType => new TargetingType.Line { };
 }

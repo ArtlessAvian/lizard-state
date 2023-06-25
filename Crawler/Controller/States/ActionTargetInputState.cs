@@ -88,6 +88,7 @@ public class ActionTargetInputState : InputState
             case TargetingType.Cone cone: RefreshCone(cone, attackRange, blocksAttack); break;
             case TargetingType.Smite smite: RefreshSmite(smite, attackRange, blocksAttack); break;
             case TargetingType.Ray shot: RefreshShot(shot, attackRange, blocksAttack); break;
+            case TargetingType.Line line: RefreshLine(line, attackRange, blocksAttack); break;
             default:
                 break;
         }
@@ -118,6 +119,14 @@ public class ActionTargetInputState : InputState
             if (blocksAttack(tile)) { break; }
             attackRange.SetCell(tile.x, tile.y, 3);
             if (ray.stopAtTarget && tile == cursor.targetPosition) { break; }
+        }
+    }
+
+    private void RefreshLine(TargetingType.Line line, TileMap attackRange, Predicate<AbsolutePosition> blocksAttack)
+    {
+        foreach (AbsolutePosition tile in GridHelper.LineBetween(playerPos, cursor.targetPosition))
+        {
+            attackRange.SetCell(tile.x, tile.y, 3);
         }
     }
 

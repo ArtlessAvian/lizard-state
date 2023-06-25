@@ -61,5 +61,5 @@ public class DashThroughFollowup : Action
     }
 
     public override (int min, int max) Range => (1, 5);
-    public override TargetingType.Type TargetingType => new TargetingType.Ray(true, true);
+    public override TargetingType.Type TargetingType => new TargetingType.Line { };
 }
