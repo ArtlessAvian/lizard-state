@@ -125,6 +125,13 @@ public partial class Model : Resource
                     yield return temp;
                 }
                 break;
+            case Entity.EntityState.INTANGIBLE:
+                if (e.queuedAction is Action temp2)
+                {
+                    e.queuedAction = null;
+                    yield return temp2;
+                }
+                break;
             case Entity.EntityState.STUN:
                 // should always succeed.
                 yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();

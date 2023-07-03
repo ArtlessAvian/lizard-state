@@ -12,7 +12,7 @@ public class Entity : Resource
 {
     public enum EntityState
     {
-        OK, STUN, KNOCKDOWN, UNALIVE, EXITED
+        OK, STUN, KNOCKDOWN, UNALIVE, INTANGIBLE, EXITED
     }
 
     [Export] public int id;
@@ -37,13 +37,14 @@ public class Entity : Resource
     // as player, client should read and resubmit with force=true.
     [Export] public Action needsConfirmAction;
 
+    // Need a sum type that isn't garbo.
     // Imagine a rust enum with OK(Option<Action>), that being queuedAction?
     // If I were a braver person I'd use this everywhere.
-    public (EntityState state, Action action) stateOrQueuedAction
-    {
-        get { return (state, queuedAction); }
-        set { state = value.state; queuedAction = value.state == EntityState.OK ? value.action : null; }
-    }
+    // public (EntityState state, Action action) stateOrQueuedAction
+    // {
+    //     get { return (state, queuedAction); }
+    //     set { state = value.state; queuedAction = value.state == EntityState.OK ? value.action : null; }
+    // }
 
     [Export] public int health;
     [Export] public int energy = 10;
@@ -83,12 +84,14 @@ public class Entity : Resource
     public void StunForTurns(int nTurns, int time, int nowId)
     {
         DelayNextMove(nTurns, time, nowId);
-        stateOrQueuedAction = (EntityState.STUN, null);
+        state = EntityState.STUN;
+        queuedAction = null;
     }
 
     public void KnockdownForTurns(int nTurns, int time, int nowId)
     {
         DelayNextMove(nTurns, time, nowId);
-        stateOrQueuedAction = (EntityState.KNOCKDOWN, null);
+        state = EntityState.KNOCKDOWN;
+        queuedAction = null;
     }
 }
