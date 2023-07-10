@@ -85,6 +85,10 @@ public partial class View : Node2D
 
     public void OnModelNewEvent(Dictionary @event)
     {
+        // hide stuff on sync.
+        TileMap telegraphed = GetNode<TileMap>("Map/Floors/TelegraphedAttacks");
+        telegraphed.Hide();
+
         eventQueue.Add(@event);
 
         // Everything gets sent to the logs.
@@ -228,6 +232,17 @@ public partial class View : Node2D
         foreach (Actor a in roles.Values)
         {
             a.ModelSync(viewTime);
+        }
+
+        TileMap telegraphed = GetNode<TileMap>("Map/Floors/TelegraphedAttacks");
+        telegraphed.Show();
+        telegraphed.Clear();
+        foreach (Actor a in roles.Values)
+        {
+            if (a.role.queuedAction?.GetTargetPos(a.role.position) is AbsolutePosition pos)
+            {
+                telegraphed.SetCell(pos.x, pos.y, 3);
+            }
         }
 
         FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();

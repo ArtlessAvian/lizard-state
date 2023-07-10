@@ -45,6 +45,11 @@ tile_set = ExtResource( 3 )
 cell_size = Vector2( 24, 16 )
 format = 1
 
+[node name="TelegraphedAttacks" type="TileMap" parent="Map/Floors"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 16 )
+format = 1
+
 [node name="Footsteps" type="TileMap" parent="Map/Floors"]
 tile_set = ExtResource( 8 )
 cell_size = Vector2( 24, 16 )
