@@ -28,7 +28,7 @@ public class MoveOrAttackAction : Action
     {
         AbsolutePosition targetPos = GetTargetPos(e.position);
 
-        if (model.GetMap().GetCell(targetPos.x, targetPos.y) == 5)
+        if (model.GetMap().tiles.GetCell(targetPos.x, targetPos.y) == 5)
         {
             return new ExitAction().SetTarget(targetPos);
         }

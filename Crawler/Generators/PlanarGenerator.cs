@@ -15,7 +15,7 @@ public class PlanarGenerator : LevelGenerator
     public override Model Generate(Model model, Entity[] playerTeam)
     {
         GenerateEmbedding();
-        GenerateMap(model.map);
+        GenerateMap(model.map.tiles);
         AddSystems(model);
         PlacePlayers(model, playerTeam);
         GenerateEntities(model);
@@ -156,7 +156,7 @@ public class PlanarGenerator : LevelGenerator
         return true;
     }
 
-    public override void GenerateMap(CrawlerMap map)
+    public override void GenerateMap(SparseMatrix map)
     {
         // draw all hallways
         for (int node = 0; node < graph.nodes; node++)

@@ -25,9 +25,16 @@ public partial class Model : Resource
     [Signal]
     public delegate void NewEvent(Dictionary ev);
 
+    // Create an empty model, which is "valid" but its unclear what to decorate.
+    // Prefer using the constructor.
     public Model()
     {
         map = (CrawlerMap)GD.Load<CSharpScript>("res://Crawler/Model/CrawlerMap.cs").New();
+    }
+
+    public Model(CrawlerMap map)
+    {
+        this.map = map;
     }
 
     public void AddEntity(Entity e)

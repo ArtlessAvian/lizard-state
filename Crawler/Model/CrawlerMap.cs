@@ -8,10 +8,21 @@ using System.Collections.Generic;
 // Parasitically based on TileMap.
 // Would change, but its quite convenient.
 [Tool]
-public class CrawlerMap : SparseMatrix
+public class CrawlerMap : Resource
 {
+    [Export]
+    public SparseMatrix tiles;
+
+    // Creates an empty map. It's "valid" but very boring.
+    // Prefer the constructor with params.
     public CrawlerMap()
     {
+        tiles = (SparseMatrix)GD.Load<CSharpScript>("res://Helper/SparseMatrix.cs").New();
+    }
+
+    public CrawlerMap(SparseMatrix tiles)
+    {
+        this.tiles = tiles;
     }
 
     // public new int GetCell(int x, int y)
@@ -21,7 +32,7 @@ public class CrawlerMap : SparseMatrix
 
     public bool TileIsWall(AbsolutePosition position)
     {
-        return TileIsWall(this.GetCell(position.x, position.y));
+        return TileIsWall(tiles.GetCell(position.x, position.y));
     }
 
     public static bool TileIsWall(int id)

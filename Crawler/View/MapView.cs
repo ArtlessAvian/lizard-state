@@ -87,8 +87,8 @@ public class MapView : Node2D
 
         foreach (Vector2 vec in fog.GetUsedCells())
         {
-            WriteFloorOrWall((int)vec.x, (int)vec.y, map.GetCell((int)vec.x, (int)vec.y), floors, walls);
-            WriteFloorOrWall((int)vec.x, (int)vec.y, map.GetCell((int)vec.x, (int)vec.y), mini, mini);
+            WriteFloorOrWall((int)vec.x, (int)vec.y, map.tiles.GetCell((int)vec.x, (int)vec.y), floors, walls);
+            WriteFloorOrWall((int)vec.x, (int)vec.y, map.tiles.GetCell((int)vec.x, (int)vec.y), mini, mini);
         }
 
         foreach (int seer in fog.lastVision.Keys)

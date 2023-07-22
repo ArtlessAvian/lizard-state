@@ -9,14 +9,14 @@ public class NoiseGenerator : LevelGenerator
 
     public override Model Generate(Model model, Entity[] playerTeam)
     {
-        GenerateMap(model.map);
+        GenerateMap(model.map.tiles);
         AddSystems(model);
         PlacePlayers(model, playerTeam);
         GenerateEntities(model);
         return model;
     }
 
-    public override void GenerateMap(CrawlerMap map)
+    public override void GenerateMap(SparseMatrix tiles)
     {
         OpenSimplexNoise noise = new OpenSimplexNoise();
         noise.Period = 6;
@@ -33,7 +33,7 @@ public class NoiseGenerator : LevelGenerator
                 {
                     if (sample > 0.5)
                     {
-                        map.SetCell(x, y, (int)(3));
+                        tiles.SetCell(x, y, (int)(3));
                         if (spawnX == 0 && spawnY == 0)
                         {
                             spawnX = x;
@@ -42,7 +42,7 @@ public class NoiseGenerator : LevelGenerator
                     }
                     else
                     {
-                        map.SetCell(x, y, (int)(sample * 1));
+                        tiles.SetCell(x, y, (int)(sample * 1));
                     }
                 }
             }
@@ -64,7 +64,7 @@ public class NoiseGenerator : LevelGenerator
     {
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
-        Array tiles = model.map.GetUsedCellsById(3);
+        Array tiles = model.map.tiles.GetUsedCellsById(3);
         // tiles.Shuffle();
         for (int i = 0; i < 10; i++)
         {

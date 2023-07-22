@@ -11,7 +11,7 @@ public class GetAction : Action
             return false;
         }
 
-        if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
+        if (model.GetMap().tiles.GetCell(e.position.x, e.position.y) == 2)
         {
             model.CoolerApiEvent(-1, "Print", "Got the moss.");
             e.nextMove += 3;
@@ -54,7 +54,7 @@ public class GetAction : Action
 
     public override bool IsValid(Model model, Entity e)
     {
-        if (model.GetMap().GetCell(e.position.x, e.position.y) == 2)
+        if (model.GetMap().tiles.GetCell(e.position.x, e.position.y) == 2)
         {
             return true;
         }

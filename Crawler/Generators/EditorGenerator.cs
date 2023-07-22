@@ -9,7 +9,7 @@ public class EditorGenerator : LevelGenerator
 
     public override Model Generate(Model model, Entity[] playerTeam)
     {
-        GenerateMap(model.map);
+        GenerateMap(model.map.tiles);
         AddSystems(model);
         PlacePlayers(model, playerTeam);
         GenerateEntities(model);
@@ -23,10 +23,10 @@ public class EditorGenerator : LevelGenerator
         return model;
     }
 
-    public override void GenerateMap(CrawlerMap map)
+    public override void GenerateMap(SparseMatrix tiles)
     {
         TileMap data = scene.Instance<TileMap>();
-        map.ReadFromTilemap(data);
+        tiles.ReadFromTilemap(data);
         data.QueueFree();
     }
 

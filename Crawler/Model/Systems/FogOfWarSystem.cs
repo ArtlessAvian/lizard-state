@@ -62,7 +62,7 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
             {
                 if (this.GetCell(x, y) == VISIBLE)
                 {
-                    tiles.Add(new Vector3(x, y, map.GetCell(x, y)));
+                    tiles.Add(new Vector3(x, y, map.tiles.GetCell(x, y)));
                 }
             }
         }

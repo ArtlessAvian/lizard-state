@@ -26,13 +26,13 @@ public class HybridGenerator : LevelGenerator
     public override Model Generate(Model model, Entity[] playerTeam)
     {
         AddSystems(model);
-        GenerateMap(model.map);
+        GenerateMap(model.map.tiles);
         PlacePlayers(model, playerTeam);
         GenerateEntities(model);
         return model;
     }
 
-    public override void GenerateMap(CrawlerMap map)
+    public override void GenerateMap(SparseMatrix tiles)
     {
         (int x, int y) start = SearchForHallway();
 
@@ -51,12 +51,12 @@ public class HybridGenerator : LevelGenerator
         // TODO: Temporary
         foreach ((int x, int y) tile in candidates)
         {
-            map.SetCell(tile.x, tile.y, 1);
+            tiles.SetCell(tile.x, tile.y, 1);
         }
 
         // draw a river
 
-        GenerateEntrance(map, start);
+        GenerateEntrance(tiles, start);
 
         // generate moss at cave center. I don't have a good idea where else to put it lol.
 
@@ -243,7 +243,7 @@ public class HybridGenerator : LevelGenerator
         return (edges, borders);
     }
 
-    private void GenerateEntrance(CrawlerMap map, (int x, int y) start)
+    private void GenerateEntrance(SparseMatrix map, (int x, int y) start)
     {
         // TODO: use model.map.chunks to find uppermost tile?
 
@@ -324,7 +324,7 @@ public class HybridGenerator : LevelGenerator
     {
         int spawnX = 0;
         int spawnY = 0;
-        foreach (Vector2 vec in model.map.GetUsedCellsById(5))
+        foreach (Vector2 vec in model.map.tiles.GetUsedCellsById(5))
         {
             spawnX = (int)vec.x;
             spawnY = (int)vec.y + 1;
@@ -343,7 +343,7 @@ public class HybridGenerator : LevelGenerator
     {
         Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
 
-        var tiles = model.map.GetUsedCellsById(1);
+        var tiles = model.map.tiles.GetUsedCellsById(1);
         // tiles.Shuffle(); // bro i got trolled by shuffle on html again
         // ill report it tomorrow.
         for (int i = 0; i < 10; i++)
