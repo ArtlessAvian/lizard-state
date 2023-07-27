@@ -70,7 +70,7 @@ public class Crawler : Node2D, InputStateMachine
 
     private void RunModel()
     {
-        ulong start = OS.GetTicksMsec();
+        ulong start = Time.GetTicksUsec();
         int startModel = model.time;
 
         // Do nothing to prevent error spam.
@@ -94,12 +94,17 @@ public class Crawler : Node2D, InputStateMachine
                 View.queueSync = true;
                 break;
             }
+
+            if ((Time.GetTicksUsec() - start) / 1000f > 1000 / 144f)
+            {
+                break;
+            }
         }
 
         // Uncomment if not lag testing (which should be always)
-        if (OS.GetTicksMsec() - start > 1000 / 144f)
+        if ((Time.GetTicksUsec() - start) / 1000f > 1000 / 144f)
         {
-            GD.Print($"Turns {startModel}-{model.time} did not complete within frame. ({OS.GetTicksMsec() - start} ms)");
+            GD.Print($"Turns {startModel}-{model.time} did not complete within frame. ({(Time.GetTicksUsec() - start) / 1000f} ms)");
         }
 
         if (Model.done && View.done && !GetNode<AnimationPlayer>("Fader/AnimationPlayer").IsPlaying())
