@@ -3,7 +3,7 @@ using Godot.Collections;
 
 // TODO: Deprecate.
 
-public class RushAttackAction : Action
+public class RushAttackAction : CrawlAction
 {
     [Export] public int damagePerHit = 1;
     [Export] public float expectedDamage = 3;

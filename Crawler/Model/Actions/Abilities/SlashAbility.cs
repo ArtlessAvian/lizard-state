@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 // Hits a short cone instantly, but moves you forward.
 // Should be unsafe on "block," and knockdown on hit.
-public class SlashAbility : Action
+public class SlashAbility : CrawlAction
 {
     public SlashAbility()
     {

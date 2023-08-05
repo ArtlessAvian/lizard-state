@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MoveOrAttackAction : Action
+public class MoveOrAttackAction : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {
@@ -24,7 +24,7 @@ public class MoveOrAttackAction : Action
     // only makes sense for abilities that might be aimed.
     // public override (float, float) Range => (1, 10);
 
-    public Action GetMacroedAction(Model model, Entity e)
+    public CrawlAction GetMacroedAction(Model model, Entity e)
     {
         AbsolutePosition targetPos = GetTargetPos(e.position);
 

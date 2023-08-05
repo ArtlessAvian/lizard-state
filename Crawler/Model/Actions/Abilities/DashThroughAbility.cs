@@ -4,7 +4,7 @@ using Godot.Collections;
 
 // Threatens long range, with startup.
 // Think Chipp Alpha Blade or something.
-public class DashThroughAbility : Action
+public class DashThroughAbility : CrawlAction
 {
     public DashThroughAbility()
     {
@@ -24,7 +24,7 @@ public class DashThroughAbility : Action
         model.CoolerApiEvent(e.id, "AttackStartup", new Vector2(targetPos.x, targetPos.y));
 
         CSharpScript followup = GD.Load("res://Crawler/Model/Actions/Abilities/DashThroughFollowup.cs") as CSharpScript;
-        e.queuedAction = followup.New() as Action;
+        e.queuedAction = followup.New() as CrawlAction;
         e.queuedAction = e.queuedAction.SetTarget(targetPos);
 
         return true;

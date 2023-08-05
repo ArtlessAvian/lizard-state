@@ -5,7 +5,7 @@ using System.Linq;
 
 public abstract class AI : Resource
 {
-    public abstract IEnumerable<(Action, bool ignoreWarning)> GetMoves(Model model, Entity e);
+    public abstract IEnumerable<(CrawlAction, bool ignoreWarning)> GetMoves(Model model, Entity e);
 
     // kinda ugly but i dont care.
     protected static Predicate<(AbsolutePosition from, AbsolutePosition to)> Walkable(Model model)

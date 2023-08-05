@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class GotoAction : Action
+public class GotoAction : CrawlAction
 {
     PathFinder.PathResult result;
     bool stepped = false;

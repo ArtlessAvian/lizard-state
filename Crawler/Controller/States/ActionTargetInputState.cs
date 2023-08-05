@@ -5,7 +5,7 @@ public class ActionTargetInputState : InputState
 {
     AbsolutePosition playerPos;
     Cursor cursor;
-    internal Action action;
+    internal CrawlAction action;
 
     public override void Enter(Crawler crawler)
     {
@@ -152,7 +152,7 @@ public class ActionTargetInputState : InputState
         (crawler.FindNode("TargetingInfo") as Control).Hide();
     }
 
-    private string GetActionName(Action action)
+    private string GetActionName(CrawlAction action)
     {
         if (!action.ResourceName.Empty())
         {

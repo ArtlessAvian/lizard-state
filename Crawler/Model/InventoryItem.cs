@@ -22,7 +22,7 @@ public class InventoryItem : Resource
         return floor;
     }
 
-    public Action BuildAction()
+    public CrawlAction BuildAction()
     {
         UseItemAction action = GD.Load<CSharpScript>("res://Crawler/Model/Actions/UseItemAction.cs").New() as UseItemAction;
         action.item = this;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot.Collections;
 
 // Neutral skip tool. Like a FF Dragoon jump.
-public class JumpAbility : Action
+public class JumpAbility : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {
@@ -22,7 +22,7 @@ public class JumpAbility : Action
         e.position = targetPos;
 
         CSharpScript followup = GD.Load("res://Crawler/Model/Actions/Abilities/JumpFollowup.cs") as CSharpScript;
-        e.queuedAction = followup.New() as Action;
+        e.queuedAction = followup.New() as CrawlAction;
         e.queuedAction = e.queuedAction.SetTarget(targetPos);
 
         e.nextMove += 1;

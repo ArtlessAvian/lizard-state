@@ -61,7 +61,7 @@ public partial class Model : Resource
     /// </summary>
     // I wrote this to avoid code duplication between player and entity actions.
     // I don't think I did that correctly.
-    public bool SetPlayerAction(Action action, bool force = false)
+    public bool SetPlayerAction(CrawlAction action, bool force = false)
     {
         Entity e = NextEntity();
         if (!e.isPlayer) { return false; }
@@ -90,7 +90,7 @@ public partial class Model : Resource
         Entity e = NextEntity();
         PassTime(e.nextMove);
 
-        foreach (Action action in GetActions(e))
+        foreach (CrawlAction action in GetActions(e))
         {
             bool success = action.Do(this, e);
             if (success)
@@ -118,7 +118,7 @@ public partial class Model : Resource
         }
     }
 
-    private IEnumerable<Action> GetActions(Entity e)
+    private IEnumerable<CrawlAction> GetActions(Entity e)
     {
         // honestly not a big fan of "states" if /all/ they do is force an automatic recovery action.
         // something i'd like to try is if states restricted the available actions.
@@ -126,14 +126,14 @@ public partial class Model : Resource
         switch (e.state)
         {
             case Entity.EntityState.OK:
-                if (e.queuedAction is Action temp)
+                if (e.queuedAction is CrawlAction temp)
                 {
                     e.queuedAction = null;
                     yield return temp;
                 }
                 break;
             case Entity.EntityState.INTANGIBLE:
-                if (e.queuedAction is Action temp2)
+                if (e.queuedAction is CrawlAction temp2)
                 {
                     e.queuedAction = null;
                     yield return temp2;
@@ -141,11 +141,11 @@ public partial class Model : Resource
                 break;
             case Entity.EntityState.STUN:
                 // should always succeed.
-                yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
+                yield return (CrawlAction)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
                 yield break;
             case Entity.EntityState.KNOCKDOWN:
                 // should always succeed.
-                yield return (Action)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
+                yield return (CrawlAction)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
                 yield break;
             default:
                 break;
@@ -156,7 +156,7 @@ public partial class Model : Resource
             // naively confirm all actions.
             if (e.needsConfirmAction != null) { yield return e.needsConfirmAction; }
 
-            foreach ((Action a, bool ignoreWarning) in e.species?.ai?.GetMoves(this, e))
+            foreach ((CrawlAction a, bool ignoreWarning) in e.species?.ai?.GetMoves(this, e))
             {
                 if (ignoreWarning || !a.GetWarnings(this, e).Any())
                 {

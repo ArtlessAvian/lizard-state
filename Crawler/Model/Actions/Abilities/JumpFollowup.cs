@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot.Collections;
 
 // Neutral skip tool. Like a FF Dragoon jump.
-public class JumpFollowup : Action
+public class JumpFollowup : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {

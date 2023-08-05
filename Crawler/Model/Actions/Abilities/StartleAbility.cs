@@ -3,7 +3,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 // Cancels someones action. Sets their turn to run *immediately.*
-public class StartleAbility : Action
+public class StartleAbility : CrawlAction
 {
     public StartleAbility()
     {

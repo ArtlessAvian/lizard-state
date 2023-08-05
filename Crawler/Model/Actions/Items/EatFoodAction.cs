@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-public class EatFoodAction : Action
+public class EatFoodAction : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {

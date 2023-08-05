@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 // Is this useful? No. Good for debugging.
-public class FallAsleepAction : Action
+public class FallAsleepAction : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {

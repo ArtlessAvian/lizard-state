@@ -3,7 +3,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 // Charge move. Comes out instantly.
-public class SpitPoisonAbility : Action
+public class SpitPoisonAbility : CrawlAction
 {
     public SpitPoisonAbility()
     {

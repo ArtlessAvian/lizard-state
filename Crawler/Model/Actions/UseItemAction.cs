@@ -2,21 +2,21 @@ using System;
 using Godot;
 using Godot.Collections;
 
-public class UseItemAction : Action
+public class UseItemAction : CrawlAction
 {
     public InventoryItem item;
-    Action ProxyAction
+    CrawlAction ProxyAction
     {
         get
         {
             if (_proxyAction is null)
             {
-                _proxyAction = item.data.action.Duplicate() as Action;
+                _proxyAction = item.data.action.Duplicate() as CrawlAction;
             }
             return _proxyAction;
         }
     }
-    private Action _proxyAction = null;
+    private CrawlAction _proxyAction = null;
 
     public override bool Do(Model model, Entity e)
     {

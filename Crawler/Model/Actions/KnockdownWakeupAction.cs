@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class KnockdownWakeupAction : Action
+public class KnockdownWakeupAction : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {

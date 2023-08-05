@@ -15,7 +15,7 @@ public class MainInputState : InputState
         cursor = crawler.GetNode<Cursor>("Cursor");
         camera = crawler.View.GetNode<Camera2D>("Camera2D");
 
-        if (crawler.Model?.GetPlayer()?.needsConfirmAction is Action confirm)
+        if (crawler.Model?.GetPlayer()?.needsConfirmAction is CrawlAction confirm)
         {
             foreach (string warning in confirm.GetWarnings(crawler.Model, crawler.Model.GetPlayer()))
             {
@@ -81,7 +81,7 @@ public class MainInputState : InputState
             if (ev.IsActionPressed("skill_" + i))
             {
                 // TODO: select ex version if available and shift held
-                Action skill = (Action)crawler.Model.GetPlayer().species.abilities[i]?.Duplicate();
+                CrawlAction skill = (CrawlAction)crawler.Model.GetPlayer().species.abilities[i]?.Duplicate();
                 ActionTargetInputState attackTargeting = this.GetNode<ActionTargetInputState>("AttackTargeting"); ;
                 attackTargeting.action = skill;
                 crawler.ChangeState(attackTargeting);
@@ -90,7 +90,7 @@ public class MainInputState : InputState
 
         if (ev.IsActionPressed("attack_action", false))
         {
-            Action bumpAttack = crawler.Model.GetPlayer().species.bumpAttack;
+            CrawlAction bumpAttack = crawler.Model.GetPlayer().species.bumpAttack;
             ActionTargetInputState attackTargeting = this.GetNode<ActionTargetInputState>("AttackTargeting"); ;
             attackTargeting.action = bumpAttack;
             crawler.ChangeState(attackTargeting);

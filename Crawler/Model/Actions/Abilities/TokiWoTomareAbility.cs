@@ -1,11 +1,11 @@
 using Godot;
 using System.Collections.Generic;
 
-public class TokiWoTomareAbility : Action
+public class TokiWoTomareAbility : CrawlAction
 {
     // static Attack attack = new Attack(0.2f, 0.8f, 5, 0, 5);
 
-    public TokiWoTomareAbility() 
+    public TokiWoTomareAbility()
     {
 
     }

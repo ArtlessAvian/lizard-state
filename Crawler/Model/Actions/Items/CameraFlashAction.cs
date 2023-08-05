@@ -4,7 +4,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 
-public class CameraFlashAction : Action
+public class CameraFlashAction : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {

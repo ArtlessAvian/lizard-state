@@ -14,7 +14,7 @@ public class SkillMenuInputState : InputState
 
         menu.Clear();
 
-        List<Action> abilities = crawler.Model.GetPlayer().species.abilities;
+        List<CrawlAction> abilities = crawler.Model.GetPlayer().species.abilities;
         for (int i = 0; i < abilities.Count; i++)
         {
             menu.AddItem(abilities[i].ResourceName, i);
@@ -38,7 +38,7 @@ public class SkillMenuInputState : InputState
         success = true;
         Crawler crawler = this.GetCrawler();
 
-        Action action = (Action)crawler.Model.GetPlayer().species.abilities[id].Duplicate();
+        CrawlAction action = (CrawlAction)crawler.Model.GetPlayer().species.abilities[id].Duplicate();
 
         if (action.Range.max == 0)
         {

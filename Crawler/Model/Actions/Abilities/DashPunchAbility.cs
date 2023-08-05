@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public class DashPunchAbility : Action
+public class DashPunchAbility : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {
@@ -33,7 +33,7 @@ public class DashPunchAbility : Action
         if (target != null)
         {
             ReachAttackAction thing = GD.Load<ReachAttackAction>("res://Crawler/Model/Attacks/ReachAttacks/HellaKnockback.tres");
-            Action subaction = GD.Load<CSharpScript>("res://Crawler/Model/Actions/ReachAttackFollowup.cs").New(thing) as Action;
+            CrawlAction subaction = GD.Load<CSharpScript>("res://Crawler/Model/Actions/ReachAttackFollowup.cs").New(thing) as CrawlAction;
             // Action subaction = e.species.rushAttack.Duplicate() as Action;
             subaction.SetTarget(target.position);
             subaction.Do(model, e);

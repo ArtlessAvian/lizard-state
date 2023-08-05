@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public class DashAbility : Action
+public class DashAbility : CrawlAction
 {
     public DashAbility()
     {

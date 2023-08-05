@@ -33,9 +33,9 @@ public class Entity : Resource
     [Export] public int nextMove = 0;
 
     [Export] public EntityState state = EntityState.OK;
-    [Export] public Action queuedAction; // forced!
+    [Export] public CrawlAction queuedAction; // forced!
     // as player, client should read and resubmit with force=true.
-    [Export] public Action needsConfirmAction;
+    [Export] public CrawlAction needsConfirmAction;
 
     // Need a sum type that isn't garbo.
     // Imagine a rust enum with OK(Option<Action>), that being queuedAction?

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class ExitAction : Action
+public class ExitAction : CrawlAction
 {
     public override bool Do(Model model, Entity e)
     {

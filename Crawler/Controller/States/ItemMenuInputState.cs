@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ItemMenuInputState : InputState
 {
-    List<Action> items;
+    List<CrawlAction> items;
 
     bool success;
 
@@ -17,7 +17,7 @@ public class ItemMenuInputState : InputState
         menu.Clear();
         menu.AddSeparator("Inventory");
 
-        items = new List<Action>();
+        items = new List<CrawlAction>();
 
         int i = -1;
         foreach (InventoryItem item in crawler.Model.GetPlayer().inventory)
@@ -27,7 +27,7 @@ public class ItemMenuInputState : InputState
             menu.AddItem($"{item.data.ResourceName} ({item.uses}/{item.data.maxUses})", i);
             menu.SetItemDisabled(menu.GetItemIndex(i), item.uses <= 0);
 
-            Action action = item.BuildAction();
+            CrawlAction action = item.BuildAction();
             items.Add(action);
         }
         if (crawler.Model.GetPlayer().inventory.Count == 0)
@@ -54,7 +54,7 @@ public class ItemMenuInputState : InputState
         success = true;
         Crawler crawler = this.GetCrawler();
 
-        Action action = items[id];
+        CrawlAction action = items[id];
         GD.Print(id);
 
         if (action.Range.max == 0)

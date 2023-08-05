@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-public class ReachAttackAction : Action
+public class ReachAttackAction : CrawlAction
 {
     [Export] public int startup = 0;
     [Export] public int recovery = 3;
@@ -31,7 +31,7 @@ public class ReachAttackAction : Action
 
         e.nextMove += startup;
         CSharpScript followup = GD.Load("res://Crawler/Model/Actions/ReachAttackFollowup.cs") as CSharpScript;
-        e.queuedAction = followup.New(this) as Action;
+        e.queuedAction = followup.New(this) as CrawlAction;
         e.queuedAction = e.queuedAction.SetTarget(targetPos);
 
         return true;

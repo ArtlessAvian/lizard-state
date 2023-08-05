@@ -2,7 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-public class CrossupAbility : Action
+public class CrossupAbility : CrawlAction
 {
     public CrossupAbility()
     {

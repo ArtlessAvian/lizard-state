@@ -8,8 +8,8 @@ public class Species : Resource
     // Game Logic
     [Export] public AI ai = null;
 
-    [Export] public Action bumpAttack;
-    [Export] public List<Action> abilities;
+    [Export] public CrawlAction bumpAttack;
+    [Export] public List<CrawlAction> abilities;
 
     // Stat Block
     [Export] public int maxHealth = 30;

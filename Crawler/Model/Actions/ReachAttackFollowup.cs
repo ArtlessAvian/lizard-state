@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-public class ReachAttackFollowup : Action
+public class ReachAttackFollowup : CrawlAction
 {
     [Export]
     private ReachAttackAction data;

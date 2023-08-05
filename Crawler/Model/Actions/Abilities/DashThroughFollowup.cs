@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot.Collections;
 
 // Comes after DashThroughAbility. Godot needs one class per file :P
-public class DashThroughFollowup : Action
+public class DashThroughFollowup : CrawlAction
 {
     public DashThroughFollowup()
     {

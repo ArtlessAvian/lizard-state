@@ -3,7 +3,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 // "Swaps" you and a target. May rescue a partner, or bring an enemy into range.
-public class RepositionAbility : Action
+public class RepositionAbility : CrawlAction
 {
     public RepositionAbility()
     {

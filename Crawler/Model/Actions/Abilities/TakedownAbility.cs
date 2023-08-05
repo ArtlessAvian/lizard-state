@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 // Invincible move, disables the enemy.
 // Kind of silly. Not sure what I think.
-public class TakedownAbility : Action
+public class TakedownAbility : CrawlAction
 {
     public TakedownAbility()
     {

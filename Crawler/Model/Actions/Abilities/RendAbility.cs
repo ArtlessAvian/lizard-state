@@ -3,7 +3,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 
 // Multihit. Pretty generic. Edgy name I don't like.
-public class RendAbility : Action
+public class RendAbility : CrawlAction
 {
     [Export]
     int damagePerHit = 1;

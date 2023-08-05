@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// The action can also be "unreasonable."
 /// Actions should be serializable.
 /// </summary>
-public abstract class Action : Resource
+public abstract class CrawlAction : Resource
 {
     // If !IsValid, no-ops. Caller should call MoveAction(0, 0)
     // to avoid getting stuck infinte looping.
@@ -44,7 +44,7 @@ public abstract class Action : Resource
     }
 
     // its absolute
-    public Action SetTarget(AbsolutePosition target)
+    public CrawlAction SetTarget(AbsolutePosition target)
     {
         this.isRelative = false;
         this.targetInternal = new Vector2i(target.x, target.y);
@@ -52,7 +52,7 @@ public abstract class Action : Resource
     }
 
     // hey its me ur brother
-    public Action SetTargetRelative(Vector2i delta)
+    public CrawlAction SetTargetRelative(Vector2i delta)
     {
         this.isRelative = true;
         this.targetInternal = delta;

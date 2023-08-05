@@ -7,7 +7,7 @@ using System.Linq;
 
 public class PartnerAI : AI
 {
-    public override IEnumerable<(Action, bool)> GetMoves(Model model, Entity e)
+    public override IEnumerable<(CrawlAction, bool)> GetMoves(Model model, Entity e)
     {
         // TODO: GetEntitiesInLOS (but also entities in team).
         List<Entity> entities = model.GetEntitiesInRadius(e.position, 6);
@@ -56,7 +56,7 @@ public class PartnerAI : AI
             // get reach attacks in range.
             for (int i = 0; i < e.species.abilities.Count; i++)
             {
-                Action attack = e.species.abilities[i];
+                CrawlAction attack = e.species.abilities[i];
                 // TODO: if ability is not attack, continue;
                 foreach (Entity enemy in enemies)
                 {
