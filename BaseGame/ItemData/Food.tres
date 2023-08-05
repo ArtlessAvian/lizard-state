@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://BaseGame/Attacks/Items/Food.tres" type="Resource" id=1]
+[ext_resource path="res://Engine/ItemData.cs" type="Script" id=2]
+
+[resource]
+resource_name = "Food"
+script = ExtResource( 2 )
+action = ExtResource( 1 )
+maxUses = 1

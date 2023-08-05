@@ -1,0 +1,35 @@
+[gd_resource type="Resource" load_steps=13 format=2]
+
+[ext_resource path="res://BaseGame/Attacks/ReachAttacks/Sweep.tres" type="Resource" id=1]
+[ext_resource path="res://BaseGame/Attacks/ReachAttacks/SweepEx.tres" type="Resource" id=2]
+[ext_resource path="res://BaseGame/Attacks/ReachAttacks/HellaKnockback.tres" type="Resource" id=3]
+[ext_resource path="res://BaseGame/Attacks/RushAttacks/MaxScratch.tres" type="Resource" id=4]
+[ext_resource path="res://BaseGame/AIs/PartnerAI.tres" type="Resource" id=5]
+[ext_resource path="res://BaseGame/Attacks/Items/CameraFlash.tres" type="Resource" id=6]
+[ext_resource path="res://BaseGame/Attacks/Items/Flashbang.tres" type="Resource" id=7]
+[ext_resource path="res://BaseGame/Actions/Abilities/DashAbility.cs" type="Script" id=8]
+[ext_resource path="res://Engine/Species.cs" type="Script" id=9]
+[ext_resource path="res://BaseGame/Actions/Abilities/DashPunchAbility.cs" type="Script" id=10]
+
+[sub_resource type="Resource" id=1]
+resource_name = "Dash Punch"
+script = ExtResource( 10 )
+targetInternalX = 0
+targetInternalY = 0
+isRelative = true
+
+[sub_resource type="Resource" id=2]
+resource_name = "Dash"
+script = ExtResource( 8 )
+targetInternalX = 0
+targetInternalY = 0
+isRelative = true
+
+[resource]
+resource_name = "PlayerTegu"
+script = ExtResource( 9 )
+ai = ExtResource( 5 )
+bumpAttack = ExtResource( 4 )
+abilities = [ SubResource( 1 ), SubResource( 2 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 3 ), ExtResource( 1 ), ExtResource( 2 ) ]
+maxHealth = 30
+displayName = "[color=#AF5050]Max[/color]"

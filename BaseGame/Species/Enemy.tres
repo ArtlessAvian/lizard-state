@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=4 format=2]
+
+[ext_resource path="res://Engine/Species.cs" type="Script" id=1]
+[ext_resource path="res://BaseGame/Attacks/RushAttacks/ExpectedTwo.tres" type="Resource" id=2]
+[ext_resource path="res://BaseGame/AIs/WildAI.tres" type="Resource" id=3]
+
+[resource]
+resource_name = "Enemy"
+script = ExtResource( 1 )
+ai = ExtResource( 3 )
+bumpAttack = ExtResource( 2 )
+abilities = [  ]
+maxHealth = 10
+displayName = "Enemy"

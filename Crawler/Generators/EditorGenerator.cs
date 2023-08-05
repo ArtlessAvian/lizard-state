@@ -15,7 +15,7 @@ public class EditorGenerator : LevelGenerator
         PlacePlayers(model, playerTeam);
         GenerateEntities(model);
 
-        ItemData data = GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres");
+        ItemData data = GD.Load<ItemData>("res://BaseGame/ItemData/Something.tres");
         FloorItem item = data.BuildInventoryItem().BuildFloorItem(new AbsolutePosition(4, 0));
         model.AddFloorItem(item);
         FloorItem item2 = data.BuildInventoryItem().BuildFloorItem(new AbsolutePosition(-16, -7));
@@ -42,8 +42,8 @@ public class EditorGenerator : LevelGenerator
 
     public void GenerateEntities(Model model)
     {
-        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
-        Species enemy2 = GD.Load<Resource>("res://Crawler/Model/Species/Enemy2.tres") as Species;
+        Species enemy = GD.Load<Resource>("res://BaseGame/Species/Enemy.tres") as Species;
+        Species enemy2 = GD.Load<Resource>("res://BaseGame/Species/Enemy2.tres") as Species;
 
         model.AddEntity(enemy.BuildEntity(new AbsolutePosition(21, 10), 1));
         model.AddEntity(enemy.BuildEntity(new AbsolutePosition(8, 34), 1));
@@ -59,8 +59,8 @@ public class EditorGenerator : LevelGenerator
 
     public void AddSystems(Model model)
     {
-        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);
-        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/VisionSystem.cs").New() as Resource);
-        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/StateSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/FogOfWarSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/VisionSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/StateSystem.cs").New() as Resource);
     }
 }

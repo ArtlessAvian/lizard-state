@@ -143,11 +143,11 @@ namespace LizardState.Engine
                     break;
                 case Entity.EntityState.STUN:
                     // should always succeed.
-                    yield return (CrawlAction)GD.Load<CSharpScript>("res://Crawler/Model/Actions/StunRecoveryAction.cs").New();
+                    yield return (CrawlAction)GD.Load<CSharpScript>("res://BaseGame/Actions/StunRecoveryAction.cs").New();
                     yield break;
                 case Entity.EntityState.KNOCKDOWN:
                     // should always succeed.
-                    yield return (CrawlAction)GD.Load<CSharpScript>("res://Crawler/Model/Actions/KnockdownWakeupAction.cs").New();
+                    yield return (CrawlAction)GD.Load<CSharpScript>("res://BaseGame/Actions/KnockdownWakeupAction.cs").New();
                     yield break;
                 default:
                     break;

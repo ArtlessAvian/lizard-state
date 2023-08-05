@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://BaseGame/Actions/ReachAttackAction.cs" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+targetInternalX = 0
+targetInternalY = 0
+isRelative = true
+startup = 1
+recovery = 1
+stun = 1
+damage = 2
+blockChance = 0.2
+range = 2
+knockback = 0
+sweeps = false
+flavorTags = PoolStringArray(  )

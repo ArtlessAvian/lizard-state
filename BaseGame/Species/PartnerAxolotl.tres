@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=5 format=2]
+
+[ext_resource path="res://Engine/Species.cs" type="Script" id=1]
+[ext_resource path="res://BaseGame/Attacks/ReachAttacks/NanoBash.tres" type="Resource" id=2]
+[ext_resource path="res://BaseGame/Attacks/ReachAttacks/NanoSmite.tres" type="Resource" id=3]
+[ext_resource path="res://BaseGame/AIs/PartnerAI.tres" type="Resource" id=4]
+
+[resource]
+resource_name = "PartnerAxolotl"
+script = ExtResource( 1 )
+ai = ExtResource( 4 )
+bumpAttack = ExtResource( 2 )
+abilities = [ ExtResource( 3 ) ]
+maxHealth = 30
+displayName = "[color=#E38FD5]Nano[/color]"

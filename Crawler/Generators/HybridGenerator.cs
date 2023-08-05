@@ -342,7 +342,7 @@ public class HybridGenerator : LevelGenerator
 
     public void GenerateEntities(Model model)
     {
-        Species enemy = GD.Load<Resource>("res://Crawler/Model/Species/Enemy.tres") as Species;
+        Species enemy = GD.Load<Resource>("res://BaseGame/Species/Enemy.tres") as Species;
 
         var tiles = model.map.tiles.GetUsedCellsById(1);
         // tiles.Shuffle(); // bro i got trolled by shuffle on html again
@@ -356,9 +356,9 @@ public class HybridGenerator : LevelGenerator
 
     public void AddSystems(Model model)
     {
-        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/FogOfWarSystem.cs").New() as Resource);
-        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/VisionSystem.cs").New() as Resource);
-        model.systems.Add(GD.Load<CSharpScript>("res://Crawler/Model/Systems/StateSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/FogOfWarSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/VisionSystem.cs").New() as Resource);
+        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/StateSystem.cs").New() as Resource);
     }
 
 

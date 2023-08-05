@@ -27,16 +27,16 @@ public class ExplorePlaylist : Resource
         if (currentModel == null)
         {
             // construct the players.
-            Species playerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PlayerTegu.tres") as Species;
-            // Species playerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerGator.tres") as Species;
-            Species partnerSpecies = GD.Load<Resource>("res://Crawler/Model/Species/PartnerAxolotl.tres") as Species;
+            Species playerSpecies = GD.Load<Resource>("res://BaseGame/Species/PlayerTegu.tres") as Species;
+            // Species playerSpecies = GD.Load<Resource>("res://BaseGame/Species/PartnerGator.tres") as Species;
+            Species partnerSpecies = GD.Load<Resource>("res://BaseGame/Species/PartnerAxolotl.tres") as Species;
 
             // position will edited.
             Entity player = playerSpecies.BuildEntity(new AbsolutePosition(-100, -100), 0);
             Entity partner = partnerSpecies.BuildEntity(new AbsolutePosition(-100, -100), 0);
 
             player.isPlayer = true;
-            player.inventory.Add(GD.Load<ItemData>("res://Crawler/Model/ItemData/Something.tres").BuildInventoryItem());
+            player.inventory.Add(GD.Load<ItemData>("res://BaseGame/ItemData/Something.tres").BuildInventoryItem());
 
             currentModel = GenerateModel(0, new Entity[] { player, partner });
         }

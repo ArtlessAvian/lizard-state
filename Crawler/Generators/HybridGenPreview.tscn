@@ -5,9 +5,9 @@
 [ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=3]
 [ext_resource path="res://Engine/CrawlerMap.cs" type="Script" id=4]
 [ext_resource path="res://Engine/Model.cs" type="Script" id=5]
-[ext_resource path="res://Crawler/Model/Systems/FogOfWarSystem.cs" type="Script" id=6]
-[ext_resource path="res://Crawler/Model/Systems/VisionSystem.cs" type="Script" id=7]
-[ext_resource path="res://Crawler/Model/Systems/StateSystem.cs" type="Script" id=8]
+[ext_resource path="res://BaseGame/Systems/FogOfWarSystem.cs" type="Script" id=6]
+[ext_resource path="res://BaseGame/Systems/VisionSystem.cs" type="Script" id=7]
+[ext_resource path="res://BaseGame/Systems/StateSystem.cs" type="Script" id=8]
 
 [sub_resource type="Resource" id=110]
 script = ExtResource( 4 )
