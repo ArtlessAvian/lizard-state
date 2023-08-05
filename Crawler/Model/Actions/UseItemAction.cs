@@ -2,43 +2,46 @@ using System;
 using Godot;
 using Godot.Collections;
 
-public class UseItemAction : CrawlAction
+namespace LizardState.Engine
 {
-    public InventoryItem item;
-    CrawlAction ProxyAction
+    public class UseItemAction : CrawlAction
     {
-        get
+        public InventoryItem item;
+        CrawlAction ProxyAction
         {
-            if (_proxyAction is null)
+            get
             {
-                _proxyAction = item.data.action.Duplicate() as CrawlAction;
+                if (_proxyAction is null)
+                {
+                    _proxyAction = item.data.action.Duplicate() as CrawlAction;
+                }
+                return _proxyAction;
             }
-            return _proxyAction;
         }
-    }
-    private CrawlAction _proxyAction = null;
+        private CrawlAction _proxyAction = null;
 
-    public override bool Do(Model model, Entity e)
-    {
-        ProxyAction.SetTarget(GetTargetPos(e.position));
-
-        if (!IsValid(model, e))
+        public override bool Do(Model model, Entity e)
         {
-            return false;
+            ProxyAction.SetTarget(GetTargetPos(e.position));
+
+            if (!IsValid(model, e))
+            {
+                return false;
+            }
+
+            item.uses -= 1;
+            ProxyAction.Do(model, e);
+
+            return true;
         }
 
-        item.uses -= 1;
-        ProxyAction.Do(model, e);
+        public override bool IsValid(Model model, Entity e)
+        {
+            if (item.uses <= 0) { return false; }
+            return ProxyAction.IsValid(model, e);
+        }
 
-        return true;
+        public override (int, int) Range => ProxyAction.Range;
+        public override TargetingType.Type TargetingType => ProxyAction.TargetingType;
     }
-
-    public override bool IsValid(Model model, Entity e)
-    {
-        if (item.uses <= 0) { return false; }
-        return ProxyAction.IsValid(model, e);
-    }
-
-    public override (int, int) Range => ProxyAction.Range;
-    public override TargetingType.Type TargetingType => ProxyAction.TargetingType;
 }

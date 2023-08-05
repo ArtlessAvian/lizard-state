@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using LizardState.Engine;
 
 [Obsolete]
 public class WanderAI : AI

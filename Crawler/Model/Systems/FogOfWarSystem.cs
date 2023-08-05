@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using Godot.Collections;
+using LizardState.Engine;
 
 /// <summary>
 /// Stores fog of war and entity vision information.

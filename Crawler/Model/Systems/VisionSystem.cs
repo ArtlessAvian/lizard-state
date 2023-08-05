@@ -2,6 +2,7 @@ using System;
 using Godot;
 using System.Collections.Generic;
 using GodotDict = Godot.Collections.Dictionary;
+using LizardState.Engine;
 
 /// <summary>
 /// Stores fog of war and entity vision information.

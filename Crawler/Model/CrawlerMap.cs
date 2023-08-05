@@ -2,41 +2,44 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-/// <summary>
-/// Stores map information.
-/// </summary>
-// Parasitically based on TileMap.
-// Would change, but its quite convenient.
-[Tool]
-public class CrawlerMap : Resource
+namespace LizardState.Engine
 {
-    [Export]
-    public SparseMatrix tiles;
-
-    // Creates an empty map. It's "valid" but very boring.
-    // Prefer the constructor with params.
-    public CrawlerMap()
+    /// <summary>
+    /// Stores map information.
+    /// </summary>
+    // Parasitically based on TileMap.
+    // Would change, but its quite convenient.
+    [Tool]
+    public class CrawlerMap : Resource
     {
-        tiles = (SparseMatrix)GD.Load<CSharpScript>("res://Helper/SparseMatrix.cs").New();
-    }
+        [Export]
+        public SparseMatrix tiles;
 
-    public CrawlerMap(SparseMatrix tiles)
-    {
-        this.tiles = tiles;
-    }
+        // Creates an empty map. It's "valid" but very boring.
+        // Prefer the constructor with params.
+        public CrawlerMap()
+        {
+            tiles = (SparseMatrix)GD.Load<CSharpScript>("res://Helper/SparseMatrix.cs").New();
+        }
 
-    // public new int GetCell(int x, int y)
-    // {
-    //     return base.GetCell(x/2, y/2);
-    // }
+        public CrawlerMap(SparseMatrix tiles)
+        {
+            this.tiles = tiles;
+        }
 
-    public bool TileIsWall(AbsolutePosition position)
-    {
-        return TileIsWall(tiles.GetCell(position.x, position.y));
-    }
+        // public new int GetCell(int x, int y)
+        // {
+        //     return base.GetCell(x/2, y/2);
+        // }
 
-    public static bool TileIsWall(int id)
-    {
-        return id == -1 || id == 6;
+        public bool TileIsWall(AbsolutePosition position)
+        {
+            return TileIsWall(tiles.GetCell(position.x, position.y));
+        }
+
+        public static bool TileIsWall(int id)
+        {
+            return id == -1 || id == 6;
+        }
     }
 }

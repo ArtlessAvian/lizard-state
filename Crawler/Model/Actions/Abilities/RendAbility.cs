@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
+using LizardState.Engine;
 
 // Multihit. Pretty generic. Edgy name I don't like.
 public class RendAbility : CrawlAction

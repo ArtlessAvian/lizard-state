@@ -3,95 +3,98 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Plain(ish?) object. Should contains little logic.
-/// </summary>
-// TODO: Rework Entities to have logic and to use callbacks.
-// TODO: Make Entity a class of structs?
-public class Entity : Resource
+namespace LizardState.Engine
 {
-    public enum EntityState
+    /// <summary>
+    /// Plain(ish?) object. Should contains little logic.
+    /// </summary>
+    // TODO: Rework Entities to have logic and to use callbacks.
+    // TODO: Make Entity a class of structs?
+    public class Entity : Resource
     {
-        OK, STUN, KNOCKDOWN, UNALIVE, INTANGIBLE, EXITED
-    }
+        public enum EntityState
+        {
+            OK, STUN, KNOCKDOWN, UNALIVE, INTANGIBLE, EXITED
+        }
 
-    [Export] public int id;
-    [Export] public Species species;
-    [Export] public bool isPlayer = false;
+        [Export] public int id;
+        [Export] public Species species;
+        [Export] public bool isPlayer = false;
 
-    // Godot doesn't like serializing tuples, and I don't want to use Vector2.
-    // So this is what we have to do.
-    [Export] public int positionX;
-    [Export] public int positionY;
-    public AbsolutePosition position
-    {
-        get { return new AbsolutePosition(positionX, positionY); }
-        set { positionX = value.x; positionY = value.y; }
-    }
-    [Export] public bool visibleToPlayer = false;
+        // Godot doesn't like serializing tuples, and I don't want to use Vector2.
+        // So this is what we have to do.
+        [Export] public int positionX;
+        [Export] public int positionY;
+        public AbsolutePosition position
+        {
+            get { return new AbsolutePosition(positionX, positionY); }
+            set { positionX = value.x; positionY = value.y; }
+        }
+        [Export] public bool visibleToPlayer = false;
 
-    [Export] public int nextMove = 0;
+        [Export] public int nextMove = 0;
 
-    [Export] public EntityState state = EntityState.OK;
-    [Export] public CrawlAction queuedAction; // forced!
-    // as player, client should read and resubmit with force=true.
-    [Export] public CrawlAction needsConfirmAction;
+        [Export] public EntityState state = EntityState.OK;
+        [Export] public CrawlAction queuedAction; // forced!
+        // as player, client should read and resubmit with force=true.
+        [Export] public CrawlAction needsConfirmAction;
 
-    // Need a sum type that isn't garbo.
-    // Imagine a rust enum with OK(Option<Action>), that being queuedAction?
-    // If I were a braver person I'd use this everywhere.
-    // public (EntityState state, Action action) stateOrQueuedAction
-    // {
-    //     get { return (state, queuedAction); }
-    //     set { state = value.state; queuedAction = value.state == EntityState.OK ? value.action : null; }
-    // }
+        // Need a sum type that isn't garbo.
+        // Imagine a rust enum with OK(Option<Action>), that being queuedAction?
+        // If I were a braver person I'd use this everywhere.
+        // public (EntityState state, Action action) stateOrQueuedAction
+        // {
+        //     get { return (state, queuedAction); }
+        //     set { state = value.state; queuedAction = value.state == EntityState.OK ? value.action : null; }
+        // }
 
-    [Export] public int health;
-    [Export] public int energy = 10;
+        [Export] public int health;
+        [Export] public int energy = 10;
 
-    /// Charge increases without moving or other specific actions.
-    /// Calculate charge with `[Model].time - chargeStart`.
-    /// Consume charge by setting this to `[Model].time`.
-    [Export] public int chargeStart = 0;
+        /// Charge increases without moving or other specific actions.
+        /// Calculate charge with `[Model].time - chargeStart`.
+        /// Consume charge by setting this to `[Model].time`.
+        [Export] public int chargeStart = 0;
 
-    [Export] public List<InventoryItem> inventory = new List<InventoryItem>();
-    [Export] public bool hasEaten = false;
+        [Export] public List<InventoryItem> inventory = new List<InventoryItem>();
+        [Export] public bool hasEaten = false;
 
-    [Export] public int team;
-    [Export] public bool providesVision;
+        [Export] public int team;
+        [Export] public bool providesVision;
 
-    public Entity() { }
+        public Entity() { }
 
-    public void SetSpecies(Species species)
-    {
-        this.species = species;
-        this.health = species.maxHealth;
-    }
+        public void SetSpecies(Species species)
+        {
+            this.species = species;
+            this.health = species.maxHealth;
+        }
 
-    public void SetTeam(int team)
-    {
-        this.team = team;
-        this.providesVision = team == 0;
-    }
+        public void SetTeam(int team)
+        {
+            this.team = team;
+            this.providesVision = team == 0;
+        }
 
-    public void DelayNextMove(int nTurns, int time, int nowId)
-    {
-        // "lose {nTurns} turns." The last term ensures that lower ids lose their turn correctly.
-        int stunUntil = time + nTurns + (this.id < nowId ? 1 : 0);
-        this.nextMove = Math.Max(this.nextMove, stunUntil);
-    }
+        public void DelayNextMove(int nTurns, int time, int nowId)
+        {
+            // "lose {nTurns} turns." The last term ensures that lower ids lose their turn correctly.
+            int stunUntil = time + nTurns + (this.id < nowId ? 1 : 0);
+            this.nextMove = Math.Max(this.nextMove, stunUntil);
+        }
 
-    public void StunForTurns(int nTurns, int time, int nowId)
-    {
-        DelayNextMove(nTurns, time, nowId);
-        state = EntityState.STUN;
-        queuedAction = null;
-    }
+        public void StunForTurns(int nTurns, int time, int nowId)
+        {
+            DelayNextMove(nTurns, time, nowId);
+            state = EntityState.STUN;
+            queuedAction = null;
+        }
 
-    public void KnockdownForTurns(int nTurns, int time, int nowId)
-    {
-        DelayNextMove(nTurns, time, nowId);
-        state = EntityState.KNOCKDOWN;
-        queuedAction = null;
+        public void KnockdownForTurns(int nTurns, int time, int nowId)
+        {
+            DelayNextMove(nTurns, time, nowId);
+            state = EntityState.KNOCKDOWN;
+            queuedAction = null;
+        }
     }
 }

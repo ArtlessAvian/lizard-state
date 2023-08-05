@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
+using LizardState.Engine;
 
 // TODO: Revive?
 [Obsolete]

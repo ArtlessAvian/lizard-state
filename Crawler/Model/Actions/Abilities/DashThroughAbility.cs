@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using Godot.Collections;
+using LizardState.Engine;
 
 // Threatens long range, with startup.
 // Think Chipp Alpha Blade or something.

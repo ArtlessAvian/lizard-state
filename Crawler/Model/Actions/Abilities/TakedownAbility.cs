@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
+using LizardState.Engine;
 
 // Invincible move, disables the enemy.
 // Kind of silly. Not sure what I think.

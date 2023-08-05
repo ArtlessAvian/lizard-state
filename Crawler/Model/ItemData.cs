@@ -1,23 +1,26 @@
 using Godot;
 
-public class ItemData : Resource
+namespace LizardState.Engine
 {
-    [Export]
-    public CrawlAction action; // duplicate me, don't use directly
-
-    [Export]
-    public int maxUses = 5;
-
-    public ItemData()
+    public class ItemData : Resource
     {
-        if (ResourceName == "")
+        [Export]
+        public CrawlAction action; // duplicate me, don't use directly
+
+        [Export]
+        public int maxUses = 5;
+
+        public ItemData()
         {
-            ResourceName = "Something";
+            if (ResourceName == "")
+            {
+                ResourceName = "Something";
+            }
         }
-    }
 
-    public InventoryItem BuildInventoryItem()
-    {
-        return GD.Load<CSharpScript>("res://Crawler/Model/InventoryItem.cs").New(this) as InventoryItem;
+        public InventoryItem BuildInventoryItem()
+        {
+            return GD.Load<CSharpScript>("res://Crawler/Model/InventoryItem.cs").New(this) as InventoryItem;
+        }
     }
 }

@@ -2,6 +2,7 @@ using Godot;
 using Priority_Queue;
 using System;
 using System.Collections.Generic;
+using LizardState.Engine;
 
 // Hybrid of Planar and Noise.
 // Probably will both be deleted by the time you read this.

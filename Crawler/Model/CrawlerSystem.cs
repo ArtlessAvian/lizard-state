@@ -1,7 +1,10 @@
 using Godot.Collections;
 
-public interface CrawlerSystem
+namespace LizardState.Engine
 {
-    void ProcessEvent(Model model, Dictionary @ev);
-    void Run(Model model);
+    public interface CrawlerSystem
+    {
+        void ProcessEvent(Model model, Dictionary @ev);
+        void Run(Model model);
+    }
 }
