@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=4 format=2]
 
-[ext_resource path="res://Crawler/Model/Species.cs" type="Script" id=1]
+[ext_resource path="res://Engine/Species.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/Model/Attacks/RushAttacks/ExpectedTwo.tres" type="Resource" id=2]
 [ext_resource path="res://Crawler/Model/AIs/WildAI.tres" type="Resource" id=3]
 

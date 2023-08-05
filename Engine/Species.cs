@@ -22,7 +22,7 @@ namespace LizardState.Engine
         // TODO: Obsolete. Prefer initializer syntax?
         public Entity BuildEntity(AbsolutePosition position, int team)
         {
-            Entity entity = (Entity)GD.Load<CSharpScript>("res://Crawler/Model/Entity.cs").New();
+            Entity entity = (Entity)GD.Load<CSharpScript>("res://Engine/Entity.cs").New();
             entity.SetSpecies(this);
             entity.SetTeam(team);
             entity.position = position;

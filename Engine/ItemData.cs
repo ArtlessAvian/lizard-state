@@ -20,7 +20,7 @@ namespace LizardState.Engine
 
         public InventoryItem BuildInventoryItem()
         {
-            return GD.Load<CSharpScript>("res://Crawler/Model/InventoryItem.cs").New(this) as InventoryItem;
+            return GD.Load<CSharpScript>("res://Engine/InventoryItem.cs").New(this) as InventoryItem;
         }
     }
 }

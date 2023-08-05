@@ -13,7 +13,7 @@ func _process(delta):
 		regenerate = false
 		from_generator()
 
-		model = load("res://Crawler/Model/Model.cs").new()
+		model = load("res://Engine/Model.cs").new()
 		hybridGen.Generate(model)
 
 		from_model()

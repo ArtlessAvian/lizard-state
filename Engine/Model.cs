@@ -31,7 +31,7 @@ namespace LizardState.Engine
         // Prefer using the constructor.
         public Model()
         {
-            map = (CrawlerMap)GD.Load<CSharpScript>("res://Crawler/Model/CrawlerMap.cs").New();
+            map = (CrawlerMap)GD.Load<CSharpScript>("res://Engine/CrawlerMap.cs").New();
         }
 
         public Model(CrawlerMap map)

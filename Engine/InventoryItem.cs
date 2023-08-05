@@ -18,7 +18,7 @@ namespace LizardState.Engine
 
         public FloorItem BuildFloorItem(AbsolutePosition position)
         {
-            FloorItem floor = GD.Load<CSharpScript>("res://Crawler/Model/FloorItem.cs").New() as FloorItem;
+            FloorItem floor = GD.Load<CSharpScript>("res://Engine/FloorItem.cs").New() as FloorItem;
             floor.position = position;
             floor.inventoryItem = this;
             return floor;
@@ -26,7 +26,7 @@ namespace LizardState.Engine
 
         public CrawlAction BuildAction()
         {
-            UseItemAction action = GD.Load<CSharpScript>("res://Crawler/Model/Actions/UseItemAction.cs").New() as UseItemAction;
+            UseItemAction action = GD.Load<CSharpScript>("res://Engine/Actions/UseItemAction.cs").New() as UseItemAction;
             action.item = this;
             return action;
         }
