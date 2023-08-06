@@ -1,7 +1,7 @@
 [gd_scene load_steps=118 format=2]
 
-[ext_resource path="res://Crawler/Generators/HybridGenPreview.gd" type="Script" id=1]
-[ext_resource path="res://Crawler/Generators/HybridGen.tres" type="Resource" id=2]
+[ext_resource path="res://BaseGame/Generators/HybridGenPreview.gd" type="Script" id=1]
+[ext_resource path="res://BaseGame/Generators/HybridGen.tres" type="Resource" id=2]
 [ext_resource path="res://Crawler/View/Assets/Tiles/Test2.tres" type="TileSet" id=3]
 [ext_resource path="res://Engine/CrawlerMap.cs" type="Script" id=4]
 [ext_resource path="res://Engine/Model.cs" type="Script" id=5]
