@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=5 format=2]
 
 [ext_resource path="res://BaseGame/Generators/EditorGenerator.cs" type="Script" id=2]
-[ext_resource path="res://GameModes/Story/Explore/Playlist/ExplorePlaylist.cs" type="Script" id=3]
+[ext_resource path="res://Engine/ExplorePlaylist.cs" type="Script" id=3]
 [ext_resource path="res://BaseGame/Generators/Maps/MVP-Scaled.tscn" type="PackedScene" id=5]
 
 [sub_resource type="Resource" id=1]
