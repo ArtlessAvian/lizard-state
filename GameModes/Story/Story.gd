@@ -3,7 +3,7 @@ extends Node2D
 # Owner of the story_state.
 # Either foregrounds the Explore if not null, or the Lobby if null.
 
-export(Resource) var story_state = load("res://GameModes/Story/StoryState.gd").new()
+export(Resource) var story_state = load("res://BaseGame/GameModes/Story/StoryState.gd").new()
 
 
 func _ready():
