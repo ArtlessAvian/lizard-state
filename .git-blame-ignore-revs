@@ -1,0 +1,9 @@
+# reorganizing
+e17426572f9237601e0a204c66103768fa3f200a # Move StoryState to BaseGame.
+c0c271fdea0abe1332158e723d81c4caf20cf00e # Split Playlist Between Engine and BaseGame
+3fabc385d84652bb6c0e4f9e7f0c318d720d44b1 # Move Generators to BaseGame Directory
+808afaa2448494ee64772706ee1f87ac13cd8991 # Move Content to BaseGame Directory
+c51f913c33ccff75ef6676ea1d51799ddd7e2836 # Delete vestigial files.
+81493162fabc1355d8188a3a66db2cd0ad4ca9f2 # Move Engine Files to New Engine Directory
+e18e82d8298e22501672b2ab4e6804734db1be09 # Namespace Engine Files. Add Usings Everywhere.
+fbfef419a5e2e4ec4acb05cdf8fbb31811d63e08 # Rename Action. (Overlaps with System.Action)
