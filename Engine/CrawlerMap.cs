@@ -19,7 +19,7 @@ namespace LizardState.Engine
         // Prefer the constructor with params.
         public CrawlerMap()
         {
-            tiles = (SparseMatrix)GD.Load<CSharpScript>("res://Helper/SparseMatrix.cs").New();
+            tiles = (SparseMatrix)GD.Load<CSharpScript>("res://Engine/SparseMatrix.cs").New();
         }
 
         public CrawlerMap(SparseMatrix tiles)
