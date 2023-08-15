@@ -1,4 +1,5 @@
 using Godot;
+using LizardState.Engine;
 
 // TODO: consider replacing with yield to simulate blocking code.
 // Trading one hellscape for another.

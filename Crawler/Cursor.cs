@@ -1,4 +1,5 @@
 using Godot;
+using LizardState.Engine;
 using System;
 
 public class Cursor : Sprite
@@ -7,7 +8,7 @@ public class Cursor : Sprite
 
     public override void _Process(float delta)
     {
-        if (!Visible) {return;}
+        if (!Visible) { return; }
 
         SnapToTarget();
         // Position = Position.LinearInterpolate(
