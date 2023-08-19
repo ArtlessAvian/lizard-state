@@ -1,4 +1,6 @@
 # reorganizing
+1b0583dbce02f0b9ef7b84bed6dc2e5accf565d1 # Namespace Engine Helpers.
+dc1be63ce172bdcbd8242d6ee9efd91c68b29df7 # Move Non-Godot Helpers.
 e17426572f9237601e0a204c66103768fa3f200a # Move StoryState to BaseGame.
 c0c271fdea0abe1332158e723d81c4caf20cf00e # Split Playlist Between Engine and BaseGame
 3fabc385d84652bb6c0e4f9e7f0c318d720d44b1 # Move Generators to BaseGame Directory
