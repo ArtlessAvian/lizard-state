@@ -1,5 +1,7 @@
 using Godot;
-using Godot.Collections;
+using GDArray = Godot.Collections.Array;
+using System.Collections.Generic;
+using System;
 
 namespace LizardState.Engine
 {
@@ -8,14 +10,15 @@ namespace LizardState.Engine
     // (TileMap is a node)
     public class SparseMatrix : Resource
     {
-        const int CELL_LEN_POW = 2; // magic number. extra space for dictionary vs wasted array space.
-        const int CELL_LEN = 1 << CELL_LEN_POW;
-        const int CELL_AREA = 1 << (2 * CELL_LEN_POW);
+        private const int CELL_LEN_POW = 2; // magic number. extra space for dictionary vs wasted array space.
+        private const int CELL_LEN = 1 << CELL_LEN_POW;
+        private const int CELL_AREA = 1 << (2 * CELL_LEN_POW);
 
+        // If I were crazy, I'd do Dict<x, Dict<y, chunk>>. Hmm.
         [Export]
-        Dictionary<Vector2, int[]> chunks = new Dictionary<Vector2, int[]>();
+        private Dictionary<Vector2, int[]> chunks = new Dictionary<Vector2, int[]>();
 
-        public (Vector2, int) CellToChunkAndIndex(int x, int y)
+        private (Vector2, int) CellToChunkAndIndex(int x, int y)
         {
             // TODO: Check if negative bitshift is bad.
             Vector2 chunkId = new Vector2(x >> CELL_LEN_POW, y >> CELL_LEN_POW);
@@ -24,12 +27,12 @@ namespace LizardState.Engine
             return (chunkId, mody * CELL_LEN + modx);
         }
 
-        public (Vector2, int) CellToChunkAndIndex(Vector2 vec)
+        private (Vector2, int) CellToChunkAndIndex(Vector2 vec)
         {
             return CellToChunkAndIndex((int)vec.x, (int)vec.y);
         }
 
-        public Vector2 ChunkAndIndexToCell(Vector2 chunk, int index)
+        private Vector2 ChunkAndIndexToCell(Vector2 chunk, int index)
         {
             return new Vector2(
                 chunk.x * CELL_LEN + index % CELL_LEN,
@@ -92,6 +95,11 @@ namespace LizardState.Engine
             SetCell((int)vec.x, (int)vec.y, tile);
         }
 
+        public void SetCellv(AbsolutePosition vec, int tile)
+        {
+            SetCell(vec.x, vec.y, tile);
+        }
+
         public int GetCell(int x, int y)
         {
             // TODO: Check if negative bitshift is bad.
@@ -105,9 +113,15 @@ namespace LizardState.Engine
             return GetCell((int)vec.x, (int)vec.y);
         }
 
-        public Array GetUsedCells()
+        public int GetCellv(AbsolutePosition vec)
         {
-            Array usedCells = new Array();
+            return GetCell(vec.x, vec.y);
+        }
+
+        [Obsolete("Prefer Iterator versions to avoid marshalling. (Unless calling from Godot)")]
+        public GDArray GetUsedCells()
+        {
+            GDArray usedCells = new GDArray();
             foreach (Vector2 chunkId in chunks.Keys)
             {
                 for (int i = 0; i < CELL_AREA; i++)
@@ -122,9 +136,10 @@ namespace LizardState.Engine
             return usedCells;
         }
 
-        public Array GetUsedCellsById(int id)
+        [Obsolete("Prefer Iterator versions to avoid marshalling. (Unless calling from Godot)")]
+        public GDArray GetUsedCellsById(int id)
         {
-            Array usedCells = new Array();
+            GDArray usedCells = new GDArray();
             foreach (Vector2 chunkId in chunks.Keys)
             {
                 for (int i = 0; i < CELL_AREA; i++)
@@ -137,6 +152,36 @@ namespace LizardState.Engine
                 }
             }
             return usedCells;
+        }
+
+        public IEnumerable<AbsolutePosition> GetUsedCellsIterator()
+        {
+            foreach (Vector2 chunkId in chunks.Keys)
+            {
+                for (int i = 0; i < CELL_AREA; i++)
+                {
+                    if (chunks[chunkId][i] != -1)
+                    {
+                        Vector2 cell = ChunkAndIndexToCell(chunkId, i);
+                        yield return new AbsolutePosition((int)cell.x, (int)cell.y);
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<AbsolutePosition> GetUsedCellsByIdIterator(int id)
+        {
+            foreach (Vector2 chunkId in chunks.Keys)
+            {
+                for (int i = 0; i < CELL_AREA; i++)
+                {
+                    if (chunks[chunkId][i] == id)
+                    {
+                        Vector2 cell = ChunkAndIndexToCell(chunkId, i);
+                        yield return new AbsolutePosition((int)cell.x, (int)cell.y);
+                    }
+                }
+            }
         }
     }
 }
