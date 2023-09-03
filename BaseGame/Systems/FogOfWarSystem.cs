@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using GDDict = Godot.Collections.Dictionary;
 using LizardState.Engine;
+using System;
 
 /// <summary>
 /// Stores fog of war and entity vision information.
@@ -17,9 +18,14 @@ public class FogOfWarSystem : CrawlerSystem
     public const int REVEALED = 0;
     public const int VISIBLE = 1;
 
-    public FogOfWarSystem()
+    public static FogOfWarSystem New()
     {
-        revealStatus = (SparseMatrix)GD.Load<CSharpScript>("res://Engine/SparseMatrix.cs").New();
+        return (FogOfWarSystem)GD.Load<CSharpScript>("res://BaseGame/Systems/FogOfWarSystem.cs").New();
+    }
+
+    private FogOfWarSystem()
+    {
+        revealStatus = SparseMatrix.New();
     }
 
     public override void ProcessEvent(Model model, GDDict ev)

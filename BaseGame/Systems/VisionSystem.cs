@@ -19,6 +19,11 @@ public class VisionSystem : CrawlerSystem
     [Export] public Dictionary<int, List<int>> canSee = new Dictionary<int, List<int>>();
     [Export] public Dictionary<int, List<int>> seenBy = new Dictionary<int, List<int>>();
 
+    public static VisionSystem New()
+    {
+        return (VisionSystem)GD.Load<CSharpScript>("res://BaseGame/Systems/VisionSystem.cs").New();
+    }
+
     public override void ProcessEvent(Model model, GodotDict ev)
     {
 

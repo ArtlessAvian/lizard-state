@@ -59,8 +59,8 @@ public class EditorGenerator : LevelGenerator
 
     public void AddSystems(Model model)
     {
-        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/FogOfWarSystem.cs").New() as CrawlerSystem);
-        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/VisionSystem.cs").New() as CrawlerSystem);
-        model.systems.Add(GD.Load<CSharpScript>("res://BaseGame/Systems/StateSystem.cs").New() as CrawlerSystem);
+        model.systems.Add(FogOfWarSystem.New());
+        model.systems.Add(VisionSystem.New());
+        model.systems.Add(StateSystem.New());
     }
 }

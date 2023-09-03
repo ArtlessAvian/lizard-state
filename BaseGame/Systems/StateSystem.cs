@@ -6,6 +6,11 @@ using LizardState.Engine;
 // Handles knockdown (health > 0), and "down" down (health <= 0).
 public class StateSystem : CrawlerSystem
 {
+    public static StateSystem New()
+    {
+        return (StateSystem)GD.Load<CSharpScript>("res://BaseGame/Systems/StateSystem.cs").New();
+    }
+
     public override void ProcessEvent(Model model, Dictionary ev) { }
 
     public override void Run(Model model)

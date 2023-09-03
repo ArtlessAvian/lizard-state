@@ -27,11 +27,16 @@ namespace LizardState.Engine
         [Signal]
         public delegate void NewEvent(Dictionary ev);
 
+        public static Model New()
+        {
+            return (Model)GD.Load<CSharpScript>("res://Engine/Model.cs").New();
+        }
+
         // Create an empty model, which is "valid" but its unclear what to decorate.
         // Prefer using the constructor.
         public Model()
         {
-            map = (CrawlerMap)GD.Load<CSharpScript>("res://Engine/CrawlerMap.cs").New();
+            map = CrawlerMap.New();
         }
 
         public Model(CrawlerMap map)

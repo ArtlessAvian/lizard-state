@@ -18,6 +18,13 @@ namespace LizardState.Engine
         [Export]
         private Dictionary<Vector2, int[]> chunks = new Dictionary<Vector2, int[]>();
 
+        public static SparseMatrix New()
+        {
+            return (SparseMatrix)GD.Load<CSharpScript>("res://Engine/SparseMatrix.cs").New();
+        }
+
+        private SparseMatrix() { }
+
         private (Vector2, int) CellToChunkAndIndex(int x, int y)
         {
             // TODO: Check if negative bitshift is bad.

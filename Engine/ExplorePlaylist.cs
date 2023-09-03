@@ -95,7 +95,7 @@ namespace LizardState.Engine
 
         private Model GenerateModel(int index, Entity[] playerTeam)
         {
-            Model model = GD.Load<CSharpScript>("res://Engine/Model.cs").New() as Model;
+            Model model = Model.New();
             generators[index].Generate(model, playerTeam);
             model.ResourceName = $"{index} of {this.ResourceName}";
             return model;
