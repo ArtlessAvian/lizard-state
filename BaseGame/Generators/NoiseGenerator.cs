@@ -65,12 +65,12 @@ public class NoiseGenerator : LevelGenerator
     {
         Species enemy = GD.Load<Resource>("res://BaseGame/Species/Enemy.tres") as Species;
 
-        Array tiles = model.map.tiles.GetUsedCellsById(3);
+        List<AbsolutePosition> tiles = new List<AbsolutePosition>(model.map.tiles.GetUsedCellsByIdIterator(3));
         // tiles.Shuffle();
         for (int i = 0; i < 10; i++)
         {
-            Vector2 vec = (Vector2)tiles[(int)(GD.Randi() % tiles.Count)];
-            model.AddEntity(enemy.BuildEntity(new AbsolutePosition((int)vec.x, (int)vec.y), 1));
+            AbsolutePosition vec = tiles[(int)(GD.Randi() % tiles.Count)];
+            model.AddEntity(enemy.BuildEntity(vec, 1));
         }
     }
 

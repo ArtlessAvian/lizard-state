@@ -325,10 +325,10 @@ public class HybridGenerator : LevelGenerator
     {
         int spawnX = 0;
         int spawnY = 0;
-        foreach (Vector2 vec in model.map.tiles.GetUsedCellsById(5))
+        foreach (AbsolutePosition vec in model.map.tiles.GetUsedCellsByIdIterator(5))
         {
-            spawnX = (int)vec.x;
-            spawnY = (int)vec.y + 1;
+            spawnX = vec.x;
+            spawnY = vec.y + 1;
             break;
         }
 
@@ -344,13 +344,13 @@ public class HybridGenerator : LevelGenerator
     {
         Species enemy = GD.Load<Resource>("res://BaseGame/Species/Enemy.tres") as Species;
 
-        var tiles = model.map.tiles.GetUsedCellsById(1);
+        var tiles = new List<AbsolutePosition>(model.map.tiles.GetUsedCellsByIdIterator(1));
         // tiles.Shuffle(); // bro i got trolled by shuffle on html again
         // ill report it tomorrow.
         for (int i = 0; i < 10; i++)
         {
-            Vector2 vec = (Vector2)tiles[(int)(GD.Randi() % tiles.Count)];
-            model.AddEntity(enemy.BuildEntity(new AbsolutePosition((int)vec.x, (int)vec.y), 1));
+            AbsolutePosition vec = tiles[(int)(GD.Randi() % tiles.Count)];
+            model.AddEntity(enemy.BuildEntity(vec, 1));
         }
     }
 

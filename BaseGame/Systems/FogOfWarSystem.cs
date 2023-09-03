@@ -74,7 +74,8 @@ public class FogOfWarSystem : CrawlerSystem
 
     private void ClearVisibility()
     {
-        foreach (Vector2 vec in revealStatus.GetUsedCellsById(VISIBLE))
+        List<AbsolutePosition> visible = new List<AbsolutePosition>(revealStatus.GetUsedCellsByIdIterator(VISIBLE));
+        foreach (AbsolutePosition vec in visible)
         {
             revealStatus.SetCellv(vec, REVEALED);
         }
