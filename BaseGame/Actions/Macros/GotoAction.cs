@@ -80,7 +80,7 @@ public class GotoAction : CrawlAction
 
         return ((AbsolutePosition from, AbsolutePosition to) tuple) =>
                 model.CanWalkFromTo(tuple.from, tuple.to) &&
-                fog.GetCell(tuple.from.x, tuple.from.y) != -1 &&
-                fog.GetCell(tuple.to.x, tuple.to.y) != -1;
+                fog.GetStatus(tuple.from) != FogOfWarSystem.UNREVEALED &&
+                fog.GetStatus(tuple.to) != FogOfWarSystem.UNREVEALED;
     }
 }

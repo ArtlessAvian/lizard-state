@@ -1,21 +1,23 @@
-using System;
+using System.Collections.Generic;
 using Godot;
-using Godot.Collections;
+using GDDict = Godot.Collections.Dictionary;
 using LizardState.Engine;
 
 /// <summary>
 /// Stores fog of war and entity vision information.
 /// Maybe split these two responsibilities.
 /// </summary>
-public class FogOfWarSystem : SparseMatrix, CrawlerSystem
+public class FogOfWarSystem : Resource, CrawlerSystem
 {
-    [Export] public Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
+    [Export] private SparseMatrix revealStatus = new SparseMatrix();
+    [Export] private Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
     [Export] public Dictionary<int, Vector3[]> lastVision = new Dictionary<int, Vector3[]>();
 
-    private const int REVEALED = 0;
-    private const int VISIBLE = 1;
+    public const int UNREVEALED = -1;
+    public const int REVEALED = 0;
+    public const int VISIBLE = 1;
 
-    public void ProcessEvent(Model model, Dictionary ev)
+    public void ProcessEvent(Model model, GDDict ev)
     {
 
     }
@@ -42,7 +44,7 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
         lastSeenAt[e.id] = new Vector2(e.position.x, e.position.y);
         lastVision[e.id] = this.GetVisibleTiles(map, e.position, 8);
 
-        model.CoolerApiEvent(new Dictionary(){
+        model.CoolerApiEvent(new GDDict(){
             {"subject", e.id},
             {"action", "SeeMap"},
             {"tiles", lastVision[e.id]}
@@ -61,7 +63,7 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
         {
             for (int x = pos.x - radius; x <= pos.x + radius; x++)
             {
-                if (this.GetCell(x, y) == VISIBLE)
+                if (revealStatus.GetCell(x, y) == VISIBLE)
                 {
                     tiles.Add(new Vector3(x, y, map.tiles.GetCell(x, y)));
                 }
@@ -72,9 +74,9 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
 
     private void ClearVisibility()
     {
-        foreach (Vector2 vec in this.GetUsedCellsById(VISIBLE))
+        foreach (Vector2 vec in revealStatus.GetUsedCellsById(VISIBLE))
         {
-            this.SetCellv(vec, REVEALED);
+            revealStatus.SetCellv(vec, REVEALED);
         }
     }
 
@@ -83,7 +85,17 @@ public class FogOfWarSystem : SparseMatrix, CrawlerSystem
     {
         foreach (AbsolutePosition tile in VisibilityTrie.FieldOfView(pos, x => map.TileIsWall(x), radius))
         {
-            this.SetCell(tile.x, tile.y, VISIBLE);
+            revealStatus.SetCell(tile.x, tile.y, VISIBLE);
         }
+    }
+
+    public int GetStatus(AbsolutePosition pos)
+    {
+        return revealStatus.GetCell(pos.x, pos.y);
+    }
+
+    public IEnumerable<AbsolutePosition> GetRevealed()
+    {
+        return revealStatus.GetUsedCellsIterator();
     }
 }
