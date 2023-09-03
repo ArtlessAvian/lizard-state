@@ -9,13 +9,18 @@ using LizardState.Engine;
 /// </summary>
 public class FogOfWarSystem : CrawlerSystem
 {
-    [Export] private SparseMatrix revealStatus = new SparseMatrix();
+    [Export] private SparseMatrix revealStatus;
     [Export] private Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
     [Export] public Dictionary<int, Vector3[]> lastVision = new Dictionary<int, Vector3[]>();
 
     public const int UNREVEALED = -1;
     public const int REVEALED = 0;
     public const int VISIBLE = 1;
+
+    public FogOfWarSystem()
+    {
+        revealStatus = (SparseMatrix)GD.Load<CSharpScript>("res://Engine/SparseMatrix.cs").New();
+    }
 
     public override void ProcessEvent(Model model, GDDict ev)
     {
