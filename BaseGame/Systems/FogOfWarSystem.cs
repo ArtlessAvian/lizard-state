@@ -7,7 +7,7 @@ using LizardState.Engine;
 /// Stores fog of war and entity vision information.
 /// Maybe split these two responsibilities.
 /// </summary>
-public class FogOfWarSystem : Resource, CrawlerSystem
+public class FogOfWarSystem : CrawlerSystem
 {
     [Export] private SparseMatrix revealStatus = new SparseMatrix();
     [Export] private Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
@@ -17,12 +17,12 @@ public class FogOfWarSystem : Resource, CrawlerSystem
     public const int REVEALED = 0;
     public const int VISIBLE = 1;
 
-    public void ProcessEvent(Model model, GDDict ev)
+    public override void ProcessEvent(Model model, GDDict ev)
     {
 
     }
 
-    public void Run(Model model)
+    public override void Run(Model model)
     {
         foreach (Entity e in model.GetEntities())
         {

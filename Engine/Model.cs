@@ -19,7 +19,7 @@ namespace LizardState.Engine
         [Export] public int time = 0;
 
         [Export] public CrawlerMap map = null;
-        [Export] public List<Resource> systems = new List<Resource>();
+        [Export] public List<CrawlerSystem> systems = new List<CrawlerSystem>();
 
         [Export] private List<Entity> entities = new List<Entity>();
         [Export] private List<FloorItem> floorItems = new List<FloorItem>();

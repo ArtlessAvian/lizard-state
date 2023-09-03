@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 using LizardState.Engine;
 
-public class DemoStatisticsSystem : Resource, CrawlerSystem
+public class DemoStatisticsSystem : CrawlerSystem
 {
     [Export] public int kills = 0;
     [Export] public int playerDamage = 0;
@@ -16,7 +16,7 @@ public class DemoStatisticsSystem : Resource, CrawlerSystem
     [Export] public bool usedNumpad = false;
     [Export] public bool usedViKeys = false;
 
-    public void ProcessEvent(Model model, Dictionary ev)
+    public override void ProcessEvent(Model model, Dictionary ev)
     {
         if ((string)ev["action"] == "Downed")
         {
@@ -53,7 +53,7 @@ public class DemoStatisticsSystem : Resource, CrawlerSystem
         }
     }
 
-    public void Run(Model model)
+    public override void Run(Model model)
     {
         throw new System.NotImplementedException();
     }

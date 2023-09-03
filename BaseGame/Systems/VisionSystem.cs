@@ -8,7 +8,7 @@ using LizardState.Engine;
 /// Stores fog of war and entity vision information.
 /// Maybe split these two responsibilities.
 /// </summary>
-public class VisionSystem : Resource, CrawlerSystem
+public class VisionSystem : CrawlerSystem
 {
     // kind of like a dirty flag
     [Export] public Dictionary<int, Vector2> lastSeenAt = new Dictionary<int, Vector2>();
@@ -19,12 +19,12 @@ public class VisionSystem : Resource, CrawlerSystem
     [Export] public Dictionary<int, List<int>> canSee = new Dictionary<int, List<int>>();
     [Export] public Dictionary<int, List<int>> seenBy = new Dictionary<int, List<int>>();
 
-    public void ProcessEvent(Model model, GodotDict ev)
+    public override void ProcessEvent(Model model, GodotDict ev)
     {
 
     }
 
-    public void Run(Model model) // ModelAPI maybe?
+    public override void Run(Model model) // ModelAPI maybe?
     {
         List<Entity> dirty = new List<Entity>();
         foreach (Entity e in model.GetEntities())

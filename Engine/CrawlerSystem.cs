@@ -1,10 +1,11 @@
+using Godot;
 using Godot.Collections;
 
 namespace LizardState.Engine
 {
-    public interface CrawlerSystem
+    public abstract class CrawlerSystem : Resource
     {
-        void ProcessEvent(Model model, Dictionary @ev);
-        void Run(Model model);
+        public abstract void ProcessEvent(Model model, Dictionary @ev);
+        public abstract void Run(Model model);
     }
 }

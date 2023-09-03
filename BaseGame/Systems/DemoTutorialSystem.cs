@@ -3,13 +3,13 @@ using Godot;
 using Godot.Collections;
 using LizardState.Engine;
 
-public class DemoTutorialSystem : Resource, CrawlerSystem
+public class DemoTutorialSystem : CrawlerSystem
 {
     [Export] bool movePrompt = false;
     [Export] bool abilitiesPrompt = false;
     [Export] int kills = 0;
 
-    public void ProcessEvent(Model model, Dictionary ev)
+    public override void ProcessEvent(Model model, Dictionary ev)
     {
         if ((string)ev["action"] == "Move" && !movePrompt)
         {
@@ -77,7 +77,7 @@ public class DemoTutorialSystem : Resource, CrawlerSystem
         model.CoolerApiEvent(-1, "Print", "            -ArtlessAvian (Ryan)");
     }
 
-    public void Run(Model model)
+    public override void Run(Model model)
     {
         throw new System.NotImplementedException();
     }
