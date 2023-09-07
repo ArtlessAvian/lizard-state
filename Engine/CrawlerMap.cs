@@ -15,27 +15,23 @@ namespace LizardState.Engine
         [Export]
         public SparseMatrix tiles;
 
+        // Creates an empty map. It's "valid" but very boring.
+        // Prefer the constructor with params.
         public static CrawlerMap New()
         {
-            return (CrawlerMap)GD.Load<CSharpScript>("res://Engine/CrawlerMap.cs").New();
+            CrawlerMap instance = (CrawlerMap)GD.Load<CSharpScript>("res://Engine/CrawlerMap.cs").New();
+            instance.tiles = SparseMatrix.New();
+            return instance;
         }
 
         public static CrawlerMap New(SparseMatrix tiles)
         {
-            return (CrawlerMap)GD.Load<CSharpScript>("res://Engine/CrawlerMap.cs").New(tiles);
+            CrawlerMap instance = (CrawlerMap)GD.Load<CSharpScript>("res://Engine/CrawlerMap.cs").New();
+            instance.tiles = tiles;
+            return instance;
         }
 
-        // Creates an empty map. It's "valid" but very boring.
-        // Prefer the constructor with params.
-        private CrawlerMap()
-        {
-            tiles = SparseMatrix.New();
-        }
-
-        private CrawlerMap(SparseMatrix tiles)
-        {
-            this.tiles = tiles;
-        }
+        private CrawlerMap() { }
 
         // public new int GetCell(int x, int y)
         // {

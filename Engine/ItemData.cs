@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace LizardState.Engine
@@ -18,6 +19,7 @@ namespace LizardState.Engine
             }
         }
 
+        [Obsolete]
         public InventoryItem BuildInventoryItem()
         {
             return GD.Load<CSharpScript>("res://Engine/InventoryItem.cs").New(this) as InventoryItem;

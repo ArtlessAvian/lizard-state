@@ -20,6 +20,13 @@ namespace LizardState.Engine
         }
         private CrawlAction _proxyAction = null;
 
+        public static UseItemAction New(InventoryItem item)
+        {
+            UseItemAction instance = (UseItemAction)GD.Load<CSharpScript>("res://Engine/Actions/UseItemAction.cs").New();
+            instance.item = item;
+            return instance;
+        }
+
         public override bool Do(Model model, Entity e)
         {
             ProxyAction.SetTarget(GetTargetPos(e.position));

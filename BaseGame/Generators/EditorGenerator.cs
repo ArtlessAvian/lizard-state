@@ -16,9 +16,9 @@ public class EditorGenerator : LevelGenerator
         GenerateEntities(model);
 
         ItemData data = GD.Load<ItemData>("res://BaseGame/ItemData/Something.tres");
-        FloorItem item = data.BuildInventoryItem().BuildFloorItem(new AbsolutePosition(4, 0));
+        FloorItem item = FloorItem.New(new AbsolutePosition(4, 0), InventoryItem.New(data));
         model.AddFloorItem(item);
-        FloorItem item2 = data.BuildInventoryItem().BuildFloorItem(new AbsolutePosition(-16, -7));
+        FloorItem item2 = FloorItem.New(new AbsolutePosition(-16, 7), InventoryItem.New(data));
         model.AddFloorItem(item2);
 
         return model;

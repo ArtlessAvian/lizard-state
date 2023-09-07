@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System;
+using System.CodeDom;
 
 namespace LizardState.Engine
 {
@@ -19,6 +20,14 @@ namespace LizardState.Engine
 
         [Export] public InventoryItem inventoryItem;
 
-        public FloorItem() { }
+        public static FloorItem New(AbsolutePosition position, InventoryItem item)
+        {
+            var instance = (FloorItem)GD.Load<CSharpScript>("res://Engine/FloorItem.cs").New();
+            instance.position = position;
+            instance.inventoryItem = item;
+            return instance;
+        }
+
+        private FloorItem() { }
     }
 }

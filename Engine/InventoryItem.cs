@@ -8,22 +8,31 @@ namespace LizardState.Engine
         [Export] public ItemData data;
         [Export] public int uses = -1;
 
+        public static InventoryItem New(ItemData data)
+        {
+            InventoryItem instance = (InventoryItem)GD.Load<CSharpScript>("res://Engine/InventoryItem.cs").New();
+            instance.data = data;
+            instance.uses = data.maxUses;
+            return instance;
+        }
+
+        [Obsolete]
         public InventoryItem(ItemData data)
         {
             this.data = data;
             uses = data.maxUses;
         }
 
-        public InventoryItem() { }
+        private InventoryItem() { }
 
+        [Obsolete]
         public FloorItem BuildFloorItem(AbsolutePosition position)
         {
-            FloorItem floor = GD.Load<CSharpScript>("res://Engine/FloorItem.cs").New() as FloorItem;
-            floor.position = position;
-            floor.inventoryItem = this;
+            FloorItem floor = FloorItem.New(position, this);
             return floor;
         }
 
+        [Obsolete]
         public CrawlAction BuildAction()
         {
             UseItemAction action = GD.Load<CSharpScript>("res://Engine/Actions/UseItemAction.cs").New() as UseItemAction;

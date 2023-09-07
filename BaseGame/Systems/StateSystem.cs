@@ -32,8 +32,7 @@ public class StateSystem : CrawlerSystem
                 }
 
                 ItemData data = (ItemData)GD.Load("res://BaseGame/ItemData/Food.tres");
-                InventoryItem item = (InventoryItem)data.BuildInventoryItem();
-                FloorItem floorItem = (FloorItem)item.BuildFloorItem(e.position);
+                FloorItem floorItem = FloorItem.New(e.position, InventoryItem.New(data));
                 model.AddFloorItem(floorItem);
             }
         }
