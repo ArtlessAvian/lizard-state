@@ -3,27 +3,30 @@ using System;
 using System.Collections.Generic;
 using LizardState.Engine;
 
-public class StunRecoveryAction : CrawlAction
+namespace LizardState.Engine
 {
-    public static StunRecoveryAction New()
+    public class StunRecoveryAction : CrawlAction
     {
-        return (StunRecoveryAction)GD.Load<CSharpScript>("res://Engine/Actions/StunRecoveryAction.cs").New();
-    }
-
-    public override bool Do(Model model, Entity e)
-    {
-        if (!IsValid(model, e))
+        public static StunRecoveryAction New()
         {
-            return false;
+            return (StunRecoveryAction)GD.Load<CSharpScript>("res://Engine/Actions/StunRecoveryAction.cs").New();
         }
 
-        model.CoolerApiEvent(e.id, "Unstun");
-        e.state = Entity.EntityState.OK;
-        return true;
-    }
+        public override bool Do(Model model, Entity e)
+        {
+            if (!IsValid(model, e))
+            {
+                return false;
+            }
 
-    public override bool IsValid(Model model, Entity e)
-    {
-        return true;
+            model.CoolerApiEvent(e.id, "Unstun");
+            e.state = Entity.EntityState.OK;
+            return true;
+        }
+
+        public override bool IsValid(Model model, Entity e)
+        {
+            return true;
+        }
     }
 }
