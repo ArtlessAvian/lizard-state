@@ -5,6 +5,11 @@ using LizardState.Engine;
 
 public class KnockdownWakeupAction : CrawlAction
 {
+    public static KnockdownWakeupAction New()
+    {
+        return (KnockdownWakeupAction)GD.Load<CSharpScript>("res://Engine/Actions/KnockdownWakeupAction.cs").New();
+    }
+
     public override bool Do(Model model, Entity e)
     {
         if (!IsValid(model, e))
