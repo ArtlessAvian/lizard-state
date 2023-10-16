@@ -11,6 +11,7 @@ easier than trello since its only just me (for now?)
         * Mine wall tiles. (easiest)
         * Collect food/water sample.
         * Capture entity.
+        * Find lost cargo.
     * Traveler / Reputation(?)
         * Defeat entity. (easiest)
         * Meet NPC.
@@ -29,6 +30,13 @@ easier than trello since its only just me (for now?)
 ## Make the game interesting
 * Blocking as a state
 * (Redo) Planar graph generation
+* Random side objectives/events
+    * Large monster
+* Large entities?
+    * Takes no knockback
+    * Takes no hitstun
+    * 2x2 tiles.
+
 
 ## Make the game playable
 * Danger mode
