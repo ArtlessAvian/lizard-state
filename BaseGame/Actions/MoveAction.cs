@@ -20,7 +20,7 @@ public class MoveAction : CrawlAction
 
         if (!model.CanWalkFromTo(e.position, targetPos))
         {
-            GD.Print("You bump into the wall.");
+            model.CoolerApiEvent(-1, "Print", $"{e.species.displayName} bumps into a wall");
             DoNothing(model, e);
             return true;
         }
@@ -30,8 +30,8 @@ public class MoveAction : CrawlAction
         {
             if (entityAt.team != e.team)
             {
-                GD.Print($"{e.species.displayName} bumps into {entityAt.species.displayName}");
-                e.nextMove += 1;
+                model.CoolerApiEvent(-1, "Print", $"{e.species.displayName} bumps into {entityAt.species.displayName}");
+                DoNothing(model, e);
                 return false;
             }
             else
@@ -85,6 +85,7 @@ public class MoveAction : CrawlAction
     public override IEnumerable<string> GetWarnings(Model model, Entity e)
     {
         if (!model.CanWalkFromTo(e.position, GetTargetPos(e.position))) { yield return "You can't walk there."; }
+        if (model.GetEntityAt(GetTargetPos(e.position)) is Entity other && e.team != other.team) { yield return "There's something in the way."; }
     }
 
     public override (int, int) Range => (1, 1);

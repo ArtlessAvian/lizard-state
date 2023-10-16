@@ -2,7 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using LizardState.Engine;
+using System.Linq;
 
+// Takes at least one step towards a target.
+// Will not walk more if enemies in sight.
 public class GotoAction : CrawlAction
 {
     PathFinder.PathResult result;
@@ -10,6 +13,7 @@ public class GotoAction : CrawlAction
 
     public override bool Do(Model model, Entity e)
     {
+        // Cancel if requeued and enemies seen.
         if (stepped && AnyEnemiesInSight(model, e))
         {
             // No op! On view, print stuff.
@@ -21,9 +25,11 @@ public class GotoAction : CrawlAction
 
         FindPathLazy(model, e.position, targetPos);
 
-        // model.CoolerApiEvent(-1, "SmallWait");
-        bool success = new MoveAction().SetTarget(result.nextStepFor[e.position]).Do(model, e);
+        MoveAction moveAction = new MoveAction();
+        moveAction.SetTarget(result.nextStepFor[e.position]);
+        if (moveAction.GetWarnings(model, e).Any()) { return false; }
 
+        bool success = moveAction.Do(model, e);
         if (!success) { return false; }
 
         // queue same action object
