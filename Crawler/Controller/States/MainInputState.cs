@@ -220,7 +220,7 @@ public class MainInputState : InputState
                     crawler.View.ModelSync();
                     crawler.Model.SetPlayerAction(new GotoAction().SetTarget(targetPosition));
                     crawler.notPlayerTurn = true;
-                    crawler.ResetState();
+                    crawler.ChangeState(GetNode<AutoConfirmInputState>("AutoConfirm"));
                     return true;
                 }
             }

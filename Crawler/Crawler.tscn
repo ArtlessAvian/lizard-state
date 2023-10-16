@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Crawler/Crawler.cs" type="Script" id=1]
 [ext_resource path="res://Crawler/View/View.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Crawler/Controller/States/MainInputState.cs" type="Script" id=5]
 [ext_resource path="res://Crawler/Controller/States/SkillMenuInputState.cs" type="Script" id=6]
 [ext_resource path="res://Crawler/Controller/States/ActionTargetInputState.cs" type="Script" id=7]
+[ext_resource path="res://Crawler/Controller/States/AutoConfirmInputState.cs" type="Script" id=8]
 [ext_resource path="res://Crawler/Cursor.cs" type="Script" id=9]
 [ext_resource path="res://Crawler/Controller/States/LookInputState.cs" type="Script" id=10]
 
@@ -188,6 +189,9 @@ script = ExtResource( 7 )
 
 [node name="Look" type="Node" parent="InputStates/Main"]
 script = ExtResource( 10 )
+
+[node name="AutoConfirm" type="Node" parent="InputStates/Main"]
+script = ExtResource( 8 )
 
 [node name="UISounds" type="Node" parent="."]
 

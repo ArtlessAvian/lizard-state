@@ -29,7 +29,7 @@ public class GotoAction : CrawlAction
         // queue same action object
         if (!(e.position.x == targetPos.x && e.position.y == targetPos.y))
         {
-            e.queuedAction = this;
+            e.needsConfirmAction = this;
             stepped = true;
         }
 
