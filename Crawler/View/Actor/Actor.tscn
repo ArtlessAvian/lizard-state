@@ -716,6 +716,18 @@ tracks/4/keys = {
 "update": 1,
 "values": [ true ]
 }
+tracks/5/type = "value"
+tracks/5/path = NodePath("AnimatedSprite:nudge_y_pos")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ -3 ]
+}
 
 [sub_resource type="Animation" id=56]
 resource_name = "Wakeup"
@@ -990,10 +1002,11 @@ anims/Swept = SubResource( 57 )
 anims/Wakeup = SubResource( 56 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -0.01 )
 frames = ExtResource( 3 )
 animation = "East"
 speed_scale = 0.0
-offset = Vector2( 0, -109.99 )
+offset = Vector2( 0, -9.99 )
 script = ExtResource( 9 )
 animation_target = Vector2( 24, 0 )
 nudge_y_pos = -0.01

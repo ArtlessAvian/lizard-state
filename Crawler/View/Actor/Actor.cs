@@ -9,6 +9,7 @@ public partial class Actor : Node2D
     [Signal]
     delegate void attack_active();
 
+    [Export] // For debugging only.
     public Entity role;
 
     [Export] public Vector2 tilePosition;
@@ -79,6 +80,9 @@ public partial class Actor : Node2D
 
         status?.Call("set_energy", role.energy, 10);
 
+        AnimationPlayer player = GetNode<AnimationPlayer>("AnimationPlayer");
+        player.Stop(true);
+
         AnimatedSprite aniSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         // aniSprite.Frames = GD.Load<SpriteFrames>($"res://Crawler/View/ActorData/{role.species.ResourceName}.tres");
         switch (role.state)
@@ -103,11 +107,13 @@ public partial class Actor : Node2D
             case Entity.EntityState.KNOCKDOWN:
                 {
                     aniSprite.Frame = 3;
+                    aniSprite.Set("nudge_y_pos", -3);
                     break;
                 }
             case Entity.EntityState.UNALIVE:
                 {
                     aniSprite.Frame = 3;
+                    aniSprite.Set("nudge_y_pos", -4);
                     aniSprite.SelfModulate = Colors.DimGray;
                     break;
                 }
