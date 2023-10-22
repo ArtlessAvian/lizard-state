@@ -1,9 +1,15 @@
 using Godot;
 using LizardState.Engine;
 
-// TODO: consider replacing with yield to simulate blocking code.
-// Trading one hellscape for another.
-// in c# that would be "await ToSignal(signal)"
+// To not do: replace with yield. Async/yield is equivalent to a state machine.
+/// <summary>
+/// InputStates are nodes in the scene tree.
+/// As usual, nodes should be aware of their children, but not their parent.
+/// 
+/// 
+/// Do not create any subclass at runtime!
+/// If you do, something is has gone very wrong.
+/// </summary>
 public abstract class InputState : Node
 {
     protected static (string, Vector2i)[] DIRECTIONS = {
@@ -29,9 +35,11 @@ public abstract class InputState : Node
         return parent as Crawler;
     }
 
+    // All these are only called when there's no animation happening.
     // Passing crawler is convenience.
     // (you can just traverse the tree for crawler, model, and view)
     public virtual void Enter(Crawler crawler) { }
     public virtual void HandleInput(Crawler crawler, InputEvent ev) { }
+    public virtual void PollInput(Crawler crawler) { }
     public virtual void Exit(Crawler crawler) { }
 }

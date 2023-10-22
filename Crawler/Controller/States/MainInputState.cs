@@ -229,16 +229,22 @@ public class MainInputState : InputState
         return false;
     }
 
-    // private bool MoveOrAttack(Crawler crawler, (int x, int y) direction)
-    // {
-    //     // Entity entityAt = crawler.Model.GetEntityAt(offset);
+    public override void PollInput(Crawler crawler)
+    {
+        foreach ((string name, Vector2i dir) tuple in DIRECTIONS)
+        {
+            if (Input.IsActionPressed(tuple.name, true))
+            {
+                Entity player = crawler.Model.GetPlayer();
+                AbsolutePosition offset = player.position + tuple.dir;
 
-    //     // if (entityAt != null && entityAt.team != player.team)
-    //     // {
-    //     //     return crawler.Model.DoPlayerAction(new AttackAction(player.species.bumpAttack).Target(offset));
-    //     // }
-    //     // return crawler.Model.DoPlayerAction(new MoveAction().Target(offset));
-    // }
+                crawler.View.ModelSync();
+                crawler.Model.SetPlayerAction(new MoveOrAttackAction().SetTarget(offset));
+                crawler.notPlayerTurn = true;
+                cursor.Hide();
+            }
+        }
+    }
 
     public override void Exit(Crawler crawler)
     {

@@ -66,6 +66,11 @@ public class Crawler : Node2D, InputStateMachine
     {
         if (Model == null) { return; }
 
+        if (IsAcceptingInput())
+        {
+            activeInputState.PollInput(this);
+        }
+
         this.RunModel();
     }
 
@@ -123,12 +128,20 @@ public class Crawler : Node2D, InputStateMachine
         EmitSignal("Done");
     }
 
+    private bool IsAcceptingInput()
+    {
+        if (notPlayerTurn) { return false; }
+        if (View.eventQueue.Count > 0) { return false; }
+        if (View.done) { return false; }
+        return true;
+    }
+
     public override void _UnhandledInput(InputEvent ev)
     {
-        if (notPlayerTurn) { return; }
-        if (View.eventQueue.Count > 0) { return; }
-        if (View.done) { return; }
-        activeInputState.HandleInput(this, ev);
+        if (IsAcceptingInput())
+        {
+            activeInputState.HandleInput(this, ev);
+        }
     }
 
     public void ChangeState(InputState to)
