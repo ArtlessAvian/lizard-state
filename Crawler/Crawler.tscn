@@ -190,6 +190,9 @@ script = ExtResource( 7 )
 [node name="Look" type="Node" parent="InputStates/Main"]
 script = ExtResource( 10 )
 
+[node name="AutoConfirm" type="Node" parent="InputStates/Main/Look"]
+script = ExtResource( 8 )
+
 [node name="AutoConfirm" type="Node" parent="InputStates/Main"]
 script = ExtResource( 8 )
 

@@ -6,8 +6,6 @@ using LizardState.Engine;
 
 public class MainInputState : InputState
 {
-    Dictionary temp;
-
     Cursor cursor;
     Camera2D camera;
 
@@ -63,13 +61,6 @@ public class MainInputState : InputState
                 crawler.notPlayerTurn = true;
                 return true;
             }
-
-            // this makes people very confused. also its a hack anyways.
-            // if (eventKey.Scancode == (int)KeyList.F11)
-            // {
-            //     GetTree().ChangeScene("res://Crawler/Crawler.tscn");
-            //     return true;
-            // }
         }
 
         return false;
@@ -121,13 +112,16 @@ public class MainInputState : InputState
 
     private bool LogicInput(Crawler crawler, InputEvent ev)
     {
-        if (Input.IsKeyPressed((int)KeyList.Minus))
+        if (ev is InputEventKey key)
         {
-            camera.Zoom = Vector2.One;
-        }
-        if (Input.IsKeyPressed((int)KeyList.Equal))
-        {
-            camera.Zoom = Vector2.One / 2;
+            if ((KeyList)key.Scancode == KeyList.Minus)
+            {
+                camera.Zoom = Vector2.One;
+            }
+            else if ((KeyList)key.Scancode == KeyList.Equal)
+            {
+                camera.Zoom = Vector2.One / 2;
+            }
         }
 
         if (ev.IsActionPressed("move_wait"))
@@ -175,7 +169,7 @@ public class MainInputState : InputState
         }
 
         // TODO: DIRTY.
-        if (ev is InputEventKey key && key.Scancode == (uint)KeyList.Enter)
+        if (ev is InputEventKey keyy && keyy.Scancode == (uint)KeyList.Enter)
         {
             if (crawler.Model.GetPlayer().needsConfirmAction != null)
             {
@@ -184,13 +178,6 @@ public class MainInputState : InputState
                 return true;
             }
         }
-
-        // if (ev.IsActionPressed("exit_action"))
-        // {
-        //     crawler.Model.SetPlayerAction(new ExitAction());
-        //     crawler.notPlayerTurn = true;
-        //     return true;
-        // }
 
         if (ev is InputEventMouse evMouse)
         {
@@ -203,7 +190,7 @@ public class MainInputState : InputState
             );
             cursor.Show();
 
-            // Draw a path between the player and the target.
+            // TODO: Draw a path between the player and the target.
         }
 
         if (ev is InputEventMouseButton evMouseButton)

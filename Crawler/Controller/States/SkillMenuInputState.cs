@@ -5,28 +5,20 @@ using LizardState.Engine;
 
 public class SkillMenuInputState : InputState
 {
-    bool success;
+    private bool cancelled;
 
     public override void Enter(Crawler crawler)
     {
-        success = false;
+        cancelled = true;
+        List<CrawlAction> abilities = crawler.Model.GetPlayer().species.abilities;
 
         PopupMenu menu = crawler.FindNode("Modals").GetNode<PopupMenu>("AbilitiesMenu");
-
         menu.Clear();
-
-        List<CrawlAction> abilities = crawler.Model.GetPlayer().species.abilities;
         for (int i = 0; i < abilities.Count; i++)
         {
             menu.AddItem(abilities[i].ResourceName, i);
         }
-
         menu.Popup_();
-    }
-
-    public override void HandleInput(Crawler crawler, InputEvent ev)
-    {
-
     }
 
     public override void Exit(Crawler crawler)
@@ -36,7 +28,7 @@ public class SkillMenuInputState : InputState
 
     public void _on_AbilitiesMenu_id_pressed(int id)
     {
-        success = true;
+        cancelled = false;
         Crawler crawler = this.GetCrawler();
 
         CrawlAction action = (CrawlAction)crawler.Model.GetPlayer().species.abilities[id].Duplicate();
@@ -55,12 +47,11 @@ public class SkillMenuInputState : InputState
             crawler.ChangeState(to);
             return;
         }
-
     }
 
     public void _on_AbilitiesMenu_popup_hide()
     {
-        if (!success)
+        if (cancelled)
         {
             Crawler crawler = this.GetCrawler();
             crawler.ChangeState((InputState)this.GetParent());

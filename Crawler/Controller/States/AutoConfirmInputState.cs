@@ -11,36 +11,40 @@ public class AutoConfirmInputState : InputState
         leakedCrawler = crawler;
     }
 
-    public override void HandleInput(Crawler crawler, InputEvent ev)
+    public override void PollInput(Crawler crawler)
     {
-        // Do nothing.
+        if (crawler.Model.GetPlayer().needsConfirmAction != null)
+        {
+            // GD.PrintS("Autoconfirming", crawler.Model.GetPlayer().needsConfirmAction.GetType().Name, "at time", crawler.Model.time);
+            crawler.Model.SetPlayerAction(crawler.Model.GetPlayer().needsConfirmAction, false);
+            crawler.notPlayerTurn = true;
+            // stay in current state.
+        }
+        else
+        {
+            crawler.ResetState();
+        }
     }
 
-    public override void _Process(float delta)
+    // We still need this.
+    // The parent calls Poll/HandleInput only when there's no animations playing.
+    public override void _UnhandledInput(InputEvent ev)
     {
         if (leakedCrawler is Crawler crawler)
         {
-            // This isn't Node.Input. The parent calls this only when there's no animations playing.
-            if (Input.IsKeyPressed((int)KeyList.Escape))
+            if (ev is InputEventKey key && key.IsPressed())
             {
                 crawler.View.GetNode<MessageLog>("UILayer/MessageLog").AddMessage("Cancelling! (User Input)");
                 crawler.ResetState();
+                GetTree().SetInputAsHandled();
                 return;
             }
-
-            if (crawler.GetNode<View>("View").IsQueueClear())
+            if (ev is InputEventMouseButton mouse && mouse.IsPressed())
             {
-                if (crawler.Model.GetPlayer().needsConfirmAction != null)
-                {
-                    GD.PrintS("Autoconfirming", crawler.Model.GetPlayer().needsConfirmAction.GetType().Name, "at time", crawler.Model.time);
-                    crawler.Model.SetPlayerAction(crawler.Model.GetPlayer().needsConfirmAction, false);
-                    crawler.notPlayerTurn = true;
-                    // stay in current state.
-                }
-                else
-                {
-                    crawler.ResetState();
-                }
+                crawler.View.GetNode<MessageLog>("UILayer/MessageLog").AddMessage("Cancelling! (User Input)");
+                crawler.ResetState();
+                GetTree().SetInputAsHandled();
+                return;
             }
         }
     }

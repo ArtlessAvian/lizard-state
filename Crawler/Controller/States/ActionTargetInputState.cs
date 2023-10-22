@@ -64,7 +64,7 @@ public class ActionTargetInputState : InputState
 
         if (ev.IsActionPressed("ui_cancel"))
         {
-            crawler.ResetState();
+            crawler.ChangeState((InputState)this.GetParent());
         }
     }
 
