@@ -21,7 +21,6 @@ public abstract class InputState : Node
         ("move_upright", new Vector2i(1, -1)),
         ("move_downleft", new Vector2i(-1, 1)),
         ("move_downright", new Vector2i(1, 1)),
-        ("move_wait", new Vector2i(0, 0))
     };
 
     // Input States /must/ be in SceneTree. Crawler/InputStates/../[InputState]

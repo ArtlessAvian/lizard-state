@@ -130,6 +130,16 @@ public class MainInputState : InputState
             camera.Zoom = Vector2.One / 2;
         }
 
+        if (ev.IsActionPressed("move_wait"))
+        {
+            Entity player = crawler.Model.GetPlayer();
+            crawler.View.ModelSync();
+            crawler.Model.SetPlayerAction(new MoveAction().SetTarget(player.position));
+            crawler.notPlayerTurn = true;
+            cursor.Hide();
+            return true;
+        }
+
         foreach ((string name, Vector2i dir) tuple in DIRECTIONS)
         {
             if (ev.IsActionPressed(tuple.name, true))
@@ -231,6 +241,8 @@ public class MainInputState : InputState
 
     public override void PollInput(Crawler crawler)
     {
+        if (crawler.View.impatientMode) { return; }
+
         foreach ((string name, Vector2i dir) tuple in DIRECTIONS)
         {
             if (Input.IsActionPressed(tuple.name, true))
