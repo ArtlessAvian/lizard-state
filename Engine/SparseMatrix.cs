@@ -2,6 +2,7 @@ using Godot;
 using GDArray = Godot.Collections.Array;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace LizardState.Engine
 {
@@ -14,7 +15,6 @@ namespace LizardState.Engine
         private const int CELL_LEN = 1 << CELL_LEN_POW;
         private const int CELL_AREA = 1 << (2 * CELL_LEN_POW);
 
-        // If I were crazy, I'd do Dict<x, Dict<y, chunk>>. Hmm.
         [Export]
         private Dictionary<Vector2, int[]> chunks = new Dictionary<Vector2, int[]>();
 
@@ -128,37 +128,13 @@ namespace LizardState.Engine
         [Obsolete("Prefer Iterator versions to avoid marshalling. (Unless calling from Godot)")]
         public GDArray GetUsedCells()
         {
-            GDArray usedCells = new GDArray();
-            foreach (Vector2 chunkId in chunks.Keys)
-            {
-                for (int i = 0; i < CELL_AREA; i++)
-                {
-                    if (chunks[chunkId][i] != -1)
-                    {
-                        Vector2 cell = ChunkAndIndexToCell(chunkId, i);
-                        usedCells.Add(cell);
-                    }
-                }
-            }
-            return usedCells;
+            return new GDArray(GetUsedCellsIterator().Select(x => new Vector2(x.x, x.y)));
         }
 
         [Obsolete("Prefer Iterator versions to avoid marshalling. (Unless calling from Godot)")]
         public GDArray GetUsedCellsById(int id)
         {
-            GDArray usedCells = new GDArray();
-            foreach (Vector2 chunkId in chunks.Keys)
-            {
-                for (int i = 0; i < CELL_AREA; i++)
-                {
-                    if (chunks[chunkId][i] == id)
-                    {
-                        Vector2 cell = ChunkAndIndexToCell(chunkId, i);
-                        usedCells.Add(cell);
-                    }
-                }
-            }
-            return usedCells;
+            return new GDArray(GetUsedCellsByIdIterator(id).Select(x => new Vector2(x.x, x.y)));
         }
 
         public IEnumerable<AbsolutePosition> GetUsedCellsIterator()
@@ -186,6 +162,20 @@ namespace LizardState.Engine
                     {
                         Vector2 cell = ChunkAndIndexToCell(chunkId, i);
                         yield return new AbsolutePosition((int)cell.x, (int)cell.y);
+                    }
+                }
+            }
+        }
+
+        public void FindAndReplace(int find, int replace)
+        {
+            foreach (Vector2 chunkId in chunks.Keys)
+            {
+                for (int i = 0; i < CELL_AREA; i++)
+                {
+                    if (chunks[chunkId][i] == find)
+                    {
+                        chunks[chunkId][i] = replace;
                     }
                 }
             }
