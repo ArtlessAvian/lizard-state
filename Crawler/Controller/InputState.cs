@@ -31,7 +31,7 @@ public abstract class InputState : Node
 
     // Passing crawler is convenience.
     // (you can just traverse the tree for crawler, model, and view)
-    public abstract void Enter(Crawler crawler);
-    public abstract void HandleInput(Crawler crawler, InputEvent ev);
-    public abstract void Exit(Crawler crawler);
+    public virtual void Enter(Crawler crawler) { }
+    public virtual void HandleInput(Crawler crawler, InputEvent ev) { }
+    public virtual void Exit(Crawler crawler) { }
 }
