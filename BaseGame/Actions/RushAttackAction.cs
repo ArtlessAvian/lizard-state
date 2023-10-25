@@ -33,6 +33,8 @@ public class RushAttackAction : CrawlAction
         AbsolutePosition targetPos = GetTargetPos(e.position);
         Entity targeted = model.GetEntityAt(targetPos);
 
+        bool quiet = false;
+
         do
         {
             // TODO: Move into entity?
@@ -45,8 +47,10 @@ public class RushAttackAction : CrawlAction
                 {"subject", e.id},
                 {"action", "AttackActive"},
                 {"args", new Vector2(targetPos.x, targetPos.y)},
-                {"flavorTags", new Array{"Bump"}}
+                {"flavorTags", new Array{"Bump"}},
+                {"quiet", quiet},
             });
+            quiet = true;
 
             model.CoolerApiEvent(new Dictionary(){
                 {"subject", e.id},
