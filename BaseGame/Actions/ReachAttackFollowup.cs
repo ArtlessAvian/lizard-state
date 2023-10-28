@@ -36,6 +36,13 @@ public class ReachAttackFollowup : CrawlAction
             if (TimestampBefore((model.time, e.id), (targeted.blockingUntil, targeted.id)) && GD.Randf() < data.blockChance)
             {
                 // block!
+                model.CoolerApiEvent(new Dictionary(){
+                    {"subject", targeted.id},
+                    {"action", "Block"},
+                    {"object", e.id},
+                    {"flavorTags", data.flavorTags},
+                });
+
                 model.Debug($"{targeted.species.displayName} blocks!");
             }
             else
