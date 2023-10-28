@@ -131,7 +131,7 @@ public class Crawler : Node2D, InputStateMachine
     private bool IsAcceptingInput()
     {
         if (notPlayerTurn) { return false; }
-        if (View.eventQueue.Count > 0) { return false; }
+        if (!View.IsQueueClear()) { return false; }
         if (View.done) { return false; }
         return true;
     }

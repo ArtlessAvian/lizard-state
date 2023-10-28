@@ -14,7 +14,7 @@ public partial class View : Node2D
     public Model model;
 
     // Possibly bad performance on dequeue. Not relevant yet.
-    public Array<Dictionary> eventQueue = new Array<Dictionary>();
+    public Array<Reference> eventQueue = new Array<Reference>();
     public Dictionary<int, Actor> roles = new Dictionary<int, Actor>();
     public Dictionary<int, Node2D> items = new Dictionary<int, Node2D>();
 
@@ -22,7 +22,6 @@ public partial class View : Node2D
     public bool queueSync = false;
 
     Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
-    private Reference handlerInstance = null;
     Array<Reference> runningHandlers = new Array<Reference>();
 
     int viewTime;
@@ -90,7 +89,19 @@ public partial class View : Node2D
         TileMap telegraphed = GetNode<TileMap>("Map/Floors/TelegraphedAttacks");
         telegraphed.Hide();
 
-        eventQueue.Add(@event);
+        string action = @event["action"] as string;
+
+        var handlerScript = GetHandlerScriptOrNull(action);
+        if (handlerScript is GDScript)
+        {
+            Reference handlerInstance = (Reference)handlerScript.New();
+            handlerInstance.Call("init2", this, @event);
+            eventQueue.Add(handlerInstance);
+        }
+        else
+        {
+            GD.PushWarning("No handler for event " + action);
+        }
 
         // Everything gets sent to the logs.
         RichTextLabel eventLog = GetNode<RichTextLabel>("UILayer/Debug/EventLog");
@@ -119,6 +130,8 @@ public partial class View : Node2D
         {
             if (runningHandlers[i].Call("is_done") as bool? == true)
             {
+                viewTime = (int)((Dictionary)runningHandlers[i].Get("event"))["timestamp"];
+                GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
                 runningHandlers.RemoveAt(i);
             }
         }
@@ -154,7 +167,7 @@ public partial class View : Node2D
         return eventQueue.Count == 0;
     }
 
-    public void ClearQueue()
+    private void ClearQueue()
     {
         if (skipAllAnimation)
         {
@@ -166,45 +179,24 @@ public partial class View : Node2D
         {
             FindNode("WaitPrompt").Set("visible", true);
 
-            Dictionary ev = eventQueue[0];
-            string action = ev["action"] as string;
+            Reference handlerInstance = eventQueue[0];
 
-            // Try to create the handler, if not already created
-            if (handlerInstance is null)
+            if (runningHandlers.Count > 0)
             {
-                var handlerScript = GetHandlerScriptOrNull(action);
-                if (handlerScript is GDScript)
+                object can_concurrent = handlerInstance.Call("can_run_concurrently_with", runningHandlers);
+                if (!impatientMode && can_concurrent as bool? == false)
                 {
-                    handlerInstance = (Reference)handlerScript.New();
-                    handlerInstance.Call("init2", this, ev);
+                    break; // out of the while
                 }
             }
 
-            // todon't: merge this with previous if statement. the logic is different.
-            if (handlerInstance is object)
+            handlerInstance.Call("run");
+            if (handlerInstance.Call("is_done") as bool? == false)
             {
-                if (runningHandlers.Count > 0)
-                {
-                    object can_concurrent = handlerInstance.Call("can_run_concurrently_with", runningHandlers);
-                    if (!impatientMode && can_concurrent as bool? == false)
-                    {
-                        break; // out of the while
-                    }
-                }
-
-                handlerInstance.Call("run");
-                if (handlerInstance.Call("is_done") as bool? == false)
-                {
-                    runningHandlers.Add(handlerInstance);
-                }
+                runningHandlers.Add(handlerInstance);
             }
 
-            // consume the event
             eventQueue.RemoveAt(0);
-            handlerInstance = null;
-
-            viewTime = (int)ev["timestamp"];
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
         }
     }
 
