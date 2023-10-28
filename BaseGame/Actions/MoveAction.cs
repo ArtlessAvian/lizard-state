@@ -48,6 +48,7 @@ public class MoveAction : CrawlAction
     private void DoNothing(Model model, Entity e)
     {
         e.nextMove += 1;
+        e.blockingUntil = e.nextMove;
         // model.CoolerApiEvent(e.id, "Move", new Vector2(e.position.x, e.position.y));
     }
 

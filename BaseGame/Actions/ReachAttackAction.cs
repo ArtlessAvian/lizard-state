@@ -31,9 +31,7 @@ public class ReachAttackAction : CrawlAction
         }
 
         e.nextMove += startup;
-        CSharpScript followup = GD.Load("res://BaseGame/Actions/ReachAttackFollowup.cs") as CSharpScript;
-        e.queuedAction = followup.New(this) as CrawlAction;
-        e.queuedAction = e.queuedAction.SetTarget(targetPos);
+        e.queuedAction = ReachAttackFollowup.New(this).SetTarget(targetPos);
 
         return true;
     }

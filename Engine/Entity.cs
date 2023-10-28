@@ -39,6 +39,8 @@ namespace LizardState.Engine
         // as player, client should read and resubmit with force=true.
         [Export] public CrawlAction needsConfirmAction;
 
+        [Export] public int blockingUntil = 0;
+
         // Need a sum type that isn't garbo.
         // Imagine a rust enum with OK(Option<Action>), that being queuedAction?
         // If I were a braver person I'd use this everywhere.

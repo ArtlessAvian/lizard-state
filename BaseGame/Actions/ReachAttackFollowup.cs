@@ -9,8 +9,12 @@ public class ReachAttackFollowup : CrawlAction
     [Export]
     private ReachAttackAction data;
 
-    // not sure if this is the right access modifier.
-    public ReachAttackFollowup(ReachAttackAction data)
+    public static ReachAttackFollowup New(ReachAttackAction data)
+    {
+        return (ReachAttackFollowup)GD.Load<CSharpScript>("res://BaseGame/Actions/ReachAttackFollowup.cs").New(data);
+    }
+
+    private ReachAttackFollowup(ReachAttackAction data)
     {
         this.data = data;
     }
@@ -29,10 +33,10 @@ public class ReachAttackFollowup : CrawlAction
 
         if (GetHitEntity(model, e, targetPos) is Entity targeted)
         {
-            if (GD.Randf() < data.blockChance)
+            if (TimestampBefore((model.time, e.id), (targeted.blockingUntil, targeted.id)) && GD.Randf() < data.blockChance)
             {
                 // block!
-                model.Debug($"{e.species.displayName} missed!");
+                model.Debug($"{targeted.species.displayName} blocks!");
             }
             else
             {
@@ -99,5 +103,17 @@ public class ReachAttackFollowup : CrawlAction
                 {"swept", data.sweeps},
                 {"flavorTags", data.flavorTags},
             });
+    }
+
+    // Elementwise compare, like Python's default tuple compare.
+    // (Yes, there's a nice one line expression. It's messy though.)
+    private static bool TimestampBefore((int turn, int turntaker) a, (int turn, int turntaker) b)
+    {
+        if (a.turn < b.turn) { return true; }
+        if (a.turn == b.turn)
+        {
+            if (a.turntaker < b.turntaker) { return true; }
+        }
+        return false;
     }
 }
