@@ -221,6 +221,11 @@ public class MainInputState : InputState
                     return true;
                 }
             }
+            if (evMouseButton.ButtonIndex == (int)ButtonList.Middle && evMouseButton.IsPressed())
+            {
+                crawler.ChangeState(this.GetNode<InputState>("Look"));
+                return true;
+            }
         }
 
         return false;

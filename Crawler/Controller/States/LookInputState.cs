@@ -5,15 +5,15 @@ public class LookInputState : InputState
 {
     Camera2D camera;
     Cursor cursor;
-    float oldZoom = 2;
+    // float oldZoom = 2;
 
     public override void Enter(Crawler crawler)
     {
         camera = crawler.View.GetNode<Camera2D>("Camera2D");
         cursor = crawler.GetNode<Cursor>("Cursor");
 
-        oldZoom = camera.Zoom.x;
-        camera.Zoom = Vector2.One;
+        // oldZoom = camera.Zoom.x;
+        // camera.Zoom = Vector2.One;
 
         cursor.Show();
         cursor.targetPosition = crawler.Model.GetPlayer().position;
@@ -21,7 +21,7 @@ public class LookInputState : InputState
 
     public override void Exit(Crawler crawler)
     {
-        camera.Zoom = Vector2.One * oldZoom;
+        // camera.Zoom = Vector2.One * oldZoom;
         camera.Offset = Vector2.Zero;
 
         cursor.Hide();
@@ -49,6 +49,20 @@ public class LookInputState : InputState
             crawler.Model.SetPlayerAction(new GotoAction().SetTarget(cursor.targetPosition));
             crawler.notPlayerTurn = true;
             crawler.ChangeState(GetNode<AutoConfirmInputState>("AutoConfirm"));
+        }
+
+        if (ev is InputEventMouseMotion motion)
+        {
+            if ((motion.ButtonMask & (int)ButtonList.MaskMiddle) > 0)
+            {
+                camera.Offset -= motion.Relative * camera.Zoom;
+            }
+
+            Vector2 mousePos = crawler.GetGlobalMousePosition();
+            cursor.targetPosition = new AbsolutePosition(
+                Mathf.RoundToInt(mousePos.x / View.TILESIZE.x),
+                Mathf.RoundToInt(mousePos.y / View.TILESIZE.y)
+            );
         }
     }
 }
