@@ -64,25 +64,6 @@ public partial class View : Node2D
             createItemEvent.Call("run");
         }
 
-        VisionSystem vision = model.GetSystem<VisionSystem>();
-        FogOfWarSystem fog = model.GetSystem<FogOfWarSystem>();
-
-        // Copy map knowledge.
-        MapView mapView = GetNode<MapView>("Map");
-        mapView.ModelSync(model.map, fog);
-
-        // TODO: read the info directly.
-        foreach (Entity e in model.GetEntities())
-        {
-            if (e.providesVision)
-            {
-                fog.RefreshVision(model, e);
-                vision.RefreshVision(model, e);
-            }
-        }
-
-        viewTime = model.time;
-
         ModelSync();
     }
 
@@ -122,6 +103,44 @@ public partial class View : Node2D
 
     public override void _Process(float delta)
     {
+        // Animation Logic
+        ClearRunningEvents();
+        DequeueAndRunEvents();
+        if (queueSync && !this.AnyActorAnimating() && IsQueueClear())
+        {
+            queueSync = false;
+            ModelSync();
+        }
+
+        // Other View Logic
+
+        // Debug Panels
+        DebugDisplayRunningEvents();
+        DebugDisplayAnimatingActors();
+    }
+
+    private void ClearRunningEvents()
+    {
+        // if (!Input.IsActionJustPressed("ui_select")) { return; }
+
+        for (int i = runningHandlers.Count - 1; i >= 0; i--)
+        {
+            if (runningHandlers[i].Call("is_done") as bool? == true)
+            {
+                viewTime = (int)((Dictionary)runningHandlers[i].Get("event"))["timestamp"];
+                GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
+                runningHandlers.RemoveAt(i);
+            }
+        }
+
+        if (runningHandlers.Count == 0)
+        {
+            incompleteHandlers.Clear();
+        }
+    }
+
+    private void DebugDisplayRunningEvents()
+    {
         RichTextLabel runningLabel = GetNode<RichTextLabel>("UILayer/Debug/RunningHandlers");
         runningLabel.Clear();
         for (int i = 0; i < incompleteHandlers.Count; i++)
@@ -138,41 +157,10 @@ public partial class View : Node2D
         {
             runningLabel.AppendBbcode((handler.GetScript() as Resource).ResourcePath + "\n");
         }
+    }
 
-        // if (Input.IsActionJustPressed("ui_select")) {
-
-        for (int i = runningHandlers.Count - 1; i >= 0; i--)
-        {
-            if (runningHandlers[i].Call("is_done") as bool? == true)
-            {
-                viewTime = (int)((Dictionary)runningHandlers[i].Get("event"))["timestamp"];
-                GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
-                runningHandlers.RemoveAt(i);
-            }
-        }
-
-        if (runningHandlers.Count == 0)
-        {
-            incompleteHandlers.Clear();
-        }
-
-        // } // If
-
-        if (!IsQueueClear())
-        {
-            this.ClearQueue();
-        }
-
-        if (queueSync && !this.AnyActorAnimating() && IsQueueClear())
-        {
-            queueSync = false;
-
-            viewTime = model.time;
-            GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime + " (sync!)";
-
-            this.ModelSync();
-        }
-
+    private void DebugDisplayAnimatingActors()
+    {
         RichTextLabel animatingLabel = GetNode<RichTextLabel>("UILayer/Debug/AnimatingActors");
         animatingLabel.Clear();
         foreach (Actor a in roles.Values)
@@ -189,7 +177,7 @@ public partial class View : Node2D
         return eventQueue.Count == 0;
     }
 
-    private void ClearQueue()
+    private void DequeueAndRunEvents()
     {
         if (skipAllAnimation)
         {
@@ -262,6 +250,9 @@ public partial class View : Node2D
 
     public void ModelSync()
     {
+        viewTime = model.time;
+        GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime + " (sync!)";
+
         foreach (Actor a in roles.Values)
         {
             a.ModelSync(viewTime);
