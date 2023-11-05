@@ -20,11 +20,6 @@ func run():
 
 	view.find_node("Actors").add_child(actor)
 
-	# HACK: lmao
-	if entity.id == 0:
-		view.playerActor = actor
-		view.get_node("Camera2D").focus = actor
-
 	# Create status if allied
 	if entity.team == 0:
 		var status = status_scene.instance()

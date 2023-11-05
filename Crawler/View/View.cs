@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using Godot;
-using Godot.Collections;
 using LizardState.Engine;
 
 /// <summary>
@@ -12,29 +12,29 @@ public partial class View : Node2D
     public static Vector2 TILESIZE = new Vector2(24, 16);
 
     public Model model;
+    public bool done = false;
 
-    // Possibly bad performance on dequeue. Not relevant yet.
-    public Array<Reference> eventQueue = new Array<Reference>();
-    public Dictionary<int, Actor> roles = new Dictionary<int, Actor>();
-    public Dictionary<int, Node2D> items = new Dictionary<int, Node2D>();
-
-    // Animation Statefulness
     public bool queueSync = false;
-
-    Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
-    private Array<Reference> runningHandlers = new Array<Reference>();
-    // All these handlers can accept children (assuming model correctly sends events in order).
-    // These are the most recent handlers at each depth.
-    private Array<Reference> incompleteHandlers = new Array<Reference>();
-
     int viewTime;
 
-    // conveniences
-    [Export] public Actor playerActor;
-    // super buggy but convenient
+    // Godot collections explicitly spelled out.
+    // Also feel free to read these from Godot / from an EventHandler
 
+    public Godot.Collections.Dictionary<int, Actor> roles = new Godot.Collections.Dictionary<int, Actor>();
+    public Godot.Collections.Dictionary<int, Node2D> items = new Godot.Collections.Dictionary<int, Node2D>();
+
+    // Do not access below collections if you're from Godot / EventHandler.
+
+    public Queue<Reference> eventQueue = new Queue<Reference>(); // If you're reading this you're a Queue<T> ;)
+    // Memoized loaded scripts. Values can be null :skull:
+    Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
+    private List<Reference> runningHandlers = new List<Reference>();
+    // All these handlers can accept children (assuming model correctly sends events in order).
+    // These are the most recent handlers at each depth.
+    private List<Reference> incompleteHandlers = new List<Reference>();
+
+    // super buggy but convenient
     [Export] public bool impatientMode = false;
-    [Export] public bool done = false;
     [Export] public bool skipAllAnimation = false;
 
     public void ConnectToModel(Model model)
@@ -49,7 +49,7 @@ public partial class View : Node2D
         GDScript createScript = GetHandlerScriptOrNull("Create");
         foreach (Entity e in model.GetEntities())
         {
-            Dictionary fakeEvent = new Dictionary() { { "args", e } };
+            Godot.Collections.Dictionary fakeEvent = new Godot.Collections.Dictionary() { { "args", e } };
             Reference createEvent = (Reference)createScript.New();
             createEvent.Call("init2", this, fakeEvent);
             createEvent.Call("run");
@@ -58,7 +58,7 @@ public partial class View : Node2D
         GDScript createItemScript = GetHandlerScriptOrNull("CreateItem");
         foreach (FloorItem item in model.GetFloorItems())
         {
-            Dictionary fakeEvent = new Dictionary() { { "args", item } };
+            Godot.Collections.Dictionary fakeEvent = new Godot.Collections.Dictionary() { { "args", item } };
             Reference createItemEvent = (Reference)createItemScript.New();
             createItemEvent.Call("init2", this, fakeEvent);
             createItemEvent.Call("run");
@@ -67,7 +67,7 @@ public partial class View : Node2D
         ModelSync();
     }
 
-    public void OnModelNewEvent(Dictionary @event)
+    public void OnModelNewEvent(Godot.Collections.Dictionary @event)
     {
         // hide stuff on sync.
         TileMap telegraphed = GetNode<TileMap>("Map/Floors/TelegraphedAttacks");
@@ -80,7 +80,7 @@ public partial class View : Node2D
         {
             Reference handlerInstance = (Reference)handlerScript.New();
             handlerInstance.Call("init2", this, @event);
-            eventQueue.Add(handlerInstance);
+            eventQueue.Enqueue(handlerInstance);
         }
         else
         {
@@ -127,7 +127,7 @@ public partial class View : Node2D
         {
             if (runningHandlers[i].Call("is_done") as bool? == true)
             {
-                viewTime = (int)((Dictionary)runningHandlers[i].Get("event"))["timestamp"];
+                viewTime = (int)((Godot.Collections.Dictionary)runningHandlers[i].Get("event"))["timestamp"];
                 GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
                 runningHandlers.RemoveAt(i);
             }
@@ -189,7 +189,7 @@ public partial class View : Node2D
         {
             FindNode("WaitPrompt").Set("visible", true);
 
-            Reference handlerInstance = eventQueue[0];
+            Reference handlerInstance = eventQueue.Peek();
 
             if (incompleteHandlers.Count > 0 && !impatientMode)
             {
@@ -199,14 +199,14 @@ public partial class View : Node2D
                     if (incompleteHandlers[i].Call("can_accept_child", handlerInstance) as bool? == true)
                     {
                         // slice off [:i]
-                        incompleteHandlers.Resize(i + 1);
+                        incompleteHandlers.RemoveRange(i + 1, incompleteHandlers.Count - i - 1);
                         success = true;
                         break; // out of for.
                     }
                     if (handlerInstance.Call("can_be_child", incompleteHandlers[i]) as bool? == true)
                     {
                         // slice off [:i]
-                        incompleteHandlers.Resize(i + 1);
+                        incompleteHandlers.RemoveRange(i + 1, incompleteHandlers.Count - i - 1);
                         success = true;
                         break; // out of for.
                     }
@@ -224,7 +224,7 @@ public partial class View : Node2D
                 runningHandlers.Add(handlerInstance);
             }
 
-            eventQueue.RemoveAt(0);
+            eventQueue.Dequeue();
         }
     }
 
