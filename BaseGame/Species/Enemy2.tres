@@ -10,4 +10,4 @@ script = ExtResource( 1 )
 ai = ExtResource( 3 )
 abilities = [ ExtResource( 2 ) ]
 maxHealth = 10
-displayName = "Enemy2"
+displayName = "Comodo Dragon"

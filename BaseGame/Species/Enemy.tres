@@ -11,4 +11,4 @@ ai = ExtResource( 3 )
 bumpAttack = ExtResource( 2 )
 abilities = [  ]
 maxHealth = 10
-displayName = "Enemy"
+displayName = "Okay Gecko"
