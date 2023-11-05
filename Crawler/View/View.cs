@@ -22,7 +22,10 @@ public partial class View : Node2D
     public bool queueSync = false;
 
     Dictionary<string, GDScript> handlerScripts = new Dictionary<string, GDScript>();
-    Array<Reference> runningHandlers = new Array<Reference>();
+    private Array<Reference> runningHandlers = new Array<Reference>();
+    // All these handlers can accept children (assuming model correctly sends events in order).
+    // These are the most recent handlers at each depth.
+    private Array<Reference> incompleteHandlers = new Array<Reference>();
 
     int viewTime;
 
@@ -121,10 +124,22 @@ public partial class View : Node2D
     {
         RichTextLabel runningLabel = GetNode<RichTextLabel>("UILayer/Debug/RunningHandlers");
         runningLabel.Clear();
+        for (int i = 0; i < incompleteHandlers.Count; i++)
+        {
+            Reference handler = incompleteHandlers[i];
+            runningLabel.AppendBbcode(new string('-', i) + (handler.GetScript() as Resource).ResourcePath + "\n");
+        }
+        for (int i = incompleteHandlers.Count; i < 10; i++)
+        {
+            runningLabel.AppendBbcode("\n");
+        }
+
         foreach (Reference handler in runningHandlers)
         {
             runningLabel.AppendBbcode((handler.GetScript() as Resource).ResourcePath + "\n");
         }
+
+        // if (Input.IsActionJustPressed("ui_select")) {
 
         for (int i = runningHandlers.Count - 1; i >= 0; i--)
         {
@@ -135,6 +150,13 @@ public partial class View : Node2D
                 runningHandlers.RemoveAt(i);
             }
         }
+
+        if (runningHandlers.Count == 0)
+        {
+            incompleteHandlers.Clear();
+        }
+
+        // } // If
 
         if (!IsQueueClear())
         {
@@ -181,18 +203,36 @@ public partial class View : Node2D
 
             Reference handlerInstance = eventQueue[0];
 
-            if (runningHandlers.Count > 0)
+            if (incompleteHandlers.Count > 0 && !impatientMode)
             {
-                object can_concurrent = handlerInstance.Call("can_run_concurrently_with", runningHandlers);
-                if (!impatientMode && can_concurrent as bool? == false)
+                bool success = false;
+                for (int i = incompleteHandlers.Count - 1; i >= 0; i--)
                 {
-                    break; // out of the while
+                    if (incompleteHandlers[i].Call("can_accept_child", handlerInstance) as bool? == true)
+                    {
+                        // slice off [:i]
+                        incompleteHandlers.Resize(i + 1);
+                        success = true;
+                        break; // out of for.
+                    }
+                    if (handlerInstance.Call("can_be_child", incompleteHandlers[i]) as bool? == true)
+                    {
+                        // slice off [:i]
+                        incompleteHandlers.Resize(i + 1);
+                        success = true;
+                        break; // out of for.
+                    }
+                }
+                if (!success)
+                {
+                    break; // out of while.
                 }
             }
 
             handlerInstance.Call("run");
             if (handlerInstance.Call("is_done") as bool? == false)
             {
+                incompleteHandlers.Add(handlerInstance);
                 runningHandlers.Add(handlerInstance);
             }
 

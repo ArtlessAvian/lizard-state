@@ -15,9 +15,23 @@ func init2(vieww, eventt):
 	self.event = eventt
 
 
+# Deprecated.
 # Returns whether this handler can run with all passed handlers
 # Assumed false unless overridden
 func can_run_concurrently_with(handlers: Array) -> bool:
+	return false
+
+
+# Child should check for parentability, rather than parent should check for childability.
+# Assumed false unless overridden.
+func can_accept_child(child: Reference) -> bool:
+	return false
+
+
+# Prefer `can_accept_child` when checking events in the same codebase.
+# Use this only for external code linking back in. (Like for modding I guess?) 
+# Assumed false unless overriden.
+func can_be_child(parent: Reference) -> bool:
 	return false
 
 
@@ -31,13 +45,6 @@ func run():
 # poll for done-ness.
 func is_done():
 	return not view.AnyActorAnimating()
-
-
-# used so other handlers can *other* handlers can run currently with you.
-# (compare to can_run_concurrently_with, which you decide which others you can run with.)
-#
-func get_importance():
-	return 999
 
 
 ## Helpers

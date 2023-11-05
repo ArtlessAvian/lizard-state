@@ -1,6 +1,16 @@
 extends "../EventHandler.gd"
 
-var done = false
+const BLOCK_EVENT = preload("res://Crawler/View/Events/BlockEvent.gd")
+const HIT_EVENT = preload("res://Crawler/View/Events/HitEvent.gd")
+const KNOCKBACK_EVENT = preload("res://Crawler/View/Events/KnockbackEvent.gd")
+const KNOCKDOWN_EVENT = preload("res://Crawler/View/Events/KnockdownEvent.gd")
+
+var accept_children = false
+
+func can_accept_child(child: Reference) -> bool:
+	if accept_children and child.get_script() in [BLOCK_EVENT, HIT_EVENT, KNOCKBACK_EVENT, KNOCKDOWN_EVENT]:
+		return true
+	return false
 
 
 func run():
@@ -26,16 +36,11 @@ func run():
 	if not ("quiet" in event) or !event["quiet"]:
 		add_message("{subject} attacks!")
 
-	# wait for subject event to finish.
-	subject.connect("attack_active", self, "on_subject_attack_active_signal")
-	# in parallel, wait a second as a failsafe.
-	yield(subject.get_tree().create_timer(1), "timeout")
-	done = true
-
-
-func on_subject_attack_active_signal():
-	done = true
+	yield(subject, "attack_active")
+	accept_children = true
 
 
 func is_done():
-	return done
+	var subject = roles[event["subject"]]
+	var animation: AnimationPlayer = subject.get_node("AnimationPlayer")
+	return !animation.is_playing()

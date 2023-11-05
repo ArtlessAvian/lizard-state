@@ -4,18 +4,6 @@ extends "../EventHandler.gd"
 
 var damage_popup_scene: PackedScene = preload("res://Crawler/View/Actor/DamagePopup.tscn")
 
-const ATTACK_ACTIVE_EVENT = preload("res://Crawler/View/Events/AttackActiveEvent.gd")
-const HIT_EVENT = preload("res://Crawler/View/Events/HitEvent.gd")
-const KNOCKBACK_EVENT = preload("res://Crawler/View/Events/KnockbackEvent.gd")
-const KNOCKDOWN_EVENT = preload("res://Crawler/View/Events/KnockdownEvent.gd")
-
-func can_run_concurrently_with(handlers):
-	for handler in handlers:
-		if !handler.get_script() in [self.get_script(), ATTACK_ACTIVE_EVENT, HIT_EVENT, KNOCKBACK_EVENT, KNOCKDOWN_EVENT]:
-			return false
-	return true
-
-
 func run():
 	var subject = roles[event["subject"]]
 	var object = roles[event["object"]]

@@ -1,13 +1,13 @@
 extends "../EventHandler.gd"
 
-
-func can_run_concurrently_with(handlers):
-	for handler in handlers:
-		if handler.get_script() != self.get_script():
+func can_accept_child(handler) -> bool:
+	if handler.get_script() == self.get_script():
+		if roles[handler.event["subject"]].movementTween != null and roles[handler.event["subject"]].movementTween.is_running():
 			return false
-		elif handler.event["subject"] == self.event["subject"]:
-			return false
-	return true
+		return true
+	if handler.get_script() == load("res://Crawler/View/Events/SeeMapEvent.gd"):
+		return true
+	return false
 
 
 func run():
