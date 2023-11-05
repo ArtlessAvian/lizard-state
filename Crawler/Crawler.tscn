@@ -167,6 +167,26 @@ margin_right = 40.0
 margin_bottom = 22.0
 text = "bingus"
 
+[node name="Look" type="Panel" parent="Modals"]
+visible = false
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = -120.0
+margin_right = 650.0
+margin_bottom = -46.0
+
+[node name="LookLabel" type="RichTextLabel" parent="Modals/Look"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+bbcode_enabled = true
+bbcode_text = "Examining: something!
+(press x to exit)"
+text = "Examining: something!
+(press x to exit)"
+scroll_active = false
+deselect_on_focus_loss_enabled = false
+
 [node name="InputStates" type="Node" parent="."]
 
 [node name="Main" type="Node" parent="InputStates"]

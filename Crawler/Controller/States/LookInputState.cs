@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 using LizardState.Engine;
 
@@ -5,6 +6,9 @@ public class LookInputState : InputState
 {
     Camera2D camera;
     Cursor cursor;
+
+    RichTextLabel label;
+    string labelText = "Examining: {0}\n(press x to exit)";
     // float oldZoom = 2;
 
     public override void Enter(Crawler crawler)
@@ -12,6 +16,8 @@ public class LookInputState : InputState
         camera = crawler.View.GetNode<Camera2D>("Camera2D");
         cursor = crawler.GetNode<Cursor>("Cursor");
 
+        crawler.GetNode<Control>("Modals/Look").Show();
+        label = crawler.GetNode<RichTextLabel>("Modals/Look/LookLabel");
         // oldZoom = camera.Zoom.x;
         // camera.Zoom = Vector2.One;
 
@@ -23,6 +29,8 @@ public class LookInputState : InputState
     {
         // camera.Zoom = Vector2.One * oldZoom;
         camera.Offset = Vector2.Zero;
+
+        crawler.GetNode<Control>("Modals/Look").Hide();
 
         cursor.Hide();
     }
@@ -63,6 +71,20 @@ public class LookInputState : InputState
                 Mathf.RoundToInt(mousePos.x / View.TILESIZE.x),
                 Mathf.RoundToInt(mousePos.y / View.TILESIZE.y)
             );
+        }
+
+        // TODO: Only set when cursor dirty.
+        if (crawler.Model.GetEntityAt(cursor.targetPosition) is Entity e)
+        {
+            label.BbcodeText = string.Format(labelText, e.species.displayName);
+        }
+        else if (crawler.Model.GetFloorItems().FirstOrDefault(x => x.position == cursor.targetPosition) is FloorItem item)
+        {
+            label.BbcodeText = string.Format(labelText, item.ResourceName.Length != 0 ? item.ResourceName : "something!");
+        }
+        else
+        {
+            label.BbcodeText = string.Format(labelText, "nothing!");
         }
     }
 }
