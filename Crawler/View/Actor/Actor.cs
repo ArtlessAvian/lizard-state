@@ -101,7 +101,16 @@ public partial class Actor : Node2D
                 }
             case Entity.EntityState.STUN:
                 {
-                    aniSprite.Frame = 1;
+                    // HACK: Assumes player id is 0.
+                    // See StunStars below.
+                    if (viewTime != role.nextMove)
+                    {
+                        aniSprite.Frame = 1;
+                    }
+                    else
+                    {
+                        aniSprite.Frame = 0;
+                    }
                     break;
                 }
             case Entity.EntityState.KNOCKDOWN:
@@ -123,6 +132,12 @@ public partial class Actor : Node2D
                     break;
                 }
         }
+
+        // HACK: Assumes player id is 0.
+        // Need to think about what STUN state means in the model, and reflect it.
+        // See AnimatedSprite STUN case above.
+        GetNode<Node2D>("StunStars").Set("stars", 2 + role.nextMove - viewTime);
+        GetNode<Node2D>("StunStars").Visible = role.state == Entity.EntityState.STUN && role.nextMove - viewTime > 0;
 
         // TODO: Temporary
         displayName = role.species.displayName;

@@ -127,7 +127,6 @@ public partial class View : Node2D
         {
             if (runningHandlers[i].Call("is_done") as bool? == true)
             {
-                viewTime = (int)((Godot.Collections.Dictionary)runningHandlers[i].Get("event"))["timestamp"];
                 GetNode<RichTextLabel>("UILayer/Time").BbcodeText = "Debug Time: " + viewTime.ToString();
                 runningHandlers.RemoveAt(i);
             }
@@ -223,6 +222,8 @@ public partial class View : Node2D
                 incompleteHandlers.Add(handlerInstance);
                 runningHandlers.Add(handlerInstance);
             }
+
+            viewTime = (int)((Godot.Collections.Dictionary)handlerInstance.Get("event"))["timestamp"];
 
             eventQueue.Dequeue();
         }

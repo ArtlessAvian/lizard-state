@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=2]
+[gd_scene load_steps=71 format=2]
 
 [ext_resource path="res://Crawler/View/Assets/Tiles/Visibility.png" type="Texture" id=1]
 [ext_resource path="res://Crawler/View/Actor/Actor.cs" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://Crawler/View/Assets/smol_dots.png" type="Texture" id=8]
 [ext_resource path="res://Crawler/View/Actor/CrawlerSprite.gd" type="Script" id=9]
 [ext_resource path="res://Crawler/View/Actor/DamagePopup.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Crawler/View/Actor/StunStars.gd" type="Script" id=11]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Attack"
@@ -1113,6 +1114,37 @@ z_index = 50
 
 [node name="DamagePopup" parent="DamagePopups" instance=ExtResource( 10 )]
 visible = false
+
+[node name="StunStars" type="Node2D" parent="."]
+visible = false
+position = Vector2( 0, -25 )
+z_index = 50
+script = ExtResource( 11 )
+period = 5.0
+fps_cap = 3
+span = Vector2( 9, 3 )
+
+[node name="Star" type="Sprite" parent="StunStars"]
+position = Vector2( 9, 0 )
+texture = ExtResource( 6 )
+
+[node name="Star2" type="Sprite" parent="StunStars"]
+position = Vector2( -5, 3 )
+texture = ExtResource( 6 )
+
+[node name="Star3" type="Sprite" parent="StunStars"]
+position = Vector2( -4, -3 )
+texture = ExtResource( 6 )
+
+[node name="Star4" type="Sprite" parent="StunStars"]
+visible = false
+position = Vector2( 9, 0 )
+texture = ExtResource( 6 )
+
+[node name="Star5" type="Sprite" parent="StunStars"]
+visible = false
+position = Vector2( 9, 0 )
+texture = ExtResource( 6 )
 
 [node name="DebugTruePos" type="Sprite" parent="."]
 visible = false
