@@ -28,7 +28,7 @@ public class ConeAttackAction : CrawlAction
         });
 
         // TODO: Pain point, get entities in cone.
-        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 3, targetPos - e.position, 45))
+        foreach (Entity targeted in model.GetEntitiesInCone(e.position, 3, targetPos - e.position, 20))
         {
             if (targeted == e) { continue; }
 
@@ -59,5 +59,5 @@ public class ConeAttackAction : CrawlAction
     }
 
     public override (int, int) Range => (1, 3);
-    public override TargetingType.Type TargetingType => new TargetingType.Cone(45);
+    public override TargetingType.Type TargetingType => new TargetingType.Cone(20);
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using LizardState.Engine;
@@ -264,9 +265,36 @@ public partial class View : Node2D
         telegraphed.Clear();
         foreach (Actor a in roles.Values)
         {
-            if (a.role.queuedAction?.GetTargetPos(a.role.position) is AbsolutePosition pos)
+            if (a.role.queuedAction?.GetTargetPos(a.role.position) is AbsolutePosition target)
             {
-                telegraphed.SetCell(pos.x, pos.y, 3);
+                if (a.role.queuedAction.TargetingType is TargetingType.Ray ray)
+                {
+                    foreach (AbsolutePosition pos in GridHelper.LineBetween(a.role.position, target))
+                    {
+                        telegraphed.SetCell(pos.x, pos.y, 3);
+                    }
+                }
+                else if (a.role.queuedAction.TargetingType is TargetingType.Line line)
+                {
+                    foreach (AbsolutePosition pos in GridHelper.LineBetween(a.role.position, target))
+                    {
+                        telegraphed.SetCell(pos.x, pos.y, 3);
+                    }
+                }
+                else if (a.role.queuedAction.TargetingType is TargetingType.Cone cone)
+                {
+                    foreach (AbsolutePosition pos in VisibilityTrie.ConeOfView(a.role.position, x => false, a.role.queuedAction.Range.max, target - a.role.position, cone.sectorDegrees))
+                    {
+                        telegraphed.SetCell(pos.x, pos.y, 3);
+                    }
+                }
+                else if (a.role.queuedAction.TargetingType is TargetingType.Smite smite)
+                {
+                    foreach (AbsolutePosition pos in VisibilityTrie.FieldOfView(target, x => false, smite.radius))
+                    {
+                        telegraphed.SetCell(pos.x, pos.y, 3);
+                    }
+                }
             }
         }
 

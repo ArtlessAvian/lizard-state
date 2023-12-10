@@ -123,4 +123,6 @@ public class ReachAttackFollowup : CrawlAction
         }
         return false;
     }
+
+    public override TargetingType.Type TargetingType => data.smiteTargeting ? (TargetingType.Type)new TargetingType.Smite { radius = 1 } : new TargetingType.Line { };
 }
