@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace LizardState.Engine
@@ -128,30 +129,45 @@ namespace LizardState.Engine
 
         public static IEnumerable<Vector2i> ConeOfViewRelative(Predicate<Vector2i> isBlocked, float radius, Vector2i direction, float sectorDegrees)
         {
+            // List all tiles on the square with given radius.
+            HashSet<Vector2i> allTargets = new HashSet<Vector2i>();
             for (int octant = 0; octant < 8; octant++)
             {
-                List<TrieNode> stack = new List<TrieNode> { origin };
-                while (stack.Count > 0)
+                for (int dy = 0; dy <= radius; dy++)
                 {
-                    TrieNode current = stack[stack.Count - 1]; // TIL the hat operator ^0
-                    stack.RemoveAt(stack.Count - 1);
+                    Vector2i targetRelative = GridHelper.DeOctantify((int)radius, dy, octant);
+                    allTargets.Add(targetRelative);
+                }
+            }
 
-                    if (current == null || GridHelper.Distance(current.x, current.y) > radius)
+            // Find the top tiles along the arc.
+            int arcLength = (int)Math.Ceiling(radius * sectorDegrees * SquareSectorHelper.FULL_REVOLUTION / 360f);
+            // attackers can have a little symmetry as a treat
+            if (arcLength % 2 == 0) { arcLength++; }
+
+            var closestTargets = allTargets.OrderBy(target => SquareSectorHelper.AngleBetween(target.x, target.y, direction.x, direction.y))
+                                           .Take(arcLength);
+
+            foreach (Vector2i targetRelative in closestTargets)
+            {
+                (int _, int dy, int octant) = GridHelper.Octantify(targetRelative);
+                foreach (TrieNode origin in reverse[((int)radius, dy)])
+                {
+                    List<Vector2i> pending = new List<Vector2i>();
+                    TrieNode current = origin;
+                    while (current.x != 0 || current.y != 0)
                     {
-                        continue;
+                        Vector2i currentRelative = GridHelper.DeOctantify(current.x, current.y, octant);
+                        if (isBlocked(currentRelative))
+                        {
+                            pending.Clear();
+                        }
+                        pending.Add(currentRelative);
+                        current = current.parent;
                     }
-
-                    Vector2i relativePos = GridHelper.DeOctantify(current.x, current.y, octant);
-                    if (TileInConeRelative(relativePos, direction, sectorDegrees))
+                    foreach (Vector2i el in pending)
                     {
-                        yield return relativePos;
-                    }
-
-                    if (!isBlocked(relativePos))
-                    {
-                        stack.Add(current.straight);
-                        stack.Add(current.diag);
-                        stack.Add(current.up);
+                        yield return el;
                     }
                 }
             }
