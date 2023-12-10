@@ -173,29 +173,6 @@ namespace LizardState.Engine
             }
         }
 
-        public static bool TileInConeRelative(Vector2i relative, Vector2i direction, float sectorDegrees)
-        {
-            if (relative.x == 0 && relative.y == 0) { return true; }
-
-            // TODO: Experiment with leniency
-            // check the middle
-            // if (PointInCone((tile.x, tile.y), direction, sectorDegrees)) {return true;}
-
-            // check the four edges.
-            // if (PointInCone((tile.x + 0.5f, tile.y), direction, sectorDegrees)) { return true; }
-            // if (PointInCone((tile.x - 0.5f, tile.y), direction, sectorDegrees)) { return true; }
-            // if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
-            // if (PointInCone((tile.x, tile.y - 0.5f), direction, sectorDegrees)) { return true; }
-
-            // check the four corners.
-            if (PointInConeRelative((relative.x + 0.5f, relative.y + 0.5f), direction, sectorDegrees)) { return true; }
-            if (PointInConeRelative((relative.x - 0.5f, relative.y + 0.5f), direction, sectorDegrees)) { return true; }
-            if (PointInConeRelative((relative.x + 0.5f, relative.y - 0.5f), direction, sectorDegrees)) { return true; }
-            if (PointInConeRelative((relative.x - 0.5f, relative.y - 0.5f), direction, sectorDegrees)) { return true; }
-
-            return false;
-        }
-
         // TODO: Floating point muckery. Reordering operations increases precision. Or maybe alternate expression?
         private static bool PointInConeRelative((float x, float y) point, Vector2i direction, float sectorDegrees)
         {
@@ -252,12 +229,6 @@ namespace LizardState.Engine
             {
                 yield return center + tile;
             }
-        }
-
-        // TODO: Decide if direction makes sense.
-        public static bool TileInCone(AbsolutePosition center, AbsolutePosition target, Vector2i direction, float sectorDegrees)
-        {
-            return TileInConeRelative(target - center, direction, sectorDegrees);
         }
 
         public static bool AnyLineOfSight(AbsolutePosition from, AbsolutePosition to, Predicate<AbsolutePosition> isBlocked)

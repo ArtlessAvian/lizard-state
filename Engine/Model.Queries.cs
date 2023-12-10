@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace LizardState.Engine
@@ -90,24 +91,11 @@ namespace LizardState.Engine
 
         public List<Entity> GetEntitiesInCone(AbsolutePosition position, float radius, Vector2i direction, float sectorDegrees)
         {
-            // Not good code reuse. Copy-pasted from LOS.
-            VisionSystem vision = GetSystem<VisionSystem>();
-            // vision.trie.ExtendRadius(radius);
-
-            List<Entity> inCone = GetEntitiesInRadius(position, radius);
-
-            Predicate<AbsolutePosition> notInCone = target => !VisibilityTrie.TileInCone(position, target, direction, sectorDegrees);
             Predicate<AbsolutePosition> isBlocked = x => TileBlocksVision(x);
-            Predicate<AbsolutePosition> isEither = target => notInCone(target) || isBlocked(target);
 
-            for (int i = inCone.Count - 1; i >= 0; i--)
-            {
-                if (!VisibilityTrie.AnyLineOfSight(position, inCone[i].position, isEither))
-                {
-                    inCone.RemoveAt(i);
-                }
-            }
-            return inCone;
+            HashSet<AbsolutePosition> inCone = VisibilityTrie.ConeOfView(position, isBlocked, radius, direction, sectorDegrees).ToHashSet();
+
+            return entities.Where(e => inCone.Contains(e.position)).ToList();
         }
 
         public List<Entity> GetEntitiesInSight(int team)
