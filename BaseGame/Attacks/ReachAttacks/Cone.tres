@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=4 format=2]
+
+[ext_resource path="res://BaseGame/Actions/DelayAction.cs" type="Script" id=1]
+[ext_resource path="res://BaseGame/Actions/ConeAttackAction.cs" type="Script" id=2]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 2 )
+isRelative = true
+targetInternalX = 0
+targetInternalY = 0
+
+[resource]
+script = ExtResource( 1 )
+isRelative = true
+targetInternalX = 0
+targetInternalY = 0
+startup = 2
+actionPrototype = SubResource( 1 )

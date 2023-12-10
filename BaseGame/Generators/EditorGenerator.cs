@@ -44,9 +44,10 @@ public class EditorGenerator : LevelGenerator
     {
         Species enemy = GD.Load<Resource>("res://BaseGame/Species/Enemy.tres") as Species;
         Species enemy2 = GD.Load<Resource>("res://BaseGame/Species/Enemy2.tres") as Species;
+        Species enemy3 = GD.Load<Resource>("res://BaseGame/Species/Enemy3.tres") as Species;
 
         model.AddEntity(enemy.BuildEntity(new AbsolutePosition(21, 10), 1));
-        model.AddEntity(enemy.BuildEntity(new AbsolutePosition(8, 34), 1));
+        model.AddEntity(enemy3.BuildEntity(new AbsolutePosition(8, 34), 1));
         model.AddEntity(enemy.BuildEntity(new AbsolutePosition(32, 47), 1));
         model.AddEntity(enemy.BuildEntity(new AbsolutePosition(-11, -5), 1));
         model.AddEntity(enemy.BuildEntity(new AbsolutePosition(35, 4), 1));
