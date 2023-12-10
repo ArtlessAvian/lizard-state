@@ -139,6 +139,8 @@ public partial class Actor : Node2D
         GetNode<Node2D>("StunStars").Set("stars", 2 + role.nextMove - viewTime);
         GetNode<Node2D>("StunStars").Visible = role.state == Entity.EntityState.STUN && role.nextMove - viewTime > 0;
 
+        GetNode<Node2D>("NervousSweat").Visible = role.state == Entity.EntityState.OK && role.nextMove - viewTime > 0;
+
         // TODO: Temporary
         displayName = role.species.displayName;
 
