@@ -265,6 +265,17 @@ public partial class View : Node2D
         telegraphed.Clear();
         foreach (Actor a in roles.Values)
         {
+            // Hide intent if it does not hit between player turn and player's next turn.
+            // TODO: Assumes player has id 0.
+            if (a.role.nextMove > roles[0].role.nextMove + 1)
+            {
+                continue;
+            }
+            if (a.role.nextMove >= roles[0].role.nextMove + 1 && a.role.id > roles[0].role.id)
+            {
+                continue;
+            }
+
             if (a.role.queuedAction?.GetTargetPos(a.role.position) is AbsolutePosition target)
             {
                 if (a.role.queuedAction.TargetingType is TargetingType.Ray ray)
