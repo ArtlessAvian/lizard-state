@@ -1,0 +1,9 @@
+[package]
+name = "lizstate-tui"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+enum_delegate = "0.2.0"
+lizstate-crawler = { version = "0.1.0", path = "../lizstate-crawler" }
+ratatui = "0.29.0"
