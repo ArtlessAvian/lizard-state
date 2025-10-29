@@ -7,6 +7,7 @@ use ratatui::widgets::*;
 
 use crate::FORCE_CLOSE;
 use crate::app::AppState;
+use crate::helper;
 
 pub struct FloorWidget<'a>(&'a Floor);
 
@@ -73,45 +74,38 @@ impl<'a> Widget for FloorWidget<'a> {
 
         (&block).render(area, buf);
         let inner = block.inner(area);
-        self.render_floor(inner, buf);
+        self.render_inner(&inner, buf);
     }
 }
 
 impl<'a> FloorWidget<'a> {
-    fn render_floor(self, area: Rect, buf: &mut Buffer)
+    fn render_inner(self, area: &Rect, buf: &mut Buffer)
     where
         Self: Sized,
     {
-        for creature in self.0.get_creatures() {
-            let world_pos = creature.get_flat_position();
+        self.render_floor(area, buf);
+        self.render_grid(area, buf);
+        self.render_creatures(area, buf);
+    }
 
-            FloorWidget::render_char(area, buf, world_pos, creature.get_char(), Style::default());
+    fn render_grid(&self, area: &Rect, buf: &mut Buffer) {
+        for (cell, position) in helper::zip_cells_and_worldspace(area, buf) {
+            if position.0 % 8 == 0 || position.1 % 8 == 0 {
+                cell.set_bg(Color::DarkGray);
+            }
         }
     }
 
-    fn render_char<S: Into<Style>>(
-        area: Rect,
-        buf: &mut Buffer,
-        world_pos: (i32, i32),
-        char: char,
-        style: S,
-    ) {
-        let center: Position = (
-            (area.left() + area.right()) / 2,
-            (area.top() + area.bottom()) / 2,
-        )
-            .into();
+    fn render_floor(&self, _area: &Rect, _buf: &mut Buffer) {}
 
-        let screen: Position = (
-            (world_pos.0 + center.x as i32) as u16,
-            (world_pos.1 + center.y as i32) as u16,
-        )
-            .into();
+    fn render_creatures(&self, area: &Rect, buf: &mut Buffer) {
+        for creature in self.0.get_creatures() {
+            let world_pos = creature.get_flat_position();
 
-        if area.contains(screen) {
-            let cell = buf.cell_mut(screen).expect("its inside the area");
-            cell.set_style(style);
-            cell.set_char(char);
+            if let Some(cell) = helper::world_to_cell(area, buf, world_pos) {
+                cell.set_char(creature.get_char());
+                cell.set_style(Style::default());
+            }
         }
     }
 }

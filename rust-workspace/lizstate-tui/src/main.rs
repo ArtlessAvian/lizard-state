@@ -3,6 +3,8 @@ use ratatui::prelude::*;
 use crate::app::App;
 use crate::app::AppState;
 
+mod helper;
+
 mod app;
 
 // This isn't any different from yoloing CTRL+C or whatever.
