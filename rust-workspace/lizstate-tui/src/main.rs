@@ -3,7 +3,7 @@ use ratatui::prelude::*;
 use crate::app::App;
 use crate::app::AppState;
 
-mod helper;
+mod camera;
 
 mod app;
 

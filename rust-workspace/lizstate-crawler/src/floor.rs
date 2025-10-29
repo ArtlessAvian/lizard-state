@@ -16,8 +16,8 @@ impl Floor {
     pub fn new_test() -> Self {
         Floor {
             creatures: vec![
-                Rc::new(Creature::new(GridPos(3, 3))),
-                Rc::new(Creature::new(GridPos(5, 5))),
+                Rc::new(Creature::new(GridPos(0, 0))),
+                Rc::new(Creature::new(GridPos(-2, 0))),
             ],
         }
     }
