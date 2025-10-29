@@ -1,10 +1,10 @@
 use crate::entity::Entity;
 use crate::entity::get_six_bit_color;
-use crate::map::GridLike;
-use crate::map::GridPos;
+use crate::spatial::grid::GridLike;
+use crate::spatial::grid::GridPosition;
 
 #[non_exhaustive]
-pub struct Creature<Pos: GridLike = GridPos> {
+pub struct Creature<Pos: GridLike = GridPosition> {
     pos: Pos,
 }
 

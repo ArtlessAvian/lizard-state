@@ -14,7 +14,7 @@
 /// `Tile`s, positions that are gridlike, that form a funky `Map`.
 ///
 /// `Map`s and their `Tile`s can be projected into a grid, but the original is not the plane.
-pub mod map;
+pub mod spatial;
 
 /// The 'Entity' trait describes things that should be drawn to the screen.
 pub mod entity;
