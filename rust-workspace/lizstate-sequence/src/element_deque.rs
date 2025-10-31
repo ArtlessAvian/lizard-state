@@ -13,12 +13,12 @@ use crate::digit_deque::LowToHighIter;
 /// From an internal POV, this maps a sequence of digits to a sequence of Elements and back.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[must_use]
-pub struct PackedDeque<Element, const BASE: u64, const CAPACITY: u8>(
+pub struct PackedDeque<Element, const BASE: u8, const CAPACITY: u8>(
     DigitDeque<BASE, CAPACITY>,
     PhantomData<Element>,
 );
 
-impl<Element, const BASE: u64, const CAPACITY: u8> PackedDeque<Element, BASE, CAPACITY>
+impl<Element, const BASE: u8, const CAPACITY: u8> PackedDeque<Element, BASE, CAPACITY>
 where
     Element: IsSmallEnum<Digit = Digit<BASE>>,
 {
@@ -63,7 +63,7 @@ where
     }
 }
 
-impl<Element, const BASE: u64, const CAPACITY: u8> IntoIterator
+impl<Element, const BASE: u8, const CAPACITY: u8> IntoIterator
     for PackedDeque<Element, BASE, CAPACITY>
 where
     Element: IsSmallEnum<Digit = Digit<BASE>>,

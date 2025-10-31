@@ -3,9 +3,9 @@
 /// abstractly as colection elements.
 #[derive(Debug, PartialEq, Eq, Hash)]
 #[must_use]
-pub struct Digit<const BASE: u64>(u64);
+pub struct Digit<const BASE: u8>(u8);
 
-impl<const BASE: u64> Digit<BASE> {
+impl<const BASE: u8> Digit<BASE> {
     const _NO_UNARY_PLEASE: () = {
         assert!(BASE >= 2);
     };
@@ -14,7 +14,7 @@ impl<const BASE: u64> Digit<BASE> {
     pub const ONE: Self = Self::try_from(1).unwrap();
     pub const MAX: Self = Self::try_from(BASE - 1).unwrap();
 
-    pub const fn try_from(value: u64) -> Option<Self> {
+    pub const fn try_from(value: u8) -> Option<Self> {
         if value < BASE {
             Some(Digit(value))
         } else {
@@ -23,10 +23,14 @@ impl<const BASE: u64> Digit<BASE> {
     }
 
     pub const fn from_modulo(value: u64) -> Self {
+        Self((value % (BASE as u64)) as u8)
+    }
+
+    pub const fn from_modulo_u8(value: u8) -> Self {
         Self(value % BASE)
     }
 
-    pub const fn get(self) -> u64 {
+    pub const fn get(self) -> u8 {
         self.0
     }
 }

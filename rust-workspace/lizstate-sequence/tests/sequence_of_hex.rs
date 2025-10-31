@@ -3,6 +3,7 @@ use lizstate_sequence::digit::IsSmallEnum;
 use lizstate_sequence::element_deque::PackedDeque;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
 enum HexDigit {
     Zero,
     One,
@@ -26,38 +27,21 @@ impl IsSmallEnum for HexDigit {
     type Digit = Digit<16>;
 
     fn to_digit(&self) -> Self::Digit {
-        match self {
-            HexDigit::Zero => Digit::from_modulo(0),
-            HexDigit::One => Digit::from_modulo(1),
-            HexDigit::Two => Digit::from_modulo(2),
-            HexDigit::Three => Digit::from_modulo(3),
-            HexDigit::Four => Digit::from_modulo(4),
-            HexDigit::Five => Digit::from_modulo(5),
-            HexDigit::Six => Digit::from_modulo(6),
-            HexDigit::Seven => Digit::from_modulo(7),
-            HexDigit::Eight => Digit::from_modulo(8),
-            HexDigit::Nine => Digit::from_modulo(9),
-            HexDigit::A => Digit::from_modulo(0xA),
-            HexDigit::B => Digit::from_modulo(0xB),
-            HexDigit::C => Digit::from_modulo(0xC),
-            HexDigit::D => Digit::from_modulo(0xD),
-            HexDigit::E => Digit::from_modulo(0xE),
-            HexDigit::F => Digit::from_modulo(0xF),
-        }
+        Digit::from_modulo_u8(*self as u8)
     }
 
     fn from_digit(digit: Self::Digit) -> Self {
         match digit.get() {
-            0 => Self::Zero,
-            1 => Self::One,
-            2 => Self::Two,
-            3 => Self::Three,
-            4 => Self::Four,
-            5 => Self::Five,
-            6 => Self::Six,
-            7 => Self::Seven,
-            8 => Self::Eight,
-            9 => Self::Nine,
+            0x0 => Self::Zero,
+            0x1 => Self::One,
+            0x2 => Self::Two,
+            0x3 => Self::Three,
+            0x4 => Self::Four,
+            0x5 => Self::Five,
+            0x6 => Self::Six,
+            0x7 => Self::Seven,
+            0x8 => Self::Eight,
+            0x9 => Self::Nine,
             0xA => Self::A,
             0xB => Self::B,
             0xC => Self::C,

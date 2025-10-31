@@ -3,6 +3,7 @@ use lizstate_sequence::digit::IsSmallEnum;
 use lizstate_sequence::element_deque::PackedDeque;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
 enum DecimalDigits {
     Zero,
     One,
@@ -20,18 +21,7 @@ impl IsSmallEnum for DecimalDigits {
     type Digit = Digit<10>;
 
     fn to_digit(&self) -> Self::Digit {
-        match self {
-            DecimalDigits::Zero => Digit::from_modulo(0),
-            DecimalDigits::One => Digit::from_modulo(1),
-            DecimalDigits::Two => Digit::from_modulo(2),
-            DecimalDigits::Three => Digit::from_modulo(3),
-            DecimalDigits::Four => Digit::from_modulo(4),
-            DecimalDigits::Five => Digit::from_modulo(5),
-            DecimalDigits::Six => Digit::from_modulo(6),
-            DecimalDigits::Seven => Digit::from_modulo(7),
-            DecimalDigits::Eight => Digit::from_modulo(8),
-            DecimalDigits::Nine => Digit::from_modulo(9),
-        }
+        Digit::from_modulo_u8(*self as u8)
     }
 
     fn from_digit(digit: Self::Digit) -> Self {

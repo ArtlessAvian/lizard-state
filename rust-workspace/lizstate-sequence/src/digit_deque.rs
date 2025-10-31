@@ -8,22 +8,22 @@ use crate::digit::Digit;
 /// TODO: Explain the recurrence and how digits are extracted.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[must_use]
-pub struct DigitDeque<const BASE: u64, const CAPACITY: u8>(u64);
+pub struct DigitDeque<const BASE: u8, const CAPACITY: u8 = 8>(u64);
 
-impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
+impl<const BASE: u8, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
     // Conveniently, this overflows when CAPACITY is too high.
     const MAX: Self = {
         let mut min = 0;
         let mut i = 0;
         while i < CAPACITY {
-            min = min * BASE + BASE;
+            min = min * (BASE as u64) + (BASE as u64);
             i += 1;
         }
         Self(min)
     };
 
     pub const MIN_AT_CAPACITY: Self = {
-        let pop_max = (Self::MAX.0 - 1) / BASE;
+        let pop_max = (Self::MAX.0 - 1) / (BASE as u64);
         Self(pop_max + 1)
     };
 
@@ -43,8 +43,8 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
         if self.is_full() {
             Err(SequenceFull)
         } else {
-            self.0 *= BASE;
-            self.0 += digit.get();
+            self.0 *= BASE as u64;
+            self.0 += digit.get() as u64;
             self.0 += 1;
             Ok(())
         }
@@ -63,7 +63,7 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
             Err(SequenceEmpty)
         } else {
             self.0 -= 1;
-            self.0 /= BASE;
+            self.0 /= BASE as u64;
             Ok(())
         }
     }
@@ -72,9 +72,9 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
         if self.is_full() {
             Err(SequenceFull)
         } else {
-            let mut yeah = digit.get();
+            let mut yeah = digit.get() as u64;
             yeah += 1;
-            yeah *= BASE.pow(self.len() as u32);
+            yeah *= (BASE as u64).pow(self.len() as u32);
             yeah += self.0;
             self.0 = yeah;
             Ok(())
@@ -86,8 +86,8 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
             Err(SequenceEmpty)
         } else {
             let mut copy = self.0;
-            while copy > BASE {
-                copy /= BASE;
+            while copy > (BASE as u64) {
+                copy /= BASE as u64;
             }
             Ok(Digit::from_modulo(copy - 1))
         }
@@ -98,8 +98,8 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
             Err(SequenceEmpty)
         } else {
             let mut power = 1;
-            while self.0 > power * BASE {
-                power *= BASE
+            while self.0 > power * (BASE as u64) {
+                power *= BASE as u64
             }
             self.0 %= power;
             Ok(())
@@ -111,7 +111,7 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
         let mut copy = self.0;
         while copy > 0 {
             copy -= 1;
-            copy /= BASE;
+            copy /= BASE as u64;
             out += 1;
         }
         out
@@ -122,9 +122,9 @@ impl<const BASE: u64, const CAPACITY: u8> DigitDeque<BASE, CAPACITY> {
     }
 }
 
-pub struct LowToHighIter<const BASE: u64, const CAPACITY: u8>(DigitDeque<BASE, CAPACITY>);
+pub struct LowToHighIter<const BASE: u8, const CAPACITY: u8>(DigitDeque<BASE, CAPACITY>);
 
-impl<const BASE: u64, const CAPACITY: u8> IntoIterator for DigitDeque<BASE, CAPACITY> {
+impl<const BASE: u8, const CAPACITY: u8> IntoIterator for DigitDeque<BASE, CAPACITY> {
     type Item = Digit<BASE>;
     type IntoIter = LowToHighIter<BASE, CAPACITY>;
 
@@ -133,7 +133,7 @@ impl<const BASE: u64, const CAPACITY: u8> IntoIterator for DigitDeque<BASE, CAPA
     }
 }
 
-impl<const BASE: u64, const CAPACITY: u8> Iterator for LowToHighIter<BASE, CAPACITY> {
+impl<const BASE: u8, const CAPACITY: u8> Iterator for LowToHighIter<BASE, CAPACITY> {
     type Item = Digit<BASE>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -143,7 +143,7 @@ impl<const BASE: u64, const CAPACITY: u8> Iterator for LowToHighIter<BASE, CAPAC
     }
 }
 
-impl<const BASE: u64, const CAPACITY: u8> DoubleEndedIterator for LowToHighIter<BASE, CAPACITY> {
+impl<const BASE: u8, const CAPACITY: u8> DoubleEndedIterator for LowToHighIter<BASE, CAPACITY> {
     fn next_back(&mut self) -> Option<Self::Item> {
         let out = self.0.peek_high().ok()?;
         _ = self.0.pop_high();
