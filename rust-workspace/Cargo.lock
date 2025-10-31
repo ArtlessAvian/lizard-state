@@ -359,6 +359,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "lizstate-sequence"
+version = "0.1.0"
+
+[[package]]
 name = "lizstate-tui"
 version = "0.1.0"
 dependencies = [

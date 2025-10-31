@@ -1,4 +1,9 @@
 [workspace]
 resolver = "2"
 
-members = ["lizstate-crawler", "lizstate-godot-glue", "lizstate-tui"]
+members = [
+    "lizstate-crawler",
+    "lizstate-godot-glue",
+    "lizstate-tui",
+    "lizstate-sequence",
+]
