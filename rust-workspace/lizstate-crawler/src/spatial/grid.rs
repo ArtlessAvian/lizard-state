@@ -1,18 +1,5 @@
-#[derive(Clone, Copy)]
-pub enum Cardinal {
-    North,
-    South,
-    East,
-    West,
-}
-
-#[derive(Clone, Copy)]
-pub enum Diagonal {
-    NorthEast,
-    NorthWest,
-    SouthEast,
-    SouthWest,
-}
+use crate::spatial::relative::Cardinal;
+use crate::spatial::relative::Diagonal;
 
 pub trait GridLike: Sized + Copy {
     fn flatten(self) -> (i32, i32);

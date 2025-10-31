@@ -1,6 +1,6 @@
-use crate::spatial::grid::Cardinal;
 use crate::spatial::grid::GridLike;
 use crate::spatial::grid::GridPosition;
+use crate::spatial::relative::Cardinal;
 
 // TODO: Rename me!
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -93,9 +93,9 @@ impl<ChunkType: GridLike> GridLike for PositionInsideChunk<ChunkType> {
 #[cfg(test)]
 mod tests {
     use crate::spatial::chunks::PositionInsideChunk;
-    use crate::spatial::grid::Cardinal;
     use crate::spatial::grid::GridLike;
     use crate::spatial::grid::GridPosition;
+    use crate::spatial::relative::Cardinal;
 
     #[test]
     fn position_inside_chunk_inner() {
