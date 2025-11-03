@@ -7,6 +7,15 @@
 
 #![no_std]
 
+// dude you have no idea how much i needed this.
+#[cfg(test)]
+extern crate std;
+
+/// Math that should be hidden from the end user.
+///
+/// Cursed stuff.
+pub(crate) mod math;
+
 pub mod digit;
 
 mod digit_deque;

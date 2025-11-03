@@ -7,7 +7,7 @@ set -eux
 #     exit 0
 # fi
 
-cargo +nightly -Z unstable-options -C rust-workspace nextest run --no-fail-fast
-cargo +nightly -Z unstable-options -C rust-workspace test --doc
+cargo +nightly -Z unstable-options -C rust-workspace nextest run  --all-features --no-fail-fast
+cargo +nightly -Z unstable-options -C rust-workspace test --all-features --doc
 
 exit 0

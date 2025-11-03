@@ -8,14 +8,14 @@ set -eux
 # fi
 
 cargo +nightly -Z unstable-options -C rust-workspace fmt
-cargo +nightly -Z unstable-options -C rust-workspace clippy --fix --allow-dirty -- -Dwarnings
+cargo +nightly -Z unstable-options -C rust-workspace clippy --all-features --fix --allow-dirty -- -Dwarnings
 
 if git ls-files -m | read
 then
     echo "Formatting errors detected! Please manually review."
 fi
 
-cargo +nightly -Z unstable-options -C rust-workspace clippy -- -Dwarnings
+cargo +nightly -Z unstable-options -C rust-workspace clippy --all-features -- -Dwarnings
 
 if git ls-files -m | read
 then
