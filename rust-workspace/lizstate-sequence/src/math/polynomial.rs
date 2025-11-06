@@ -44,7 +44,7 @@ impl<T: PolynomialRing> Iterator for PolynomialTermIterator<T> {
     }
 }
 
-trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
+pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
     type Over: CommutativeRing;
     const X: Self;
 

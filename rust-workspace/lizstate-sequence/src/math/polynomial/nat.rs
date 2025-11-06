@@ -1,8 +1,7 @@
-use core::iter::Sum;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Mul;
-use core::panic;
+use core::ops::Sub;
 
 use crate::math::commutative_ring::CommutativeRing;
 use crate::math::commutative_ring::integers_mod::NatMod;
@@ -65,6 +64,22 @@ impl<const X: u8> CommutativeRing for NatPolynomial<X> {
     const ONE: Self = Self(1);
 }
 
+impl<const X: u8> Add<u8> for NatPolynomial<X> {
+    type Output = Self;
+
+    fn add(self, rhs: u8) -> Self::Output {
+        Self(self.0 + rhs as u64)
+    }
+}
+
+impl<const X: u8> Mul<u8> for NatPolynomial<X> {
+    type Output = Self;
+
+    fn mul(self, rhs: u8) -> Self::Output {
+        Self(self.0 * rhs as u64)
+    }
+}
+
 impl<const X: u8> Add<u64> for NatPolynomial<X> {
     type Output = Self;
 
@@ -94,6 +109,14 @@ impl<const X: u8> Mul for NatPolynomial<X> {
 
     fn mul(self, rhs: Self) -> Self::Output {
         Self(self.0 * rhs.0)
+    }
+}
+
+impl<const X: u8> Sub for NatPolynomial<X> {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self(self.0 - rhs.0)
     }
 }
 

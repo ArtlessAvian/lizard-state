@@ -1,8 +1,8 @@
 #![allow(unused, reason = "WIP")]
 
-mod commutative_ring;
+pub mod commutative_ring;
 
-mod polynomial;
+pub mod polynomial;
 
 ///////////////////////////
 

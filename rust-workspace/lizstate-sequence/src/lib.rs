@@ -16,6 +16,9 @@ extern crate std;
 /// Cursed stuff.
 pub(crate) mod math;
 
+/// Deque of numbers.
+pub mod deque;
+
 pub mod digit;
 
 mod digit_deque;
