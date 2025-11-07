@@ -81,7 +81,11 @@ pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
         self.iter_coeff().last()
     }
 
-    fn get_degree(&self) -> usize {
-        self.iter_coeff().count()
+    fn get_degree(&self) -> Option<usize> {
+        if *self == Self::ZERO {
+            None
+        } else {
+            Some(self.iter_coeff().count())
+        }
     }
 }
