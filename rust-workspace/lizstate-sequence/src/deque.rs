@@ -11,6 +11,13 @@ pub struct DequeFull;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DequeEmpty;
 
+const fn bound_given_capacity(capacity: u8) -> u16 {
+    // The largest polynomial we want is 1 followed by (BOUND-1) repeated capacity times.
+    // We can express that as 2 * BOUND.pow(capacity) - 1
+    // u64::max > 2 * BOUND ^ capacity - 1
+    1 << (62 / capacity)
+}
+
 /// Deque, impossible to misuse, but not inherently useful.
 /// Equivalent to `[u8; 7]`
 pub type NaiveDeque = Deque<256, 7>;
@@ -105,11 +112,14 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
             Err(DequeEmpty)
         } else {
             // Remove the leading one.
-            let mut leading: NatPolynomial<BOUND> = NatPolynomial::ONE;
-            while leading < self.0 {
+            let mut hack = self.0;
+            hack.drop_constant_and_divide_x();
+            let hack = hack;
+
+            let mut leading: NatPolynomial<BOUND> = NatPolynomial::X;
+            while leading <= hack {
                 leading.mul_x();
             }
-            leading.drop_constant_and_divide_x();
             self.0 = self.0 - leading;
 
             // Get the next term.
@@ -175,10 +185,29 @@ mod tests {
 
     use crate::deque::Deque;
     use crate::deque::NaiveDeque;
+    use crate::deque::bound_given_capacity;
+
+    #[test]
+    fn bound_and_capacity() {
+        assert!(bound_given_capacity(7) == 256);
+        for i in 0..64 {
+            Deque::<256, 7>::new_empty().push_high(255);
+        }
+
+        assert!(bound_given_capacity(8) == 128);
+        for i in 0..64 {
+            Deque::<128, 8>::new_empty().push_high(127);
+        }
+
+        assert!(bound_given_capacity(9) == 64);
+        for i in 0..64 {
+            Deque::<64, 9>::new_empty().push_high(63);
+        }
+    }
 
     #[test]
     fn stack_interface() {
-        let mut push_pop_low = Deque::<10>::new_empty();
+        let mut push_pop_low = NaiveDeque::new_empty();
         [8, 7, 6, 5, 3, 0, 9]
             .into_iter()
             .try_for_each(|e| push_pop_low.push_low(e))
@@ -188,7 +217,7 @@ mod tests {
             [9, 0, 3, 5, 6, 7, 8]
         );
 
-        let mut push_pop_high = Deque::<10>::new_empty();
+        let mut push_pop_high = NaiveDeque::new_empty();
         [8, 7, 6, 5, 3, 0, 9]
             .into_iter()
             .try_for_each(|e| push_pop_high.push_high(e))
@@ -201,7 +230,7 @@ mod tests {
 
     #[test]
     fn queue_interface() {
-        let mut push_low = Deque::<10>::new_empty();
+        let mut push_low = NaiveDeque::new_empty();
         [8, 7, 6, 5, 3, 0, 9]
             .into_iter()
             .try_for_each(|e| push_low.push_low(e))
@@ -211,7 +240,7 @@ mod tests {
             [8, 7, 6, 5, 3, 0, 9]
         );
 
-        let mut push_high = Deque::<10>::new_empty();
+        let mut push_high = NaiveDeque::new_empty();
         [8, 7, 6, 5, 3, 0, 9]
             .into_iter()
             .try_for_each(|e| push_high.push_high(e))
