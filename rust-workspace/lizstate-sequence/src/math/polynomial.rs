@@ -20,7 +20,7 @@ impl<T: PolynomialRing> Iterator for PolynomialCoeffIterator<T> {
             None
         } else {
             let constant = self.0.get_constant_coeff();
-            self.0.drop_constant_and_divide_x();
+            self.0 = self.0.drop_constant_and_divide_x();
             Some(constant)
         }
     }
@@ -38,8 +38,8 @@ impl<T: PolynomialRing> Iterator for PolynomialTermIterator<T> {
             let constant = self.0.get_constant_term();
             let out = constant * self.1;
 
-            self.0.drop_constant_and_divide_x();
-            self.1 = self.1 * T::X;
+            self.0 = self.0.drop_constant_and_divide_x();
+            self.1 *= T::X;
             Some(out)
         }
     }
@@ -49,12 +49,13 @@ impl<T: PolynomialRing> Iterator for PolynomialTermIterator<T> {
 /// Ideally closed under addition and multiplication.
 ///
 /// Every (representable) polynomial must be able to be generated inductively
-/// from `Add<PolynomialRing::Over>` and `PolynomialRing::mul_x`.
+/// from `Add` and `PolynomialRing::mul_x`.
 ///
 /// Add and Mul are allowed to panic.
 ///
 /// Coefficients are a subset of `PolynomialRing::Over`.
 /// Terms are a subset of `Self`, a product of Xs and coefficients.
+#[must_use]
 pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
     type Over: CommutativeRing;
     const X: Self;
@@ -65,13 +66,16 @@ pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
     fn is_constant(&self) -> bool;
 
     /// Finds the inverse to mul_x, sorta.
+    /// Behaves like exact_div.
     ///
     /// This function should never panic due to the trait's inductive guarantee.
-    fn drop_constant_and_divide_x(&mut self);
+    #[must_use]
+    fn drop_constant_and_divide_x(&self) -> Self;
 
     /// # Panics
     /// self * X cannot be represented.
-    fn mul_x(&mut self);
+    #[must_use]
+    fn mul_x(&self) -> Self;
 
     fn iter_coeff(&self) -> impl Iterator<Item = Self::Over>;
 
@@ -86,8 +90,8 @@ pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
             let mut sum = Self::try_from(first).ok()?;
             let mut power = Self::ONE;
             for coeff in coeffs {
-                power = power * Self::X;
-                sum = sum + power * Self::try_from(coeff).ok()?;
+                power *= Self::X;
+                sum += power * Self::try_from(coeff).ok()?;
             }
             Some(sum)
         } else {

@@ -1,6 +1,8 @@
 use core::ops::Add;
+use core::ops::AddAssign;
 use core::ops::Deref;
 use core::ops::Mul;
+use core::ops::MulAssign;
 
 use crate::math::commutative_ring::CommutativeRing;
 
@@ -40,10 +42,22 @@ impl<const MOD: u8> Add for NatMod<MOD> {
     }
 }
 
+impl<const MOD: u8> AddAssign for NatMod<MOD> {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
+    }
+}
+
 impl<const MOD: u8> Mul for NatMod<MOD> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
         Self::new(self.0 * rhs.0)
+    }
+}
+
+impl<const MOD: u8> MulAssign for NatMod<MOD> {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = *self * rhs;
     }
 }

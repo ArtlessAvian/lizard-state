@@ -66,8 +66,8 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         if self.is_full() {
             Err(DequeFull)
         } else {
-            self.0.mul_x();
-            self.0 = self.0 + NatPolynomial::ONE * el;
+            self.0 = self.0.mul_x();
+            self.0 += NatPolynomial::ONE * el;
             Ok(())
         }
     }
@@ -77,7 +77,7 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
             Err(DequeEmpty)
         } else {
             let out = self.0.get_constant_coeff();
-            self.0.drop_constant_and_divide_x();
+            self.0 = self.0.drop_constant_and_divide_x();
             Ok(out)
         }
     }
@@ -91,11 +91,11 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
 
             let mut power = NatPolynomial::ONE;
             while power <= self.0 {
-                power.mul_x();
+                power = power.mul_x();
             }
-            power.drop_constant_and_divide_x();
+            power = power.drop_constant_and_divide_x();
 
-            self.0 = self.0 + thing * power;
+            self.0 += thing * power;
             Ok(())
         }
     }
@@ -106,17 +106,17 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         } else {
             // Remove the leading one.
             let mut hack = self.0;
-            hack.drop_constant_and_divide_x();
+            hack = hack.drop_constant_and_divide_x();
             let hack = hack;
 
             let mut leading: NatPolynomial<BOUND> = NatPolynomial::X;
             while leading <= hack {
-                leading.mul_x();
+                leading = leading.mul_x();
             }
             self.0 = self.0 - leading;
 
             // Get the next term.
-            leading.drop_constant_and_divide_x();
+            let mut leading = leading.drop_constant_and_divide_x();
             let mut out = 0;
             while self.0 >= leading {
                 out += 1;
@@ -124,7 +124,7 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
             }
 
             // Restore the leading zero.
-            self.0 = self.0 + leading;
+            self.0 += leading;
 
             Ok(out)
         }

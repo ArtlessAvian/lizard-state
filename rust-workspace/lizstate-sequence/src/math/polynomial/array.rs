@@ -4,6 +4,7 @@ use core::iter::Sum;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Mul;
+use core::ops::MulAssign;
 #[cfg(test)]
 use std::dbg;
 #[cfg(test)]
@@ -77,17 +78,21 @@ impl<const LEN: usize> PolynomialRing for ArrayPolynomial<LEN> {
         self.0.iter().skip(1).all(|x| *x == 0)
     }
 
-    fn drop_constant_and_divide_x(&mut self) {
-        self.0.copy_within(1..(LEN), 0);
-        self.0[LEN - 1] = 0;
+    fn drop_constant_and_divide_x(&self) -> Self {
+        let mut out = *self;
+        out.0.copy_within(1..(LEN), 0);
+        out.0[LEN - 1] = 0;
+        out
     }
 
-    fn mul_x(&mut self) {
-        if (self.0[LEN - 1] != 0) {
+    fn mul_x(&self) -> Self {
+        let mut out = *self;
+        if (out.0[LEN - 1] != 0) {
             panic!("Attempted mul_x with overflow!");
         }
-        self.0.copy_within(0..(LEN - 1), 1);
-        self.0[0] = 0;
+        out.0.copy_within(0..(LEN - 1), 1);
+        out.0[0] = 0;
+        out
     }
 
     fn iter_coeff(&self) -> impl Iterator<Item = Self::Over> {
@@ -146,6 +151,12 @@ impl<const LEN: usize> Add for ArrayPolynomial<LEN> {
     }
 }
 
+impl<const LEN: usize> AddAssign for ArrayPolynomial<LEN> {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs
+    }
+}
+
 impl<const LEN: usize> Mul for ArrayPolynomial<LEN> {
     type Output = Self;
 
@@ -173,10 +184,10 @@ impl<const LEN: usize> Mul for ArrayPolynomial<LEN> {
                 if *coeff != 0 {
                     let mut shifted = rhs.mul(*coeff);
                     for _ in 0..i {
-                        shifted.mul_x();
+                        shifted = shifted.mul_x();
                     }
                     let old = sum;
-                    sum = sum + shifted;
+                    sum += shifted;
 
                     #[cfg(test)]
                     {
@@ -190,6 +201,12 @@ impl<const LEN: usize> Mul for ArrayPolynomial<LEN> {
 
             sum
         }
+    }
+}
+
+impl<const LEN: usize> MulAssign for ArrayPolynomial<LEN> {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = *self * rhs
     }
 }
 

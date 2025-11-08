@@ -3,6 +3,7 @@ use core::fmt::Display;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Mul;
+use core::ops::MulAssign;
 use core::ops::Sub;
 
 use crate::math::commutative_ring::CommutativeRing;
@@ -76,12 +77,12 @@ impl<const X: u16> PolynomialRing for NatPolynomial<X> {
         self.0 < (X as u64)
     }
 
-    fn drop_constant_and_divide_x(&mut self) {
-        self.0 /= (X as u64);
+    fn drop_constant_and_divide_x(&self) -> Self {
+        Self(self.0 / X as u64)
     }
 
-    fn mul_x(&mut self) {
-        self.0 *= (X as u64);
+    fn mul_x(&self) -> Self {
+        Self(self.0 * X as u64)
     }
 
     fn iter_coeff(&self) -> impl Iterator<Item = Self::Over> {
@@ -162,11 +163,23 @@ impl<const X: u16> Add for NatPolynomial<X> {
     }
 }
 
+impl<const X: u16> AddAssign for NatPolynomial<X> {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs
+    }
+}
+
 impl<const X: u16> Mul for NatPolynomial<X> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
         Self(self.0 * rhs.0)
+    }
+}
+
+impl<const X: u16> MulAssign for NatPolynomial<X> {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = *self * rhs
     }
 }
 
@@ -303,7 +316,7 @@ mod tests {
                 while max_supported.get_degree().unwrap()
                     < NatPolynomial::<X>::LARGEST_SUPPORTED_DEGREE
                 {
-                    max_supported.mul_x();
+                    max_supported = max_supported.mul_x();
                     max_supported = max_supported + NatPolynomial::<X>::LARGEST_CONSTANT_POLY;
                 }
                 max_supported

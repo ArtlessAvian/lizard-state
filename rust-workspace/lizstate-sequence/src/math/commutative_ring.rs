@@ -1,10 +1,14 @@
 use core::ops::Add;
+use core::ops::AddAssign;
 use core::ops::Mul;
+use core::ops::MulAssign;
 
 pub mod integers_mod;
 
 /// A set with commutative addition and multiplication.
-pub trait CommutativeRing: Copy + Add<Output = Self> + Mul<Output = Self> + PartialEq {
+pub trait CommutativeRing:
+    Copy + Add<Output = Self> + AddAssign + Mul<Output = Self> + MulAssign + PartialEq
+{
     const ZERO: Self;
     const ONE: Self;
 
@@ -13,7 +17,7 @@ pub trait CommutativeRing: Copy + Add<Output = Self> + Mul<Output = Self> + Part
         let mut pow = self;
 
         if exp & 1 != 0 {
-            product = product * pow;
+            product *= pow;
             exp &= !1;
         }
 
@@ -21,7 +25,7 @@ pub trait CommutativeRing: Copy + Add<Output = Self> + Mul<Output = Self> + Part
             pow = pow * pow;
             exp >>= 1;
             if exp & 1 != 0 {
-                product = product * pow;
+                product *= pow;
                 exp &= !1;
             }
         }
