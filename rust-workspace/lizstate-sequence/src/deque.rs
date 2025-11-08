@@ -11,13 +11,6 @@ pub struct DequeFull;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DequeEmpty;
 
-const fn bound_given_capacity(capacity: u8) -> u16 {
-    // The largest polynomial we want is 1 followed by (BOUND-1) repeated capacity times.
-    // We can express that as 2 * BOUND.pow(capacity) - 1
-    // u64::max > 2 * BOUND ^ capacity - 1
-    1 << (62 / capacity)
-}
-
 /// Deque, impossible to misuse, but not inherently useful.
 /// Equivalent to `[u8; 7]`
 pub type NaiveDeque = Deque<256, 7>;
@@ -49,7 +42,7 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         )
     };
 
-    pub fn new_empty() -> Self {
+    pub const fn new_empty() -> Self {
         Self::_CAPACITY_FITS;
 
         Deque(NatPolynomial::ONE)
@@ -83,7 +76,7 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         if self.is_empty() {
             Err(DequeEmpty)
         } else {
-            let out = self.0.get_constant_coeff() as u8;
+            let out = self.0.get_constant_coeff();
             self.0.drop_constant_and_divide_x();
             Ok(out)
         }
@@ -185,25 +178,6 @@ mod tests {
 
     use crate::deque::Deque;
     use crate::deque::NaiveDeque;
-    use crate::deque::bound_given_capacity;
-
-    #[test]
-    fn bound_and_capacity() {
-        assert!(bound_given_capacity(7) == 256);
-        for i in 0..64 {
-            Deque::<256, 7>::new_empty().push_high(255);
-        }
-
-        assert!(bound_given_capacity(8) == 128);
-        for i in 0..64 {
-            Deque::<128, 8>::new_empty().push_high(127);
-        }
-
-        assert!(bound_given_capacity(9) == 64);
-        for i in 0..64 {
-            Deque::<64, 9>::new_empty().push_high(63);
-        }
-    }
 
     #[test]
     fn stack_interface() {

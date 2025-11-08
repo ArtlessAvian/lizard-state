@@ -1,3 +1,4 @@
+use core::fmt::Display;
 use core::iter::Sum;
 use core::ops::Add;
 use core::ops::AddAssign;
@@ -44,6 +45,16 @@ impl<T: PolynomialRing> Iterator for PolynomialTermIterator<T> {
     }
 }
 
+/// A polynomial ring. Superset of `Self::Over`.
+/// Ideally closed under addition and multiplication.
+///
+/// Every (representable) polynomial must be able to be generated inductively
+/// from `Add<PolynomialRing::Over>` and `PolynomialRing::mul_x`.
+///
+/// Add and Mul are allowed to panic.
+///
+/// Coefficients are a subset of `PolynomialRing::Over`.
+/// Terms are a subset of `Self`, a product of Xs and coefficients.
 pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
     type Over: CommutativeRing;
     const X: Self;
@@ -53,24 +64,35 @@ pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
 
     fn is_constant(&self) -> bool;
 
+    /// Finds the inverse to mul_x, sorta.
+    ///
+    /// This function should never panic due to the trait's inductive guarantee.
     fn drop_constant_and_divide_x(&mut self);
 
+    /// # Panics
+    /// self * X cannot be represented.
     fn mul_x(&mut self);
 
-    // ------------------
+    fn iter_coeff(&self) -> impl Iterator<Item = Self::Over>;
 
-    fn new_from_coeffs(coeffs: impl IntoIterator<Item = Self::Over>) -> Option<Self> {
-        let mut sum = Self::ZERO;
-        let mut power = Self::ONE;
-        for coeff in coeffs {
-            sum = sum + power * Self::try_from(coeff).ok()?;
-            power = power * Self::X;
+    // ----- Has generic implementation -----
+
+    /// # Panics
+    /// Default implementation panics if the polynomial cannot be represented.
+    /// Implementors are allowed to panic too.
+    fn new_from_coeffs(into_coeffs: impl IntoIterator<Item = Self::Over>) -> Option<Self> {
+        let mut coeffs = into_coeffs.into_iter();
+        if let Some(first) = coeffs.next() {
+            let mut sum = Self::try_from(first).ok()?;
+            let mut power = Self::ONE;
+            for coeff in coeffs {
+                power = power * Self::X;
+                sum = sum + power * Self::try_from(coeff).ok()?;
+            }
+            Some(sum)
+        } else {
+            Some(Self::ZERO)
         }
-        Some(sum)
-    }
-
-    fn iter_coeff(&self) -> impl Iterator<Item = Self::Over> {
-        PolynomialCoeffIterator(*self)
     }
 
     fn iter_terms(&self) -> impl Iterator<Item = Self> {

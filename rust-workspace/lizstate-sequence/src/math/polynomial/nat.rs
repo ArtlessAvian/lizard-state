@@ -1,3 +1,5 @@
+use core::array;
+use core::fmt::Display;
 use core::ops::Add;
 use core::ops::AddAssign;
 use core::ops::Mul;
@@ -5,12 +7,38 @@ use core::ops::Sub;
 
 use crate::math::commutative_ring::CommutativeRing;
 use crate::math::commutative_ring::integers_mod::NatMod;
+use crate::math::polynomial::PolynomialCoeffIterator;
 use crate::math::polynomial::PolynomialRing;
+use crate::math::polynomial::array::ArrayPolynomial;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NatPolynomial<const X: u16>(u64);
 
+impl<const X: u16> Display for NatPolynomial<X> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let array_poly = ArrayPolynomial::<41>::new_from_nat_poly(self);
+        array_poly.fmt(f)
+    }
+}
+
 impl<const X: u16> NatPolynomial<X> {
+    const LARGEST_SUPPORTED_DEGREE: usize = {
+        // Goal: we can represent a polynomial with degree D with X-1 for every coefficient.
+        // We control D, so we are fine if we underestimate.
+        // If D is 0, then the goal is always true.
+
+        //    (0..=D).map(|i| (X-1).pow(i)).sum() <= u64::MAX
+        // => X.pow(D+1) - 1 <= u64::MAX
+        // => D <= (u64::MAX + 1).log(X) - 1
+        let degree = (u64::MAX as u128 + 1).ilog(X as u128) - 1;
+
+        // Since X >= 2, then degree is at most 63,
+        // which always fits in a u8, which always fits in a usize.
+        degree as usize
+    };
+
+    const LARGEST_CONSTANT_POLY: Self = Self(X as u64 - 1);
+
     pub const fn from_raw(u64: u64) -> Self {
         Self(u64)
     }
@@ -22,18 +50,26 @@ impl<const X: u16> NatPolynomial<X> {
             None
         }
     }
+
+    pub(crate) const fn leak(&self) -> u64 {
+        self.0
+    }
+
+    pub fn from_array_poly<const LEN: usize>(array_poly: ArrayPolynomial<LEN>) -> Self {
+        Self::new_from_coeffs(array_poly.iter_coeff()).unwrap()
+    }
 }
 
 impl<const X: u16> PolynomialRing for NatPolynomial<X> {
-    type Over = u64;
+    type Over = u8;
     const X: Self = Self(X as u64);
 
-    fn get_constant_coeff(&self) -> u64 {
-        self.0 % (X as u64)
+    fn get_constant_coeff(&self) -> u8 {
+        (self.0 % (X as u64)) as u8
     }
 
     fn get_constant_term(&self) -> Self {
-        Self(self.0 % (X as u64))
+        Self::try_from(self.get_constant_coeff()).unwrap()
     }
 
     fn is_constant(&self) -> bool {
@@ -46,6 +82,10 @@ impl<const X: u16> PolynomialRing for NatPolynomial<X> {
 
     fn mul_x(&mut self) {
         self.0 *= (X as u64);
+    }
+
+    fn iter_coeff(&self) -> impl Iterator<Item = Self::Over> {
+        PolynomialCoeffIterator(*self)
     }
 
     fn get_degree(&self) -> Option<usize> {
@@ -140,8 +180,11 @@ impl<const X: u16> Sub for NatPolynomial<X> {
 
 #[cfg(test)]
 mod tests {
+    use core::ops::Add;
     use core::ops::Deref;
-    use core::u64;
+    use core::ops::Mul;
+    use std::dbg;
+    use std::println;
     use std::vec::Vec;
 
     use crate::math::commutative_ring::CommutativeRing;
@@ -213,8 +256,72 @@ mod tests {
 
     #[test]
     fn from_raw() {
-        let max = NatPolynomial::<256>::from_raw(u64::MAX);
-        assert_eq!(max.get_degree(), Some(7));
-        assert_eq!(max.iter_coeff().collect::<Vec<_>>(), [255; 8]);
+        let jennys = NatPolynomial::<10>::from_raw(8765309);
+        assert_eq!(jennys.get_degree(), Some(6));
+        assert_eq!(
+            jennys.iter_coeff().collect::<Vec<_>>(),
+            [9, 0, 3, 5, 6, 7, 8]
+        );
+
+        let jennys_hex = NatPolynomial::<16>::from_raw(0x8765309);
+        assert_eq!(jennys_hex.get_degree(), Some(6));
+        assert_eq!(
+            jennys_hex.iter_coeff().collect::<Vec<_>>(),
+            [9, 0, 3, 5, 6, 7, 8]
+        );
+    }
+
+    #[test]
+    fn from_iter() {
+        let array = [0, 1, 2, 3, 4, 5, 6, 7];
+
+        let from_iter = NatPolynomial::<256>::new_from_coeffs(array).unwrap();
+        assert_eq!(from_iter.get_degree(), Some(7));
+        assert_eq!(
+            from_iter.iter_coeff().collect::<Vec<_>>(),
+            [0, 1, 2, 3, 4, 5, 6, 7]
+        );
+    }
+
+    #[test]
+    fn largest_supported() {
+        assert_eq!(NatPolynomial::<256>::LARGEST_SUPPORTED_DEGREE, 7);
+    }
+
+    #[test]
+    fn from_raw_max() {
+        fn parameterized<const X: u16>() {
+            {
+                let true_max = NatPolynomial::<X>::from_raw(u64::MAX);
+                assert!(
+                    true_max.get_degree().unwrap() >= NatPolynomial::<X>::LARGEST_SUPPORTED_DEGREE
+                );
+            }
+
+            let max_supported = {
+                let mut max_supported = NatPolynomial::<X>::LARGEST_CONSTANT_POLY;
+                while max_supported.get_degree().unwrap()
+                    < NatPolynomial::<X>::LARGEST_SUPPORTED_DEGREE
+                {
+                    max_supported.mul_x();
+                    max_supported = max_supported + NatPolynomial::<X>::LARGEST_CONSTANT_POLY;
+                }
+                max_supported
+            };
+
+            println!("      u64::max value: {:>20}", u64::MAX);
+            println!(" max_supported value: {:>20}", max_supported.0);
+            println!(
+                "max_supported degree: {:>20}",
+                max_supported.get_degree().unwrap()
+            );
+        }
+
+        parameterized::<3>();
+        parameterized::<4>();
+        parameterized::<5>();
+        parameterized::<27>();
+        parameterized::<128>();
+        parameterized::<256>();
     }
 }
