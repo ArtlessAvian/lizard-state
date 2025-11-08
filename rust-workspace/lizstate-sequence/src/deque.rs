@@ -76,8 +76,8 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         if self.is_empty() {
             Err(DequeEmpty)
         } else {
-            let out = self.0.get_constant_coeff();
-            self.0 = self.0.drop_constant_and_divide_x();
+            let out;
+            (self.0, out) = self.0.inverse_mul_x_add();
             Ok(out)
         }
     }
@@ -87,14 +87,12 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
             Err(DequeFull)
         } else {
             let thing: NatPolynomial<BOUND> =
-                NatPolynomial::X + NatPolynomial::try_from(el).unwrap() - NatPolynomial::ONE;
+                NatPolynomial::X + NatPolynomial::from(el) - NatPolynomial::ONE;
 
             let mut power = NatPolynomial::ONE;
-            while power <= self.0 {
+            while power.mul_x() <= self.0 {
                 power = power.mul_x();
             }
-            power = power.drop_constant_and_divide_x();
-
             self.0 += thing * power;
             Ok(())
         }
@@ -104,27 +102,23 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         if self.is_empty() {
             Err(DequeEmpty)
         } else {
-            // Remove the leading one.
-            let mut hack = self.0;
-            hack = hack.drop_constant_and_divide_x();
-            let hack = hack;
-
-            let mut leading: NatPolynomial<BOUND> = NatPolynomial::X;
-            while leading <= hack {
-                leading = leading.mul_x();
+            // Remove the leading term with coefficient 1.
+            let mut leading_power: NatPolynomial<BOUND> = NatPolynomial::X;
+            while leading_power <= self.0.inverse_mul_x_add().0 {
+                leading_power = leading_power.mul_x();
             }
-            self.0 = self.0 - leading;
+            self.0 = self.0 - leading_power;
+            leading_power = leading_power.inverse_mul_x_add().0;
 
-            // Get the next term.
-            let mut leading = leading.drop_constant_and_divide_x();
+            // Get and remove the next term.
             let mut out = 0;
-            while self.0 >= leading {
+            while self.0 >= leading_power {
                 out += 1;
-                self.0 = self.0 - leading;
+                self.0 = self.0 - leading_power;
             }
 
-            // Restore the leading zero.
-            self.0 += leading;
+            // Restore the leading coeffient 1.
+            self.0 += leading_power;
 
             Ok(out)
         }

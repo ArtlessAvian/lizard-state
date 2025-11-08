@@ -5,10 +5,15 @@ use core::ops::AddAssign;
 use core::ops::Mul;
 
 use crate::math::commutative_ring::CommutativeRing;
-use crate::math::commutative_ring::integers_mod::NatMod;
 
 pub mod array;
 pub mod nat;
+
+#[allow(
+    unused,
+    reason = "This only really exists to demonstrate properties of the trait"
+)]
+mod let_x_eq_one;
 
 struct PolynomialCoeffIterator<T: PolynomialRing>(T);
 
@@ -19,8 +24,8 @@ impl<T: PolynomialRing> Iterator for PolynomialCoeffIterator<T> {
         if self.0 == T::ZERO {
             None
         } else {
-            let constant = self.0.get_constant_coeff();
-            self.0 = self.0.drop_constant_and_divide_x();
+            let constant;
+            (self.0, constant) = self.0.inverse_mul_x_add();
             Some(constant)
         }
     }
@@ -35,10 +40,9 @@ impl<T: PolynomialRing> Iterator for PolynomialTermIterator<T> {
         if self.0 == T::ZERO {
             None
         } else {
-            let constant = self.0.get_constant_term();
-            let out = constant * self.1;
-
-            self.0 = self.0.drop_constant_and_divide_x();
+            let constant;
+            (self.0, constant) = self.0.inverse_mul_x_add();
+            let out = self.1 * T::from(constant);
             self.1 *= T::X;
             Some(out)
         }
@@ -56,30 +60,38 @@ impl<T: PolynomialRing> Iterator for PolynomialTermIterator<T> {
 /// Coefficients are a subset of `PolynomialRing::Over`.
 /// Terms are a subset of `Self`, a product of Xs and coefficients.
 #[must_use]
-pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
+pub trait PolynomialRing: CommutativeRing + From<Self::Over> {
     type Over: CommutativeRing;
     const X: Self;
+
+    /// The exponent of the highest power of X representable with Self.
+    /// For all valid polynomials, `get_degree() <= MAX_EXP_X`
+    const MAX_EXP_X: usize;
+    /// The representation of X that can be generated from multiplying only.
+    const MAX_POW_X: Self;
 
     fn get_constant_coeff(&self) -> Self::Over;
     fn get_constant_term(&self) -> Self;
 
     fn is_constant(&self) -> bool;
 
-    /// Finds the inverse to mul_x, sorta.
-    /// Behaves like exact_div.
+    /// Returns (a, b) such that ax + b = self.
     ///
-    /// This function should never panic due to the trait's inductive guarantee.
+    /// This is always well defined due to the trait's inductive guarantee.
+    /// It should never panic.
     #[must_use]
-    fn drop_constant_and_divide_x(&self) -> Self;
+    fn inverse_mul_x_add(&self) -> (Self, Self::Over);
 
     /// # Panics
     /// self * X cannot be represented.
     #[must_use]
     fn mul_x(&self) -> Self;
 
-    fn iter_coeff(&self) -> impl Iterator<Item = Self::Over>;
-
     // ----- Has generic implementation -----
+
+    fn iter_coeff(&self) -> impl Iterator<Item = Self::Over> {
+        PolynomialCoeffIterator(*self)
+    }
 
     /// # Panics
     /// Default implementation panics if the polynomial cannot be represented.
@@ -87,11 +99,11 @@ pub trait PolynomialRing: CommutativeRing + TryFrom<Self::Over> {
     fn new_from_coeffs(into_coeffs: impl IntoIterator<Item = Self::Over>) -> Option<Self> {
         let mut coeffs = into_coeffs.into_iter();
         if let Some(first) = coeffs.next() {
-            let mut sum = Self::try_from(first).ok()?;
+            let mut sum = Self::from(first);
             let mut power = Self::ONE;
             for coeff in coeffs {
                 power *= Self::X;
-                sum += power * Self::try_from(coeff).ok()?;
+                sum += power * Self::from(coeff);
             }
             Some(sum)
         } else {

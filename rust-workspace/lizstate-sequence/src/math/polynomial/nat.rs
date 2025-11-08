@@ -7,7 +7,6 @@ use core::ops::MulAssign;
 use core::ops::Sub;
 
 use crate::math::commutative_ring::CommutativeRing;
-use crate::math::commutative_ring::integers_mod::NatMod;
 use crate::math::polynomial::PolynomialCoeffIterator;
 use crate::math::polynomial::PolynomialRing;
 use crate::math::polynomial::array::ArrayPolynomial;
@@ -23,6 +22,8 @@ impl<const X: u16> Display for NatPolynomial<X> {
 }
 
 impl<const X: u16> NatPolynomial<X> {
+    const LARGEST_CONSTANT_POLY: Self = Self(X as u64 - 1);
+
     const LARGEST_SUPPORTED_DEGREE: usize = {
         // Goal: we can represent a polynomial with degree D with X-1 for every coefficient.
         // We control D, so we are fine if we underestimate.
@@ -37,8 +38,6 @@ impl<const X: u16> NatPolynomial<X> {
         // which always fits in a u8, which always fits in a usize.
         degree as usize
     };
-
-    const LARGEST_CONSTANT_POLY: Self = Self(X as u64 - 1);
 
     pub const fn from_raw(u64: u64) -> Self {
         Self(u64)
@@ -65,20 +64,29 @@ impl<const X: u16> PolynomialRing for NatPolynomial<X> {
     type Over = u8;
     const X: Self = Self(X as u64);
 
+    const MAX_POW_X: Self = {
+        let mut power = 1;
+        while power <= u64::MAX / X as u64 {
+            power *= X as u64;
+        }
+        Self(power)
+    };
+    const MAX_EXP_X: usize = { Self::MAX_POW_X.0.ilog(X as u64) as usize };
+
     fn get_constant_coeff(&self) -> u8 {
         (self.0 % (X as u64)) as u8
     }
 
     fn get_constant_term(&self) -> Self {
-        Self::try_from(self.get_constant_coeff()).unwrap()
+        Self::from(self.get_constant_coeff())
     }
 
     fn is_constant(&self) -> bool {
         self.0 < (X as u64)
     }
 
-    fn drop_constant_and_divide_x(&self) -> Self {
-        Self(self.0 / X as u64)
+    fn inverse_mul_x_add(&self) -> (Self, Self::Over) {
+        (Self(self.0 / X as u64), (self.0 % X as u64) as u8)
     }
 
     fn mul_x(&self) -> Self {
@@ -94,14 +102,12 @@ impl<const X: u16> PolynomialRing for NatPolynomial<X> {
     }
 }
 
-impl<const X: u16> TryFrom<u8> for NatPolynomial<X> {
-    type Error = ();
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
-        if (value as u64) < (X as u64) {
-            Ok(Self(value as u64))
+impl<const X: u16> From<u8> for NatPolynomial<X> {
+    fn from(value: u8) -> Self {
+        if (value as u16) < X {
+            Self(value as u64)
         } else {
-            Err(())
+            panic!()
         }
     }
 }

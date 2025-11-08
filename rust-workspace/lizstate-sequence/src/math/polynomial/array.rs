@@ -11,7 +11,6 @@ use std::dbg;
 use std::println;
 
 use crate::math::commutative_ring::CommutativeRing;
-use crate::math::commutative_ring::integers_mod::NatMod;
 use crate::math::polynomial::PolynomialRing;
 use crate::math::polynomial::nat::NatPolynomial;
 
@@ -66,6 +65,13 @@ impl<const LEN: usize> PolynomialRing for ArrayPolynomial<LEN> {
         Self(array)
     };
 
+    const MAX_POW_X: Self = {
+        let mut array = [0; LEN];
+        array[LEN - 1] = Self::Over::ONE;
+        Self(array)
+    };
+    const MAX_EXP_X: usize = LEN - 1;
+
     fn get_constant_coeff(&self) -> u8 {
         self.0[0]
     }
@@ -78,11 +84,12 @@ impl<const LEN: usize> PolynomialRing for ArrayPolynomial<LEN> {
         self.0.iter().skip(1).all(|x| *x == 0)
     }
 
-    fn drop_constant_and_divide_x(&self) -> Self {
+    fn inverse_mul_x_add(&self) -> (Self, Self::Over) {
         let mut out = *self;
         out.0.copy_within(1..(LEN), 0);
         out.0[LEN - 1] = 0;
-        out
+
+        (out, self.0[0])
     }
 
     fn mul_x(&self) -> Self {
@@ -100,13 +107,11 @@ impl<const LEN: usize> PolynomialRing for ArrayPolynomial<LEN> {
     }
 }
 
-impl<const LEN: usize> TryFrom<u8> for ArrayPolynomial<LEN> {
-    type Error = ();
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
+impl<const LEN: usize> From<u8> for ArrayPolynomial<LEN> {
+    fn from(value: u8) -> Self {
         let mut out = Self::ZERO;
         out.0[0] = value;
-        Ok(out)
+        out
     }
 }
 
@@ -215,7 +220,6 @@ mod tests {
     use core::ops::Deref;
 
     use crate::math::commutative_ring::CommutativeRing;
-    use crate::math::commutative_ring::integers_mod::NatMod;
     use crate::math::polynomial::PolynomialRing;
     use crate::math::polynomial::array::DegreeSevenPolynomial;
 
