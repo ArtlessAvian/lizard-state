@@ -7,9 +7,15 @@ use crate::math::polynomial::PolynomialRing;
 use crate::math::polynomial::nat::NatPolynomial;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct DequeFull;
+pub enum PushError {
+    Full,
+    Oob,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct DequeEmpty;
+pub enum PopError {
+    Empty,
+}
 
 /// Deque, impossible to misuse, but not inherently useful.
 /// Equivalent to `[u8; 7]`
@@ -62,9 +68,11 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         self.len() >= (CAP as usize)
     }
 
-    pub fn push_low(&mut self, el: u8) -> Result<(), DequeFull> {
-        if self.is_full() {
-            Err(DequeFull)
+    pub fn push_low(&mut self, el: u8) -> Result<(), PushError> {
+        if el as u16 >= BOUND {
+            Err(PushError::Oob)
+        } else if self.is_full() {
+            Err(PushError::Full)
         } else {
             self.0 = self.0.mul_x();
             self.0 += NatPolynomial::ONE * el;
@@ -72,9 +80,9 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         }
     }
 
-    pub fn pop_low(&mut self) -> Result<u8, DequeEmpty> {
+    pub fn pop_low(&mut self) -> Result<u8, PopError> {
         if self.is_empty() {
-            Err(DequeEmpty)
+            Err(PopError::Empty)
         } else {
             let out;
             (self.0, out) = self.0.inverse_mul_x_add();
@@ -82,9 +90,11 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         }
     }
 
-    pub fn push_high(&mut self, el: u8) -> Result<(), DequeFull> {
-        if self.is_full() {
-            Err(DequeFull)
+    pub fn push_high(&mut self, el: u8) -> Result<(), PushError> {
+        if el as u16 >= BOUND {
+            Err(PushError::Oob)
+        } else if self.is_full() {
+            Err(PushError::Full)
         } else {
             let thing: NatPolynomial<BOUND> =
                 NatPolynomial::X + NatPolynomial::from(el) - NatPolynomial::ONE;
@@ -98,9 +108,9 @@ impl<const BOUND: u16, const CAP: u8> Deque<BOUND, CAP> {
         }
     }
 
-    pub fn pop_high(&mut self) -> Result<u8, DequeEmpty> {
+    pub fn pop_high(&mut self) -> Result<u8, PopError> {
         if self.is_empty() {
-            Err(DequeEmpty)
+            Err(PopError::Empty)
         } else {
             // Remove the leading term with coefficient 1.
             let mut leading_power: NatPolynomial<BOUND> = NatPolynomial::X;

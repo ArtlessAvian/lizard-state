@@ -19,13 +19,18 @@ pub(crate) mod math;
 /// Deque of numbers.
 pub mod deque;
 
-pub mod digit;
+pub mod fieldless_enum;
 
-mod digit_deque;
+/// Deque of enums.
+pub mod enum_deque;
 
-pub mod element_deque;
+// pub mod digit;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct SequenceFull;
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct SequenceEmpty;
+// mod digit_deque;
+
+// pub mod element_deque;
+
+// #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+// pub struct SequenceFull;
+// #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+// pub struct SequenceEmpty;

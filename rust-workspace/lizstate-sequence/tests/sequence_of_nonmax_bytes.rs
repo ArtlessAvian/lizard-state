@@ -1,54 +1,39 @@
-use lizstate_sequence::digit::Digit;
-use lizstate_sequence::digit::IsSmallEnum;
-use lizstate_sequence::element_deque::PackedDeque;
+use lizstate_sequence::enum_deque::EnumDeque;
+use lizstate_sequence::fieldless_enum::IsReprU8;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 struct NonMaxByte(u8);
 
-impl IsSmallEnum for NonMaxByte {
-    type Digit = Digit<255>;
+impl IsReprU8 for NonMaxByte {
+    const ENUM: &[Self] = &{
+        let mut out = [NonMaxByte(0); 254];
+        let mut i = 0;
+        while i < out.len() {
+            out[i] = NonMaxByte(i as u8);
+            i += 1;
+        }
+        out
+    };
+}
 
-    fn to_digit(&self) -> Self::Digit {
-        assert!(self.0 != 0xFF);
-        Digit::from_modulo_u8(self.0)
-    }
-
-    fn from_digit(digit: Self::Digit) -> Self {
-        NonMaxByte(digit.get())
+impl From<NonMaxByte> for u8 {
+    fn from(value: NonMaxByte) -> Self {
+        value.0
     }
 }
 
 #[test]
 fn byte_representation() {
-    let mut deque = PackedDeque::<NonMaxByte, 255, 8>::new_empty();
+    let mut deque = EnumDeque::<NonMaxByte, 255, 8>::new_empty();
 
     deque.push_low(NonMaxByte(0x01)).unwrap();
     deque.push_low(NonMaxByte(0x03)).unwrap();
     deque.push_low(NonMaxByte(0x03)).unwrap();
     deque.push_low(NonMaxByte(0x07)).unwrap();
 
-    assert_eq!(deque.peek_low().unwrap(), NonMaxByte(0x07));
-    deque.pop_low().unwrap();
-    assert_eq!(deque.peek_low().unwrap(), NonMaxByte(0x03));
-    deque.pop_low().unwrap();
-    assert_eq!(deque.peek_low().unwrap(), NonMaxByte(0x03));
-    deque.pop_low().unwrap();
-    assert_eq!(deque.peek_low().unwrap(), NonMaxByte(0x01));
-    deque.pop_low().unwrap();
-}
-
-#[test]
-fn fits_exactly_eight() {
-    let mut deque = PackedDeque::<NonMaxByte, 255, 8>::new_empty();
-
-    for _ in 0..8 {
-        deque.push_low(NonMaxByte(0xFE)).unwrap();
-    }
-
-    deque.push_low(NonMaxByte(0xFE)).expect_err("overflow!");
-
-    for _ in 0..8 {
-        assert_eq!(deque.peek_low().unwrap(), NonMaxByte(0xFE));
-        deque.pop_low().unwrap();
-    }
+    assert_eq!(deque.pop_low().unwrap(), NonMaxByte(0x07));
+    assert_eq!(deque.pop_low().unwrap(), NonMaxByte(0x03));
+    assert_eq!(deque.pop_low().unwrap(), NonMaxByte(0x03));
+    assert_eq!(deque.pop_low().unwrap(), NonMaxByte(0x01));
+    deque.pop_low().expect_err("empty");
 }

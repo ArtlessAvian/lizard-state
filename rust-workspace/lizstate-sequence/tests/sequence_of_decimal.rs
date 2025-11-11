@@ -1,6 +1,6 @@
-use lizstate_sequence::digit::Digit;
-use lizstate_sequence::digit::IsSmallEnum;
-use lizstate_sequence::element_deque::PackedDeque;
+use DecimalDigits::*;
+use lizstate_sequence::enum_deque::EnumDeque;
+use lizstate_sequence::fieldless_enum::IsReprU8;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -17,40 +17,35 @@ enum DecimalDigits {
     Nine,
 }
 
-impl IsSmallEnum for DecimalDigits {
-    type Digit = Digit<10>;
+impl IsReprU8 for DecimalDigits {
+    const ENUM: &'static [Self] = &[Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine];
+}
 
-    fn to_digit(&self) -> Self::Digit {
-        Digit::from_modulo_u8(*self as u8)
+impl From<u8> for DecimalDigits {
+    fn from(value: u8) -> Self {
+        Self::new_from_value(value)
     }
+}
 
-    fn from_digit(digit: Self::Digit) -> Self {
-        match digit.get() {
-            0 => Self::Zero,
-            1 => Self::One,
-            2 => Self::Two,
-            3 => Self::Three,
-            4 => Self::Four,
-            5 => Self::Five,
-            6 => Self::Six,
-            7 => Self::Seven,
-            8 => Self::Eight,
-            9 => Self::Nine,
-            (10..) => {
-                unreachable!()
-            }
-        }
+impl From<DecimalDigits> for u8 {
+    fn from(value: DecimalDigits) -> Self {
+        value as u8
     }
 }
 
 #[test]
 fn decimal_representation() {
-    let mut deque = PackedDeque::<DecimalDigits, 10, 19>::new_empty();
+    let mut deque = EnumDeque::<DecimalDigits, 10, 8>::new_empty();
+    deque.push_low(One).unwrap();
+    deque.push_low(Three).unwrap();
+    deque.push_low(Three).unwrap();
+    deque.push_low(Seven).unwrap();
+    assert!(deque.into_iter_high_to_low().eq([One, Three, Three, Seven]));
 
-    deque.push_low(DecimalDigits::One).unwrap();
-    deque.push_low(DecimalDigits::Three).unwrap();
-    deque.push_low(DecimalDigits::Three).unwrap();
-    deque.push_low(DecimalDigits::Seven).unwrap();
-
-    assert_eq!(deque.get(), 1337 + 1111);
+    let mut deque = EnumDeque::<DecimalDigits, 10, 8>::new_empty();
+    deque.push_low(One).unwrap();
+    deque.push_low(Three).unwrap();
+    deque.push_low(Three).unwrap();
+    deque.push_low(Seven).unwrap();
+    assert!(deque.into_iter_high_to_low().eq([One, Three, Three, Seven]));
 }
