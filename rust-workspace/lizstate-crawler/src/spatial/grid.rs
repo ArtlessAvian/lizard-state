@@ -1,3 +1,10 @@
+use std::hash::Hash;
+
+/// Generating set of `Gridlike` implementors.
+///
+/// Also the generating set of `Pathlike`s.
+/// `Gridlikes` behave like absolute positions.
+/// `Pathlikes` behave like relative positions.
 #[derive(Clone, Copy)]
 pub enum Cardinal {
     North,
@@ -6,40 +13,71 @@ pub enum Cardinal {
     West,
 }
 
+/// Like a King in chess.
+///
+/// IRONICALLY. This behaves more like a horsey which moves in an L, except without a long end.
 #[derive(Clone, Copy)]
-pub enum Diagonal {
+pub enum KingStep {
+    North,
+    South,
+    East,
+    West,
     NorthEast,
     NorthWest,
     SouthEast,
     SouthWest,
 }
 
-pub trait GridLike: Sized + Copy {
-    fn flatten(self) -> (i32, i32);
-    /// Flattens into (0, 0).
-    fn origin() -> Self;
-    fn step(self, dir: Cardinal) -> Option<Self>;
-
-    fn step_diagonal(self, dir: Diagonal) -> Option<Self> {
-        match dir {
-            Diagonal::NorthEast => self
-                .step(Cardinal::North)
-                .and_then(|pos| pos.step(Cardinal::East)),
-            Diagonal::NorthWest => self
-                .step(Cardinal::North)
-                .and_then(|pos| pos.step(Cardinal::West)),
-            Diagonal::SouthEast => self
-                .step(Cardinal::South)
-                .and_then(|pos| pos.step(Cardinal::East)),
-            Diagonal::SouthWest => self
-                .step(Cardinal::South)
-                .and_then(|pos| pos.step(Cardinal::West)),
+impl KingStep {
+    fn decompose(self) -> (Option<Cardinal>, Option<Cardinal>) {
+        match self {
+            KingStep::North => (Some(Cardinal::North), None),
+            KingStep::South => (Some(Cardinal::South), None),
+            KingStep::East => (None, Some(Cardinal::East)),
+            KingStep::West => (None, Some(Cardinal::West)),
+            KingStep::NorthEast => (Some(Cardinal::North), Some(Cardinal::East)),
+            KingStep::NorthWest => (Some(Cardinal::North), Some(Cardinal::West)),
+            KingStep::SouthEast => (Some(Cardinal::South), Some(Cardinal::East)),
+            KingStep::SouthWest => (Some(Cardinal::South), Some(Cardinal::West)),
         }
     }
 }
 
+/// Locations reached by taking steps from the origin.
+///
+/// Implementors are allowed to wrap and panic.
+pub trait GridLike: Sized + Copy + PartialEq + Hash {
+    /// The difference of East and West steps, and South and North steps.
+    fn flatten(self) -> (i32, i32);
+    /// Flattens into (0, 0).
+    fn origin() -> Self;
+
+    /// Allowed to wrap.
+    /// # Panics
+    /// Implementor is allowed to panic.
+    #[must_use]
+    fn step(self, dir: Cardinal) -> Self;
+
+    #[must_use]
+    fn step_option(self, dir: Option<Cardinal>) -> Self {
+        dir.map_or(self, |dir| self.step(dir))
+    }
+
+    #[must_use]
+    fn step_king(self, dir: KingStep) -> Self {
+        let (horizontal, vertical) = dir.decompose();
+        let first = self.step_option(horizontal);
+        first.step_option(vertical)
+    }
+
+    #[must_use]
+    fn step_option_king(self, dir: Option<KingStep>) -> Self {
+        dir.map_or(self, |dir| self.step_king(dir))
+    }
+}
+
 // The Gridlike that flattens into itself.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct GridPosition(pub i32, pub i32);
 
 impl GridLike for GridPosition {
@@ -51,12 +89,12 @@ impl GridLike for GridPosition {
         GridPosition(0, 0)
     }
 
-    fn step(self, dir: Cardinal) -> Option<Self> {
-        Some(match dir {
+    fn step(self, dir: Cardinal) -> Self {
+        match dir {
             Cardinal::North => GridPosition(self.0, self.1 - 1),
             Cardinal::South => GridPosition(self.0, self.1 + 1),
             Cardinal::East => GridPosition(self.0 + 1, self.1),
             Cardinal::West => GridPosition(self.0 - 1, self.1),
-        })
+        }
     }
 }

@@ -3,7 +3,7 @@ use crate::spatial::grid::GridLike;
 use crate::spatial::grid::GridPosition;
 
 // TODO: Rename me!
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct PositionInsideChunk<ChunkType: GridLike = GridPosition> {
     pub chunk: ChunkType,
 
@@ -76,17 +76,17 @@ impl<ChunkType: GridLike> GridLike for PositionInsideChunk<ChunkType> {
         }
     }
 
-    fn step(mut self, dir: Cardinal) -> Option<Self> {
+    fn step(mut self, dir: Cardinal) -> Self {
         self.magic = self.magic.wrapping_add(Self::cardinal_magic(dir));
 
         if self.magic & 0x88u8.cast_signed() != 0 {
             let undo = Self::cardinal_magic(dir).wrapping_mul(-8);
             self.magic = self.magic.wrapping_add(undo);
 
-            self.chunk = self.chunk.step(dir)?;
+            self.chunk = self.chunk.step(dir);
         }
 
-        Some(self)
+        self
     }
 }
 
@@ -113,32 +113,16 @@ mod tests {
             for y in -4..4 {
                 let start = PositionInsideChunk::new(GridPosition(0, 0), (x, y));
 
-                let north_south = start
-                    .step(Cardinal::North)
-                    .unwrap()
-                    .step(Cardinal::South)
-                    .unwrap();
+                let north_south = start.step(Cardinal::North).step(Cardinal::South);
                 assert_eq!(north_south, start);
 
-                let south_north = start
-                    .step(Cardinal::South)
-                    .unwrap()
-                    .step(Cardinal::North)
-                    .unwrap();
+                let south_north = start.step(Cardinal::South).step(Cardinal::North);
                 assert_eq!(south_north, start);
 
-                let east_west = start
-                    .step(Cardinal::East)
-                    .unwrap()
-                    .step(Cardinal::West)
-                    .unwrap();
+                let east_west = start.step(Cardinal::East).step(Cardinal::West);
                 assert_eq!(east_west, start);
 
-                let west_east = start
-                    .step(Cardinal::West)
-                    .unwrap()
-                    .step(Cardinal::East)
-                    .unwrap();
+                let west_east = start.step(Cardinal::West).step(Cardinal::East);
                 assert_eq!(west_east, start);
             }
         }

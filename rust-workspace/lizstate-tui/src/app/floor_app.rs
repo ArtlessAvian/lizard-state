@@ -1,5 +1,8 @@
+use lizstate_crawler::commands::CommandTrait;
+use lizstate_crawler::commands::StepCommand;
 use lizstate_crawler::entity::Entity;
 use lizstate_crawler::floor::Floor;
+use lizstate_crawler::spatial::grid::KingStep;
 use ratatui::crossterm::event::KeyModifiers;
 use ratatui::crossterm::event::{self};
 use ratatui::prelude::*;
@@ -60,12 +63,23 @@ impl FloorState {
             }
         }
 
-        match key_event.code {
-            event::KeyCode::Char('h') => {}
-            event::KeyCode::Char('j') => {}
-            event::KeyCode::Char('k') => {}
-            event::KeyCode::Char('l') => {}
-            _ => {}
+        let command = match key_event.code {
+            event::KeyCode::Char('h') => Some(StepCommand(KingStep::West)),
+            event::KeyCode::Char('j') => Some(StepCommand(KingStep::South)),
+            event::KeyCode::Char('k') => Some(StepCommand(KingStep::North)),
+            event::KeyCode::Char('l') => Some(StepCommand(KingStep::East)),
+            event::KeyCode::Char('y') => Some(StepCommand(KingStep::NorthWest)),
+            event::KeyCode::Char('u') => Some(StepCommand(KingStep::NorthEast)),
+            event::KeyCode::Char('b') => Some(StepCommand(KingStep::SouthWest)),
+            event::KeyCode::Char('n') => Some(StepCommand(KingStep::SouthEast)),
+            _ => None,
+        };
+
+        if let Some(command) = command {
+            let result = command.do_command(self.floor.get_turntaker());
+            if let Ok(floor) = result {
+                self.floor = floor;
+            }
         }
     }
 }
@@ -132,7 +146,7 @@ impl<'a> FloorWidget<'a> {
     }
 
     fn render_creatures(&self, camera: &mut Camera) {
-        for creature in self.floor.get_creatures() {
+        for (_, creature) in self.floor.get_creatures() {
             let worldspace = creature.get_flat_position();
 
             if let Some(cell) = camera.cell_mut(worldspace) {

@@ -11,6 +11,8 @@
 #![warn(clippy::pedantic)]
 #![warn(clippy::allow_attributes_without_reason)]
 
+pub mod util;
+
 /// `Tile`s, positions that are gridlike, that form a funky `Map`.
 ///
 /// `Map`s and their `Tile`s can be projected into a grid, but the original is not the plane.
@@ -31,10 +33,14 @@ pub mod creature;
 /// `Floor`s can also be serialized and deserialized.
 ///
 /// In the context of a `Floor`, `Now` is the smallest `Turn`.
-/// A `Subject` is a `Floor` and its turn taker.
 pub mod floor;
 
-/// The `Command` trait describe how a `Floor` changes in a turn and produces a `Log`.
+/// The `Command` trait describes how a `Creature` in a `Floor` causes changes in a turn and produces an `EventLog`.
+///
+/// `Command`s are fallible.
+/// `Suggestion`s are commands that may no-op, and therefore are infallible.
+/// `Macro`s are commands that try a different command on failure.
+/// `State`s are stored in creatures, and are applied reflexively onto themselves.
 pub mod commands;
 
 /// Reexports from the other modules. The usual stuff.
