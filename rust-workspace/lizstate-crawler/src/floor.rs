@@ -2,11 +2,18 @@ use core::ops::DerefMut;
 
 use crate::creature::Creature;
 use crate::floor::creatures::CreatureList;
+use crate::floor::creatures::Turn;
 use crate::spatial::grid::GridPosition;
 
 #[derive(Debug)]
 #[must_use]
-pub struct Turntaker<'a>(u8, &'a Creature, &'a Floor);
+pub struct Turntaker<'a> {
+    id: u8,
+    now: Turn,
+    creature: &'a Creature,
+    floor: &'a Floor,
+}
+
 mod impl_turntaker;
 
 mod creatures;
@@ -26,20 +33,22 @@ impl Floor {
         self.creatures.get_creature_mut(index)
     }
 
+    pub fn iter_turn_order(&self) -> impl Iterator<Item = (u8, Turn, &Creature)> {
+        self.creatures.iter_turn_order()
+    }
+
     pub fn new_test() -> Self {
         let mut creatures = [const { None }; 2];
-        creatures[0] = Some(Creature::new(GridPosition(0, 0)));
-        creatures[1] = Some(Creature::new(GridPosition(-2, 0)));
+        creatures[0] = Some(Creature::new(GridPosition(0, 0), 0, 0x854C_30FF));
+        creatures[1] = Some(Creature::new(GridPosition(-2, 0), 0, 0xE38F_D5FF));
 
         Floor {
             creatures: CreatureList::new_from_iter(creatures.into_iter().flatten()),
         }
     }
 
-    /// # Panics
-    /// Temporary.
-    pub fn get_turntaker(&self) -> Turntaker<'_> {
-        let (a, b) = self.get_creatures().next().unwrap();
-        Turntaker(a, b, self)
+    #[must_use]
+    pub fn try_into_turntaker(&self) -> Option<Turntaker<'_>> {
+        Turntaker::try_from_floor(self)
     }
 }

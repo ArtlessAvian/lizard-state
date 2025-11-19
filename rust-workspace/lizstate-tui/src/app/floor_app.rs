@@ -76,7 +76,7 @@ impl FloorState {
         };
 
         if let Some(command) = command {
-            let result = command.do_command(self.floor.get_turntaker());
+            let result = command.do_command(self.floor.try_into_turntaker().expect("yeah"));
             if let Ok(floor) = result {
                 self.floor = floor;
             }
@@ -118,6 +118,7 @@ impl<'a> FloorWidget<'a> {
 
         self.overlay_grid(&mut camera);
         self.render_vi_keys(&mut camera);
+        self.render_timekeeping(&mut camera);
     }
 
     fn render_background(&self, camera: &mut Camera) {
@@ -147,12 +148,18 @@ impl<'a> FloorWidget<'a> {
     }
 
     fn render_creatures(&self, camera: &mut Camera) {
-        for (_, creature) in self.floor.get_creatures() {
+        let turntaker_id = self.floor.try_into_turntaker().expect("for now").get_id();
+
+        for (id, creature) in self.floor.get_creatures() {
             let worldspace = creature.get_flat_position();
 
             if let Some(cell) = camera.cell_mut(worldspace) {
                 cell.set_char(creature.get_char());
                 cell.set_fg(Color::Indexed(creature.get_fg_color()));
+
+                if id == turntaker_id {
+                    cell.set_style(cell.style().italic());
+                }
             }
         }
     }
@@ -203,5 +210,24 @@ impl<'a> FloorWidget<'a> {
         set_char(x + 2, y - 2, 'u');
         set_char(x - 2, y + 2, 'b');
         set_char(x + 2, y + 2, 'n');
+    }
+
+    fn render_timekeeping(&self, camera: &mut Camera) {
+        let formatted = format!(
+            "Time: {:?}",
+            self.floor.try_into_turntaker().unwrap().get_now()
+        );
+
+        let x = camera.render_target.x;
+        let y = camera.render_target.y + camera.render_target.height - 1;
+
+        camera.buffer.set_string(x, y, formatted, Style::default());
+
+        for (i, (_id, _turn, creature)) in self.floor.iter_turn_order().enumerate() {
+            if let Some(cell) = camera.buffer.cell_mut((x + i as u16, y - 1)) {
+                cell.set_char(creature.get_char());
+                cell.set_fg(Color::Indexed(creature.get_fg_color()));
+            }
+        }
     }
 }

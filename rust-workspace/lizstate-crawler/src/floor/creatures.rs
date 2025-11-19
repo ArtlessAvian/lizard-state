@@ -4,6 +4,26 @@ use std::rc::Rc;
 
 use crate::creature::Creature;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[must_use]
+pub struct Turn {
+    round: u32,
+    order: u8,
+}
+
+impl Turn {
+    pub fn coming_round_for(self, other: u8) -> u32 {
+        self.round + u32::from(self.order > other)
+    }
+
+    pub fn skip_rounds(self, count: u32) -> Turn {
+        Turn {
+            round: self.round + count,
+            order: self.order,
+        }
+    }
+}
+
 /// A list of creatures. Clones with persistence.
 ///
 /// Persistence allows previous floors to share data with each other.
@@ -70,6 +90,19 @@ impl CreatureList {
         self.iter_creatures_mut()
             .nth(index as usize)
             .expect("all u8 indices are valid")
+    }
+
+    pub fn iter_turn_order(&self) -> impl Iterator<Item = (u8, Turn, &Creature)> {
+        let mut vec = self
+            .iter_indices_nonempty()
+            .filter_map(|(id, x)| {
+                x.get_round()
+                    .map(|round| (id, Turn { round, order: id }, x))
+            })
+            .collect::<Vec<_>>();
+
+        vec.sort_unstable_by_key(|x| x.1);
+        vec.into_iter()
     }
 }
 
