@@ -1,7 +1,15 @@
 use crate::creature::Creature;
 use crate::floor::Floor;
-use crate::floor::Turntaker;
 use crate::floor::creatures::Turn;
+
+#[derive(Debug)]
+#[must_use]
+pub struct Turntaker<'a> {
+    id: u8,
+    now: Turn,
+    creature: &'a Creature,
+    floor: &'a Floor,
+}
 
 impl<'a> Turntaker<'a> {
     #[must_use]

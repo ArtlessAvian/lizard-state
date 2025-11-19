@@ -1,5 +1,5 @@
 use crate::floor::Floor;
-use crate::floor::Turntaker;
+use crate::floor::turntaker::Turntaker;
 use crate::spatial::grid::KingStep;
 
 #[non_exhaustive]

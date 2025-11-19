@@ -3,18 +3,10 @@ use core::ops::DerefMut;
 use crate::creature::Creature;
 use crate::floor::creatures::CreatureList;
 use crate::floor::creatures::Turn;
+use crate::floor::turntaker::Turntaker;
 use crate::spatial::grid::GridPosition;
 
-#[derive(Debug)]
-#[must_use]
-pub struct Turntaker<'a> {
-    id: u8,
-    now: Turn,
-    creature: &'a Creature,
-    floor: &'a Floor,
-}
-
-mod impl_turntaker;
+pub mod turntaker;
 
 mod creatures;
 
