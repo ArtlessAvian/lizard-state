@@ -117,6 +117,7 @@ impl<'a> FloorWidget<'a> {
         self.render_creatures(&mut camera);
 
         self.overlay_grid(&mut camera);
+        self.render_vi_keys(&mut camera);
     }
 
     fn render_background(&self, camera: &mut Camera) {
@@ -171,5 +172,36 @@ impl<'a> FloorWidget<'a> {
                 cell.set_bg(Color::Indexed(slight_alteration));
             }
         }
+    }
+
+    fn render_vi_keys(&self, camera: &mut Camera) {
+        let x = camera.render_target.x + 2;
+        let y = camera.render_target.y + 2;
+
+        let mut set_char = |x, y, ch| {
+            camera.buffer.cell_mut((x, y)).map(|x| x.set_char(ch));
+        };
+
+        set_char(x, y, '.');
+
+        set_char(x - 1, y, '-');
+        set_char(x, y + 1, '|');
+        set_char(x, y - 1, '|');
+        set_char(x + 1, y, '-');
+
+        set_char(x - 1, y - 1, '\\');
+        set_char(x + 1, y - 1, '/');
+        set_char(x - 1, y + 1, '/');
+        set_char(x + 1, y + 1, '\\');
+
+        set_char(x - 2, y, 'h');
+        set_char(x, y + 2, 'j');
+        set_char(x, y - 2, 'k');
+        set_char(x + 2, y, 'l');
+
+        set_char(x - 2, y - 2, 'y');
+        set_char(x + 2, y - 2, 'u');
+        set_char(x - 2, y + 2, 'b');
+        set_char(x + 2, y + 2, 'n');
     }
 }
