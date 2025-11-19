@@ -2,6 +2,7 @@ use crate::floor::Floor;
 use crate::floor::turntaker::Turntaker;
 use crate::spatial::grid::KingStep;
 
+#[derive(Debug)]
 #[non_exhaustive]
 pub enum CommandError {
     InTheWay(u8),
@@ -22,6 +23,23 @@ pub trait SuggestionTrait {
 impl<T: SuggestionTrait> CommandTrait for T {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
         Ok(self.try_suggestion(turntaker))
+    }
+}
+
+pub struct WaitCommand;
+
+impl CommandTrait for WaitCommand {
+    fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
+        turntaker.map_independent(|creature, _| {
+            let mut clone = creature.clone();
+            clone.set_round(
+                turntaker
+                    .get_now()
+                    .skip_rounds(1)
+                    .coming_round_for(turntaker.get_id()),
+            );
+            Ok(clone)
+        })
     }
 }
 

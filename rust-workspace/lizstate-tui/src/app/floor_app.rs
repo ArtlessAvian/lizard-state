@@ -79,6 +79,19 @@ impl FloorState {
             let result = command.do_command(&self.floor.try_into_turntaker().expect("yeah"));
             if let Ok(floor) = result {
                 self.floor = floor;
+
+                // Painpoint: This could give the player control of a creature that isn't the player.
+                for _ in 0..100 {
+                    if let Some(turntaker) = self.floor.try_into_turntaker() {
+                        if turntaker.get_id() == 0 {
+                            break;
+                        } else {
+                            self.floor = turntaker.take_npc_turn();
+                        }
+                    } else {
+                        break;
+                    }
+                }
             }
         }
     }

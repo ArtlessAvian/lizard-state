@@ -1,3 +1,6 @@
+use crate::commands::CommandTrait;
+use crate::commands::StepMacro;
+use crate::commands::WaitCommand;
 use crate::creature::Creature;
 use crate::floor::Floor;
 use crate::floor::creatures::Turn;
@@ -41,6 +44,17 @@ impl Turntaker<'_> {
 
     pub fn get_now(&self) -> &Turn {
         &self.now
+    }
+
+    /// Currently an arbitrary command.
+    /// # Panics
+    /// `WaitCommand` returned an Err, which should never happen.
+    pub fn take_npc_turn(&self) -> Floor {
+        let attempt = StepMacro(crate::spatial::grid::KingStep::East).do_command(self);
+
+        attempt
+            .ok()
+            .unwrap_or_else(|| WaitCommand.do_command(self).expect("never fails"))
     }
 
     /// Limits modifications to the turntaker before creating a new Floor.
