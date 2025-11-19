@@ -1,5 +1,3 @@
-use core::ops::DerefMut;
-
 use crate::creature::Creature;
 use crate::floor::creatures::CreatureList;
 use crate::floor::creatures::Turn;
@@ -21,7 +19,7 @@ impl Floor {
         self.creatures.iter_indices_nonempty()
     }
 
-    pub fn get_creature_mut(&mut self, index: u8) -> impl DerefMut<Target = Creature> {
+    pub fn get_creature_mut(&mut self, index: u8) -> Option<&mut Creature> {
         self.creatures.get_creature_mut(index)
     }
 

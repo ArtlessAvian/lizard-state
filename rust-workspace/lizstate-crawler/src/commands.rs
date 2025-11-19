@@ -59,23 +59,20 @@ pub struct TagOutCommand(pub u8);
 
 impl CommandTrait for TagOutCommand {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        let target = turntaker
-            .get_floor()
-            .get_creatures()
-            .nth(self.0 as usize)
-            .ok_or(CommandError::TargetIdDoesntExist(self.0))?;
-
         let mut mut_floor = turntaker.get_floor().clone();
 
-        // TODO: Make this less ugly.
-        mut_floor
-            .get_creature_mut(turntaker.get_id())
-            .set_position(target.1.get_position());
-        mut_floor
-            .get_creature_mut(target.0)
-            .set_position(turntaker.get_creature().get_position());
+        let target = mut_floor
+            .get_creature_mut(self.0)
+            .ok_or(CommandError::TargetIdDoesntExist(self.0))?;
 
-        mut_floor.get_creature_mut(turntaker.get_id()).set_round(
+        let position = target.get_position();
+        target.set_position(turntaker.get_creature().get_position());
+
+        let me = mut_floor
+            .get_creature_mut(turntaker.get_id())
+            .expect("original clone contains id so clone should too");
+        me.set_position(position);
+        me.set_round(
             turntaker
                 .get_now()
                 .skip_rounds(1)

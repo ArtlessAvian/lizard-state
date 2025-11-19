@@ -46,6 +46,8 @@ impl Turntaker<'_> {
     /// Limits modifications to the turntaker before creating a new Floor.
     /// # Errors
     /// Errors when passed function errors.
+    /// # Panics
+    /// Turntaker struct is invalid.
     pub fn map_independent<E>(
         &self,
         mapper: impl Fn(&Creature, &Floor) -> Result<Creature, E>,
@@ -53,9 +55,10 @@ impl Turntaker<'_> {
         let new_creature = mapper(self.get_creature(), self.get_floor())?;
 
         let mut new_floor = self.get_floor().clone();
-        let mut mut_creature = new_floor.get_creature_mut(self.id);
+        let mut_creature = new_floor
+            .get_creature_mut(self.id)
+            .expect("original clone contains id so clone should too");
         *mut_creature = new_creature;
-        drop(mut_creature);
 
         Ok(new_floor)
     }
