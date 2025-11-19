@@ -30,6 +30,10 @@ impl<Pos: GridLike> Creature<Pos> {
         self.pos
     }
 
+    pub fn set_position(&mut self, pos: Pos) {
+        self.pos = pos;
+    }
+
     #[expect(clippy::unnecessary_wraps, reason = "todo")]
     pub fn get_round(&self) -> Option<u32> {
         Some(self.actionable_round)

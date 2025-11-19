@@ -10,6 +10,7 @@
 
 #![warn(clippy::pedantic)]
 #![warn(clippy::allow_attributes_without_reason)]
+#![warn(clippy::unwrap_used)]
 
 pub mod util;
 

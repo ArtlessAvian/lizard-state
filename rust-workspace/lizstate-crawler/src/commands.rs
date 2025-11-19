@@ -4,21 +4,23 @@ use crate::spatial::grid::KingStep;
 
 #[non_exhaustive]
 pub enum CommandError {
-    InTheWay,
+    InTheWay(u8),
+    TargetIdDoesntExist(u8),
+    MacroFallthrough,
 }
 
 pub trait CommandTrait {
     /// # Errors
     /// Any reason for the Command to be impossible.
-    fn do_command(&self, turntaker: Turntaker) -> Result<Floor, CommandError>;
+    fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError>;
 }
 
 pub trait SuggestionTrait {
-    fn try_suggestion(&self, turntaker: Turntaker) -> Floor;
+    fn try_suggestion(&self, turntaker: &Turntaker) -> Floor;
 }
 
 impl<T: SuggestionTrait> CommandTrait for T {
-    fn do_command(&self, turntaker: Turntaker) -> Result<Floor, CommandError> {
+    fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
         Ok(self.try_suggestion(turntaker))
     }
 }
@@ -26,17 +28,17 @@ impl<T: SuggestionTrait> CommandTrait for T {
 pub struct StepCommand(pub KingStep);
 
 impl CommandTrait for StepCommand {
-    fn do_command(&self, turntaker: Turntaker) -> Result<Floor, CommandError> {
+    fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
         turntaker.map_independent(|creature, floor| {
             let mut clone = creature.clone();
             clone.step(self.0);
 
             let position = clone.get_position();
-            if floor
+            if let Some((id, _)) = floor
                 .get_creatures()
-                .any(|x| x.1.get_position() == position)
+                .find(|x| x.1.get_position() == position)
             {
-                return Err(CommandError::InTheWay);
+                return Err(CommandError::InTheWay(id));
             }
 
             clone.set_round(
@@ -48,5 +50,59 @@ impl CommandTrait for StepCommand {
 
             Ok(clone)
         })
+    }
+}
+
+/// Swaps position, even at a distance.
+/// Consumes YOUR turn, but not the swapped creature's.
+pub struct TagOutCommand(pub u8);
+
+impl CommandTrait for TagOutCommand {
+    fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
+        let target = turntaker
+            .get_floor()
+            .get_creatures()
+            .nth(self.0 as usize)
+            .ok_or(CommandError::TargetIdDoesntExist(self.0))?;
+
+        let mut mut_floor = turntaker.get_floor().clone();
+
+        // TODO: Make this less ugly.
+        mut_floor
+            .get_creature_mut(turntaker.get_id())
+            .set_position(target.1.get_position());
+        mut_floor
+            .get_creature_mut(target.0)
+            .set_position(turntaker.get_creature().get_position());
+
+        mut_floor.get_creature_mut(turntaker.get_id()).set_round(
+            turntaker
+                .get_now()
+                .skip_rounds(1)
+                .coming_round_for(turntaker.get_id()),
+        );
+
+        Ok(mut_floor)
+    }
+}
+
+pub struct StepMacro(pub KingStep);
+
+impl CommandTrait for StepMacro {
+    fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
+        let step = StepCommand(self.0).do_command(turntaker);
+
+        if let Ok(floor) = step {
+            return Ok(floor);
+        }
+
+        if let Err(CommandError::InTheWay(who)) = step {
+            let tagout = TagOutCommand(who).do_command(turntaker);
+            if let Ok(floor) = tagout {
+                return Ok(floor);
+            }
+        }
+
+        Err(CommandError::MacroFallthrough)
     }
 }

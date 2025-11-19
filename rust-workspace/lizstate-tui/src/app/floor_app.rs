@@ -1,5 +1,5 @@
 use lizstate_crawler::commands::CommandTrait;
-use lizstate_crawler::commands::StepCommand;
+use lizstate_crawler::commands::StepMacro;
 use lizstate_crawler::entity::Entity;
 use lizstate_crawler::floor::Floor;
 use lizstate_crawler::spatial::grid::KingStep;
@@ -64,19 +64,19 @@ impl FloorState {
         }
 
         let command = match key_event.code {
-            event::KeyCode::Char('h') => Some(StepCommand(KingStep::West)),
-            event::KeyCode::Char('j') => Some(StepCommand(KingStep::South)),
-            event::KeyCode::Char('k') => Some(StepCommand(KingStep::North)),
-            event::KeyCode::Char('l') => Some(StepCommand(KingStep::East)),
-            event::KeyCode::Char('y') => Some(StepCommand(KingStep::NorthWest)),
-            event::KeyCode::Char('u') => Some(StepCommand(KingStep::NorthEast)),
-            event::KeyCode::Char('b') => Some(StepCommand(KingStep::SouthWest)),
-            event::KeyCode::Char('n') => Some(StepCommand(KingStep::SouthEast)),
+            event::KeyCode::Char('h') => Some(StepMacro(KingStep::West)),
+            event::KeyCode::Char('j') => Some(StepMacro(KingStep::South)),
+            event::KeyCode::Char('k') => Some(StepMacro(KingStep::North)),
+            event::KeyCode::Char('l') => Some(StepMacro(KingStep::East)),
+            event::KeyCode::Char('y') => Some(StepMacro(KingStep::NorthWest)),
+            event::KeyCode::Char('u') => Some(StepMacro(KingStep::NorthEast)),
+            event::KeyCode::Char('b') => Some(StepMacro(KingStep::SouthWest)),
+            event::KeyCode::Char('n') => Some(StepMacro(KingStep::SouthEast)),
             _ => None,
         };
 
         if let Some(command) = command {
-            let result = command.do_command(self.floor.try_into_turntaker().expect("yeah"));
+            let result = command.do_command(&self.floor.try_into_turntaker().expect("yeah"));
             if let Ok(floor) = result {
                 self.floor = floor;
             }
