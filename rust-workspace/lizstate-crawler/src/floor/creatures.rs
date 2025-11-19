@@ -1,3 +1,4 @@
+use core::fmt::Display;
 use core::ops::Deref;
 use core::ops::DerefMut;
 use std::rc::Rc;
@@ -21,6 +22,15 @@ impl Turn {
             round: self.round + count,
             order: self.order,
         }
+    }
+}
+
+impl Display for Turn {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("")
+            .field(&self.round)
+            .field(&self.order)
+            .finish()
     }
 }
 

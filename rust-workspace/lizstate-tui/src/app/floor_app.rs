@@ -214,7 +214,7 @@ impl<'a> FloorWidget<'a> {
 
     fn render_timekeeping(&self, camera: &mut Camera) {
         let formatted = format!(
-            "Time: {:?}",
+            "Time: {}",
             self.floor.try_into_turntaker().unwrap().get_now()
         );
 
