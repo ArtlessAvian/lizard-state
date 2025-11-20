@@ -14,21 +14,23 @@ pub struct Creature<Pos: GridLike = GridPosition> {
     pos: Pos,
     state: CreatureState,
     color: u32,
+    team: u8,
 }
 
 impl<Pos: GridLike> Creature<Pos> {
-    pub fn new(pos: Pos, first_round: u32, color: u32) -> Self {
+    pub fn new(pos: Pos, first_round: u32, color: u32, team: u8) -> Self {
         Self {
             pos,
             state: CreatureState::Safe { round: first_round },
             color,
+            team,
         }
     }
 
     /// Not a default!
     pub fn new_garbage() -> Self {
         const ANNOYING_MAGENTA: u32 = 0xFF00_FFFF;
-        Self::new(Pos::origin(), u32::MAX, ANNOYING_MAGENTA)
+        Self::new(Pos::origin(), u32::MAX, ANNOYING_MAGENTA, u8::MAX)
     }
 
     pub fn step(&mut self, dir: KingStep) {
@@ -41,6 +43,10 @@ impl<Pos: GridLike> Creature<Pos> {
 
     pub fn set_position(&mut self, pos: Pos) {
         self.pos = pos;
+    }
+
+    pub fn get_team(&self) -> impl Eq {
+        self.team
     }
 
     pub fn get_occupied_position(&self) -> Option<Pos> {
@@ -147,20 +153,6 @@ impl CreatureState {
             | CreatureState::Cancelable { round, .. }
             | CreatureState::Stance { round }
             | CreatureState::Punishable { round } => Some(*round),
-            CreatureState::Downed {} => None,
-        }
-    }
-
-    #[must_use]
-    pub fn get_round_mut(&mut self) -> Option<&mut u32> {
-        match self {
-            CreatureState::Safe { round }
-            | CreatureState::Hitstun { round }
-            | CreatureState::Knockdown { round }
-            | CreatureState::Committed { round }
-            | CreatureState::Cancelable { round, .. }
-            | CreatureState::Stance { round }
-            | CreatureState::Punishable { round } => Some(round),
             CreatureState::Downed {} => None,
         }
     }

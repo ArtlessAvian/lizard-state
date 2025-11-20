@@ -1,3 +1,5 @@
+use core::ops::Index;
+
 use lizstate_crawler::commands::CommandTrait;
 use lizstate_crawler::commands::StepMacro;
 use lizstate_crawler::entity::Entity;
@@ -244,7 +246,7 @@ impl<'a> FloorWidget<'a> {
 
         let my_turn_next_round = turntaker.get_now().skip_rounds(1);
 
-        for (i, (_id, turn, creature)) in
+        for (i, (id, turn, creature)) in
             self.floor.get_creature_list().iter_turn_order().enumerate()
         {
             if let Some(cell) = camera.buffer.cell_mut((x + i as u16, y - 1)) {
@@ -254,6 +256,12 @@ impl<'a> FloorWidget<'a> {
                 if turn < my_turn_next_round {
                     cell.set_style(cell.style().italic());
                 }
+            }
+
+            if let Some(cell) = camera.buffer.cell_mut((x + i as u16, y - 2)) {
+                let round = turn.coming_round_for(id) % 10;
+                let char = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].index(round as usize);
+                cell.set_char(*char);
             }
         }
     }

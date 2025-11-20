@@ -25,10 +25,10 @@ impl Floor {
 
     pub fn new_test() -> Self {
         let mut creatures = [const { None }; 4];
-        creatures[0] = Some(Creature::new(GridPosition(0, 0), 0, 0x854C_30FF));
-        creatures[1] = Some(Creature::new(GridPosition(-2, 0), 0, 0xE38F_D5FF));
+        creatures[0] = Some(Creature::new(GridPosition(0, 0), 0, 0x854C_30FF, 0));
+        creatures[1] = Some(Creature::new(GridPosition(-2, 0), 0, 0xE38F_D5FF, 0));
 
-        let mut dummy = Creature::new(GridPosition(5, 3), 0, 0xDAD4_5EFF);
+        let mut dummy = Creature::new(GridPosition(5, 3), 0, 0xDAD4_5EFF, 1);
         *dummy.get_state_mut() = CreatureState::Committed { round: 3 };
         creatures[2] = Some(dummy);
 
