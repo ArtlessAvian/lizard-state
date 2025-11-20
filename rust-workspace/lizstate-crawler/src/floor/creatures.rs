@@ -40,6 +40,7 @@ impl Display for Turn {
 ///
 /// Indices are u8s. All u8s are valid.
 #[derive(Debug, Clone)]
+#[must_use]
 pub struct CreatureList([Option<Rc<Creature>>; 256]);
 
 impl CreatureList {
@@ -63,7 +64,6 @@ impl CreatureList {
             .into_iter()
     }
 
-    #[expect(dead_code, reason = "Eventually useful.")]
     pub fn iter_creatures(&self) -> impl Iterator<Item = &Creature> {
         self.iter_entries().flatten()
     }
@@ -78,6 +78,33 @@ impl CreatureList {
     /// This eagerly mutates the Rc in self.
     pub fn get_creature_mut(&mut self, index: u8) -> Option<&mut Creature> {
         self.0.index_mut(index as usize).as_mut().map(Rc::make_mut)
+    }
+
+    /// Overwrites a slot with a creature, then gets a mutable reference to the contained creature.
+    ///
+    /// See `Self::get_creature_mut_or_insert` to preserve the contents.
+    pub fn set_creature_then_get_mut(&mut self, index: u8, creature: &Creature) -> &mut Creature {
+        let rc = self
+            .0
+            .index_mut(index as usize)
+            .get_or_insert_with(|| Rc::new(Creature::new_garbage()));
+
+        let mut_ref = Rc::make_mut(rc);
+        *mut_ref = creature.clone();
+        mut_ref
+    }
+
+    /// Gets a creature if already present, otherwise inserts the argument.
+    /// In the "already present" path, this avoids an `Option::unwrap`.
+    ///
+    /// See `Self::set_creature_then_get_mut` to eagerly overwrite.
+    pub fn get_creature_mut_or_insert(&mut self, index: u8, creature: &Creature) -> &mut Creature {
+        let rc = self
+            .0
+            .index_mut(index as usize)
+            .get_or_insert_with(|| Rc::new(creature.clone()));
+
+        Rc::make_mut(rc)
     }
 
     pub fn iter_turn_order(&self) -> impl Iterator<Item = (u8, Turn, &Creature)> {

@@ -1,6 +1,5 @@
 use crate::commands::CommandTrait;
 use crate::commands::StepMacro;
-use crate::commands::WaitCommand;
 use crate::creature::Creature;
 use crate::floor::Floor;
 use crate::floor::creatures::Turn;
@@ -17,7 +16,7 @@ pub struct Turntaker<'a> {
 impl<'a> Turntaker<'a> {
     #[must_use]
     pub fn try_from_floor(floor: &'a Floor) -> Option<Self> {
-        let (id, now, creature) = floor.iter_turn_order().next()?;
+        let (id, now, creature) = floor.get_creature_list().iter_turn_order().next()?;
 
         Some(Self {
             id,
@@ -47,14 +46,9 @@ impl Turntaker<'_> {
     }
 
     /// Currently an arbitrary command.
-    /// # Panics
-    /// `WaitCommand` returned an Err, which should never happen.
     pub fn take_npc_turn(&self) -> Floor {
-        let attempt = StepMacro(crate::spatial::grid::KingStep::East).do_command(self);
-
-        attempt
-            .ok()
-            .unwrap_or_else(|| WaitCommand.do_command(self).expect("never fails"))
+        let command = StepMacro(crate::spatial::grid::KingStep::East);
+        command.do_or_wait(self)
     }
 
     /// Limits modifications to the turntaker before creating a new Floor.
@@ -70,8 +64,8 @@ impl Turntaker<'_> {
 
         let mut new_floor = self.get_floor().clone();
         let mut_creature = new_floor
-            .get_creature_mut(self.id)
-            .expect("original clone contains id so clone should too");
+            .get_creature_list_mut()
+            .get_creature_mut_or_insert(self.id, self.creature);
         *mut_creature = new_creature;
 
         Ok(new_floor)

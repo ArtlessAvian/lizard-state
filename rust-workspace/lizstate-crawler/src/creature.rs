@@ -22,6 +22,12 @@ impl<Pos: GridLike> Creature<Pos> {
         }
     }
 
+    /// Not a default!
+    pub fn new_garbage() -> Self {
+        const ANNOYING_MAGENTA: u32 = 0xFF00_FFFF;
+        Self::new(Pos::origin(), u32::MAX, ANNOYING_MAGENTA)
+    }
+
     pub fn step(&mut self, dir: KingStep) {
         self.pos = self.pos.step_king(dir);
     }

@@ -76,20 +76,25 @@ impl FloorState {
         };
 
         if let Some(command) = command {
-            let result = command.do_command(&self.floor.try_into_turntaker().expect("yeah"));
+            let result = command.do_command(
+                &self
+                    .floor
+                    .try_into_turntaker()
+                    .expect("ASSUMPTION: Game does not end"),
+            );
             if let Ok(floor) = result {
                 self.floor = floor;
 
                 // Painpoint: This could give the player control of a creature that isn't the player.
                 for _ in 0..100 {
-                    if let Some(turntaker) = self.floor.try_into_turntaker() {
-                        if turntaker.get_id() == 0 {
-                            break;
-                        } else {
-                            self.floor = turntaker.take_npc_turn();
-                        }
-                    } else {
+                    let turntaker = self
+                        .floor
+                        .try_into_turntaker()
+                        .expect("ASSUMPTION: Game does not end.");
+                    if turntaker.get_id() == 0 {
                         break;
+                    } else {
+                        self.floor = turntaker.take_npc_turn();
                     }
                 }
             }
@@ -163,7 +168,7 @@ impl<'a> FloorWidget<'a> {
     fn render_creatures(&self, camera: &mut Camera) {
         let turntaker_id = self.floor.try_into_turntaker().expect("for now").get_id();
 
-        for (id, creature) in self.floor.get_creatures() {
+        for (id, creature) in self.floor.get_creature_list().iter_indices_nonempty() {
             let worldspace = creature.get_flat_position();
 
             if let Some(cell) = camera.cell_mut(worldspace) {
@@ -226,20 +231,27 @@ impl<'a> FloorWidget<'a> {
     }
 
     fn render_timekeeping(&self, camera: &mut Camera) {
-        let formatted = format!(
-            "Time: {}",
-            self.floor.try_into_turntaker().unwrap().get_now()
-        );
+        let turntaker = self.floor.try_into_turntaker().unwrap();
+
+        let formatted = format!("Time: {}", turntaker.get_now());
 
         let x = camera.render_target.x;
         let y = camera.render_target.y + camera.render_target.height - 1;
 
         camera.buffer.set_string(x, y, formatted, Style::default());
 
-        for (i, (_id, _turn, creature)) in self.floor.iter_turn_order().enumerate() {
+        let my_turn_next_round = turntaker.get_now().skip_rounds(1);
+
+        for (i, (_id, turn, creature)) in
+            self.floor.get_creature_list().iter_turn_order().enumerate()
+        {
             if let Some(cell) = camera.buffer.cell_mut((x + i as u16, y - 1)) {
                 cell.set_char(creature.get_char());
                 cell.set_fg(Color::Indexed(creature.get_fg_color()));
+
+                if turn < my_turn_next_round {
+                    cell.set_style(cell.style().italic());
+                }
             }
         }
     }
