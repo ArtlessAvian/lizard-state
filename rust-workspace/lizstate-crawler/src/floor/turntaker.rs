@@ -1,5 +1,5 @@
 use crate::commands::CommandTrait;
-use crate::commands::StepMacro;
+use crate::commands::WaitCommand;
 use crate::creature::Creature;
 use crate::floor::Floor;
 use crate::floor::creatures::Turn;
@@ -45,9 +45,27 @@ impl Turntaker<'_> {
         &self.now
     }
 
+    #[must_use]
+    pub fn take_turn_if_not_player(&self, player_id: u8) -> Option<Floor> {
+        self.take_turn_if(|lol| lol.get_id() != player_id)
+    }
+
+    #[must_use]
+    pub fn take_turn_if(&self, predicate: impl Fn(&Self) -> bool) -> Option<Floor> {
+        if let Some(forced) = self.creature.get_state().forced_command() {
+            return Some(forced.do_or_wait(self));
+        }
+
+        if predicate(self) {
+            Some(self.take_npc_turn())
+        } else {
+            None
+        }
+    }
+
     /// Currently an arbitrary command.
-    pub fn take_npc_turn(&self) -> Floor {
-        let command = StepMacro(crate::spatial::grid::KingStep::East);
+    fn take_npc_turn(&self) -> Floor {
+        let command = WaitCommand;
         command.do_or_wait(self)
     }
 

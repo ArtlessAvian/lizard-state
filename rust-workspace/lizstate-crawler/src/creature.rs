@@ -1,3 +1,6 @@
+use crate::commands::Command;
+use crate::commands::ExitStateCommand;
+use crate::commands::WakeupCommand;
 use crate::entity::Entity;
 use crate::entity::get_six_bit_color;
 use crate::spatial::grid::GridLike;
@@ -9,7 +12,7 @@ use crate::spatial::grid::KingStep;
 #[must_use]
 pub struct Creature<Pos: GridLike = GridPosition> {
     pos: Pos,
-    actionable_round: u32,
+    state: CreatureState,
     color: u32,
 }
 
@@ -17,7 +20,7 @@ impl<Pos: GridLike> Creature<Pos> {
     pub fn new(pos: Pos, first_round: u32, color: u32) -> Self {
         Self {
             pos,
-            actionable_round: first_round,
+            state: CreatureState::Safe { round: first_round },
             color,
         }
     }
@@ -40,14 +43,32 @@ impl<Pos: GridLike> Creature<Pos> {
         self.pos = pos;
     }
 
-    #[expect(clippy::unnecessary_wraps, reason = "todo")]
-    pub fn get_round(&self) -> Option<u32> {
-        Some(self.actionable_round)
+    pub fn get_occupied_position(&self) -> Option<Pos> {
+        self.state.occupies_space().then_some(self.pos)
     }
 
-    /// This will not be the actual thingy.
-    pub fn set_round(&mut self, round: u32) {
-        self.actionable_round = round;
+    pub fn get_round(&self) -> Option<u32> {
+        self.state.get_round()
+    }
+
+    pub fn get_state(&self) -> &CreatureState {
+        &self.state
+    }
+
+    pub fn get_state_mut(&mut self) -> &mut CreatureState {
+        &mut self.state
+    }
+
+    /// Instantly become safe (if not downed), without affecting creature's next turn.
+    pub fn become_safe(&mut self) {
+        if let Some(round) = self.get_round() {
+            self.state = CreatureState::Safe { round }
+        }
+    }
+
+    /// Instantly become downed.
+    pub fn become_downed(&mut self) {
+        self.state = CreatureState::Downed {}
     }
 }
 
@@ -65,5 +86,94 @@ impl<Pos: GridLike> Entity for &Creature<Pos> {
 
     fn get_flat_position(&self) -> (i32, i32) {
         self.pos.flatten()
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+#[must_use]
+pub enum CreatureState {
+    Safe { round: u32 },
+    Hitstun { round: u32 },
+    Knockdown { round: u32 },
+    Committed { round: u32 },
+    Cancelable { round: u32, activate: u32 },
+    Stance { round: u32 },
+    Punishable { round: u32 },
+    Downed {},
+}
+
+impl CreatureState {
+    /// The command this creature must successfully execute (or wait).
+    #[must_use]
+    pub fn forced_command(&self) -> Option<&Command> {
+        match self {
+            CreatureState::Knockdown { .. } => Some(&Command::Wakeup(WakeupCommand)),
+            CreatureState::Hitstun { .. } | CreatureState::Punishable { .. } => {
+                Some(&const { Command::ExitState(ExitStateCommand::new_pub_crate()) })
+            }
+            CreatureState::Committed { .. } => {
+                println!("hello world!!!");
+                Some(&const { Command::ExitState(ExitStateCommand::new_pub_crate()) })
+            }
+            CreatureState::Cancelable { round, activate } => {
+                if round == activate {
+                    Some(&const { Command::ExitState(ExitStateCommand::new_pub_crate()) })
+                } else {
+                    None
+                }
+            }
+            CreatureState::Safe { .. }
+            | CreatureState::Stance { .. }
+            | CreatureState::Downed {} => None,
+        }
+    }
+
+    pub fn replace_hotkey_commands(&self) -> &[Command] {
+        match self {
+            CreatureState::Stance { .. } => {
+                &[const { Command::ExitState(ExitStateCommand::new_pub_crate()) }]
+            }
+            _ => &[],
+        }
+    }
+
+    #[must_use]
+    pub fn get_round(&self) -> Option<u32> {
+        match self {
+            CreatureState::Safe { round }
+            | CreatureState::Hitstun { round }
+            | CreatureState::Knockdown { round }
+            | CreatureState::Committed { round }
+            | CreatureState::Cancelable { round, .. }
+            | CreatureState::Stance { round }
+            | CreatureState::Punishable { round } => Some(*round),
+            CreatureState::Downed {} => None,
+        }
+    }
+
+    #[must_use]
+    pub fn get_round_mut(&mut self) -> Option<&mut u32> {
+        match self {
+            CreatureState::Safe { round }
+            | CreatureState::Hitstun { round }
+            | CreatureState::Knockdown { round }
+            | CreatureState::Committed { round }
+            | CreatureState::Cancelable { round, .. }
+            | CreatureState::Stance { round }
+            | CreatureState::Punishable { round } => Some(round),
+            CreatureState::Downed {} => None,
+        }
+    }
+
+    fn occupies_space(&self) -> bool {
+        match self {
+            CreatureState::Safe { .. }
+            | CreatureState::Hitstun { .. }
+            | CreatureState::Committed { .. }
+            | CreatureState::Cancelable { .. }
+            | CreatureState::Stance { .. }
+            | CreatureState::Punishable { .. } => true,
+            CreatureState::Downed {} | CreatureState::Knockdown { .. } => false,
+        }
     }
 }

@@ -64,14 +64,15 @@ impl FloorState {
         }
 
         let command = match key_event.code {
-            event::KeyCode::Char('h') => Some(StepMacro(KingStep::West)),
-            event::KeyCode::Char('j') => Some(StepMacro(KingStep::South)),
-            event::KeyCode::Char('k') => Some(StepMacro(KingStep::North)),
-            event::KeyCode::Char('l') => Some(StepMacro(KingStep::East)),
-            event::KeyCode::Char('y') => Some(StepMacro(KingStep::NorthWest)),
-            event::KeyCode::Char('u') => Some(StepMacro(KingStep::NorthEast)),
-            event::KeyCode::Char('b') => Some(StepMacro(KingStep::SouthWest)),
-            event::KeyCode::Char('n') => Some(StepMacro(KingStep::SouthEast)),
+            event::KeyCode::Char('.') => Some(StepMacro(None)),
+            event::KeyCode::Char('h') => Some(StepMacro(Some(KingStep::West))),
+            event::KeyCode::Char('j') => Some(StepMacro(Some(KingStep::South))),
+            event::KeyCode::Char('k') => Some(StepMacro(Some(KingStep::North))),
+            event::KeyCode::Char('l') => Some(StepMacro(Some(KingStep::East))),
+            event::KeyCode::Char('y') => Some(StepMacro(Some(KingStep::NorthWest))),
+            event::KeyCode::Char('u') => Some(StepMacro(Some(KingStep::NorthEast))),
+            event::KeyCode::Char('b') => Some(StepMacro(Some(KingStep::SouthWest))),
+            event::KeyCode::Char('n') => Some(StepMacro(Some(KingStep::SouthEast))),
             _ => None,
         };
 
@@ -91,10 +92,11 @@ impl FloorState {
                         .floor
                         .try_into_turntaker()
                         .expect("ASSUMPTION: Game does not end.");
-                    if turntaker.get_id() == 0 {
-                        break;
+
+                    if let Some(turn_taken) = turntaker.take_turn_if_not_player(0) {
+                        self.floor = turn_taken;
                     } else {
-                        self.floor = turntaker.take_npc_turn();
+                        break;
                     }
                 }
             }

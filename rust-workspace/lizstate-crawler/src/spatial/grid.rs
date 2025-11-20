@@ -16,7 +16,7 @@ pub enum Cardinal {
 /// Like a King in chess.
 ///
 /// IRONICALLY. This behaves more like a horsey which moves in an L, except without a long end.
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum KingStep {
     North,
     South,
