@@ -51,10 +51,10 @@ impl CreatureList {
     /// Overwrites a slot with a creature, then gets a mutable reference to the contained creature.
     ///
     /// See `Self::get_creature_mut_or_insert` to preserve the contents.
-    pub fn set_creature_then_get_mut(&mut self, index: u8, creature: &Creature) -> &mut Creature {
+    pub fn set_creature_then_get_mut(&mut self, index: u8, creature: Creature) -> &mut Creature {
         let yeah = self.entry(index);
         yeah.and_modify(|x| *x = creature.clone())
-            .or_insert_with(|| creature.clone())
+            .or_insert_with(|| creature)
     }
 
     /// Gets a creature if already present, otherwise inserts the argument.
@@ -96,7 +96,17 @@ impl CreatureList {
             .map(|opt: Option<&mut Rc<Creature>>| opt.map(Rc::make_mut))
     }
 
-    pub fn get(&mut self, index: u8) -> Option<&Creature> {
+    pub fn entries_flat(&mut self) -> [Entry<'_>; 256] {
+        self.0.each_mut().map(|x| {
+            if let Some(rc) = x {
+                Entry::Occupied(OccupiedEntry(Rc::make_mut(rc)))
+            } else {
+                Entry::Vacant(VacantEntry(x))
+            }
+        })
+    }
+
+    pub fn get(&self, index: u8) -> Option<&Creature> {
         self.0[index as usize].as_ref().map(Rc::as_ref)
     }
 
@@ -162,11 +172,19 @@ impl<'a> Entry<'a> {
         self
     }
 
+    pub fn insert_entry(self, creature: Creature) -> OccupiedEntry<'a> {
+        match self {
+            Entry::Vacant(x) => OccupiedEntry(x.insert(creature)),
+            Entry::Occupied(x) => {
+                *x.0 = creature;
+                x
+            }
+        }
+    }
+
     pub fn or_insert(self, creature: Creature) -> &'a mut Creature {
         match self {
-            Entry::Vacant(VacantEntry(mut_none)) => {
-                Rc::make_mut(mut_none.insert(Rc::new(creature)))
-            }
+            Entry::Vacant(x) => x.insert(creature),
             Entry::Occupied(OccupiedEntry(x)) => x,
         }
     }
@@ -176,6 +194,13 @@ impl<'a> Entry<'a> {
             Entry::Vacant(VacantEntry(mut_none)) => Rc::make_mut(mut_none.insert(Rc::new(f()))),
             Entry::Occupied(OccupiedEntry(x)) => x,
         }
+    }
+}
+
+impl<'a> VacantEntry<'a> {
+    fn insert(self, creature: Creature) -> &'a mut Creature {
+        let inner = self.0.insert(Rc::new(creature));
+        Rc::make_mut(inner)
     }
 }
 

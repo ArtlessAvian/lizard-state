@@ -1,3 +1,4 @@
+use crate::commands::CommandError;
 use crate::commands::CommandTrait;
 use crate::commands::WaitCommand;
 use crate::creature::Creature;
@@ -69,23 +70,41 @@ impl Turntaker<'_> {
         command.do_or_wait(self)
     }
 
-    /// Limits modifications to the turntaker before creating a new Floor.
-    /// # Errors
-    /// Errors when passed function errors.
+    /// Modifies the creature in a clone of the `Floor`.
+    ///
+    /// No other creature on the `Floor` is modified. However, you may modify them after returning.
+    ///
     /// # Panics
-    /// Turntaker struct is invalid.
-    pub fn map_independent<E>(
-        &self,
-        mapper: impl Fn(&Creature, &Floor) -> Result<Creature, E>,
-    ) -> Result<Floor, E> {
-        let new_creature = mapper(self.get_creature(), self.get_floor())?;
-
+    /// The `Turntaker` struct is invalid.
+    pub fn clone_and_modify_creature(&self, f: impl FnOnce(&mut Creature)) -> Floor {
         let mut new_floor = self.get_floor().clone();
-        let mut_creature = new_floor
+        let myself = new_floor
             .get_creature_list_mut()
-            .get_creature_mut_or_insert(self.id, self.creature);
-        *mut_creature = new_creature;
+            .entry(self.id)
+            .or_insert_with(|| unreachable!());
+        f(myself);
+        new_floor
+    }
 
+    /// Modifies everything in a clone of the `Floor`.
+    ///
+    /// # Errors
+    /// The passed function errors. Usually this is because an id has no creature, or no creature can be found.
+    ///
+    /// # Panics
+    /// The `Turntaker` struct is invalid.
+    pub fn clone_and_try_modify_everyone(
+        &self,
+        f: impl FnOnce(&mut Creature, [Option<&mut Creature>; 256]) -> Result<(), CommandError>,
+    ) -> Result<Floor, CommandError> {
+        let mut new_floor = self.get_floor().clone();
+        let mut myself = None;
+        let mut everyone_else = new_floor.get_creature_list_mut().mut_creatures_flat();
+        std::mem::swap(&mut myself, &mut everyone_else[self.id as usize]);
+        f(
+            myself.expect("the clone of the turntaker should exist in the clone of the floor"),
+            everyone_else,
+        )?;
         Ok(new_floor)
     }
 }

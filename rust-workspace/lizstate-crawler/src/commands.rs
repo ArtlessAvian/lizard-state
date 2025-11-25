@@ -69,15 +69,11 @@ impl WaitCommand {
     }
 
     fn do_infallible(turntaker: &Turntaker) -> Floor {
-        let mut mut_floor = turntaker.get_floor().clone();
-        let me = mut_floor
-            .get_creature_list_mut()
-            .get_creature_mut_or_insert(turntaker.get_id(), turntaker.get_creature());
-
-        if let Some(round) = WaitCommand::get_round_mut(me.get_state_mut()) {
-            *round += 1;
-        }
-        mut_floor
+        turntaker.clone_and_modify_creature(|me| {
+            if let Some(round) = WaitCommand::get_round_mut(me.get_state_mut()) {
+                *round += 1;
+            }
+        })
     }
 }
 
@@ -92,34 +88,32 @@ pub struct StepCommand(pub KingStep);
 
 impl CommandTrait for StepCommand {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        turntaker.map_independent(|creature, floor| {
-            let mut clone = creature.clone();
+        let CreatureState::Safe { .. } = turntaker.get_creature().get_state() else {
+            return Err(CommandError::InvalidTurntakerState(
+                turntaker.get_creature().get_state().clone(),
+            ));
+        };
+
+        // TODO: Move to validation step?
+        let pos = turntaker.get_creature().get_position().step_king(self.0);
+        if let Some((id, _)) = turntaker
+            .get_floor()
+            .get_creature_list()
+            .iter()
+            .find(|x| x.1.get_occupied_position() == Some(pos))
+        {
+            return Err(CommandError::InTheWay(id));
+        }
+
+        Ok(turntaker.clone_and_modify_creature(|clone| {
             clone.step(self.0);
-
-            let position = clone.get_position();
-            if let Some((id, _)) = floor
-                .get_creature_list()
-                .iter()
-                .find(|x| x.1.get_occupied_position() == Some(position))
-            {
-                return Err(CommandError::InTheWay(id));
-            }
-
-            if matches!(clone.get_state(), CreatureState::Safe { .. }) {
-                *clone.get_state_mut() = CreatureState::Safe {
-                    round: turntaker
-                        .get_now()
-                        .skip_rounds(1)
-                        .coming_round_for(turntaker.get_id()),
-                }
-            } else {
-                return Err(CommandError::InvalidTurntakerState(
-                    clone.get_state().clone(),
-                ));
-            }
-
-            Ok(clone)
-        })
+            *clone.get_state_mut() = CreatureState::Safe {
+                round: turntaker
+                    .get_now()
+                    .skip_rounds(1)
+                    .coming_round_for(turntaker.get_id()),
+            };
+        }))
     }
 }
 
@@ -130,37 +124,34 @@ pub struct TagOutCommand(pub u8);
 
 impl CommandTrait for TagOutCommand {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        let mut mut_floor = turntaker.get_floor().clone();
+        let CreatureState::Safe { .. } = turntaker.get_creature().get_state() else {
+            return Err(CommandError::InvalidTurntakerState(
+                turntaker.get_creature().get_state().clone(),
+            ));
+        };
 
-        let target = mut_floor
-            .get_creature_list_mut()
-            .get_mut(self.0)
-            .ok_or(CommandError::TargetIdDoesntExist(self.0))?;
+        turntaker.clone_and_try_modify_everyone(|myself, mut everyone_else| {
+            let Some(Some(target)) = everyone_else.get_mut(self.0 as usize) else {
+                return Err(CommandError::TargetIdDoesntExist(self.0));
+            };
 
-        if target.get_team() != turntaker.get_creature().get_team() {
-            return Err(CommandError::TargetNotFriendly);
-        }
+            if target.get_team() != turntaker.get_creature().get_team() {
+                return Err(CommandError::TargetNotFriendly);
+            }
 
-        let position = target.get_position();
-        target.set_position(turntaker.get_creature().get_position());
+            let target_position = target.get_position();
+            target.set_position(turntaker.get_creature().get_position());
 
-        let me = mut_floor
-            .get_creature_list_mut()
-            .get_creature_mut_or_insert(turntaker.get_id(), turntaker.get_creature());
-        me.set_position(position);
-
-        if let CreatureState::Safe { .. } = me.get_state() {
-            *me.get_state_mut() = CreatureState::Safe {
+            myself.set_position(target_position);
+            *myself.get_state_mut() = CreatureState::Safe {
                 round: turntaker
                     .get_now()
                     .skip_rounds(1)
                     .coming_round_for(turntaker.get_id()),
             };
-        } else {
-            return Err(CommandError::InvalidTurntakerState(me.get_state().clone()));
-        }
 
-        Ok(mut_floor)
+            Ok(())
+        })
     }
 }
 
@@ -169,27 +160,34 @@ pub struct StepMacro(pub Option<KingStep>);
 
 impl CommandTrait for StepMacro {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        if let Some(step) = self.0 {
-            let step_command = StepCommand(step).do_command(turntaker);
+        let Some(step) = self.0 else {
+            return WaitCommand.do_command(turntaker);
+        };
 
-            if let Ok(floor) = step_command {
-                return Ok(floor);
-            } else if let Err(CommandError::InTheWay(who)) = step_command {
-                let tag_command = TagOutCommand(who).do_command(turntaker);
-                if let Ok(floor) = tag_command {
-                    return Ok(floor);
-                } else if let Err(CommandError::TargetNotFriendly) = tag_command {
-                    let bump_command = BumpAttackCommand(step).do_command(turntaker);
-                    if let Ok(floor) = bump_command {
-                        return Ok(floor);
-                    }
-                }
-            }
+        let step_result = StepCommand(step).do_command(turntaker);
+        let Err(err) = step_result else {
+            return step_result;
+        };
 
-            Err(CommandError::MacroFallthrough)
-        } else {
-            WaitCommand.do_command(turntaker)
-        }
+        let CommandError::InTheWay(who) = err else {
+            return Err(CommandError::MacroFallthrough);
+        };
+
+        let tag_result = TagOutCommand(who).do_command(turntaker);
+        let Err(err) = tag_result else {
+            return tag_result;
+        };
+
+        let CommandError::TargetNotFriendly = err else {
+            return Err(CommandError::MacroFallthrough);
+        };
+
+        let bump_command = BumpAttackCommand(step).do_command(turntaker);
+        let Err(_) = bump_command else {
+            return bump_command;
+        };
+
+        Err(CommandError::MacroFallthrough)
     }
 }
 
@@ -198,28 +196,27 @@ pub struct WakeupCommand;
 
 impl CommandTrait for WakeupCommand {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        turntaker.map_independent(|me, floor| {
-            if matches!(me.get_state(), CreatureState::Knockdown { .. }) {
-                if let Some((id, _)) = floor
-                    .get_creature_list()
-                    .iter()
-                    .filter_map(|(id, creature)| {
-                        creature.get_occupied_position().map(|pos| (id, pos))
-                    })
-                    .find(|(_, pos)| *pos == me.get_position())
-                {
-                    Err(CommandError::InTheWay(id))
-                } else {
-                    let mut clone = me.clone();
-                    *clone.get_state_mut() = CreatureState::Safe {
-                        round: turntaker.get_now().coming_round_for(turntaker.get_id()),
-                    };
-                    Ok(clone)
-                }
-            } else {
-                Err(CommandError::InvalidTurntakerState(me.get_state().clone()))
-            }
-        })
+        let CreatureState::Knockdown { .. } = turntaker.get_creature().get_state() else {
+            return Err(CommandError::InvalidTurntakerState(
+                turntaker.get_creature().get_state().clone(),
+            ));
+        };
+
+        if let Some((id, _)) = turntaker
+            .get_floor()
+            .get_creature_list()
+            .iter()
+            .filter_map(|(id, creature)| creature.get_occupied_position().map(|pos| (id, pos)))
+            .find(|(_, pos)| *pos == turntaker.get_creature().get_position())
+        {
+            return Err(CommandError::InTheWay(id));
+        }
+
+        Ok(turntaker.clone_and_modify_creature(|clone| {
+            *clone.get_state_mut() = CreatureState::Safe {
+                round: turntaker.get_now().coming_round_for(turntaker.get_id()),
+            };
+        }))
     }
 }
 
@@ -235,20 +232,17 @@ impl ExitStateCommand {
 
 impl CommandTrait for ExitStateCommand {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        if turntaker.get_creature().get_occupied_position().is_some() {
-            let mut mut_floor = turntaker.get_floor().clone();
-            let clone = mut_floor
-                .get_creature_list_mut()
-                .get_creature_mut_or_insert(turntaker.get_id(), turntaker.get_creature());
+        if turntaker.get_creature().get_occupied_position().is_none() {
+            return Err(CommandError::InvalidTurntakerState(
+                turntaker.get_creature().get_state().clone(),
+            ));
+        }
+
+        Ok(turntaker.clone_and_modify_creature(|clone| {
             *clone.get_state_mut() = CreatureState::Safe {
                 round: turntaker.get_now().coming_round_for(turntaker.get_id()),
             };
-            Ok(mut_floor)
-        } else {
-            Err(CommandError::InvalidTurntakerState(
-                turntaker.get_creature().get_state().clone(),
-            ))
-        }
+        }))
     }
 }
 
@@ -256,41 +250,33 @@ pub struct BumpAttackCommand(KingStep);
 
 impl CommandTrait for BumpAttackCommand {
     fn do_command(&self, turntaker: &Turntaker) -> Result<Floor, CommandError> {
-        let mut mut_floor = turntaker.get_floor().clone();
+        turntaker.clone_and_try_modify_everyone(|myself, mut everyone_else| {
+            let target_pos = myself.get_position().step_king(self.0);
 
-        let target_pos = turntaker.get_creature().get_position().step_king(self.0);
-        let maybe = mut_floor
-            .get_creature_list()
-            .iter()
-            .find(|x| x.1.get_occupied_position() == Some(target_pos))
-            .map(|x| x.0);
-        if let Some(target_id) = maybe {
-            let mut_target = mut_floor
-                .get_creature_list_mut()
-                .get_mut(target_id)
-                .expect("we know its there");
-            *mut_target.get_state_mut() = CreatureState::Knockdown {
+            let Some((target_id, target)) = (0..=255u8)
+                .zip(everyone_else.iter_mut())
+                .filter_map(|(i, opt)| opt.as_mut().map(|x| (i, x)))
+                .find(|(_, x)| x.get_occupied_position() == Some(target_pos))
+            else {
+                return Err(CommandError::NoTarget);
+            };
+
+            *target.get_state_mut() = CreatureState::Knockdown {
                 round: turntaker
                     .get_now()
                     .skip_rounds(2)
                     .coming_round_for(target_id),
             };
-            mut_target.step(self.0);
+            target.step(self.0);
 
-            let me = mut_floor
-                .get_creature_list_mut()
-                .get_creature_mut_or_insert(turntaker.get_id(), turntaker.get_creature());
-
-            *me.get_state_mut() = CreatureState::Safe {
+            *myself.get_state_mut() = CreatureState::Safe {
                 round: turntaker
                     .get_now()
                     .skip_rounds(1)
                     .coming_round_for(turntaker.get_id()),
             };
 
-            Ok(mut_floor)
-        } else {
-            Err(CommandError::NoTarget)
-        }
+            Ok(())
+        })
     }
 }
