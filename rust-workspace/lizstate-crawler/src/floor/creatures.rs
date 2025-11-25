@@ -48,50 +48,13 @@ impl CreatureList {
         CreatureList([const { None }; 256])
     }
 
-    pub fn new_from_iter(into_iter: impl IntoIterator<Item = Creature>) -> Self {
-        let mut out = Self::new_empty();
-        for (slot, thing) in out.0.iter_mut().zip(into_iter.into_iter()) {
-            *slot = Some(Rc::new(thing));
-        }
-        out
-    }
-
-    pub fn iter_entries(&self) -> impl Iterator<Item = Option<&Creature>> {
-        self.0
-            .each_ref()
-            .map(Option::as_ref)
-            .map(|opt| opt.map(Rc::as_ref))
-            .into_iter()
-    }
-
-    pub fn iter_creatures(&self) -> impl Iterator<Item = &Creature> {
-        self.iter_entries().flatten()
-    }
-
-    pub fn iter_indices_nonempty(&self) -> impl Iterator<Item = (u8, &Creature)> {
-        (0..255)
-            .zip(self.iter_entries())
-            .filter_map(|(i, x)| x.map(|y| (i, y)))
-    }
-
-    /// Returns a mutable Creature.
-    /// This eagerly mutates the Rc in self.
-    pub fn get_creature_mut(&mut self, index: u8) -> Option<&mut Creature> {
-        self.0.index_mut(index as usize).as_mut().map(Rc::make_mut)
-    }
-
     /// Overwrites a slot with a creature, then gets a mutable reference to the contained creature.
     ///
     /// See `Self::get_creature_mut_or_insert` to preserve the contents.
     pub fn set_creature_then_get_mut(&mut self, index: u8, creature: &Creature) -> &mut Creature {
-        let rc = self
-            .0
-            .index_mut(index as usize)
-            .get_or_insert_with(|| Rc::new(Creature::new_garbage()));
-
-        let mut_ref = Rc::make_mut(rc);
-        *mut_ref = creature.clone();
-        mut_ref
+        let yeah = self.entry(index);
+        yeah.and_modify(|x| *x = creature.clone())
+            .or_insert_with(|| creature.clone())
     }
 
     /// Gets a creature if already present, otherwise inserts the argument.
@@ -99,17 +62,13 @@ impl CreatureList {
     ///
     /// See `Self::set_creature_then_get_mut` to eagerly overwrite.
     pub fn get_creature_mut_or_insert(&mut self, index: u8, creature: &Creature) -> &mut Creature {
-        let rc = self
-            .0
-            .index_mut(index as usize)
-            .get_or_insert_with(|| Rc::new(creature.clone()));
-
-        Rc::make_mut(rc)
+        let yeah = self.entry(index);
+        yeah.or_insert_with(|| creature.clone())
     }
 
     pub fn iter_turn_order(&self) -> impl Iterator<Item = (u8, Turn, &Creature)> {
         let mut vec = self
-            .iter_indices_nonempty()
+            .iter()
             .filter_map(|(id, x)| {
                 x.get_round()
                     .map(|round| (id, Turn { round, order: id }, x))
@@ -118,5 +77,120 @@ impl CreatureList {
 
         vec.sort_unstable_by_key(|x| x.1);
         vec.into_iter()
+    }
+}
+
+/// Map interface.
+impl CreatureList {
+    pub fn creatures_flat(&self) -> [Option<&Creature>; 256] {
+        self.0
+            .each_ref()
+            .map(Option::as_ref)
+            .map(|opt| opt.map(Rc::as_ref))
+    }
+
+    pub fn mut_creatures_flat(&mut self) -> [Option<&mut Creature>; 256] {
+        self.0
+            .each_mut()
+            .map(Option::as_mut)
+            .map(|opt: Option<&mut Rc<Creature>>| opt.map(Rc::make_mut))
+    }
+
+    pub fn get(&mut self, index: u8) -> Option<&Creature> {
+        self.0[index as usize].as_ref().map(Rc::as_ref)
+    }
+
+    pub fn get_mut(&mut self, index: u8) -> Option<&mut Creature> {
+        self.0[index as usize].as_mut().map(Rc::make_mut)
+    }
+
+    pub fn creatures(&self) -> impl Iterator<Item = &Creature> {
+        self.creatures_flat().into_iter().flatten()
+    }
+
+    pub fn mut_creatures(&mut self) -> impl Iterator<Item = &mut Creature> {
+        self.mut_creatures_flat().into_iter().flatten()
+    }
+
+    pub fn insert(&mut self, index: u8, creature: Creature) -> Option<Creature> {
+        let out = self.0.index_mut(index as usize).replace(Rc::new(creature));
+        out.map(Rc::unwrap_or_clone)
+    }
+
+    pub fn remove(&mut self, index: u8) -> Option<Creature> {
+        let out = self.0.index_mut(index as usize).take();
+        out.map(Rc::unwrap_or_clone)
+    }
+
+    pub fn entry(&mut self, index: u8) -> Entry<'_> {
+        let yeah = self.0.index_mut(index as usize);
+
+        if let Some(rc) = yeah {
+            Entry::Occupied(OccupiedEntry(Rc::make_mut(rc)))
+        } else {
+            Entry::Vacant(VacantEntry(yeah))
+        }
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (u8, &Creature)> {
+        (0..=255u8)
+            .zip(self.creatures_flat())
+            .filter_map(|(id, opt)| opt.map(|x| (id, x)))
+    }
+
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = (u8, &mut Creature)> {
+        (0..=255u8)
+            .zip(self.mut_creatures_flat())
+            .filter_map(|(id, opt)| opt.map(|x| (id, x)))
+    }
+}
+
+#[must_use]
+pub enum Entry<'a> {
+    Vacant(VacantEntry<'a>),
+    Occupied(OccupiedEntry<'a>),
+}
+
+pub struct VacantEntry<'a>(&'a mut Option<Rc<Creature>>);
+pub struct OccupiedEntry<'a>(&'a mut Creature);
+
+impl<'a> Entry<'a> {
+    pub fn and_modify(mut self, f: impl FnOnce(&mut Creature)) -> Self {
+        if let Entry::Occupied(OccupiedEntry(x)) = &mut self {
+            f(x);
+        }
+        self
+    }
+
+    pub fn or_insert(self, creature: Creature) -> &'a mut Creature {
+        match self {
+            Entry::Vacant(VacantEntry(mut_none)) => {
+                Rc::make_mut(mut_none.insert(Rc::new(creature)))
+            }
+            Entry::Occupied(OccupiedEntry(x)) => x,
+        }
+    }
+
+    pub fn or_insert_with(self, f: impl FnOnce() -> Creature) -> &'a mut Creature {
+        match self {
+            Entry::Vacant(VacantEntry(mut_none)) => Rc::make_mut(mut_none.insert(Rc::new(f()))),
+            Entry::Occupied(OccupiedEntry(x)) => x,
+        }
+    }
+}
+
+impl FromIterator<(u8, Creature)> for CreatureList {
+    fn from_iter<T: IntoIterator<Item = (u8, Creature)>>(iter: T) -> Self {
+        let mut out = Self::new_empty();
+        for (index, creature) in iter {
+            let _ = out.insert(index, creature);
+        }
+        out
+    }
+}
+
+impl FromIterator<Creature> for CreatureList {
+    fn from_iter<T: IntoIterator<Item = Creature>>(iter: T) -> Self {
+        (0..=255u8).zip(iter).collect()
     }
 }

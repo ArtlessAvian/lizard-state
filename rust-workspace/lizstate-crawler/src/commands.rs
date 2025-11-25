@@ -99,7 +99,7 @@ impl CommandTrait for StepCommand {
             let position = clone.get_position();
             if let Some((id, _)) = floor
                 .get_creature_list()
-                .iter_indices_nonempty()
+                .iter()
                 .find(|x| x.1.get_occupied_position() == Some(position))
             {
                 return Err(CommandError::InTheWay(id));
@@ -134,7 +134,7 @@ impl CommandTrait for TagOutCommand {
 
         let target = mut_floor
             .get_creature_list_mut()
-            .get_creature_mut(self.0)
+            .get_mut(self.0)
             .ok_or(CommandError::TargetIdDoesntExist(self.0))?;
 
         if target.get_team() != turntaker.get_creature().get_team() {
@@ -202,7 +202,7 @@ impl CommandTrait for WakeupCommand {
             if matches!(me.get_state(), CreatureState::Knockdown { .. }) {
                 if let Some((id, _)) = floor
                     .get_creature_list()
-                    .iter_indices_nonempty()
+                    .iter()
                     .filter_map(|(id, creature)| {
                         creature.get_occupied_position().map(|pos| (id, pos))
                     })
@@ -261,13 +261,13 @@ impl CommandTrait for BumpAttackCommand {
         let target_pos = turntaker.get_creature().get_position().step_king(self.0);
         let maybe = mut_floor
             .get_creature_list()
-            .iter_indices_nonempty()
+            .iter()
             .find(|x| x.1.get_occupied_position() == Some(target_pos))
             .map(|x| x.0);
         if let Some(target_id) = maybe {
             let mut_target = mut_floor
                 .get_creature_list_mut()
-                .get_creature_mut(target_id)
+                .get_mut(target_id)
                 .expect("we know its there");
             *mut_target.get_state_mut() = CreatureState::Knockdown {
                 round: turntaker

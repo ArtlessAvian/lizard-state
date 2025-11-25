@@ -30,7 +30,12 @@ impl<Pos: GridLike> Creature<Pos> {
     /// Not a default!
     pub fn new_garbage() -> Self {
         const ANNOYING_MAGENTA: u32 = 0xFF00_FFFF;
-        Self::new(Pos::origin(), u32::MAX, ANNOYING_MAGENTA, u8::MAX)
+        Self {
+            pos: Pos::origin(),
+            state: CreatureState::Downed {},
+            color: ANNOYING_MAGENTA,
+            team: u8::MAX,
+        }
     }
 
     pub fn step(&mut self, dir: KingStep) {
