@@ -1,0 +1,4 @@
+--reuse
+--platform ubuntu-latest=catthehacker/ubuntu:rust-latest
+
+--concurrent-jobs 1

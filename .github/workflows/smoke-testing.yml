@@ -6,22 +6,43 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  precommit:
+  cargo-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: "rust-workspace/"
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-mutants, cargo-nextest
+
+      - name: cargo nextest
+        working-directory: rust-workspace
+        run: |
+          cargo +nightly \
+          nextest r --verbose
+
+  godot-import:
     runs-on: ubuntu-latest
     container:
       image: witchpixels/godot4-omnibuilder3d:latest-4.5.1-vanilla
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           lfs: true
-      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Fix paths for Github
+      # TODO: use the container's copy when its fixed, and run before checkout.
+      - name: Fix the fix
         run: |
-          # Temporary fix
-          mkdir -pv "$HOME"
-          ln -sv /root/* "$HOME"
-          ln -sv /root/.[[:alpha:]]* "$HOME"
-          chown -R "$USER" "$HOME"
+          chmod +x ./setup_github_paths.sh
+          bash ./setup_github_paths.sh
 
-      - run: bash ./tools/precommit/precommit.sh
+      - name: Build Godot Extension
+        working-directory: rust-workspace
+        run: |
+          cargo +nightly \
+          build --package lizstate-godot-glue
+
+      - name: Godot Import
+        run: godot -v --headless --path godot-project/ --import

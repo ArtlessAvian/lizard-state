@@ -12,23 +12,31 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  mutants:
-    # From: https://mutants.rs/ci.html
+  godot-headless:
     runs-on: ubuntu-latest
+    container:
+      image: witchpixels/godot4-omnibuilder3d:latest-4.5.1-vanilla
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
-          sparse-checkout: "rust-workspace/"
-      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          lfs: true
 
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-mutants, cargo-nextest
-      - run: rustup update --no-self-update nightly
-      - run: cargo +nightly -Z unstable-options -C rust-workspace mutants --test-tool=nextest -vV --in-place
-        continue-on-error: true
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: mutants-out
-          path: mutants.out
+      # TODO: use the container's copy when its fixed, and run before checkout.
+      - name: Fix the fix
+        run: |
+          chmod +x ./setup_github_paths.sh
+          bash ./setup_github_paths.sh
+
+      - name: Build Godot Extension
+        working-directory: rust-workspace
+        run: |
+          cargo +nightly \
+          build --package lizstate-godot-glue
+
+      - name: godot --import
+        run: godot -v --headless --path godot-project/ --import
+
+      - name: godot --quit-after
+        run: |
+          godot -v --headless --path godot-project/ \
+          --quit-after 100000 --disable-vsync --fixed-fps 60
