@@ -15,7 +15,7 @@ jobs:
 
       - uses: taiki-e/install-action@v2
         with:
-          tool: cargo-mutants, cargo-nextest
+          tool: cargo-nextest
 
       - name: cargo nextest
         working-directory: rust-workspace
