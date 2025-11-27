@@ -15,7 +15,13 @@ jobs:
         with:
           lfs: true
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Fix paths for Github
-        run: setup_github_paths.sh
+        run: |
+          # Temporary fix
+          mkdir -pv "$HOME"
+          ln -sv /root/* "$HOME"
+          ln -sv /root/.* "$HOME"
+          chown -R "$USER" "$HOME"
 
       - run: bash ./tools/precommit/precommit.sh
