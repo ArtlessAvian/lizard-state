@@ -21,7 +21,7 @@ jobs:
           # Temporary fix
           mkdir -pv "$HOME"
           ln -sv /root/* "$HOME"
-          ln -sv /root/.* "$HOME"
+          GLOBIGNORE=".:.." ln -sv /root/.* "$HOME"
           chown -R "$USER" "$HOME"
 
       - run: bash ./tools/precommit/precommit.sh
