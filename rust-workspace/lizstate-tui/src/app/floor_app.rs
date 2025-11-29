@@ -151,8 +151,8 @@ impl<'a> FloorWidget<'a> {
 
     fn render_floor(&self, camera: &mut Camera) {
         for (cell, position) in camera.iter_mut_cell_and_world() {
-            let lol = position.0 * position.0 / 4 + position.1 * position.1;
-            if lol < 20 {
+            let oval = position.0 * position.0 / 4 + position.1 * position.1;
+            if oval < 20 {
                 cell.set_char('.');
                 cell.set_bg(Color::Indexed(0));
             }
@@ -161,8 +161,8 @@ impl<'a> FloorWidget<'a> {
 
     fn render_walls(&self, camera: &mut Camera) {
         for (cell, position) in camera.iter_mut_cell_and_world() {
-            let lol = position.0 * position.0 / 4 + position.1 * position.1;
-            if (20..36).contains(&lol) {
+            let oval = position.0 * position.0 / 4 + position.1 * position.1;
+            if (20..36).contains(&oval) {
                 cell.set_char('#');
                 cell.set_bg(Color::Indexed(240));
             }

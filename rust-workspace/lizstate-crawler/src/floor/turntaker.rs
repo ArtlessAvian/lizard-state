@@ -48,7 +48,7 @@ impl Turntaker<'_> {
 
     #[must_use]
     pub fn take_turn_if_not_player(&self, player_id: u8) -> Option<Floor> {
-        self.take_turn_if(|lol| lol.get_id() != player_id)
+        self.take_turn_if(|turntaker| turntaker.get_id() != player_id)
     }
 
     #[must_use]

@@ -56,8 +56,8 @@ impl<ChunkType: GridLike> PositionInsideChunk<ChunkType> {
     }
 
     pub fn index(self) -> usize {
-        let lol = usize::from(self.magic.cast_unsigned());
-        (lol & 0x70 >> 1) | (lol & 0x7)
+        let unsigned = usize::from(self.magic.cast_unsigned());
+        (unsigned & 0x70 >> 1) | (unsigned & 0x7)
     }
 }
 

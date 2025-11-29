@@ -52,8 +52,9 @@ impl CreatureList {
     ///
     /// See `Self::get_creature_mut_or_insert` to preserve the contents.
     pub fn set_creature_then_get_mut(&mut self, index: u8, creature: Creature) -> &mut Creature {
-        let yeah = self.entry(index);
-        yeah.and_modify(|x| *x = creature.clone())
+        let entry = self.entry(index);
+        entry
+            .and_modify(|x| *x = creature.clone())
             .or_insert_with(|| creature)
     }
 
@@ -62,8 +63,8 @@ impl CreatureList {
     ///
     /// See `Self::set_creature_then_get_mut` to eagerly overwrite.
     pub fn get_creature_mut_or_insert(&mut self, index: u8, creature: &Creature) -> &mut Creature {
-        let yeah = self.entry(index);
-        yeah.or_insert_with(|| creature.clone())
+        let entry = self.entry(index);
+        entry.or_insert_with(|| creature.clone())
     }
 
     pub fn iter_turn_order(&self) -> impl Iterator<Item = (u8, Turn, &Creature)> {
@@ -133,12 +134,12 @@ impl CreatureList {
     }
 
     pub fn entry(&mut self, index: u8) -> Entry<'_> {
-        let yeah = self.0.index_mut(index as usize);
+        let mut_opt = self.0.index_mut(index as usize);
 
-        if let Some(rc) = yeah {
+        if let Some(rc) = mut_opt {
             Entry::Occupied(OccupiedEntry(Rc::make_mut(rc)))
         } else {
-            Entry::Vacant(VacantEntry(yeah))
+            Entry::Vacant(VacantEntry(mut_opt))
         }
     }
 
