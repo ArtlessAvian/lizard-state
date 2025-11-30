@@ -2,7 +2,7 @@ use crate::creature::CreatureState;
 use crate::floor::Floor;
 use crate::floor::turntaker::Turntaker;
 use crate::spatial::grid::GridLike;
-use crate::spatial::grid::KingStep;
+use crate::spatial::relative::KingStep;
 
 #[derive(Debug)]
 #[non_exhaustive]

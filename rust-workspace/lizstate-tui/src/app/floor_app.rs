@@ -4,7 +4,7 @@ use lizstate_crawler::commands::CommandTrait;
 use lizstate_crawler::commands::StepMacro;
 use lizstate_crawler::entity::Entity;
 use lizstate_crawler::floor::Floor;
-use lizstate_crawler::spatial::grid::KingStep;
+use lizstate_crawler::spatial::relative::KingStep;
 use ratatui::crossterm::event::KeyModifiers;
 use ratatui::crossterm::event::{self};
 use ratatui::prelude::*;

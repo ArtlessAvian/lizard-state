@@ -5,7 +5,7 @@ use crate::entity::Entity;
 use crate::entity::get_six_bit_color;
 use crate::spatial::grid::GridLike;
 use crate::spatial::grid::GridPosition;
-use crate::spatial::grid::KingStep;
+use crate::spatial::relative::KingStep;
 
 #[derive(Debug, Clone)]
 #[non_exhaustive]
