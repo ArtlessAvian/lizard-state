@@ -4,6 +4,7 @@ use lizstate_crawler::commands::CommandTrait;
 use lizstate_crawler::commands::StepMacro;
 use lizstate_crawler::entity::Entity;
 use lizstate_crawler::floor::Floor;
+use lizstate_crawler::spatial::map::MapTile;
 use lizstate_crawler::spatial::relative::KingStep;
 use ratatui::crossterm::event::KeyModifiers;
 use ratatui::crossterm::event::{self};
@@ -150,9 +151,12 @@ impl<'a> FloorWidget<'a> {
     }
 
     fn render_floor(&self, camera: &mut Camera) {
-        for (cell, position) in camera.iter_mut_cell_and_world() {
-            let oval = position.0 * position.0 / 4 + position.1 * position.1;
-            if oval < 20 {
+        let vision = self.floor.get_entity_vision(0);
+
+        for (k, v) in vision {
+            if v == MapTile::Floor
+                && let Some(cell) = camera.cell_mut(k)
+            {
                 cell.set_char('.');
                 cell.set_bg(Color::Indexed(0));
             }
@@ -160,9 +164,12 @@ impl<'a> FloorWidget<'a> {
     }
 
     fn render_walls(&self, camera: &mut Camera) {
-        for (cell, position) in camera.iter_mut_cell_and_world() {
-            let oval = position.0 * position.0 / 4 + position.1 * position.1;
-            if (20..36).contains(&oval) {
+        let vision = self.floor.get_entity_vision(0);
+
+        for (k, v) in vision {
+            if v == MapTile::Wall
+                && let Some(cell) = camera.cell_mut(k)
+            {
                 cell.set_char('#');
                 cell.set_bg(Color::Indexed(240));
             }

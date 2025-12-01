@@ -201,4 +201,18 @@ mod tests {
 
         let _should_panic = position.step(Cardinal::West);
     }
+
+    #[test]
+    fn inner_makes_sense() {
+        for inner in 0..64 {
+            let position = PathAndChunk::from_inner_outer(inner, 0);
+            assert!((0..8).contains(&position.inner_chunk().0));
+            assert!((0..8).contains(&position.inner_chunk().1));
+
+            assert!(position.step(Cardinal::North).inner_byte() < 64);
+            assert!(position.step(Cardinal::South).inner_byte() < 64);
+            assert!(position.step(Cardinal::East).inner_byte() < 64);
+            assert!(position.step(Cardinal::West).inner_byte() < 64);
+        }
+    }
 }

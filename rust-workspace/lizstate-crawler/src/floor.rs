@@ -1,4 +1,5 @@
 use core::array::from_fn;
+use std::collections::HashMap;
 
 use crate::creature::Creature;
 use crate::creature::CreatureState;
@@ -6,6 +7,9 @@ use crate::entity::Entity;
 use crate::floor::creatures::CreatureList;
 use crate::floor::turntaker::Turntaker;
 use crate::spatial::grid::GridLike;
+use crate::spatial::map::FunctionMap;
+use crate::spatial::map::MapLike;
+use crate::spatial::map::MapTile;
 use crate::spatial::paths_and_chunks::PathAndChunk;
 use crate::spatial::relative::Vec2i;
 
@@ -17,6 +21,7 @@ mod creatures;
 #[must_use]
 pub struct Floor {
     creatures: CreatureList,
+    map: FunctionMap<PathAndChunk>,
 }
 
 impl Floor {
@@ -26,6 +31,11 @@ impl Floor {
 
     pub fn get_creature_list_mut(&mut self) -> &mut CreatureList {
         &mut self.creatures
+    }
+
+    #[must_use]
+    pub fn get_map(&self) -> impl MapLike<Key = PathAndChunk> {
+        self.map
     }
 
     pub fn new_test() -> Self {
@@ -55,8 +65,27 @@ impl Floor {
         creatures[3] = Creature::new_garbage();
         creatures[3].set_position(PathAndChunk::path_from_origin(Vec2i(0, -3).into_naive()));
 
+        let function = |x: PathAndChunk| {
+            let flatten = x.flatten();
+            let oval = flatten.0 * flatten.0 / 4 + flatten.1 * flatten.1;
+            if 0 < oval && oval < 20 {
+                MapTile::Floor
+            } else {
+                MapTile::Wall
+            }
+        };
+
+        // let function = |x: PathAndChunk| {
+        //     if x.flatten().0.rem_euclid(8) == 7 && x.flatten().1.rem_euclid(8) == 7 {
+        //         MapTile::Wall
+        //     } else {
+        //         MapTile::Floor
+        //     }
+        // };
+
         Floor {
             creatures: creatures.into_iter().collect(),
+            map: FunctionMap(function),
         }
     }
 
@@ -89,10 +118,39 @@ impl Floor {
             if cursor == other.get_position() {
                 return true;
             }
-
             cursor = cursor.step(step);
+            if !self.get_map().get(cursor).can_see_through() {
+                return false;
+            }
         }
 
         cursor == other.get_position()
+    }
+
+    #[must_use]
+    pub fn get_entity_vision(&self, who: u8) -> HashMap<(i32, i32), MapTile> {
+        let Some(who) = self.creatures.get(who) else {
+            return HashMap::new();
+        };
+
+        let mut out = HashMap::new();
+        let cross = (-20..=20)
+            .map(|x| (x, -20))
+            .chain((-20..=20).map(|x| (x, 20)))
+            .chain((-20..=20).map(|y| (-20, y)))
+            .chain((-20..=20).map(|y| (20, y)));
+
+        for (x, y) in cross {
+            let path = Vec2i(x, y).into_segment_maybe_terminating().take(20);
+            let mut cursor = who.get_position();
+            for dir in path {
+                cursor = cursor.step(dir);
+                out.insert(cursor.flatten(), self.get_map().get(cursor));
+                if self.get_map().get(cursor) == MapTile::Wall {
+                    break;
+                }
+            }
+        }
+        out
     }
 }

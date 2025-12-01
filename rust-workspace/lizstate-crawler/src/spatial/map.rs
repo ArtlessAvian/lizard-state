@@ -1,7 +1,4 @@
-use core::borrow::Borrow;
-use core::ops::Index;
 use std::collections::HashMap;
-use std::hash::Hash;
 
 use crate::spatial::grid::GridLike;
 
@@ -35,6 +32,22 @@ pub trait MapLike {
     type Key: GridLike;
     const DEFAULT: MapTile;
 
+    fn get(&self, key: Self::Key) -> MapTile;
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct FunctionMap<Key>(pub fn(Key) -> MapTile);
+
+impl<Key: GridLike> MapLike for FunctionMap<Key> {
+    type Key = Key;
+    const DEFAULT: MapTile = MapTile::Wall;
+
+    fn get(&self, key: Self::Key) -> MapTile {
+        self.0(key)
+    }
+}
+
+pub trait MutMapLike: MapLike {
     fn insert(&mut self, key: Self::Key, tile: MapTile);
 }
 
@@ -44,23 +57,17 @@ impl<Key: GridLike> MapLike for GridMap<Key> {
     type Key = Key;
     const DEFAULT: MapTile = MapTile::Floor;
 
+    fn get(&self, key: Self::Key) -> MapTile {
+        self.0.get(&key).copied().unwrap_or(Self::DEFAULT)
+    }
+}
+
+impl<Key: GridLike> MutMapLike for GridMap<Key> {
     fn insert(&mut self, key: Self::Key, tile: MapTile) {
         if tile == Self::DEFAULT {
             self.0.remove(&key);
         } else {
             let _ = self.0.insert(key, tile);
         }
-    }
-}
-
-impl<Key, Q> Index<&Q> for GridMap<Key>
-where
-    Key: GridLike + Borrow<Q>,
-    Q: Eq + Hash,
-{
-    type Output = MapTile;
-
-    fn index(&self, index: &Q) -> &Self::Output {
-        self.0.get(index).unwrap_or(&Self::DEFAULT)
     }
 }
