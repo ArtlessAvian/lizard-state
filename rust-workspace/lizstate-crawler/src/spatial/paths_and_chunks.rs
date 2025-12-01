@@ -12,20 +12,40 @@ use crate::spatial::relative::Cardinal;
 pub struct PathAndChunk([u8; 8]);
 
 impl PathAndChunk {
-    pub fn outer_path_iter(self) -> impl Iterator<Item = Cardinal> {
-        const NORTH: u8 = const { Cardinal::North as u8 + 1 };
-        const SOUTH: u8 = const { Cardinal::South as u8 + 1 };
-        const EAST: u8 = const { Cardinal::East as u8 + 1 };
-        const WEST: u8 = const { Cardinal::West as u8 + 1 };
+    /// # Panics
+    /// Panics if the outer path cannot fit in this struct.
+    pub fn from_inner_outer(inner_byte: u8, outer: u64) -> Self {
+        let Some(shifted) = outer.checked_mul(1 << 8) else {
+            panic!("Outer path too full!")
+        };
+        PathAndChunk(u64::to_ne_bytes(shifted + u64::from(inner_byte)))
+    }
 
-        self.outer_bytes().into_iter().filter_map(|x| match x {
-            0 => None,
-            NORTH => Some(Cardinal::North),
-            SOUTH => Some(Cardinal::South),
-            EAST => Some(Cardinal::East),
-            WEST => Some(Cardinal::West),
-            _ => None,
-        })
+    pub fn outer_path_iter(self) -> impl Iterator<Item = Cardinal> {
+        const NORTH: u64 = const { Cardinal::North as u64 + 1 };
+        const SOUTH: u64 = const { Cardinal::South as u64 + 1 };
+        const EAST: u64 = const { Cardinal::East as u64 + 1 };
+        const WEST: u64 = const { Cardinal::West as u64 + 1 };
+
+        let mut outer_number = self.outer_number();
+        let mut reverse: [Option<Cardinal>; 27] = [None; 27];
+        for mut_opt in &mut reverse {
+            *mut_opt = match outer_number % 5 {
+                0 => None,
+                NORTH => Some(Cardinal::North),
+                SOUTH => Some(Cardinal::South),
+                EAST => Some(Cardinal::East),
+                WEST => Some(Cardinal::West),
+                _ => unreachable!(),
+            };
+            outer_number /= 5;
+        }
+
+        let unreversed = {
+            reverse.reverse();
+            reverse
+        };
+        unreversed.into_iter().flatten()
     }
 
     /// A sized representation of the outer path.
@@ -45,7 +65,7 @@ impl PathAndChunk {
         let to_div_mod = self.inner_byte();
         (
             (to_div_mod % 8).cast_signed(),
-            (to_div_mod / 8).cast_signed(),
+            ((to_div_mod / 8) % 8).cast_signed(),
         )
     }
 
@@ -54,14 +74,8 @@ impl PathAndChunk {
         inner
     }
 
-    fn outer_bytes(self) -> [u8; 7] {
-        let [_, outer @ ..] = self.0;
-        outer
-    }
-
-    fn mut_inner_outer_bytes(&mut self) -> (&mut u8, [&mut u8; 7]) {
-        let [inner, outer @ ..] = self.0.each_mut();
-        (inner, outer)
+    fn outer_number(self) -> u64 {
+        u64::from_le_bytes(self.0) >> 8
     }
 }
 
@@ -106,52 +120,39 @@ impl GridLike for PathAndChunk {
 
     /// # Panics
     /// Panics if the outer path is too long.
-    fn step(mut self, dir: Cardinal) -> Self {
-        let carry = match dir {
-            Cardinal::North => self.inner_byte() < 8,
-            Cardinal::South => self.inner_byte() >= 8 * 7,
-            Cardinal::East => self.inner_byte() % 8 == 7,
-            #[expect(clippy::manual_is_multiple_of, reason = "consistency")]
-            Cardinal::West => self.inner_byte() % 8 == 0,
-        };
+    fn step(self, dir: Cardinal) -> Self {
+        let mut inner = self.inner_byte();
 
-        let (inner, outer) = self.mut_inner_outer_bytes();
+        let carry = match dir {
+            Cardinal::North => inner < 8,
+            Cardinal::South => inner >= 8 * 7,
+            Cardinal::East => inner % 8 == 7,
+            #[expect(clippy::manual_is_multiple_of, reason = "consistency")]
+            Cardinal::West => inner % 8 == 0,
+        };
 
         // Go seven steps the other way, or go the normal way.
         let c = if carry { -7i8 } else { 1 };
         match dir {
-            Cardinal::North => *inner = inner.wrapping_add_signed(-8 * c),
-            Cardinal::South => *inner = inner.wrapping_add_signed(8 * c),
-            Cardinal::East => *inner = inner.wrapping_add_signed(c),
-            Cardinal::West => *inner = inner.wrapping_add_signed(-c),
+            Cardinal::North => inner = inner.wrapping_add_signed(-8 * c),
+            Cardinal::South => inner = inner.wrapping_add_signed(8 * c),
+            Cardinal::East => inner = inner.wrapping_add_signed(c),
+            Cardinal::West => inner = inner.wrapping_add_signed(-c),
         }
+
+        let mut outer = self.outer_number();
 
         // Do the outer step.
         if carry {
-            // Lets be boring. One byte per `Option<Cardinal>`.
-
-            let mut previous: Option<&mut u8> = None;
-            let mut found = false;
-            for current in outer {
-                if *current != 0 {
-                    previous = Some(current);
-                } else {
-                    if let Some(top) = previous
-                        && *top == (dir.flip() as u8) + 1
-                    {
-                        *top = 0;
-                    } else {
-                        *current = (dir as u8) + 1;
-                    }
-                    found = true;
-                    break;
-                }
+            if outer % 5 == dir.flip() as u64 + 1 {
+                outer /= 5;
+            } else {
+                outer *= 5;
+                outer += dir as u64 + 1;
             }
-
-            assert!(found, "Step failed, outer path too full!");
         }
 
-        self
+        Self::from_inner_outer(inner, outer)
     }
 }
 
@@ -191,23 +192,11 @@ mod tests {
     #[test]
     #[should_panic(expected = "full")]
     fn overflows() {
-        let position = PathAndChunk([
-            0,
-            Cardinal::West as u8 + 1,
-            Cardinal::West as u8 + 1,
-            Cardinal::West as u8 + 1,
-            Cardinal::West as u8 + 1,
-            Cardinal::West as u8 + 1,
-            Cardinal::West as u8 + 1,
-            Cardinal::West as u8 + 1,
-        ]);
+        let position = PathAndChunk([0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
         assert_eq!(position.inner_chunk(), (0, 0));
-        assert!(
-            position
-                .outer_path_sized()
-                .into_iter()
-                .flatten()
-                .eq([Cardinal::West; 7])
+        assert_eq!(
+            position.outer_path_sized().into_iter().flatten().count(),
+            19
         );
 
         let _should_panic = position.step(Cardinal::West);
