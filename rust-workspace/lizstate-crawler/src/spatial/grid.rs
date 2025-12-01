@@ -34,6 +34,15 @@ pub trait GridLike: Sized + Copy + Eq + Hash {
     fn step_option_king(self, dir: Option<KingStep>) -> Self {
         dir.map_or(self, |dir| self.step_king(dir))
     }
+
+    #[must_use]
+    fn path_from_origin(iter: impl IntoIterator<Item = Cardinal>) -> Self {
+        let mut out = Self::origin();
+        for step in iter {
+            out = out.step(step);
+        }
+        out
+    }
 }
 
 // The Gridlike that flattens into itself.

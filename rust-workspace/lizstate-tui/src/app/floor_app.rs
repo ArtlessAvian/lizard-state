@@ -173,6 +173,10 @@ impl<'a> FloorWidget<'a> {
         let turntaker_id = self.floor.try_into_turntaker().expect("for now").get_id();
 
         for (id, creature) in self.floor.get_creature_list().iter() {
+            if !self.floor.entity_can_see_other(0, id) {
+                continue;
+            }
+
             let worldspace = creature.get_flat_position();
 
             if let Some(cell) = camera.cell_mut(worldspace) {

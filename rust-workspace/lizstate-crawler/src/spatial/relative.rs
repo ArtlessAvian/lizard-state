@@ -29,7 +29,8 @@ impl Cardinal {
         Self::rotate_counterclockwise,
     ];
 
-    fn rotate_clockwise(self) -> Self {
+    #[must_use]
+    pub fn rotate_clockwise(self) -> Self {
         match self {
             Cardinal::North => Self::East,
             Cardinal::South => Self::West,
@@ -38,11 +39,13 @@ impl Cardinal {
         }
     }
 
-    fn flip(self) -> Self {
+    #[must_use]
+    pub fn flip(self) -> Self {
         self.rotate_clockwise().rotate_clockwise()
     }
 
-    fn rotate_counterclockwise(self) -> Self {
+    #[must_use]
+    pub fn rotate_counterclockwise(self) -> Self {
         self.flip().rotate_clockwise()
     }
 }

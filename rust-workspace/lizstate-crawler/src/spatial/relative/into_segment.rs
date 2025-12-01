@@ -67,8 +67,6 @@ impl Iterator for IntoSegment {
     type Item = Cardinal;
 
     fn next(&mut self) -> Option<Self::Item> {
-        dbg!(&self);
-
         if self.can_go_south() {
             self.current.1 += 1;
             return Some((self.rotation)(Cardinal::South));

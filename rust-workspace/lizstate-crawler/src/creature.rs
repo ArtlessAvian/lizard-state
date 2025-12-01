@@ -4,13 +4,13 @@ use crate::commands::WakeupCommand;
 use crate::entity::Entity;
 use crate::entity::get_six_bit_color;
 use crate::spatial::grid::GridLike;
-use crate::spatial::grid::GridPosition;
+use crate::spatial::paths_and_chunks::PathAndChunk;
 use crate::spatial::relative::KingStep;
 
 #[derive(Debug, Clone)]
 #[non_exhaustive]
 #[must_use]
-pub struct Creature<Pos: GridLike = GridPosition> {
+pub struct Creature<Pos: GridLike = PathAndChunk> {
     pos: Pos,
     state: CreatureState,
     color: u32,
