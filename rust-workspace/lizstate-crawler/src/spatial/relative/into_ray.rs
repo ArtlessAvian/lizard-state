@@ -1,31 +1,5 @@
-use core::convert::identity;
-
 use crate::spatial::relative::Cardinal;
 use crate::spatial::relative::Vec2i;
-
-fn reflect_x(cardinal: Cardinal) -> Cardinal {
-    match cardinal {
-        Cardinal::East => Cardinal::West,
-        Cardinal::West => Cardinal::East,
-        _ => cardinal,
-    }
-}
-
-fn reflect_y(cardinal: Cardinal) -> Cardinal {
-    match cardinal {
-        Cardinal::North => Cardinal::South,
-        Cardinal::South => Cardinal::North,
-        _ => cardinal,
-    }
-}
-
-fn reflect_both(cardinal: Cardinal) -> Cardinal {
-    reflect_x(reflect_y(cardinal))
-}
-
-#[allow(clippy::type_complexity, reason = "temporary impl detail")]
-const REFLECTIONS: [[fn(Cardinal) -> Cardinal; 2]; 2] =
-    [[identity, reflect_y], [reflect_x, reflect_both]];
 
 /// An infinite ray, terminating if it crosses a corner EXACTLY.
 #[must_use]
@@ -35,16 +9,22 @@ pub struct IntoRay {
     // [current.0 - 0.5, current.0 + 0.5) x [current.1 - 0.5, current.1 + 0.5)
     // is contained in the ray from (0, 0) to self.target.
     current: (u32, u32),
-    reflection: fn(Cardinal) -> Cardinal,
+    rotation: fn(Cardinal) -> Cardinal,
 }
 
 impl IntoRay {
-    pub(crate) fn new(vec: Vec2i) -> Self {
+    pub(crate) fn new(mut vec: Vec2i) -> Self {
+        let mut rotations = 0;
+        while vec.0 < 0 || vec.1 < 0 {
+            vec = vec.rotate_clockwise();
+            rotations += 1;
+        }
+
         Self {
             target: (vec.0.unsigned_abs(), vec.1.unsigned_abs()),
             // PRECONDITION 2: (0, 0) is in both the square and the ray.
             current: (0, 0),
-            reflection: REFLECTIONS[usize::from(vec.0 < 0)][usize::from(vec.1 < 0)],
+            rotation: Cardinal::ROTATIONS[(4 - rotations) % 4],
         }
     }
 
@@ -84,11 +64,11 @@ impl Iterator for IntoRay {
 
         if self.can_go_south() {
             self.current.1 += 1;
-            return Some((self.reflection)(Cardinal::South));
+            return Some((self.rotation)(Cardinal::South));
         }
         if self.can_go_east() {
             self.current.0 += 1;
-            return Some((self.reflection)(Cardinal::East));
+            return Some((self.rotation)(Cardinal::East));
         }
 
         // We can't go diagonally.

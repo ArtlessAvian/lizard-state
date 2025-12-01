@@ -1,3 +1,5 @@
+use core::convert::identity;
+
 use crate::spatial::relative::into_naive::IntoNaive;
 use crate::spatial::relative::into_ray::IntoRay;
 use crate::spatial::relative::into_segment::IntoSegment;
@@ -17,6 +19,32 @@ pub enum Cardinal {
     South,
     East,
     West,
+}
+
+impl Cardinal {
+    pub const ROTATIONS: [fn(Self) -> Self; 4] = [
+        identity,
+        Self::rotate_clockwise,
+        Self::flip,
+        Self::rotate_counterclockwise,
+    ];
+
+    fn rotate_clockwise(self) -> Self {
+        match self {
+            Cardinal::North => Self::East,
+            Cardinal::South => Self::West,
+            Cardinal::East => Self::South,
+            Cardinal::West => Self::North,
+        }
+    }
+
+    fn flip(self) -> Self {
+        self.rotate_clockwise().rotate_clockwise()
+    }
+
+    fn rotate_counterclockwise(self) -> Self {
+        self.flip().rotate_clockwise()
+    }
 }
 
 /// Like a King in chess.
@@ -55,6 +83,13 @@ impl KingStep {
 pub struct Vec2i(pub i32, pub i32);
 
 impl Vec2i {
+    pub const ROTATIONS: [fn(Self) -> Self; 4] = [
+        identity,
+        Self::rotate_clockwise,
+        Self::flip,
+        Self::rotate_counterclockwise,
+    ];
+
     pub fn from_cardinal(cardinal: Cardinal) -> Self {
         match cardinal {
             Cardinal::North => Self(0, -1),
@@ -84,6 +119,20 @@ impl Vec2i {
             }
         }
         Self(x, y)
+    }
+
+    /// Remember, Y+ is South.
+    pub fn rotate_clockwise(self) -> Self {
+        Self(-self.1, self.0)
+    }
+
+    pub fn flip(self) -> Self {
+        self.rotate_clockwise().rotate_clockwise()
+    }
+
+    /// Remember, Y+ is South.
+    pub fn rotate_counterclockwise(self) -> Self {
+        self.flip().rotate_clockwise()
     }
 
     pub fn into_naive(self) -> IntoNaive {
