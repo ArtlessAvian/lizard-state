@@ -6,7 +6,7 @@ use crate::spatial::relative::KingStep;
 /// Locations reached by taking steps from the origin.
 ///
 /// Implementors are allowed to wrap and panic.
-pub trait GridLike: Sized + Copy + PartialEq + Hash {
+pub trait GridLike: Sized + Copy + Eq + Hash {
     /// The difference of East and West steps, and South and North steps.
     fn flatten(self) -> (i32, i32);
     /// Flattens into (0, 0).

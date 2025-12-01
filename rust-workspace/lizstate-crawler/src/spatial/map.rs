@@ -1,7 +1,8 @@
+use core::borrow::Borrow;
+use core::ops::Index;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::spatial::chunks::PositionInsideChunk;
 use crate::spatial::grid::GridLike;
 
 #[non_exhaustive]
@@ -30,22 +31,36 @@ impl MapTile {
     }
 }
 
-pub struct Map<ChunkType> {
-    chunks: HashMap<ChunkType, [MapTile; 64]>,
+pub trait MapLike {
+    type Key: GridLike;
+    const DEFAULT: MapTile;
+
+    fn insert(&mut self, key: Self::Key, tile: MapTile);
 }
 
-impl<ChunkType: GridLike + Eq + Hash> Map<ChunkType> {
-    pub fn get_tile(&self, pos: PositionInsideChunk<ChunkType>) -> MapTile {
-        let value = self.chunks.get(&pos.chunk);
-        value.map(|array| array[pos.index()]).unwrap_or_default()
+pub struct GridMap<Key>(HashMap<Key, MapTile>);
+
+impl<Key: GridLike> MapLike for GridMap<Key> {
+    type Key = Key;
+    const DEFAULT: MapTile = MapTile::Floor;
+
+    fn insert(&mut self, key: Self::Key, tile: MapTile) {
+        if tile == Self::DEFAULT {
+            self.0.remove(&key);
+        } else {
+            let _ = self.0.insert(key, tile);
+        }
     }
+}
 
-    pub fn set_tile(&mut self, pos: PositionInsideChunk<ChunkType>, value: MapTile) {
-        let array = self
-            .chunks
-            .entry(pos.chunk)
-            .or_insert_with(|| [const { MapTile::Wall }; 64]);
+impl<Key, Q> Index<&Q> for GridMap<Key>
+where
+    Key: GridLike + Borrow<Q>,
+    Q: Eq + Hash,
+{
+    type Output = MapTile;
 
-        array[pos.index()] = value;
+    fn index(&self, index: &Q) -> &Self::Output {
+        self.0.get(index).unwrap_or(&Self::DEFAULT)
     }
 }

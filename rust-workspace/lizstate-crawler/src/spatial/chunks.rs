@@ -1,5 +1,9 @@
+use std::collections::HashMap;
+use std::hash::Hash;
+
 use crate::spatial::grid::GridLike;
 use crate::spatial::grid::GridPosition;
+use crate::spatial::map::MapTile;
 use crate::spatial::relative::Cardinal;
 
 // TODO: Rename me!
@@ -87,6 +91,26 @@ impl<ChunkType: GridLike> GridLike for PositionInsideChunk<ChunkType> {
         }
 
         self
+    }
+}
+
+pub struct ChunkMap<ChunkType> {
+    chunks: HashMap<ChunkType, [MapTile; 64]>,
+}
+
+impl<ChunkType: GridLike + Eq + Hash> ChunkMap<ChunkType> {
+    pub fn get_tile(&self, pos: PositionInsideChunk<ChunkType>) -> MapTile {
+        let value = self.chunks.get(&pos.chunk);
+        value.map(|array| array[pos.index()]).unwrap_or_default()
+    }
+
+    pub fn set_tile(&mut self, pos: PositionInsideChunk<ChunkType>, value: MapTile) {
+        let array = self
+            .chunks
+            .entry(pos.chunk)
+            .or_insert_with(|| [const { MapTile::Wall }; 64]);
+
+        array[pos.index()] = value;
     }
 }
 
