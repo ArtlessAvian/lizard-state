@@ -1,0 +1,11 @@
+
+import:
+	godot -v --headless \
+		--import
+
+run:
+	godot
+
+run-headless: import
+	godot -v --headless \
+		--quit-after 100000 --disable-vsync --fixed-fps 60

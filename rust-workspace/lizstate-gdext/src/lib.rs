@@ -1,3 +1,5 @@
+//! Allows the Godot project to interact the rust ecosystem.
+
 #![warn(clippy::pedantic)]
 #![warn(clippy::allow_attributes_without_reason)]
 #![allow(

@@ -1,0 +1,8 @@
+build-local:
+    cargo +nightly build
+
+nextest:
+    cargo +nightly nextest r --verbose
+
+clean:
+    cargo clean
