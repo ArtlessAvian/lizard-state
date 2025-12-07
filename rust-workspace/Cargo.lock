@@ -317,7 +317,7 @@ name = "lizstate-crawler"
 version = "0.1.0"
 
 [[package]]
-name = "lizstate-godot-glue"
+name = "lizstate-gdext"
 version = "0.1.0"
 dependencies = [
  "godot",

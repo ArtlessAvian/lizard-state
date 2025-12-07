@@ -42,7 +42,7 @@ jobs:
         working-directory: rust-workspace
         run: |
           cargo +nightly \
-          build --package lizstate-godot-glue
+          build --package lizstate-gdext
 
       - name: Godot Import
         run: godot -v --headless --path godot-project/ --import
