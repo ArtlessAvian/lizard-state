@@ -91,7 +91,7 @@ impl<Pos: GridLike> Entity for &Creature<Pos> {
     fn get_fg_color(&self) -> u8 {
         const REMAP: u8 = 43; // ceil(256/6);
 
-        // TODO: Enitity color should probably be bytes anyways.
+        // TODO: Entity color should probably be bytes anyways.
         let bytes = self.color.to_be_bytes();
         get_six_bit_color(bytes[0] / REMAP, bytes[1] / REMAP, bytes[2] / REMAP)
     }
