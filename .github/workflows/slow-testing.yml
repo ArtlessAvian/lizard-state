@@ -23,9 +23,7 @@ jobs:
 
       # TODO: use the container's copy when its fixed, and run before checkout.
       - name: Fix the fix
-        run: |
-          chmod +x ./setup_github_paths.sh
-          bash ./setup_github_paths.sh
+        run: bash ./setup_github_paths.sh
 
       - name: Build Godot Extension
         working-directory: rust-workspace
