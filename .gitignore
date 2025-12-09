@@ -2,3 +2,5 @@
 
 # rust-analyzer will create a target directory. bleh.
 target/
+
+export/

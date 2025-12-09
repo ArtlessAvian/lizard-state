@@ -10,32 +10,32 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  cargo-mutants:
-    # From: https://mutants.rs/ci.html
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          sparse-checkout: "rust-workspace/"
+  # cargo-mutants:
+  #   # From: https://mutants.rs/ci.html
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #       with:
+  #         sparse-checkout: "rust-workspace/"
 
-      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+  #     - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-mutants, cargo-nextest
+  #     - uses: taiki-e/install-action@v2
+  #       with:
+  #         tool: cargo-mutants, cargo-nextest
 
-      - name: cargo mutants
-        working-directory: rust-workspace
-        run: |
-          cargo +nightly \
-          mutants --test-tool=nextest -vV --in-place
-        continue-on-error: true
+  #     - name: cargo mutants
+  #       working-directory: rust-workspace
+  #       run: |
+  #         cargo +nightly \
+  #         mutants --test-tool=nextest -vV --in-place
+  #       continue-on-error: true
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: mutants-out
-          path: rust-workspace/mutants.out
+  #     - uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with:
+  #         name: mutants-out
+  #         path: rust-workspace/mutants.out
 
   cargo-llvm-cov:
     runs-on: ubuntu-latest

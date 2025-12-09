@@ -1,0 +1,13 @@
+default_install_hook_types: [pre-push]
+
+repos:
+  - repo: https://github.com/Scony/godot-gdscript-toolkit
+    rev: 4.5.0
+    hooks:
+      - id: gdformat
+        require_serial: true
+        types: [gdscript]
+
+      - id: gdlint
+        require_serial: true
+        types: [gdscript]
